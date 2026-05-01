@@ -162,12 +162,7 @@ export function Navbar() {
                                                 className="flex items-center justify-between py-2 text-lg font-medium transition-colors hover:text-primary"
                                             >
                                                 {item.title}
-                                                <ChevronDown
-                                                    className={cn(
-                                                        "h-4 w-4 transition-transform",
-                                                        openMobileSubmenu === item.title && "rotate-180"
-                                                    )}
-                                                />
+
                                             </button>
                                             {openMobileSubmenu === item.title && (
                                                 <div className="ml-4 mt-2 flex flex-col space-y-3">
