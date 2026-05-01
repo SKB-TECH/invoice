@@ -38,11 +38,18 @@ export function Providers({ children }: { children: ReactNode }) {
     const [queryClient] = useState(() => makeQueryClient());
 
     return (
-        <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
+        <ThemeProvider
+            attribute="class"
+            defaultTheme="light"
+            enableSystem={false}
+            forcedTheme="light"
+            disableTransitionOnChange
+        >
             <QueryClientProvider client={queryClient}>
                 <AuthProvider>
                     <AppProvider>{children}</AppProvider>
                 </AuthProvider>
+
                 <Toaster
                     position="top-right"
                     richColors
