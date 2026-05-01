@@ -1,0 +1,281 @@
+import { tokenStore } from '@/core/utils/tokenStore';
+import { setCookie, getCookie, deleteCookie } from '@/core/utils/cookies';
+import type { AuthUser, Permission, RolePermission } from '@/core/types/rbac';
+import { publicApi } from '@/core/services/api';
+import { mfaStore } from '@/core/utils/mfaStore';
+
+const AUTH_TOKEN_KEY = 'accessToken';
+const AUTH_USER_KEY = 'auth_user';
+const USER_COOKIE = 'bank_user';
+const AUTH_EXPIRES_KEY = 'accessToken_expires_at';
+const DEFAULT_TOKEN_EXPIRE_SECONDS = 8760 * 60 * 60;
+
+function getCookieOrLocalStorage(name: string): string | null {
+    const cookie = getCookie(name);
+    if (cookie) return cookie;
+    if (typeof window === 'undefined') return null;
+    return window.localStorage.getItem(name);
+}
+
+function setCookieAndLocalStorage(name: string, value: string, days = 1): void {
+    setCookie(name, value, days);
+    if (typeof window !== 'undefined') {
+        window.localStorage.setItem(name, value);
+    }
+}
+
+function deleteCookieAndLocalStorage(name: string): void {
+    deleteCookie(name);
+    if (typeof window !== 'undefined') {
+        window.localStorage.removeItem(name);
+    }
+}
+
+interface JwtPayload {
+    exp?: number;
+    [key: string]: unknown;
+}
+
+interface ApiPermission {
+    Id_0?: string | number;
+    Module_7?: string;
+    Resource_8?: string;
+    Action_9?: string;
+    LongCode_10?: string;
+    ShortCode_11?: string;
+    Description_12?: string;
+}
+
+interface ApiUserData {
+    code?: string;
+    challenge_id?: string;
+    expires_in?: number;
+    resend_in?: number;
+    token?: string;
+    status?: number;
+    message?: string;
+
+    user?: {
+        Id_0?: string | number;
+        Identifier_7?: string;
+        RoleId_9?: string | number;
+        CountryCode_20?: string;
+    };
+
+    profile?: {
+        Firstname_9?: string;
+        Lastname_10?: string;
+        Cellphone_12?: string;
+        Email_13?: string;
+        Photo_16?: string | null;
+    };
+
+    role?: {
+        id?: string | number;
+        name?: string;
+        desc?: string;
+        permissions?: ApiPermission[];
+    };
+
+    branch?: unknown;
+}
+
+export function parseJwtPayload(token: string): JwtPayload | null {
+    try {
+        const [, payload] = token.split('.');
+        if (!payload) return null;
+        const decoded = atob(payload.replace(/-/g, '+').replace(/_/g, '/'));
+        return JSON.parse(decodeURIComponent(
+            decoded
+                .split('')
+                .map((c) => `%${('00' + c.charCodeAt(0).toString(16)).slice(-2)}`)
+                .join('')
+        )) as JwtPayload;
+    } catch (error) {
+        console.warn('Unable to parse JWT payload', error);
+        return null;
+    }
+}
+
+function getTokenExpiration(token: string): number | null {
+    const payload = parseJwtPayload(token);
+    if (!payload?.exp) return null;
+    return payload.exp * 1000;
+}
+
+export function mapApiUser(data: ApiUserData): AuthUser {
+    const userData = data?.user || {};
+    const profileData = data?.profile || {};
+    const roleData = data?.role || {};
+
+    const rolePermissions: RolePermission[] = (roleData?.permissions || []).map(
+        (p, index) => ({
+            id: String(p?.Id_0 ?? index + 1),
+            module: String(p?.Module_7 ?? ''),
+            resource: String(p?.Resource_8 ?? ''),
+            action: String(p?.Action_9 ?? ''),
+            longCode: String(p?.LongCode_10 ?? ''),
+            shortCode: String(p?.ShortCode_11 ?? ''),
+            description: String(p?.Description_12 ?? ''),
+        })
+    );
+
+    const permissions: Permission[] = rolePermissions
+        .map((p) => p.longCode || p.shortCode)
+        .filter(Boolean) as Permission[];
+    const firstName = String(
+        profileData?.Firstname_9 ?? userData?.Identifier_7 ?? ''
+    );
+    const lastName = String(profileData?.Lastname_10 ?? '');
+    const fullName = lastName ? `${firstName} ${lastName}`.trim() : firstName;
+
+    return {
+        id: String(userData?.Id_0 ?? ''),
+        username: String(userData?.Identifier_7 ?? ''),
+        name: fullName,
+        email: String(profileData?.Email_13 ?? userData?.Identifier_7 ?? ''),
+        phone: String(profileData?.Cellphone_12 ?? ''),
+        countryCode: String(userData?.CountryCode_20 ?? ''),
+        roleId: String(userData?.RoleId_9 ?? roleData?.id ?? ''),
+        role: {
+            id: String(roleData?.id ?? userData?.RoleId_9 ?? ''),
+            name: String(roleData?.name ?? ''),
+            desc: String(roleData?.desc ?? ''),
+            permissions: rolePermissions,
+        },
+        permissions,
+        photo: profileData?.Photo_16 ?? null,
+    };
+}
+
+export const authService = {
+    async login(login: string, password: string) {
+        const { data } = await publicApi.post<ApiUserData>('/auth/login', {
+            login,
+            password,
+        });
+        if (Number(data?.status) >= 400) {
+            throw new Error(data?.message || 'Identifiants invalides');
+        }
+        if (data?.code === 'MFA_REQUIRED' && data?.challenge_id) {
+            mfaStore.set(data.challenge_id, data.resend_in, data.expires_in);
+            return {
+                mfaRequired: true as const,
+                challengeId: data.challenge_id,
+                resendIn: data.resend_in,
+                expiresIn: data.expires_in,
+                raw: data,
+            };
+        }
+        if (!data?.token) {
+            throw new Error('Token introuvable dans la réponse API.');
+        }
+        const user = mapApiUser(data);
+        const tokenExpiresAt = getTokenExpiration(data.token);
+        const expiresInSeconds =
+            data?.expires_in ??
+            (tokenExpiresAt ? Math.max(Math.floor((tokenExpiresAt - Date.now()) / 1000), 0) : DEFAULT_TOKEN_EXPIRE_SECONDS);
+
+        authService.saveSession(data.token, user, expiresInSeconds);
+        return {
+            mfaRequired: false as const,
+            token: data.token,
+            user,
+            raw: data,
+        };
+    },
+
+    saveSession(token: string, user: AuthUser, expiresInSeconds = DEFAULT_TOKEN_EXPIRE_SECONDS) {
+        console.log('Saving session - Token:', token);
+        console.log('Saving session - User:', user);
+
+        const tokenExpiresAt = getTokenExpiration(token);
+        const effectiveExpiresAt = tokenExpiresAt ?? (Date.now() + expiresInSeconds * 1000);
+        const effectiveSeconds = Math.max(Math.floor((effectiveExpiresAt - Date.now()) / 1000), 0);
+        const expiresInDays = effectiveSeconds / (24 * 60 * 60);
+
+        tokenStore.set(token, expiresInDays);
+
+        const userJson = JSON.stringify(user);
+        setCookieAndLocalStorage(AUTH_USER_KEY, userJson, expiresInDays);
+        setCookieAndLocalStorage(USER_COOKIE, userJson, expiresInDays);
+        setCookieAndLocalStorage(AUTH_EXPIRES_KEY, String(effectiveExpiresAt), expiresInDays);
+
+        if (process.env.NODE_ENV === 'development') {
+            console.log('document.cookie after saveSession:', document.cookie);
+            console.log('tokenStore.get after saveSession:', tokenStore.get());
+            console.log('auth_user cookie after saveSession:', getCookieOrLocalStorage(AUTH_USER_KEY));
+            console.log('auth_expires cookie after saveSession:', getCookieOrLocalStorage(AUTH_EXPIRES_KEY));
+        }
+
+        // Vérifier que les cookies ont été sauvegardés
+        setTimeout(() => {
+            const savedToken = tokenStore.get();
+            const savedUser = getCookie(AUTH_USER_KEY);
+            const savedExpires = getCookie(AUTH_EXPIRES_KEY);
+            console.log('Session saved verification - Token exists:', !!savedToken);
+            console.log('Session saved verification - User exists:', !!savedUser);
+            console.log('Session saved verification - Expires exists:', !!savedExpires);
+        }, 100);
+    },
+
+    restoreSession() {
+        const token = tokenStore.get();
+        const userRaw = getCookieOrLocalStorage(AUTH_USER_KEY) ?? getCookieOrLocalStorage(USER_COOKIE);
+        const expiresRaw = getCookieOrLocalStorage(AUTH_EXPIRES_KEY);
+
+        console.log('Restoring session - Token exists:', !!token);
+        console.log('Restoring session - User raw exists:', !!userRaw);
+        console.log('Restoring session - Expires raw exists:', !!expiresRaw);
+
+        if (!token || !userRaw || !expiresRaw) {
+            authService.clearSession();
+            return null;
+        }
+
+        const expiresAt = Number(expiresRaw);
+        if (Number.isNaN(expiresAt) || expiresAt <= Date.now()) {
+            console.warn('Session expirée');
+            authService.clearSession();
+            return null;
+        }
+
+        const payloadExpiresAt = getTokenExpiration(token);
+        if (payloadExpiresAt && payloadExpiresAt <= Date.now()) {
+            console.warn('Session expirée par exp JWT');
+            authService.clearSession();
+            return null;
+        }
+
+        try {
+            const user = JSON.parse(userRaw);
+
+            if (!user.id || !user.username) {
+                console.warn('Session utilisateur invalide - missing id or username');
+                authService.clearSession();
+                return null;
+            }
+
+            return {
+                token,
+                user,
+            };
+        } catch (error) {
+            console.error('Erreur lors de la restauration de session:', error);
+            authService.clearSession();
+            return null;
+        }
+    },
+
+    clearSession() {
+        console.log('Clearing session');
+        tokenStore.clear();
+        deleteCookieAndLocalStorage(AUTH_USER_KEY);
+        deleteCookieAndLocalStorage(USER_COOKIE);
+        deleteCookieAndLocalStorage(AUTH_EXPIRES_KEY);
+    },
+
+    async logout() {
+        authService.clearSession();
+    },
+};
