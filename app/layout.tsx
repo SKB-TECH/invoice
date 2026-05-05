@@ -1,15 +1,6 @@
 import type { Metadata } from 'next';
-import { Ubuntu } from 'next/font/google';
 import './globals.css';
-import {Providers} from "@/core/config/providers/providers";
-
-
-const ubuntu = Ubuntu({
-  subsets: ['latin'],
-  weight: ['300', '400', '500', '700'],
-  variable: '--font-ubuntu',
-  display: 'swap',
-});
+import {Providers} from "@/core/config/providers/providers";;
 
 export const metadata: Metadata = {
   title: 'iKwook invoice',
@@ -22,8 +13,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-      <html lang="fr" suppressHydrationWarning className={ubuntu.variable}>
-      <body className=" font-sans">
+      <html lang="fr" suppressHydrationWarning>
+      <body className="font-sans">
       <Providers>
           {children}
       </Providers>

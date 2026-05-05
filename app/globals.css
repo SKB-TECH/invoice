@@ -8,9 +8,9 @@
   --color-background: var(--background);
   --color-foreground: var(--foreground);
 
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-  --font-heading: var(--font-geist-sans);
+  --font-sans: Arial, Helvetica, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  --font-heading: Arial, Helvetica, sans-serif;
 
   --color-card: var(--card);
   --color-card-foreground: var(--card-foreground);
@@ -60,6 +60,7 @@
 }
 
 :root {
+  --primary-color: #0033AA;
   --radius: 0.75rem;
 
   --background: oklch(0.985 0.005 250);
