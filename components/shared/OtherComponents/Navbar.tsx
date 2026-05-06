@@ -23,59 +23,15 @@ import {
     WalletCards,
 } from "lucide-react";
 import Image from "next/image";
-interface SubMenuItem {
-    title: string;
-    href: string;
-    description?: string;
-}
+import {menuItems} from "@/core/data";
 
-interface MenuItem {
-    title: string;
-    href?: string;
-    subItems?: SubMenuItem[];
-}
-
-const menuItems: MenuItem[] = [
-    { title: "Accueil", href: "/" },
-    {
-        title: "Facture",
-        subItems: [
-            { title: "Mes factures", href: "/home" },
-            { title: "Nouvelle facture", href: "/facture/nouveau" },
-        ],
-    },
-    {
-        title: "Article",
-        subItems: [
-            { title: "Gestion articles", href: "/fournitures/article" },
-            { title: "Gestion services", href: "/fournitures/services" },
-            { title: "Visualiser", href: "/fournitures/visualiser" },
-        ],
-    },
-    {
-        title: "Client",
-        subItems: [
-            { title: "Nouveau client", href: "/clients/nouveau" },
-            { title: "Visualiser", href: "/clients" },
-        ],
-    },
-    {
-        title: "Contrat",
-        subItems: [
-            { title: "Nouveau contrat", href: "/contacts/nouveau" },
-            { title: "Visualiser", href: "/contacts" },
-        ],
-    },
-    { title: "Configuration", href: "/configuration" },
-    { title: "Aide", href: "/aide" },
-];
 
 export function Navbar() {
     const [isOpen, setIsOpen] = React.useState(false);
     const [openMobileSubmenu, setOpenMobileSubmenu] =
         React.useState<string | null>(null);
 
-    const navTriggerClass = "h-16 bg-transparent px-4 py-0 text-[14px] font-semibold text-white shadow-none hover:bg-white/10 hover:text-white data-[state=open]:bg-white data-[state=open]:text-[#0879bd] data-[state=open]:font-semibold";
+    const navTriggerClass = "h-20 bg-transparent px-4 py-0 text-[14px] font-semibold text-white shadow-none hover:bg-white/10 hover:text-white data-[state=open]:bg-white data-[state=open]:text-[#0879bd] data-[state=open]:font-semibold";
     return (
         <nav className="sticky top-0 z-50 w-full overflow-visible bg-[#0879bd]">
             <div className="mx-auto flex h-20 w-full px-8 items-center">
@@ -83,7 +39,7 @@ export function Navbar() {
                     href="/"
                     className="flex h-20 shrink-0 items-center gap-2 bg-[#0879bd] px-5 md:px-8"
                 >
-                <Image alt={"logo"} src={"/invoiceb.png"} width={200} height={200} />
+                <Image alt={"logo"} src={"/invoiceb.png"} width={160} height={160} />
                 </Link>
 
                 <div className="relative flex min-w-0 flex-1 items-center bg-[#0879bd] text-white">
@@ -126,16 +82,17 @@ export function Navbar() {
                                                 </NavigationMenuContent>
                                             </>
                                         ) : (
-                                            <Link href={item.href || "#"} legacyBehavior passHref>
-                                                <NavigationMenuLink
+                                            <NavigationMenuLink asChild>
+                                                <Link
+                                                    href={item.href || "#"}
                                                     className={cn(
                                                         navTriggerClass,
                                                         "group inline-flex w-max items-center justify-center"
                                                     )}
                                                 >
                                                     {item.title}
-                                                </NavigationMenuLink>
-                                            </Link>
+                                                </Link>
+                                            </NavigationMenuLink>
                                         )}
                                     </NavigationMenuItem>
                                 ))}
