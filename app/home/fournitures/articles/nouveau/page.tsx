@@ -1,11 +1,10 @@
-import React from 'react';
-
-const Page = () => {
-    return (
-        <div>
-            articke
-        </div>
-    );
-};
-
-export default Page;
+export default function NouvelArticlePage() {
+  return (
+    <div>
+      <h1 className="text-lg font-bold text-slate-800">Nouvel article</h1>
+      <p className="mt-2 text-sm text-slate-600">
+        Formulaire de creation d&apos;un article.
+      </p>
+    </div>
+  );
+}

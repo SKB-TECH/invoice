@@ -1,11 +1,8 @@
-import React from 'react';
-
-const Page = () => {
-    return (
-        <div>
-            whgehge
-        </div>
-    );
-};
-
-export default Page;
+export default function HomeFournituresServicesPage() {
+  return (
+    <div>
+      <h1 className="text-lg font-bold text-slate-800">Gestion services</h1>
+      <p className="mt-2 text-sm text-slate-600">Contenu à venir.</p>
+    </div>
+  );
+}
