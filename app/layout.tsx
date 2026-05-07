@@ -3,8 +3,11 @@ import './globals.css';
 import {Providers} from "@/core/config/providers/providers";;
 
 export const metadata: Metadata = {
-  title: 'iKwook invoice',
+  title: 'invoice',
   description: 'iKwook invoice',
+    icons:{
+      icon:"/invoiceb.png"
+    }
 };
 
 export default function RootLayout({
@@ -15,9 +18,9 @@ export default function RootLayout({
   return (
       <html lang="fr" suppressHydrationWarning>
       <body className="font-sans">
-      <Providers>
-          {children}
-      </Providers>
+          <Providers>
+              {children}
+          </Providers>
       </body>
       </html>
   );
