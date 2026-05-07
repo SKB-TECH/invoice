@@ -88,9 +88,9 @@ export default function ConfigurationPage() {
                                     <button
                                         key={item}
                                         onClick={() => setActiveMenu(item)}
-                                        className={`block w-full px-2 py-3 text-left text-[15px] font-medium ${
+                                        className={`block w-full px-4 py-3 text-left text-[15px] font-medium cursor-pointer ${
                                             isActive
-                                                ? "font-bold text-[#1f6a9a]"
+                                                ? "font-bold bg-[#1f6a9a] text-white"
                                                 : "text-slate-500 hover:text-slate-800"
                                         }`}
                                     >
