@@ -9,8 +9,8 @@ export default function HomeFournituresArticlesPage() {
   const router = useRouter();
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+    <div className="w-full min-w-full space-y-6">
+      <div className="flex w-full min-w-full flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <h1 className="text-lg font-bold text-slate-800">Articles</h1>
         <Button
           type="button"
@@ -23,7 +23,9 @@ export default function HomeFournituresArticlesPage() {
         </Button>
       </div>
 
-      <ArticlesTable rows={demoArticles} />
+      <div className="w-full min-w-full">
+        <ArticlesTable rows={demoArticles} className="w-full" />
+      </div>
     </div>
   );
 }
