@@ -41,8 +41,8 @@ export const menuItems: MenuItem[] = [
     {
         title: "Contrat",
         subItems: [
-            { title: "Nouveau contrat", href: "/contacts/nouveau" },
-            { title: "Visualiser", href: "/contacts" },
+            { title: "Nouveau contrat", href: "/contrats/new" },
+            { title: "Visualiser", href: "/contrats" },
         ],
     },
     { title: "Configuration", href: "/configuration" },
