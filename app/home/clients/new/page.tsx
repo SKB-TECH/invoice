@@ -48,7 +48,6 @@ function DateField({
 export default function NouveauClientPage() {
   return (
     <div className="min-h-screen bg-[#f4f7f6] text-foreground">
-      <Navbar />
 
       <main className="mx-auto w-full max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
         <span className="flex items-center gap-1 text-sm text-slate-500 mb-6">
