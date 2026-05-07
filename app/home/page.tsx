@@ -200,7 +200,7 @@ const doughnutOptions = {
 
 export default function InvoiceDashboard() {
     return (
-        <div className="min-h-screen text-slate-700">
+            <div className="min-h-full mt-6 min-w-full text-slate-700">
             <div className="grid grid-cols-12 gap-5">
                 <div className="col-span-12 lg:col-span-7">
                     <div className="grid grid-cols-3 gap-5">
