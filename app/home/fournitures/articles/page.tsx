@@ -1,0 +1,29 @@
+"use client";
+
+import { useRouter } from "next/navigation";
+import { ArticlesTable } from "@/components/fournitures/articles/articles-table";
+import { Button } from "@/components/ui/button";
+import { demoArticles } from "@/core/data/articles-demo";
+
+export default function HomeFournituresArticlesPage() {
+  const router = useRouter();
+
+  return (
+    <div className="space-y-6">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <h1 className="text-lg font-bold text-slate-800">Articles</h1>
+        <Button
+          type="button"
+          onClick={() => {
+            router.push("/home/fournitures/articles/nouveau");
+          }}
+          className="h-9 shrink-0 rounded-none! bg-[#0879bd] px-4 text-sm font-medium text-white hover:bg-[#0879bd]/90"
+        >
+          Nouveau Article
+        </Button>
+      </div>
+
+      <ArticlesTable rows={demoArticles} />
+    </div>
+  );
+}

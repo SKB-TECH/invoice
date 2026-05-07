@@ -26,7 +26,7 @@ export const menuItems: MenuItem[] = [
     {
         title: "Article",
         subItems: [
-            { title: "Gestion articles", href: "/home/fournitures/article" },
+            { title: "Gestion articles", href: "/home/fournitures/articles" },
             { title: "Gestion services", href: "/home/fournitures/services" },
             { title: "Visualiser", href: "/home/fournitures/visualiser" },
         ],
