@@ -81,10 +81,8 @@ function StatutBadge({ statut }: { statut: Statut }) {
 
 export default function ContratsPage() {
   return (
-    <div className="min-h-screen bg-[#f4f7f6] text-foreground">
-      <Navbar />
-
-      <main className="mx-auto w-full max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+    <div className="min-h-screen text-foreground">
+      <main className="mx-auto w-full min-w-full py-4">
         <span className="flex items-center gap-1 text-sm text-slate-500 mb-6">
             <Link href="/home"> <House className="size-4" /> </Link>
             <ChevronRight className="size-4" /> Contrats
@@ -96,9 +94,9 @@ export default function ContratsPage() {
           </h1>
           <Button
             size="lg"
-            className="rounded bg-[#0879bd] px-5 w-52 text-white cursor-pointer"
+            className="h-12 rounded bg-[#0879bd] px-5 w-52 text-white cursor-pointer"
           >
-            <Link href="/contrats/new">Nouveau contrat</Link>
+            <Link href="/home/contrats/new">Nouveau contrat</Link>
           </Button>
         </div>
 

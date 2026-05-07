@@ -75,22 +75,21 @@ function StatutBadge({ statut }: { statut: Statut }) {
 
 export default function ClientsPage() {
   return (
-    <div className="min-h-screen bg-[#f4f7f6] text-foreground">
-      <main className="mx-auto w-full max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-        <span className="flex items-center gap-1 text-sm text-slate-500 mb-6">
-            <Link href="/home"> <House className="size-4" /> </Link>
-            <ChevronRight className="size-4" /> Clients
-            <ChevronRight className="size-4" />Visualiser
-        </span>
-        <div className="mb-6 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
+    <main className="mx-auto w-full min-w-full py-4 text-foreground">
+      <span className="flex items-center gap-1 text-sm text-slate-500 mb-6">
+        <Link href="/home"> <House className="size-4" /> </Link>
+          <ChevronRight className="size-4" /> Clients
+          <ChevronRight className="size-4" />Visualiser
+      </span>
+      <div className="mb-6 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
           <h1 className="text-2xl font-bold tracking-tight text-slate-800 sm:text-3xl">
             Clients
           </h1>
           <Button
             size="lg"
-            className="rounded bg-[#0879bd] px-5 w-52 text-white cursor-pointer"
+            className="h-12 rounded bg-[#0879bd] px-5 w-52 text-white cursor-pointer"
           >
-            <Link href="/clients/nouveau">Nouveau client</Link>
+            <Link href="/home/clients/new">Nouveau client</Link>
           </Button>
         </div>
 
@@ -115,6 +114,9 @@ export default function ClientsPage() {
                 </TableHead>
                 <TableHead className="h-11 bg-slate-100 px-4 text-left text-sm font-semibold text-slate-700">
                     Téléphone
+                </TableHead>
+                <TableHead className="h-11 bg-slate-100 px-4 text-left text-sm font-semibold text-slate-700">
+                  <span className="sr-only">Actions</span>
                 </TableHead>
               </TableRow>
             </TableHeader>
@@ -158,7 +160,6 @@ export default function ClientsPage() {
             </TableBody>
           </Table>
         </div>
-      </main>
-    </div>
+    </main>
   )
 }
