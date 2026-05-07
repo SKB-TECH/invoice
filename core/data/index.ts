@@ -34,7 +34,7 @@ export const menuItems: MenuItem[] = [
     {
         title: "Client",
         subItems: [
-            { title: "Nouveau client", href: "/clients/nouveau" },
+            { title: "Nouveau client", href: "/clients/new" },
             { title: "Visualiser", href: "/clients" },
         ],
     },
