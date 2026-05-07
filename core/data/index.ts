@@ -15,7 +15,7 @@ interface MenuItem {
 }
 
 export const menuItems: MenuItem[] = [
-    { title: "Accueil", href: "/" },
+    { title: "Accueil", href: "/home" },
     {
         title: "Facture",
         subItems: [
