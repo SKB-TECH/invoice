@@ -9,9 +9,9 @@ type Props = {
 
 const Layout = ({ children }: Props) => {
     return (
-        <div className="text-foreground">
+        <div className="">
             <Navbar />
-            <main className="h-screen mx-auto px-4 md:px-16 lg:px-18 pt-12 mb-3">
+            <main className="min-h-screen mx-auto px-4 md:px-16 lg:px-24 pt-12 mb-3">
                 {children}
             </main>
             <Footer />
