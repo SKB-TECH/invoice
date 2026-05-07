@@ -20,31 +20,31 @@ export const menuItems: MenuItem[] = [
         title: "Facture",
         subItems: [
             { title: "Mes factures", href: "/home" },
-            { title: "Nouvelle facture", href: "/facture/nouveau" },
+            { title: "Nouvelle facture", href: "/home/facture/nouveau" },
         ],
     },
     {
         title: "Article",
         subItems: [
-            { title: "Gestion articles", href: "/fournitures/article" },
-            { title: "Gestion services", href: "/fournitures/services" },
-            { title: "Visualiser", href: "/fournitures/visualiser" },
+            { title: "Gestion articles", href: "/home/fournitures/article" },
+            { title: "Gestion services", href: "/home/fournitures/services" },
+            { title: "Visualiser", href: "/home/fournitures/visualiser" },
         ],
     },
     {
         title: "Client",
         subItems: [
-            { title: "Nouveau client", href: "/clients/new" },
-            { title: "Visualiser", href: "/clients" },
+            { title: "Nouveau client", href: "/home/clients/new" },
+            { title: "Visualiser", href: "/home/clients" },
         ],
     },
     {
         title: "Contrat",
         subItems: [
-            { title: "Nouveau contrat", href: "/contrats/new" },
-            { title: "Visualiser", href: "/contrats" },
+            { title: "Nouveau contrat", href: "/home/contrats/new" },
+            { title: "Visualiser", href: "/home/contrats" },
         ],
     },
-    { title: "Configuration", href: "/configuration" },
-    { title: "Aide", href: "/aide" },
+    { title: "Configuration", href: "/home/configuration" },
+    { title: "Aide", href: "/home/aide" },
 ];
