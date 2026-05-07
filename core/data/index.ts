@@ -15,7 +15,7 @@ interface MenuItem {
 }
 
 export const menuItems: MenuItem[] = [
-    { title: "Accueil", href: "/" },
+    { title: "Accueil", href: "/home" },
     {
         title: "Facture",
         subItems: [
@@ -34,15 +34,15 @@ export const menuItems: MenuItem[] = [
     {
         title: "Client",
         subItems: [
-            { title: "Nouveau client", href: "/clients/nouveau" },
+            { title: "Nouveau client", href: "/clients/new" },
             { title: "Visualiser", href: "/clients" },
         ],
     },
     {
         title: "Contrat",
         subItems: [
-            { title: "Nouveau contrat", href: "/contacts/nouveau" },
-            { title: "Visualiser", href: "/contacts" },
+            { title: "Nouveau contrat", href: "/contrats/new" },
+            { title: "Visualiser", href: "/contrats" },
         ],
     },
     { title: "Configuration", href: "/configuration" },
