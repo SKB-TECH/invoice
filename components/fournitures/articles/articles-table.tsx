@@ -1,9 +1,11 @@
-import Link from "next/link";
+"use client";
+
 import { Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { ArticleStatusBadge } from "./article-status-badge";
 import type { ArticleTableRow } from "./types";
+import { useRouter } from "next/navigation";
 
 export const ARTICLES_TABLE_COLUMN_LABELS = {
   idIkwook: "ID iKwook",
@@ -29,6 +31,7 @@ type ArticlesTableProps = {
 };
 
 export function ArticlesTable({ rows, className }: ArticlesTableProps) {
+  const router = useRouter();
   return (
     <div
       className={cn(
@@ -66,13 +69,9 @@ export function ArticlesTable({ rows, className }: ArticlesTableProps) {
                   size="icon"
                   className="h-8 w-8 text-slate-500 hover:bg-slate-100 hover:text-slate-700 cursor-pointer"
                   aria-label={`Voir le détail de l'article ${row.idIkwook}`}
-                  asChild
+                  onClick={() => router.push(`/home/articles/${encodeURIComponent(row.idIkwook)}/visualiser`)}
                 >
-                  <Link
-                    href={`/home/fournitures/articles/${encodeURIComponent(row.idIkwook)}/visualiser`}
-                  >
-                    <Eye className="size-4" />
-                  </Link>
+                  <Eye className="size-4" />
                 </Button>
               </td>
             </tr>

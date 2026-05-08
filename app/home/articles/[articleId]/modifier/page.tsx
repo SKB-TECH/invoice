@@ -25,14 +25,14 @@ export default async function ModifierArticlePage({ params }: PageProps) {
         </Link>
         <ChevronRight className="size-4 shrink-0" />
         <Link
-          href="/home/fournitures/articles"
+          href="/home/articles"
           className="hover:text-slate-700"
         >
           Articles
         </Link>
         <ChevronRight className="size-4 shrink-0" />
         <Link
-          href={`/home/fournitures/articles/${encodeURIComponent(article.idIkwook)}/visualiser`}
+          href={`/home/articles/${encodeURIComponent(article.idIkwook)}/visualiser`}
           className="max-w-[10rem] truncate text-slate-600 hover:text-slate-800 sm:max-w-xs"
         >
           {article.title}

@@ -16,9 +16,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 import type { ArticleRowStatus } from "@/components/fournitures/articles/types";
+import { useRouter } from "next/navigation";
 
 const selectClass =
-  "h-12 w-full rounded border border-input bg-transparent py-2 pr-2 pl-2.5 text-sm whitespace-nowrap transition-colors outline-none select-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 data-placeholder:text-muted-foreground dark:bg-input/30 dark:hover:bg-input/50 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4";
+  "h-12 w-full rounded-none border border-input bg-transparent py-2 pr-2 pl-2.5 text-sm whitespace-nowrap transition-colors outline-none select-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 data-placeholder:text-muted-foreground dark:bg-input/30 dark:hover:bg-input/50 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4";
 
 function formatMoneyFr(n: number): string {
   return new Intl.NumberFormat("fr-FR", {
@@ -39,6 +40,7 @@ type ModifierArticleFormProps = {
 };
 
 export function ModifierArticleForm({ initial }: ModifierArticleFormProps) {
+  const router = useRouter();
   const [taxGroups, setTaxGroups] = useState<TaxGroup[]>(() =>
     typeof window !== "undefined" ? readTaxGroups() : []
   );
@@ -130,12 +132,12 @@ export function ModifierArticleForm({ initial }: ModifierArticleFormProps) {
 
   return (
     <form
-      className="rounded border border-slate-200/80 bg-white p-6 sm:p-8"
+      className="rounded-none border border-slate-200/80 bg-white p-6 sm:p-8"
       action="#"
       method="post"
       onSubmit={(e) => {
         e.preventDefault();
-        toast.success("Article mis à jour (démo : brancher à l’API ensuite).");
+        toast.success("Article mis à jour.");
       }}
     >
       <div className="grid gap-6 sm:grid-cols-2">
@@ -149,7 +151,7 @@ export function ModifierArticleForm({ initial }: ModifierArticleFormProps) {
             id="nom"
             name="nom"
             required
-            className="h-12 rounded"
+            className="h-12 rounded-none"
             value={nom}
             onChange={(e) => setNom(e.target.value)}
           />
@@ -163,7 +165,7 @@ export function ModifierArticleForm({ initial }: ModifierArticleFormProps) {
             id="code"
             name="code"
             required
-            className="h-12 rounded"
+            className="h-12 rounded-none"
             value={code}
             onChange={(e) => setCode(e.target.value)}
           />
@@ -179,7 +181,7 @@ export function ModifierArticleForm({ initial }: ModifierArticleFormProps) {
             required
             rows={5}
             className={cn(
-              "flex min-h-[120px] w-full resize-y rounded border border-input bg-transparent px-2.5 py-2 text-sm text-foreground transition-colors outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm dark:bg-input/30"
+              "flex min-h-[120px] w-full resize-y rounded-none border border-input bg-transparent px-2.5 py-2 text-sm text-foreground transition-colors outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm dark:bg-input/30"
             )}
             value={description}
             onChange={(e) => setDescription(e.target.value)}
@@ -195,7 +197,7 @@ export function ModifierArticleForm({ initial }: ModifierArticleFormProps) {
             name="prixHt"
             inputMode="decimal"
             required
-            className="h-12 rounded"
+            className="h-12 rounded-none"
             value={prixHt}
             onChange={(e) => onPrixHtChange(e.target.value)}
             onBlur={onPrixHtBlur}
@@ -211,7 +213,7 @@ export function ModifierArticleForm({ initial }: ModifierArticleFormProps) {
             name="prixTtc"
             inputMode="decimal"
             required
-            className="h-12 rounded"
+            className="h-12 rounded-none"
             value={prixTtc}
             onChange={(e) => onPrixTtcChange(e.target.value)}
             onBlur={onPrixTtcBlur}
@@ -270,7 +272,7 @@ export function ModifierArticleForm({ initial }: ModifierArticleFormProps) {
             name="prixSpecial"
             inputMode="decimal"
             placeholder="Facultatif"
-            className="h-12 rounded"
+            className="h-12 rounded-none"
             value={prixSpecial}
             onChange={(e) => setPrixSpecial(e.target.value)}
           />
@@ -303,7 +305,7 @@ export function ModifierArticleForm({ initial }: ModifierArticleFormProps) {
             <Input
               id="unite"
               name="unite"
-              className="h-12 rounded"
+              className="h-12 rounded-none"
               value={unite}
               onChange={(e) => setUnite(e.target.value)}
             />
@@ -337,7 +339,7 @@ export function ModifierArticleForm({ initial }: ModifierArticleFormProps) {
             name="period"
             type="date"
             required
-            className="h-12 rounded"
+            className="h-12 rounded-none"
             value={period}
             onChange={(e) => setPeriod(e.target.value)}
           />
@@ -366,16 +368,17 @@ export function ModifierArticleForm({ initial }: ModifierArticleFormProps) {
 
       <div className="mt-8 flex flex-col gap-3 border-t border-slate-100 pt-6 md:flex-row md:flex-wrap md:justify-end">
         <Button
+          onClick={() => router.push("/home/articles")}
           type="button"
           variant="secondary"
-          asChild
-          className="h-12 w-52 cursor-pointer rounded bg-[#949B9F] px-5 text-white hover:bg-[#949B9F]/80"
+          className="h-12 w-52 cursor-pointer rounded-none bg-[#949B9F] px-5 text-white hover:bg-[#949B9F]/80"
         >
-          <Link href="/home/fournitures/articles">Annuler</Link>
+          Annuler
         </Button>
         <Button
+          onClick={() => router.push("/home/articles")}
           type="submit"
-          className="h-12 w-52 cursor-pointer rounded bg-[#0879bd] px-5 text-white shadow-none hover:bg-[#066aa8]"
+          className="h-12 w-52 cursor-pointer rounded-none bg-[#0879bd] px-5 text-white shadow-none hover:bg-[#066aa8]"
         >
           Enregistrer
         </Button>

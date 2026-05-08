@@ -1,3 +1,4 @@
+"use client";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ChevronRight, House } from "lucide-react";
@@ -5,6 +6,7 @@ import { ChevronRight, House } from "lucide-react";
 import { formatDeviseLibelle, getArticleDetailById } from "@/lib/fournitures/articles/articles-data";
 import { ArticleTaxGroupLabel } from "@/components/fournitures/articles/article-tax-group-label";
 import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
 
 type PageProps = {
   params: Promise<{ articleId: string }>;
@@ -26,7 +28,9 @@ export default async function VisualiserArticlePage({ params }: PageProps) {
   }
 
   const devise = formatDeviseLibelle(article.devise);
-  const basePath = `/home/fournitures/articles/${encodeURIComponent(article.idIkwook)}`;
+  const basePath = `/home/articles/${encodeURIComponent(article.idIkwook)}`;
+
+  const router = useRouter();
 
   return (
     <main className="mx-auto w-full min-w-full text-foreground">
@@ -36,7 +40,7 @@ export default async function VisualiserArticlePage({ params }: PageProps) {
         </Link>
         <ChevronRight className="size-4 shrink-0" />
         <Link
-          href="/home/fournitures/articles"
+          href="/home/articles"
           className="hover:text-slate-700"
         >
           Articles
@@ -120,19 +124,19 @@ export default async function VisualiserArticlePage({ params }: PageProps) {
 
         <div className="mt-8 flex flex-col gap-3 border-t border-slate-100 pt-6 md:flex-row md:flex-wrap md:justify-end">
           <Button
+            onClick={() => router.push("/home/articles")}
             type="button"
             variant="secondary"
-            asChild
-            className="h-12 w-52 cursor-pointer rounded bg-[#949B9F] px-5 text-white hover:bg-[#949B9F]/80"
+            className="h-12 w-52 cursor-pointer rounded-none bg-[#949B9F] px-5 text-white hover:bg-[#949B9F]/80"
           >
-            <Link href="/home/fournitures/articles">Retour à la liste</Link>
+            Retour à la liste
           </Button>
           <Button
             type="button"
-            asChild
-            className="h-12 w-52 cursor-pointer rounded bg-[#0879bd] px-5 text-white shadow-none hover:bg-[#066aa8]"
+            onClick={() => router.push(`${basePath}/modifier`)}
+            className="h-12 w-52 cursor-pointer rounded-none bg-[#0879bd] px-5 text-white shadow-none hover:bg-[#066aa8]"
           >
-            <Link href={`${basePath}/modifier`}>Modifier</Link>
+            Modifier
           </Button>
         </div>
       </section>

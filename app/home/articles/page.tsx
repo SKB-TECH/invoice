@@ -74,7 +74,7 @@ export default function HomeFournituresArticlesPage() {
           <Button
             type="button"
             onClick={() => {
-              router.push("/home/fournitures/articles/nouveau");
+              router.push("/home/articles/nouveau");
             }}
             className="h-9 shrink-0 rounded-none! bg-[#0879bd] px-4 text-sm font-medium text-white hover:bg-[#0879bd]/90"
           >

@@ -55,6 +55,7 @@ export function ArticleTaxGroupSelect({
       required={required}
       defaultValue={defaultValue}
       className={className}
+      aria-label="Sélectionner un groupe"
     >
       <option value="" disabled>
         Sélectionner
