@@ -11,12 +11,15 @@ import {
 type MenuItem =
     | "Informations de base"
     | "Changer mot de passe"
-    | "Référencielles";
+    | "Référencielles"
+    | "Groupe de taxations";
+
 
 const menuItems: MenuItem[] = [
     "Informations de base",
     "Changer mot de passe",
     "Référencielles",
+    "Groupe de taxations",
 ];
 
 export default function ConfigurationPage() {

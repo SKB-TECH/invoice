@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { ChevronRight, House } from "lucide-react";
 import { ArticlesTable } from "@/components/fournitures/articles/articles-table";
 import { Button } from "@/components/ui/button";
-import { demoArticles } from "@/core/data/articles-demo";
+import { demoArticles } from "@/app/home/fournitures/articles/_lib/articles-data";
 
 export default function HomeFournituresArticlesPage() {
   const router = useRouter();

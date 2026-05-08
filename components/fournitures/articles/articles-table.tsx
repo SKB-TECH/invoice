@@ -1,3 +1,6 @@
+import Link from "next/link";
+import { Eye } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { ArticleStatusBadge } from "./article-status-badge";
 import type { ArticleTableRow } from "./types";
@@ -41,6 +44,7 @@ export function ArticlesTable({ rows, className }: ArticlesTableProps) {
                 {ARTICLES_TABLE_COLUMN_LABELS[key]}
               </th>
             ))}
+            <th className="px-5 py-3 text-right font-semibold">Action</th>
           </tr>
         </thead>
         <tbody>
@@ -55,6 +59,22 @@ export function ArticlesTable({ rows, className }: ArticlesTableProps) {
                   )}
                 </td>
               ))}
+              <td className="px-5 py-4 text-right">
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8 text-slate-500 hover:bg-slate-100 hover:text-slate-700 cursor-pointer"
+                  aria-label={`Voir le détail de l'article ${row.idIkwook}`}
+                  asChild
+                >
+                  <Link
+                    href={`/home/fournitures/articles/${encodeURIComponent(row.idIkwook)}/visualiser`}
+                  >
+                    <Eye className="size-4" />
+                  </Link>
+                </Button>
+              </td>
             </tr>
           ))}
         </tbody>
