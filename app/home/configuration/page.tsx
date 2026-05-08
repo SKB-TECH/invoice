@@ -8,6 +8,8 @@ import {
     User,
 } from "lucide-react";
 
+import { TaxGroupsSection } from "@/components/configuration/tax-groups-section";
+
 type MenuItem =
     | "Informations de base"
     | "Changer mot de passe"
@@ -353,6 +355,10 @@ export default function ConfigurationPage() {
                                     </button>
                                 </div>
                             </>
+                        )}
+
+                        {activeMenu === "Groupe de taxations" && (
+                            <TaxGroupsSection />
                         )}
                     </section>
                 </div>

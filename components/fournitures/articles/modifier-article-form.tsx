@@ -1,10 +1,16 @@
 "use client";
 
 import Link from "next/link";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
-import type { ArticleDetailRecord } from "@/app/home/fournitures/articles/_lib/articles-data";
-import { ARTICLE_TAX_RATES } from "@/app/home/fournitures/articles/_lib/tax-rates";
+import type { ArticleDetailRecord } from "@/lib/fournitures/articles/articles-data";
+import { resolveTaxRateDecimal } from "@/lib/fournitures/articles/tax-rates";
+import {
+  formatTaxGroupOptionLabel,
+  readTaxGroups,
+  TAX_GROUPS_CHANGED_EVENT,
+  type TaxGroup,
+} from "@/lib/tax-groups/tax-groups-storage";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -28,15 +34,39 @@ function parseMoneyInput(s: string): number | null {
   return Number.isFinite(n) ? n : null;
 }
 
-function rateFromKey(key: string): number {
-  return ARTICLE_TAX_RATES[key as keyof typeof ARTICLE_TAX_RATES] ?? 0;
-}
-
 type ModifierArticleFormProps = {
   initial: ArticleDetailRecord;
 };
 
 export function ModifierArticleForm({ initial }: ModifierArticleFormProps) {
+  const [taxGroups, setTaxGroups] = useState<TaxGroup[]>(() =>
+    typeof window !== "undefined" ? readTaxGroups() : []
+  );
+
+  useEffect(() => {
+    const sync = () => setTaxGroups(readTaxGroups());
+    sync();
+    window.addEventListener(TAX_GROUPS_CHANGED_EVENT, sync);
+    return () => window.removeEventListener(TAX_GROUPS_CHANGED_EVENT, sync);
+  }, []);
+
+  const selectableTaxGroups = useMemo(() => {
+    const base = taxGroups.filter((g) => g.active || g.id === initial.groupeTax);
+    const ids = new Set(base.map((g) => g.id));
+    if (ids.has(initial.groupeTax)) return base;
+    return [
+      ...base,
+      {
+        id: initial.groupeTax,
+        name: "Groupe (inconnu ou supprimé)",
+        ratePercent: Math.round(
+          resolveTaxRateDecimal(initial.groupeTax) * 10000
+        ) / 100,
+        active: false,
+      },
+    ];
+  }, [taxGroups, initial.groupeTax]);
+
   const [nom, setNom] = useState(initial.title);
   const [code, setCode] = useState(initial.code);
   const [description, setDescription] = useState(initial.description);
@@ -55,14 +85,14 @@ export function ModifierArticleForm({ initial }: ModifierArticleFormProps) {
 
   const syncTtcFromHt = useCallback((htStr: string, taxKey: string) => {
     const ht = parseMoneyInput(htStr);
-    const r = rateFromKey(taxKey);
+    const r = resolveTaxRateDecimal(taxKey);
     if (ht === null) return;
     setPrixTtc(formatMoneyFr(ht * (1 + r)));
   }, []);
 
   const syncHtFromTtc = useCallback((ttcStr: string, taxKey: string) => {
     const ttc = parseMoneyInput(ttcStr);
-    const r = 1 + rateFromKey(taxKey);
+    const r = 1 + resolveTaxRateDecimal(taxKey);
     if (ttc === null) return;
     if (r === 0) {
       setPrixHt(formatMoneyFr(ttc));
@@ -92,9 +122,9 @@ export function ModifierArticleForm({ initial }: ModifierArticleFormProps) {
   };
 
   const onGroupeTaxChange = (taxKey: string) => {
-    setGroupeTax(taxKey as ArticleDetailRecord["groupeTax"]);
+    setGroupeTax(taxKey);
     const ht = parseMoneyInput(prixHt);
-    const r = rateFromKey(taxKey);
+    const r = resolveTaxRateDecimal(taxKey);
     if (ht !== null) setPrixTtc(formatMoneyFr(ht * (1 + r)));
   };
 
@@ -220,9 +250,11 @@ export function ModifierArticleForm({ initial }: ModifierArticleFormProps) {
             value={groupeTax}
             onChange={(e) => onGroupeTaxChange(e.target.value)}
           >
-            <option value="tva-standard">TVA standard</option>
-            <option value="tva-reduit">TVA réduite</option>
-            <option value="exo">Exonéré</option>
+            {selectableTaxGroups.map((g) => (
+              <option key={g.id} value={g.id}>
+                {formatTaxGroupOptionLabel(g, { showInactive: true })}
+              </option>
+            ))}
           </select>
           <p className="text-xs text-slate-500">
             Le prix TTC suit le HT (ou inversement) selon ce groupe fiscal.

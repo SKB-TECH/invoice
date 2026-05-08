@@ -1,4 +1,5 @@
 import type { ArticleRowStatus, ArticleTableRow } from "@/components/fournitures/articles/types";
+import { getTaxGroupDisplayLabel } from "@/lib/tax-groups/tax-groups-storage";
 
 const groupLabel: Record<string, string> = {
   a: "A",
@@ -15,7 +16,8 @@ export type ArticleDetailRecord = {
   prixHt: number;
   prixTtc: number;
   devise: "usd" | "cdf" | "eur";
-  groupeTax: "tva-standard" | "tva-reduit" | "exo";
+  /** Identifiant du groupe (défauts : `tva-standard`, `tva-reduit`, `exo`, ou id créé en configuration). */
+  groupeTax: string;
   prixSpecial: number | null;
   pieceUnite: "piece" | "kg" | "heure" | "forfait";
   unite: string;
@@ -25,17 +27,8 @@ export type ArticleDetailRecord = {
 };
 
 /** Libellés pour affichage (liste / fiche lecture). */
-export function formatGroupeTaxLibelle(key: ArticleDetailRecord["groupeTax"]): string {
-  switch (key) {
-    case "tva-standard":
-      return "TVA standard (16 %)";
-    case "tva-reduit":
-      return "TVA réduite (8 %)";
-    case "exo":
-      return "Exonéré (0 %)";
-    default:
-      return key;
-  }
+export function formatGroupeTaxLibelle(key: string): string {
+  return getTaxGroupDisplayLabel(key);
 }
 
 export function formatDeviseLibelle(code: ArticleDetailRecord["devise"]): string {

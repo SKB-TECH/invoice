@@ -2,8 +2,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ChevronRight, House } from "lucide-react";
 
-import { ModifierArticleForm } from "@/app/home/fournitures/articles/_components/modifier-article-form";
-import { getArticleDetailById } from "@/app/home/fournitures/articles/_lib/articles-data";
+import { ModifierArticleForm } from "@/components/fournitures/articles/modifier-article-form";
+import { getArticleDetailById } from "@/lib/fournitures/articles/articles-data";
 
 type PageProps = {
   params: Promise<{ articleId: string }>;

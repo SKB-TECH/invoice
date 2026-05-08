@@ -3,6 +3,7 @@ import { ChevronRight, House } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { ArticleTaxGroupSelect } from "@/components/fournitures/articles/article-tax-group-select";
 
 const selectClass =
   "h-12 w-full rounded border border-input bg-transparent py-2 pr-2 pl-2.5 text-sm whitespace-nowrap transition-colors outline-none select-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 data-placeholder:text-muted-foreground dark:bg-input/30 dark:hover:bg-input/50 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4";
@@ -101,20 +102,13 @@ export default function NouvelArticlePage() {
             <Label htmlFor="groupe-tax" className="font-medium text-slate-700">
               Groupe de tax <span className="text-red-500">*</span>
             </Label>
-            <select
+            <ArticleTaxGroupSelect
               id="groupe-tax"
               name="groupeTax"
-              defaultValue=""
               required
+              defaultValue=""
               className={selectClass}
-            >
-              <option value="" disabled>
-                Sélectionner
-              </option>
-              <option value="tva-standard">TVA standard</option>
-              <option value="tva-reduit">TVA réduite</option>
-              <option value="exo">Exonéré</option>
-            </select>
+            />
           </div>
 
           <div className="flex flex-col gap-2">

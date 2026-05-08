@@ -2,11 +2,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ChevronRight, House } from "lucide-react";
 
-import {
-  formatDeviseLibelle,
-  formatGroupeTaxLibelle,
-  getArticleDetailById,
-} from "@/app/home/fournitures/articles/_lib/articles-data";
+import { formatDeviseLibelle, getArticleDetailById } from "@/lib/fournitures/articles/articles-data";
+import { ArticleTaxGroupLabel } from "@/components/fournitures/articles/article-tax-group-label";
 import { Button } from "@/components/ui/button";
 
 type PageProps = {
@@ -116,7 +113,7 @@ export default async function VisualiserArticlePage({ params }: PageProps) {
               Tax
             </dt>
             <dd className="mt-1 text-base font-medium text-slate-900">
-              {formatGroupeTaxLibelle(article.groupeTax)}
+              <ArticleTaxGroupLabel taxGroupId={article.groupeTax} />
             </dd>
           </div>
         </dl>

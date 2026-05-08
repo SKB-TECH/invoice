@@ -7,7 +7,7 @@ import { ChevronRight, House, Search } from "lucide-react";
 import { ArticlesTable } from "@/components/fournitures/articles/articles-table";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { demoArticles } from "@/app/home/fournitures/articles/_lib/articles-data";
+import { demoArticles } from "@/lib/fournitures/articles/articles-data";
 import type {
   ArticleRowStatus,
   ArticleTableRow,
