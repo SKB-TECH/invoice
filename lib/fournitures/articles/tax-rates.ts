@@ -1,10 +1,22 @@
+import { REFERENCE_TAX_GROUPS } from "@/lib/tax-groups/default-reference-tax-groups";
 import { readTaxGroups } from "@/lib/tax-groups/tax-groups-storage";
 
-/** Taux historiques utilisés en repli si le stockage n’est pas encore lu (SSR / pas de groupe). */
-export const ARTICLE_TAX_RATES = {
+/** Taux SSR / repli : référentiel A–P + anciennes clés démo. */
+const REFERENCE_DECIMALS: Record<string, number> = Object.fromEntries(
+  REFERENCE_TAX_GROUPS.map((g) => [g.id, g.ratePercent / 100])
+);
+
+const LEGACY_ARTICLE_TAX_RATES: Record<string, number> = {
   "tva-standard": 0.16,
-  "tva-reduit": 0.08,
+  /** Ancienne étiquette démo ; le référentiel groupe C est à 5 %. */
+  "tva-reduit": 0.05,
   exo: 0,
+};
+
+/** Taux connus */
+export const ARTICLE_TAX_RATES = {
+  ...REFERENCE_DECIMALS,
+  ...LEGACY_ARTICLE_TAX_RATES,
 } as const satisfies Record<string, number>;
 
 export type ArticleGroupeTaxKey = keyof typeof ARTICLE_TAX_RATES;
@@ -15,7 +27,8 @@ export function resolveTaxRateDecimal(taxGroupId: string): number {
     const g = readTaxGroups().find((x) => x.id === taxGroupId);
     if (g) return Math.max(0, g.ratePercent) / 100;
   }
-  const legacy = ARTICLE_TAX_RATES[taxGroupId as keyof typeof ARTICLE_TAX_RATES];
-  if (legacy !== undefined) return legacy;
+  const fallback =
+    REFERENCE_DECIMALS[taxGroupId] ?? LEGACY_ARTICLE_TAX_RATES[taxGroupId];
+  if (fallback !== undefined) return fallback;
   return 0;
 }

@@ -16,7 +16,7 @@ export type ArticleDetailRecord = {
   prixHt: number;
   prixTtc: number;
   devise: "usd" | "cdf" | "eur";
-  /** Identifiant du groupe (défauts : `tva-standard`, `tva-reduit`, `exo`, ou id créé en configuration). */
+  /** Identifiant du groupe (`groupe-a` … `groupe-p` réf. réglementaire, ou id créé en configuration). */
   groupeTax: string;
   prixSpecial: number | null;
   pieceUnite: "piece" | "kg" | "heure" | "forfait";
@@ -46,7 +46,7 @@ const DETAILS: ArticleDetailRecord[] = [
     prixHt: 8620.69,
     prixTtc: 10000,
     devise: "usd",
-    groupeTax: "tva-standard",
+    groupeTax: "groupe-b",
     prixSpecial: null,
     pieceUnite: "heure",
     unite: "h",
@@ -61,9 +61,9 @@ const DETAILS: ArticleDetailRecord[] = [
     groupe: "a",
     code: "API-IK2162",
     prixHt: 9259.26,
-    prixTtc: 10000,
+    prixTtc: 9722.22,
     devise: "usd",
-    groupeTax: "tva-reduit",
+    groupeTax: "groupe-c",
     prixSpecial: 9500,
     pieceUnite: "forfait",
     unite: "",
@@ -80,7 +80,7 @@ const DETAILS: ArticleDetailRecord[] = [
     prixHt: 10000,
     prixTtc: 10000,
     devise: "eur",
-    groupeTax: "exo",
+    groupeTax: "groupe-a",
     prixSpecial: null,
     pieceUnite: "piece",
     unite: "u",
@@ -97,7 +97,7 @@ const DETAILS: ArticleDetailRecord[] = [
     prixHt: 8620.69,
     prixTtc: 10000,
     devise: "cdf",
-    groupeTax: "tva-standard",
+    groupeTax: "groupe-b",
     prixSpecial: null,
     pieceUnite: "kg",
     unite: "kg",
@@ -112,9 +112,9 @@ const DETAILS: ArticleDetailRecord[] = [
     groupe: "c",
     code: "MNT-IK0455",
     prixHt: 9259.26,
-    prixTtc: 10000,
+    prixTtc: 9722.22,
     devise: "usd",
-    groupeTax: "tva-reduit",
+    groupeTax: "groupe-c",
     prixSpecial: null,
     pieceUnite: "piece",
     unite: "",

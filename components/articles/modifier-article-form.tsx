@@ -60,10 +60,12 @@ export function ModifierArticleForm({ initial }: ModifierArticleFormProps) {
       ...base,
       {
         id: initial.groupeTax,
+        code: "?",
         name: "Groupe (inconnu ou supprimé)",
-        ratePercent: Math.round(
-          resolveTaxRateDecimal(initial.groupeTax) * 10000
-        ) / 100,
+        description: "",
+        comments: "",
+        ratePercent:
+          Math.round(resolveTaxRateDecimal(initial.groupeTax) * 10000) / 100,
         active: false,
       },
     ];
