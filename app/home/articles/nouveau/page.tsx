@@ -4,7 +4,7 @@ import { ChevronRight, House } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { ArticleTaxGroupSelect } from "@/components/fournitures/articles/article-tax-group-select";
+import { ArticleTaxGroupSelect } from "@/components/articles/article-tax-group-select";
 import { useRouter } from "next/navigation";
 
 const selectClass =

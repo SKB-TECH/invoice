@@ -240,8 +240,7 @@ export function TaxGroupsSection() {
 
       <div className="flex justify-end">
         <p className="text-[12px] text-slate-500">
-          Les modifications sont enregistrées automatiquement sur cet
-          appareil (démo).
+          Les modifications sont enregistrées automatiquement.
         </p>
       </div>
     </>

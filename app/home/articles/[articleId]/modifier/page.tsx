@@ -2,7 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ChevronRight, House } from "lucide-react";
 
-import { ModifierArticleForm } from "@/components/fournitures/articles/modifier-article-form";
+import { ModifierArticleForm } from "@/components/articles/modifier-article-form";
 import { getArticleDetailById } from "@/lib/fournitures/articles/articles-data";
 
 type PageProps = {

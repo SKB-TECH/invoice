@@ -1,12 +1,10 @@
-"use client";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ChevronRight, House } from "lucide-react";
 
 import { formatDeviseLibelle, getArticleDetailById } from "@/lib/fournitures/articles/articles-data";
-import { ArticleTaxGroupLabel } from "@/components/fournitures/articles/article-tax-group-label";
-import { Button } from "@/components/ui/button";
-import { useRouter } from "next/navigation";
+import { ArticleTaxGroupLabel } from "@/components/articles/article-tax-group-label";
+import { VisualiserArticleActions } from "@/components/articles/visualiser-article-actions";
 
 type PageProps = {
   params: Promise<{ articleId: string }>;
@@ -29,8 +27,6 @@ export default async function VisualiserArticlePage({ params }: PageProps) {
 
   const devise = formatDeviseLibelle(article.devise);
   const basePath = `/home/articles/${encodeURIComponent(article.idIkwook)}`;
-
-  const router = useRouter();
 
   return (
     <main className="mx-auto w-full min-w-full text-foreground">
@@ -122,23 +118,7 @@ export default async function VisualiserArticlePage({ params }: PageProps) {
           </div>
         </dl>
 
-        <div className="mt-8 flex flex-col gap-3 border-t border-slate-100 pt-6 md:flex-row md:flex-wrap md:justify-end">
-          <Button
-            onClick={() => router.push("/home/articles")}
-            type="button"
-            variant="secondary"
-            className="h-12 w-52 cursor-pointer rounded-none bg-[#949B9F] px-5 text-white hover:bg-[#949B9F]/80"
-          >
-            Retour à la liste
-          </Button>
-          <Button
-            type="button"
-            onClick={() => router.push(`${basePath}/modifier`)}
-            className="h-12 w-52 cursor-pointer rounded-none bg-[#0879bd] px-5 text-white shadow-none hover:bg-[#066aa8]"
-          >
-            Modifier
-          </Button>
-        </div>
+        <VisualiserArticleActions modifierPath={`${basePath}/modifier`} />
       </section>
     </main>
   );

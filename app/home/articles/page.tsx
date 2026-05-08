@@ -4,14 +4,14 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import { ChevronRight, House, Search } from "lucide-react";
-import { ArticlesTable } from "@/components/fournitures/articles/articles-table";
+import { ArticlesTable } from "@/components/articles/articles-table";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { demoArticles } from "@/lib/fournitures/articles/articles-data";
 import type {
   ArticleRowStatus,
   ArticleTableRow,
-} from "@/components/fournitures/articles/types";
+} from "@/components/articles/types";
 
 const STATUS_LABEL_FR: Record<ArticleRowStatus, string> = {
   suspendu: "Suspendu",

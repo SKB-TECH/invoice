@@ -1,4 +1,4 @@
-import type { ArticleRowStatus, ArticleTableRow } from "@/components/fournitures/articles/types";
+import type { ArticleRowStatus, ArticleTableRow } from "@/components/articles/types";
 import { getTaxGroupDisplayLabel } from "@/lib/tax-groups/tax-groups-storage";
 
 const groupLabel: Record<string, string> = {

@@ -15,7 +15,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
-import type { ArticleRowStatus } from "@/components/fournitures/articles/types";
+import type { ArticleRowStatus } from "@/components/articles/types";
 import { useRouter } from "next/navigation";
 
 const selectClass =
