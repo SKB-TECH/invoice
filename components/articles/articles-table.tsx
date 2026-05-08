@@ -1,6 +1,11 @@
+"use client";
+
+import { Eye } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { ArticleStatusBadge } from "./article-status-badge";
 import type { ArticleTableRow } from "./types";
+import { useRouter } from "next/navigation";
 
 export const ARTICLES_TABLE_COLUMN_LABELS = {
   idIkwook: "ID iKwook",
@@ -26,6 +31,7 @@ type ArticlesTableProps = {
 };
 
 export function ArticlesTable({ rows, className }: ArticlesTableProps) {
+  const router = useRouter();
   return (
     <div
       className={cn(
@@ -41,6 +47,7 @@ export function ArticlesTable({ rows, className }: ArticlesTableProps) {
                 {ARTICLES_TABLE_COLUMN_LABELS[key]}
               </th>
             ))}
+            <th className="px-5 py-3 text-right font-semibold">Action</th>
           </tr>
         </thead>
         <tbody>
@@ -55,6 +62,18 @@ export function ArticlesTable({ rows, className }: ArticlesTableProps) {
                   )}
                 </td>
               ))}
+              <td className="px-5 py-4 text-right">
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8 text-slate-500 hover:bg-slate-100 hover:text-slate-700 cursor-pointer"
+                  aria-label={`Voir le détail de l'article ${row.idIkwook}`}
+                  onClick={() => router.push(`/home/articles/${encodeURIComponent(row.idIkwook)}/visualiser`)}
+                >
+                  <Eye className="size-4" />
+                </Button>
+              </td>
             </tr>
           ))}
         </tbody>
