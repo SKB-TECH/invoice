@@ -15,36 +15,68 @@ interface MenuItem {
 }
 
 export const menuItems: MenuItem[] = [
-    { title: "Accueil", href: "/home" },
+    {
+        title: "Accueil",
+        href: "/home",
+    },
     {
         title: "Facture",
         subItems: [
-            { title: "Mes factures", href: "/home" },
-            { title: "Nouvelle facture", href: "/home/facture/nouveau" },
+            {
+                title: "MesFactures",
+                href: "/home",
+            },
+            {
+                title: "NouvelleFacture",
+                href: "/home/facture/nouveau",
+            },
         ],
     },
     {
         title: "Article",
         subItems: [
-            { title: "Nouvel article", href: "/home/articles/nouveau" },
-            // { title: "Gestion services", href: "/home/fournitures/services" },
-            { title: "Visualiser", href: "/home/articles" },
+            {
+                title: "NouvelArticle",
+                href: "/home/articles/nouveau",
+            },
+            {
+                title: "Visualiser",
+                href: "/home/articles",
+            },
         ],
     },
     {
         title: "Client",
         subItems: [
-            { title: "Nouveau client", href: "/home/clients/new" },
-            { title: "Visualiser", href: "/home/clients" },
+            {
+                title: "NouveauClient",
+                href: "/home/clients/new",
+            },
+            {
+                title: "Visualiser",
+                href: "/home/clients",
+            },
         ],
     },
     {
         title: "Contrat",
         subItems: [
-            { title: "Nouveau contrat", href: "/home/contrats/new" },
-            { title: "Visualiser", href: "/home/contrats" },
+            {
+                title: "NouveauContrat",
+                href: "/home/contrats/new",
+            },
+            {
+                title: "Visualiser",
+                href: "/home/contrats",
+            },
         ],
     },
-    { title: "Configuration", href: "/home/configuration" },
-    { title: "Aide", href: "/home/aide" },
+    {
+        title: "Configuration",
+        href: "/home/configuration",
+    },
+    {
+        title: "Aide",
+        href: "/home/aide",
+    },
 ];

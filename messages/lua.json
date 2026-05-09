@@ -1,0 +1,56 @@
+{
+  "common": {
+    "welcome": "Tusangidila",
+    "login": "Kuya mukati",
+    "logout": "Kufuma",
+    "dashboard": "Tshibawu tshia mudimu"
+  },
+  "register": {
+    "heroText": "Fungula compte webe ne manage ba clients, contrats ne factures ne iKwook Invoice.",
+    "title": "Fungula compte",
+    "subtitle": "Sungula profil webe utule ma informations a ntete.",
+    "continue": "Kuyabu kumpala",
+    "alreadyHaveAccount": "Udi ne compte?",
+    "login": "Kuya mukati",
+    "profiles": {
+      "company": "Entreprise",
+      "sme": "PME",
+      "personal": "Personnel"
+    },
+    "fields": {
+      "companyName": "Dînà dia entreprise",
+      "rccm": "RCCM",
+      "nif": "NIF",
+      "fullName": "Dînà dijima",
+      "email": "Email",
+      "phone": "Téléphone",
+      "password": "Mot de passe",
+      "confirmPassword": "Jadikija mot de passe"
+    },
+    "placeholders": {
+      "companyName": "Ex: iKwook SARL",
+      "rccm": "Ex: CD/KIN/RCCM/...",
+      "nif": "Ex: A1234567",
+      "fullName": "Ex: Benjamin Shako",
+      "email": "email@ikwook.cd",
+      "phone": "+243 000 000 000",
+      "password": "********"
+    }
+  },
+  "navbar": {
+    "openMenu": "Kangula tshilumbu",
+    "Accueil": "Ku nzembu",
+    "Facture": "Mukanda wa mfutu",
+    "MesFactures": "Mikanda yanyi ya mfutu",
+    "NouvelleFacture": "Mukanda mupia wa mfutu",
+    "Article": "Bintu",
+    "NouvelArticle": "Cintu cipia",
+    "Visualiser": "Mona",
+    "Client": "Mushitshi",
+    "NouveauClient": "Mushitshi mupia",
+    "Contrat": "Dipungila",
+    "NouveauContrat": "Dipungila dipia",
+    "Configuration": "Mibombo",
+    "Aide": "Dikanyisha"
+  }
+}

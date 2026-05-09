@@ -2,6 +2,8 @@
 
 import * as React from "react";
 import Link from "next/link";
+import Image from "next/image";
+import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
 import {
     NavigationMenu,
@@ -15,31 +17,32 @@ import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import {
     Bell,
-    ChevronDown,
     ChevronRight,
     Grid3X3,
     Menu,
-    User,
     WalletCards,
 } from "lucide-react";
-import Image from "next/image";
-import {menuItems} from "@/core/data";
-
+import { menuItems } from "@/core/data";
+import LanguageSwitcher from "@/components/shared/OtherComponents/LanguageSwitcher";
 
 export function Navbar() {
+    const t = useTranslations("navbar");
+
     const [isOpen, setIsOpen] = React.useState(false);
     const [openMobileSubmenu, setOpenMobileSubmenu] =
         React.useState<string | null>(null);
 
-    const navTriggerClass = "h-20 bg-transparent px-4 py-0 text-[14px] font-semibold text-white shadow-none hover:bg-white/10 hover:text-[#0073C5] data-[state=open]:bg-white data-[state=open]:text-[#0073C5] data-[state=open]:font-semibold";
+    const navTriggerClass =
+        "h-20 bg-transparent px-4 py-0 text-[14px] font-semibold text-white shadow-none hover:bg-white/10 hover:text-white data-[state=open]:bg-white data-[state=open]:text-[#0073C5] data-[state=open]:font-semibold";
+
     return (
         <nav className="sticky top-0 z-50 w-full overflow-visible bg-[#0073C5]">
-            <div className="mx-auto flex h-20 w-full px-4 md:px-14 lg:px-14 items-center">
+            <div className="mx-auto flex h-20 w-full items-center px-4 md:px-14 lg:px-14">
                 <Link
                     href="/"
                     className="flex h-20 shrink-0 items-center gap-2 bg-[#0073C5] px-5 md:px-8"
                 >
-                <Image alt={"logo"} src={"/invoiceb.png"} width={160} height={160} />
+                    <Image alt="logo" src="/invoiceb.png" width={160} height={160} />
                 </Link>
 
                 <div className="relative flex min-w-0 flex-1 items-center bg-[#0073C5] text-white">
@@ -59,7 +62,7 @@ export function Navbar() {
                                                         "flex items-center gap-1"
                                                     )}
                                                 >
-                                                    {item.title}
+                                                    {t(item.title)}
                                                 </NavigationMenuTrigger>
 
                                                 <NavigationMenuContent
@@ -72,10 +75,12 @@ export function Navbar() {
                                                         {item.subItems.map((subItem, subIndex) => (
                                                             <ListItem
                                                                 key={subIndex}
-                                                                title={subItem.title}
+                                                                title={t(subItem.title)}
                                                                 href={subItem.href}
                                                             >
-                                                                {subItem.description}
+                                                                {subItem.description
+                                                                    ? t(subItem.description)
+                                                                    : null}
                                                             </ListItem>
                                                         ))}
                                                     </ul>
@@ -87,10 +92,10 @@ export function Navbar() {
                                                     href={item.href || "#"}
                                                     className={cn(
                                                         navTriggerClass,
-                                                        "group inline-flex w-max items-center justify-center hover:text-[#0073C5] hover:bg-white"
+                                                        "group inline-flex w-max items-center justify-center"
                                                     )}
                                                 >
-                                                    {item.title}
+                                                    {t(item.title)}
                                                 </Link>
                                             </NavigationMenuLink>
                                         )}
@@ -114,12 +119,8 @@ export function Navbar() {
                             <Bell className="h-5 w-5" />
                             <span className="absolute -right-1.5 -top-1.5 h-2.5 w-2.5 rounded-full bg-red-500 ring-2 ring-[#0073C5]" />
                         </button>
-                        <button className="hidden items-center gap-2 bg-white px-3 py-1.5 transition hover:bg-slate-100 md:flex rounded-full">
-                          <span className="flex h-6 w-6 items-center justify-center">
-                            <User className="h-5 w-5 text-slate-500" />
-                          </span>
-                            <ChevronDown className="h-4 w-4 text-slate-500" />
-                        </button>
+
+                        <LanguageSwitcher />
 
                         <Sheet open={isOpen} onOpenChange={setIsOpen}>
                             <SheetTrigger asChild className="lg:hidden">
@@ -129,14 +130,19 @@ export function Navbar() {
                                     className="text-white shadow-none hover:bg-white/10 hover:text-white"
                                 >
                                     <Menu className="h-6 w-6" />
-                                    <span className="sr-only">Ouvrir le menu</span>
+                                    <span className="sr-only">{t("openMenu")}</span>
                                 </Button>
                             </SheetTrigger>
 
                             <SheetContent side="right" className="w-[310px] p-0 sm:w-[380px]">
                                 <div className="flex h-full flex-col bg-white">
                                     <div className="flex h-16 items-center gap-2 bg-[#0073C5] px-5">
-                                        <Image alt={"logo"} src={"/invoiceb.png"} width={200} height={200} />
+                                        <Image
+                                            alt="logo"
+                                            src="/invoiceb.png"
+                                            width={200}
+                                            height={200}
+                                        />
                                     </div>
 
                                     <div className="flex-1 overflow-y-auto px-4 py-5">
@@ -156,7 +162,8 @@ export function Navbar() {
                                                                 }
                                                                 className="flex items-center justify-between px-3 py-3 text-left text-[14px] font-semibold text-slate-700 transition hover:bg-slate-100 hover:text-[#0073C5]"
                                                             >
-                                                                {item.title}
+                                                                {t(item.title)}
+
                                                                 <ChevronRight
                                                                     className={cn(
                                                                         "h-4 w-4 transition-transform",
@@ -168,16 +175,18 @@ export function Navbar() {
 
                                                             {openMobileSubmenu === item.title && (
                                                                 <div className="ml-3 mt-1 flex flex-col border-l border-slate-200 pl-3">
-                                                                    {item.subItems.map((subItem, subIndex) => (
-                                                                        <Link
-                                                                            key={subIndex}
-                                                                            href={subItem.href}
-                                                                            onClick={() => setIsOpen(false)}
-                                                                            className="px-3 py-2 text-sm md:text-[14px] text-slate-500 transition hover:bg-slate-100 hover:text-[#0073C5]"
-                                                                        >
-                                                                            {subItem.title}
-                                                                        </Link>
-                                                                    ))}
+                                                                    {item.subItems.map(
+                                                                        (subItem, subIndex) => (
+                                                                            <Link
+                                                                                key={subIndex}
+                                                                                href={subItem.href}
+                                                                                onClick={() => setIsOpen(false)}
+                                                                                className="px-3 py-2 text-sm text-slate-500 transition hover:bg-slate-100 hover:text-[#0073C5] md:text-[14px]"
+                                                                            >
+                                                                                {t(subItem.title)}
+                                                                            </Link>
+                                                                        )
+                                                                    )}
                                                                 </div>
                                                             )}
                                                         </>
@@ -185,9 +194,9 @@ export function Navbar() {
                                                         <Link
                                                             href={item.href || "#"}
                                                             onClick={() => setIsOpen(false)}
-                                                            className="px-3 py-3 text-[14px] font-semibold text-slate-700 transition hover:bg-slate-100 hover:text-[##0073C5]"
+                                                            className="px-3 py-3 text-[14px] font-semibold text-slate-700 transition hover:bg-slate-100 hover:text-[#0073C5]"
                                                         >
-                                                            {item.title}
+                                                            {t(item.title)}
                                                         </Link>
                                                     )}
                                                 </div>

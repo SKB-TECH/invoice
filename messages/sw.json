@@ -1,0 +1,57 @@
+{
+  "common": {
+    "welcome": "Karibu",
+    "login": "Ingia",
+    "logout": "Toka",
+    "dashboard": "Dashibodi"
+  },
+  "register": {
+    "heroText": "Fungua akaunti yako na usimamie wateja, mikataba na ankara kwa kutumia iKwook Invoice.",
+    "title": "Fungua akaunti",
+    "subtitle": "Chagua wasifu wako na ujaze taarifa za kwanza.",
+    "continue": "Endelea",
+    "alreadyHaveAccount": "Una akaunti tayari?",
+    "login": "Ingia",
+    "profiles": {
+      "company": "Kampuni",
+      "sme": "SME",
+      "personal": "Binafsi"
+    },
+    "fields": {
+      "companyName": "Jina la kampuni",
+      "rccm": "RCCM",
+      "nif": "NIF",
+      "fullName": "Majina kamili",
+      "email": "Barua pepe",
+      "phone": "Simu",
+      "password": "Nenosiri",
+      "confirmPassword": "Thibitisha nenosiri"
+    },
+    "placeholders": {
+      "companyName": "Mf: iKwook SARL",
+      "rccm": "Mf: CD/KIN/RCCM/...",
+      "nif": "Mf: A1234567",
+      "fullName": "Mf: Benjamin Shako",
+      "email": "email@ikwook.cd",
+      "phone": "+243 000 000 000",
+      "password": "********"
+    }
+  },
+  "navbar": {
+    "openMenu": "Fungua menyu",
+    "dashboard": "Dashibodi",
+    "customers": "Wateja",
+    "customerList": "Orodha ya wateja",
+    "customerListDescription": "Tazama na simamia wateja wako wote.",
+    "newCustomer": "Mteja mpya",
+    "newCustomerDescription": "Ongeza mteja mpya haraka.",
+    "invoices": "Ankara",
+    "invoiceList": "Orodha ya ankara",
+    "invoiceListDescription": "Fuatilia ankara zote zilizotolewa.",
+    "newInvoice": "Ankara mpya",
+    "newInvoiceDescription": "Tengeneza ankara mpya.",
+    "contracts": "Mikataba",
+    "payments": "Malipo",
+    "settings": "Mipangilio"
+  }
+}

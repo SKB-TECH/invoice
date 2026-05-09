@@ -1,0 +1,54 @@
+{
+  "common": {
+    "welcome": "Boyei malamu",
+    "login": "Kokota"
+  },
+  "register": {
+    "heroText": "Sala compte na yo mpe gérer ba clients, contrats mpe factures na iKwook Invoice.",
+    "title": "Sala compte",
+    "subtitle": "Pona profil na yo mpe tondisa ba informations ya liboso.",
+    "continue": "Kokende liboso",
+    "alreadyHaveAccount": "Ozali déjà na compte ?",
+    "login": "Kokota",
+    "profiles": {
+      "company": "Entreprise",
+      "sme": "PME",
+      "personal": "Personnel"
+    },
+    "fields": {
+      "companyName": "Kombo ya entreprise",
+      "rccm": "RCCM",
+      "nif": "NIF",
+      "fullName": "Kombo mobimba",
+      "email": "Email",
+      "phone": "Téléphone",
+      "password": "Mot de passe",
+      "confirmPassword": "Confirmer mot de passe"
+    },
+    "placeholders": {
+      "companyName": "Ex: iKwook SARL",
+      "rccm": "Ex: CD/KIN/RCCM/...",
+      "nif": "Ex: A1234567",
+      "fullName": "Ex: Benjamin Shako",
+      "email": "email@ikwook.cd",
+      "phone": "+243 000 000 000",
+      "password": "********"
+    }
+  },
+  "navbar": {
+    "openMenu": "Fungola menu",
+    "Accueil": "Accueil",
+    "Facture": "Faktire",
+    "MesFactures": "Bafaktire na ngai",
+    "NouvelleFacture": "Faktire ya sika",
+    "Article": "Biloko",
+    "NouvelArticle": "Eloko ya sika",
+    "Visualiser": "Komona",
+    "Client": "Kiliya",
+    "NouveauClient": "Kiliya ya sika",
+    "Contrat": "Kontra",
+    "NouveauContrat": "Kontra ya sika",
+    "Configuration": "Bobongisi",
+    "Aide": "Lisalisi"
+  }
+}
