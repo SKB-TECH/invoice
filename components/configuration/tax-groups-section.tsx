@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { Fragment, useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import {
   BUILTIN_TAX_GROUP_IDS,
@@ -50,6 +50,11 @@ export function TaxGroupsSection() {
   const [newRate, setNewRate] = useState("");
   const [newActive, setNewActive] = useState(true);
   const [pageIndex, setPageIndex] = useState(0);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editCode, setEditCode] = useState("");
+  const [editName, setEditName] = useState("");
+  const [editDescription, setEditDescription] = useState("");
+  const [editRate, setEditRate] = useState("");
 
   const refresh = useCallback(() => {
     setGroups(readTaxGroups());
@@ -78,6 +83,7 @@ export function TaxGroupsSection() {
     }
     const current = readTaxGroups();
     persist(current.filter((g) => g.id !== id));
+    setEditingId((e) => (e === id ? null : e));
     toast.success("Groupe supprimé.");
   };
 
@@ -95,6 +101,56 @@ export function TaxGroupsSection() {
     persist(
       current.map((g) => (g.id === id ? { ...g, ...patch } : g))
     );
+  };
+
+  const openEditor = (g: TaxGroup) => {
+    setEditingId(g.id);
+    setEditCode(g.code);
+    setEditName(g.name);
+    setEditDescription(g.description);
+    setEditRate(String(g.ratePercent));
+  };
+
+  const closeEditor = () => {
+    setEditingId(null);
+  };
+
+  const saveEditor = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingId) return;
+    const name = editName.trim();
+    const code = editCode.trim().toUpperCase();
+    const description = editDescription.trim();
+    const rate = parseRatePercent(editRate);
+    if (!name) {
+      toast.error("Indiquez un nom de groupe.");
+      return;
+    }
+    if (!code) {
+      toast.error("Indiquez un code de groupe.");
+      return;
+    }
+    if (rate === null) {
+      toast.error("Indiquez un taux valide entre 0 et 100 %.");
+      return;
+    }
+    const current = readTaxGroups();
+    if (
+      current.some(
+        (x) => x.id !== editingId && x.code.toUpperCase() === code
+      )
+    ) {
+      toast.error("Ce code est déjà utilisé.");
+      return;
+    }
+    updateRow(editingId, {
+      code,
+      name,
+      description,
+      ratePercent: rate,
+    });
+    closeEditor();
+    toast.success("Groupe mis à jour.");
   };
 
   const handleAdd = (e: React.FormEvent) => {
@@ -262,96 +318,183 @@ export function TaxGroupsSection() {
         <div className="overflow-x-auto px-5 py-5">
           <table className="w-full min-w-[44rem] border-collapse text-left text-[13px]">
             <thead>
-              <tr className="border-b border-slate-200 text-slate-500">
-                <th className="pb-2 pr-2 font-medium">Code</th>
-                <th className="pb-2 pr-3 font-medium">Nom du groupe</th>
-                <th className="pb-2 pr-3 font-medium">Description</th>
-                <th className="pb-2 pr-3 font-medium">Taux (%)</th>
-                <th className="pb-2 pr-3 font-medium">Statut</th>
-                <th className="pb-2 text-right font-medium">Actions</th>
+              <tr className="border-b border-slate-200 align-top text-slate-500">
+                <th className="px-3 pb-2 text-left font-medium whitespace-nowrap">
+                  Code
+                </th>
+                <th className="px-3 pb-2 text-left font-medium">Nom du groupe</th>
+                <th className="px-3 pb-2 text-left font-medium">Description</th>
+                <th className="px-3 pb-2 text-left font-medium whitespace-nowrap">
+                  Taux (%)
+                </th>
+                <th className="px-3 pb-2 text-left font-medium">Statut</th>
+                <th className="px-3 pb-2 text-right font-medium">Actions</th>
               </tr>
             </thead>
             <tbody>
               {pageSlice.map((g) => (
-                <tr key={g.id} className="border-b border-slate-100 align-top">
-                  <td className="py-3 pr-2">
-                    <input
-                      value={g.code}
-                      onChange={(e) =>
-                        updateRow(g.id, {
-                          code: e.target.value.toUpperCase().slice(0, 4),
-                        })
-                      }
-                      className="h-9 w-10 border border-slate-200 px-1 text-center text-[12px] outline-none focus:border-[#1f6a9a]"
-                      disabled={BUILTIN_TAX_GROUP_IDS.has(g.id)}
-                      title={
-                        BUILTIN_TAX_GROUP_IDS.has(g.id)
-                          ? "Code figé pour le référentiel A–P"
-                          : undefined
-                      }
-                      aria-label={`Code ${g.name}`}
-                    />
-                  </td>
-                  <td className="max-w-[10rem] py-3 pr-3">
-                    <input
-                      value={g.name}
-                      onChange={(e) =>
-                        updateRow(g.id, { name: e.target.value })
-                      }
-                      className="h-9 w-full border border-slate-200 px-2 text-[13px] outline-none focus:border-[#1f6a9a]"
-                    />
-                  </td>
-                  <td className="max-w-[12rem] py-3 pr-3">
-                    <textarea
-                      value={g.description}
-                      onChange={(e) =>
-                        updateRow(g.id, { description: e.target.value })
-                      }
-                      rows={2}
-                      className="w-full resize-y border border-slate-200 px-2 py-1 text-[12px] leading-snug outline-none focus:border-[#1f6a9a]"
-                    />
-                  </td>
-                  <td className="py-3 pr-3">
-                    <input
-                      value={String(g.ratePercent)}
-                      onChange={(e) => {
-                        const r = parseRatePercent(e.target.value);
-                        if (r !== null) updateRow(g.id, { ratePercent: r });
-                      }}
-                      inputMode="decimal"
-                      className="h-9 w-16 border border-slate-200 px-2 text-[13px] outline-none focus:border-[#1f6a9a]"
-                      aria-label={`Taux pour ${g.name}`}
-                    />
-                  </td>
-                  <td className="py-3 pr-3">
-                    <span
-                      className={
-                        g.active
-                          ? "inline-block rounded bg-emerald-50 px-2 py-0.5 text-emerald-800"
-                          : "inline-block rounded bg-slate-100 px-2 py-0.5 text-slate-600"
-                      }
-                    >
-                      {g.active ? "Actif" : "Inactif"}
-                    </span>
-                  </td>
-                  <td className="py-3 text-right whitespace-nowrap">
-                    <button
-                      type="button"
-                      onClick={() => toggleActive(g.id)}
-                      className="mr-2 border border-slate-200 px-2 py-1 text-[12px] hover:bg-slate-50"
-                    >
-                      {g.active ? "Désactiver" : "Activer"}
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => deleteGroup(g.id)}
-                      disabled={BUILTIN_TAX_GROUP_IDS.has(g.id)}
-                      className="border border-slate-200 px-2 py-1 text-[12px] text-red-600 hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-40"
-                    >
-                      Supprimer
-                    </button>
-                  </td>
-                </tr>
+                <Fragment key={g.id}>
+                  <tr className="border-b border-slate-100 align-top">
+                    <td className="px-3 py-3 align-top">
+                      <span className="font-medium tabular-nums text-slate-800">
+                        {g.code}
+                      </span>
+                    </td>
+                    <td className="max-w-[10rem] px-3 py-3 align-top text-[13px] text-slate-800">
+                      {g.name}
+                    </td>
+                    <td className="max-w-[12rem] px-3 py-3 align-top">
+                      <p className="m-0 text-[12px] leading-snug text-slate-700">
+                        {g.description || "—"}
+                      </p>
+                    </td>
+                    <td className="px-3 py-3 align-top text-[13px] tabular-nums text-slate-800">
+                      {g.ratePercent}
+                    </td>
+                    <td className="px-3 py-3 align-top">
+                      <span
+                        className={
+                          g.active
+                            ? "inline-block rounded bg-emerald-50 px-2 py-0.5 text-emerald-800"
+                            : "inline-block rounded bg-slate-100 px-2 py-0.5 text-slate-600"
+                        }
+                      >
+                        {g.active ? "Actif" : "Inactif"}
+                      </span>
+                    </td>
+                    <td className="px-3 py-3 text-right align-top">
+                      <div className="flex flex-wrap justify-end gap-1.5">
+                        <button
+                          type="button"
+                          onClick={() => openEditor(g)}
+                          className="border border-slate-200 px-2 py-1 text-[12px] text-[#1f6a9a] hover:bg-slate-50"
+                        >
+                          Modifier
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => toggleActive(g.id)}
+                          className="border border-slate-200 px-2 py-1 text-[12px] hover:bg-slate-50"
+                        >
+                          {g.active ? "Désactiver" : "Activer"}
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => deleteGroup(g.id)}
+                          disabled={BUILTIN_TAX_GROUP_IDS.has(g.id)}
+                          className="border border-slate-200 px-2 py-1 text-[12px] text-red-600 hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-40"
+                        >
+                          Supprimer
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                  {editingId === g.id ? (
+                    <tr className="border-b border-slate-200 bg-slate-50/90">
+                      <td colSpan={6} className="px-3 py-4">
+                        <form
+                          onSubmit={saveEditor}
+                          className="space-y-4"
+                        >
+                          <p className="text-[13px] font-medium text-slate-800">
+                            Modifier le groupe{" "}
+                            <span className="text-slate-600">
+                              ({g.code} — {g.name})
+                            </span>
+                          </p>
+                          <div className="grid gap-4 sm:grid-cols-12 sm:items-end">
+                            <div className="sm:col-span-1">
+                              <label
+                                htmlFor={`edit-code-${g.id}`}
+                                className="mb-1 block text-[13px] font-medium"
+                              >
+                                Code
+                              </label>
+                              <input
+                                id={`edit-code-${g.id}`}
+                                value={editCode}
+                                onChange={(e) =>
+                                  setEditCode(
+                                    e.target.value.toUpperCase().slice(0, 4)
+                                  )
+                                }
+                                maxLength={4}
+                                disabled={BUILTIN_TAX_GROUP_IDS.has(g.id)}
+                                title={
+                                  BUILTIN_TAX_GROUP_IDS.has(g.id)
+                                    ? "Code figé pour le référentiel A–P"
+                                    : undefined
+                                }
+                                className="h-11 w-full border border-slate-200 px-2 text-center text-[13px] uppercase outline-none focus:border-[#1f6a9a] disabled:cursor-not-allowed disabled:bg-slate-100"
+                              />
+                            </div>
+                            <div className="sm:col-span-4">
+                              <label
+                                htmlFor={`edit-name-${g.id}`}
+                                className="mb-1 block text-[13px] font-medium"
+                              >
+                                Nom du groupe
+                              </label>
+                              <input
+                                id={`edit-name-${g.id}`}
+                                value={editName}
+                                onChange={(e) => setEditName(e.target.value)}
+                                className="h-11 w-full border border-slate-200 px-3 text-[13px] outline-none focus:border-[#1f6a9a]"
+                              />
+                            </div>
+                            <div className="sm:col-span-2">
+                              <label
+                                htmlFor={`edit-rate-${g.id}`}
+                                className="mb-1 block text-[13px] font-medium"
+                              >
+                                Taux (%)
+                              </label>
+                              <input
+                                id={`edit-rate-${g.id}`}
+                                value={editRate}
+                                onChange={(e) => setEditRate(e.target.value)}
+                                inputMode="decimal"
+                                className="h-11 w-full border border-slate-200 px-3 text-[13px] outline-none focus:border-[#1f6a9a]"
+                              />
+                            </div>
+                          </div>
+                          <div>
+                            <label
+                              htmlFor={`edit-desc-${g.id}`}
+                              className="mb-1 block text-[13px] font-medium"
+                            >
+                              Description
+                            </label>
+                            <textarea
+                              id={`edit-desc-${g.id}`}
+                              value={editDescription}
+                              onChange={(e) =>
+                                setEditDescription(e.target.value)
+                              }
+                              rows={3}
+                              className="w-full resize-y border border-slate-200 px-3 py-2 text-[13px] leading-snug outline-none focus:border-[#1f6a9a]"
+                            />
+                          </div>
+                          <div className="flex flex-wrap gap-2">
+                            <button
+                              type="submit"
+                              className="h-10 bg-[#1f6a9a] px-4 text-[13px] font-semibold text-white hover:bg-[#18587f]"
+                            >
+                              Enregistrer
+                            </button>
+                            <button
+                              type="button"
+                              onClick={closeEditor}
+                              className="h-10 border border-slate-200 bg-white px-4 text-[13px] text-slate-700 hover:bg-slate-50"
+                            >
+                              Annuler
+                            </button>
+                          </div>
+                        </form>
+                      </td>
+                    </tr>
+                  ) : null}
+                </Fragment>
               ))}
             </tbody>
           </table>
