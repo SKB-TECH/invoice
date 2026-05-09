@@ -31,7 +31,7 @@ export function Navbar() {
     const [openMobileSubmenu, setOpenMobileSubmenu] =
         React.useState<string | null>(null);
 
-    const navTriggerClass = "h-20 bg-transparent px-4 py-0 text-[14px] font-semibold text-white shadow-none hover:bg-white/10 hover:text-white data-[state=open]:bg-white data-[state=open]:text-[##0073C5] data-[state=open]:font-semibold";
+    const navTriggerClass = "h-20 bg-transparent px-4 py-0 text-[14px] font-semibold text-white shadow-none hover:bg-white/10 hover:text-[#0073C5] data-[state=open]:bg-white data-[state=open]:text-[#0073C5] data-[state=open]:font-semibold";
     return (
         <nav className="sticky top-0 z-50 w-full overflow-visible bg-[#0073C5]">
             <div className="mx-auto flex h-20 w-full px-4 md:px-14 lg:px-14 items-center">
@@ -87,7 +87,7 @@ export function Navbar() {
                                                     href={item.href || "#"}
                                                     className={cn(
                                                         navTriggerClass,
-                                                        "group inline-flex w-max items-center justify-center"
+                                                        "group inline-flex w-max items-center justify-center hover:text-[#0073C5] hover:bg-white"
                                                     )}
                                                 >
                                                     {item.title}
@@ -185,7 +185,7 @@ export function Navbar() {
                                                         <Link
                                                             href={item.href || "#"}
                                                             onClick={() => setIsOpen(false)}
-                                                            className="px-3 py-3 text-[14px] font-semibold text-slate-700 transition hover:bg-slate-100 hover:text-[#0073C5]"
+                                                            className="px-3 py-3 text-[14px] font-semibold text-slate-700 transition hover:bg-slate-100 hover:text-[##0073C5]"
                                                         >
                                                             {item.title}
                                                         </Link>
