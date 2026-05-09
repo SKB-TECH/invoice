@@ -8,6 +8,7 @@ import {
     User,
 } from "lucide-react";
 
+import { ReferentialTauxSection } from "@/components/configuration/referential-taux-section";
 import { TaxGroupsSection } from "@/components/configuration/tax-groups-section";
 
 type MenuItem =
@@ -77,25 +78,26 @@ export default function ConfigurationPage() {
     };
 
     return (
-        <main className="bg-white px-6 py-8 text-slate-800">
+        <main className="min-h-0 bg-white px-6 py-8 text-slate-800">
             <div className="mx-auto w-full">
                 <h1 className="mb-8 text-[28px] font-bold text-slate-900">
                     Configuration
                 </h1>
 
-                <div className="grid grid-cols-12 gap-8">
-                    <aside className="col-span-12 lg:col-span-3">
-                        <div className="space-y-1">
+                <div className="flex flex-col gap-8 lg:flex-row lg:items-start">
+                    <aside className="w-full shrink-0 lg:sticky lg:top-20 lg:z-10 lg:w-64 lg:self-start lg:bg-white xl:w-72">
+                        <nav className="space-y-1 border border-slate-100 lg:border-0">
                             {menuItems.map((item) => {
                                 const isActive = activeMenu === item;
 
                                 return (
                                     <button
                                         key={item}
+                                        type="button"
                                         onClick={() => setActiveMenu(item)}
                                         className={`block w-full px-4 py-3 text-left text-[15px] font-medium cursor-pointer ${
                                             isActive
-                                                ? "font-bold bg-[#1f6a9a] text-white"
+                                                ? "font-bold bg-[#0073C5] text-white"
                                                 : "text-slate-500 hover:text-slate-800"
                                         }`}
                                     >
@@ -103,10 +105,10 @@ export default function ConfigurationPage() {
                                     </button>
                                 );
                             })}
-                        </div>
+                        </nav>
                     </aside>
 
-                    <section className="col-span-12 space-y-5 lg:col-span-9">
+                    <section className="min-h-0 w-full flex-1 space-y-5 overflow-y-auto lg:max-h-[calc(100dvh-8.5rem)] lg:overflow-y-auto lg:pb-10 lg:pr-2">
                         {activeMenu === "Informations de base" && (
                             <>
                                 <div className="border border-slate-200 bg-white">
@@ -166,7 +168,7 @@ export default function ConfigurationPage() {
                                 <div className="flex justify-end">
                                     <button
                                         onClick={handleSaveProfile}
-                                        className="h-11 bg-[#1f6a9a] px-8 text-[14px] font-semibold text-white hover:bg-[#18587f]"
+                                        className="h-11 bg-[#0073C5] px-8 text-[14px] font-semibold text-white hover:bg-[#005999]"
                                     >
                                         Enregistrer les modifications
                                     </button>
@@ -250,7 +252,7 @@ export default function ConfigurationPage() {
                                     <button
                                         onClick={handleChangePassword}
                                         disabled={!!passwordError}
-                                        className="h-11 bg-[#1f6a9a] px-8 text-[14px] font-semibold text-white hover:bg-[#18587f] disabled:cursor-not-allowed disabled:bg-slate-300"
+                                        className="h-11 bg-[#0073C5] px-8 text-[14px] font-semibold text-white hover:bg-[#005999] disabled:cursor-not-allowed disabled:bg-slate-300"
                                     >
                                         Modifier le mot de passe
                                     </button>
@@ -306,6 +308,8 @@ export default function ConfigurationPage() {
                                     </div>
                                 </div>
 
+                                <ReferentialTauxSection />
+
                                 <div className="grid gap-5 md:grid-cols-2">
                                     <div className="border border-slate-200 bg-white">
                                         <div className="border-b border-slate-200 px-5 py-4">
@@ -349,7 +353,7 @@ export default function ConfigurationPage() {
                                 <div className="flex justify-end">
                                     <button
                                         onClick={handleSavePreferences}
-                                        className="h-11 bg-[#1f6a9a] px-8 text-[14px] font-semibold text-white hover:bg-[#18587f]"
+                                        className="h-11 bg-[#0073C5] px-8 text-[14px] font-semibold text-white hover:bg-[#005999]"
                                     >
                                         Enregistrer les préférences
                                     </button>

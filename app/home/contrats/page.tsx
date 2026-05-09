@@ -1,9 +1,8 @@
-import Link from "next/link"
-import { ChevronRight, Eye, House } from "lucide-react"
+import Link from "next/link";
+import { ChevronRight, Eye, House } from "lucide-react";
 
-import { Navbar } from "@/components/shared/OtherComponents/Navbar"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -11,63 +10,21 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table"
-import { cn } from "@/lib/utils"
+} from "@/components/ui/table";
+import { cn } from "@/lib/utils";
+import {
+  demoContrats,
+  type ContratStatutUi,
+} from "@/lib/contrats/contrats-data";
 
-type Statut = "Suspendu" | "Actif" | "Complet"
-
-type ContratRow = {
-  titre: string
-  client: string
-  montant: string
-  statut: Statut
-  periode: string
-}
-
-const contrats: ContratRow[] = [
-  {
-    titre: "Maintenance Applicative",
-    client: "Rawbank",
-    montant: "10,000 $",
-    statut: "Suspendu",
-    periode: "12-05-2026",
-  },
-  {
-    titre: "Installation API",
-    client: "Rawbank",
-    montant: "10,000 $",
-    statut: "Actif",
-    periode: "12-05-2026",
-  },
-  {
-    titre: "Maintenance applicatif",
-    client: "EquityBCDC",
-    montant: "10,000 $",
-    statut: "Complet",
-    periode: "12-05-2026",
-  },
-  {
-    titre: "Support niveau 2",
-    client: "StandardBank",
-    montant: "10,000 $",
-    statut: "Actif",
-    periode: "12-05-2026",
-  },
-  {
-    titre: "Audit sécurité",
-    client: "Castillo",
-    montant: "10,000 $",
-    statut: "Suspendu",
-    periode: "12-05-2026",
-  },
-]
-
-function StatutBadge({ statut }: { statut: Statut }) {
-  const styles: Record<Statut, string> = {
-    Suspendu: "border-transparent bg-[#FCF5E5] text-[#E8BC52] hover:bg-[#FCF5E5]",
+function StatutBadge({ statut }: { statut: ContratStatutUi }) {
+  const styles: Record<ContratStatutUi, string> = {
+    Suspendu:
+      "border-transparent bg-[#FCF5E5] text-[#E8BC52] hover:bg-[#FCF5E5]",
     Actif: "border-transparent bg-[#E8EFFB] text-[#6691E7] hover:bg-[#E8EFFB]",
-    Complet: "border-transparent bg-[#DCF6E9] text-[#13C56B] hover:bg-[#DCF6E9]",
-  }
+    Complet:
+      "border-transparent bg-[#DCF6E9] text-[#13C56B] hover:bg-[#DCF6E9]",
+  };
 
   return (
     <Badge
@@ -76,17 +33,19 @@ function StatutBadge({ statut }: { statut: Statut }) {
     >
       {statut}
     </Badge>
-  )
+  );
 }
 
 export default function ContratsPage() {
   return (
     <div className="min-h-screen text-foreground">
       <main className="mx-auto w-full min-w-full py-4">
-        <span className="flex items-center gap-1 text-sm text-slate-500 mb-6">
-            <Link href="/home"> <House className="size-4" /> </Link>
-            <ChevronRight className="size-4" /> Contrats
-            <ChevronRight className="size-4" />Visualiser
+        <span className="mb-6 flex items-center gap-1 text-sm text-slate-500">
+          <Link href="/home">
+            <House className="size-4" />
+          </Link>
+          <ChevronRight className="size-4" />
+          <span className="text-slate-800">Liste de contrats</span>
         </span>
         <div className="mb-6 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
           <h1 className="text-2xl font-bold tracking-tight text-slate-800 sm:text-3xl">
@@ -94,7 +53,8 @@ export default function ContratsPage() {
           </h1>
           <Button
             size="lg"
-            className="h-12 rounded bg-[#0879bd] px-5 w-52 text-white cursor-pointer"
+            className="h-12 w-52 cursor-pointer rounded bg-[#0073C5] px-5 text-white"
+            asChild
           >
             <Link href="/home/contrats/new">Nouveau contrat</Link>
           </Button>
@@ -125,9 +85,9 @@ export default function ContratsPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {contrats.map((row) => (
+              {demoContrats.map((row) => (
                 <TableRow
-                  key={`${row.titre}-${row.client}-${row.periode}`}
+                  key={row.id}
                   className="border-slate-200 hover:bg-slate-50/80"
                 >
                   <TableCell className="px-4 py-3 text-sm text-slate-800">
@@ -146,14 +106,13 @@ export default function ContratsPage() {
                     {row.periode}
                   </TableCell>
                   <TableCell className="px-4 py-3 text-right">
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="icon"
-                      className="text-slate-500 hover:bg-slate-100 hover:text-slate-700 cursor-pointer"
-                      aria-label="Détails du contrat"
-                    >
-                      <Eye className="size-4" />
+                    <Button variant="ghost" size="icon" asChild className="text-slate-500 hover:bg-slate-100 hover:text-slate-700 cursor-pointer">
+                      <Link
+                        href={`/home/contrats/${encodeURIComponent(row.id)}`}
+                        aria-label="Détails du contrat"
+                      >
+                        <Eye className="size-4" />
+                      </Link>
                     </Button>
                   </TableCell>
                 </TableRow>
@@ -163,5 +122,5 @@ export default function ContratsPage() {
         </div>
       </main>
     </div>
-  )
+  );
 }
