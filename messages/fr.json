@@ -1,0 +1,56 @@
+{
+  "common": {
+    "welcome": "Bienvenue",
+    "login": "Connexion"
+  },
+  "register": {
+    "heroText": "Créez votre compte et gérez vos clients, contrats et factures avec iKwook Invoice.",
+    "title": "Créer un compte",
+    "subtitle": "Choisissez votre profil et renseignez les premières informations.",
+    "continue": "Continuer",
+    "alreadyHaveAccount": "Vous avez déjà un compte ?",
+    "login": "Se connecter",
+    "profiles": {
+      "company": "Entreprise",
+      "sme": "PME",
+      "personal": "Personnel"
+    },
+    "fields": {
+      "companyName": "Nom de l’entreprise",
+      "rccm": "RCCM",
+      "nif": "NIF",
+      "fullName": "Nom complet",
+      "email": "Email",
+      "phone": "Téléphone",
+      "password": "Mot de passe",
+      "confirmPassword": "Confirmer le mot de passe"
+    },
+    "placeholders": {
+      "companyName": "Ex: iKwook SARL",
+      "rccm": "Ex: CD/KIN/RCCM/...",
+      "nif": "Ex: A1234567",
+      "fullName": "Ex: Benjamin Shako",
+      "email": "email@ikwook.cd",
+      "phone": "+243 000 000 000",
+      "password": "********"
+    }
+  },
+  "navbar": {
+    "openMenu": "Ouvrir le menu",
+    "Accueil": "Accueil",
+    "Facture": "Facture",
+    "MesFactures": "Mes factures",
+    "NouvelleFacture": "Nouvelle facture",
+    "Article": "Article",
+    "NouvelArticle": "Nouvel article",
+    "Visualiser": "Visualiser",
+    "Client": "Client",
+    "NouveauClient": "Nouveau client",
+    "Contrat": "Contrat",
+    "NouveauContrat": "Nouveau contrat",
+    "Configuration": "Configuration",
+    "Aide": "Aide"
+  }
+
+}
+

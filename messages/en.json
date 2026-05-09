@@ -1,0 +1,54 @@
+{
+  "common": {
+    "welcome": "Welcome",
+    "login": "Login"
+  },
+  "register": {
+    "heroText": "Create your account and manage your customers, contracts and invoices with iKwook Invoice.",
+    "title": "Create account",
+    "subtitle": "Choose your profile and enter the first information.",
+    "continue": "Continue",
+    "alreadyHaveAccount": "Already have an account?",
+    "login": "Sign in",
+    "profiles": {
+      "company": "Company",
+      "sme": "SME",
+      "personal": "Personal"
+    },
+    "fields": {
+      "companyName": "Company name",
+      "rccm": "RCCM",
+      "nif": "TIN",
+      "fullName": "Full name",
+      "email": "Email",
+      "phone": "Phone",
+      "password": "Password",
+      "confirmPassword": "Confirm password"
+    },
+    "placeholders": {
+      "companyName": "Ex: iKwook LLC",
+      "rccm": "Ex: CD/KIN/RCCM/...",
+      "nif": "Ex: A1234567",
+      "fullName": "Ex: Benjamin Shako",
+      "email": "email@ikwook.cd",
+      "phone": "+243 000 000 000",
+      "password": "********"
+    }
+  },
+  "navbar": {
+    "openMenu": "Open menu",
+    "Accueil": "Home",
+    "Facture": "Invoice",
+    "MesFactures": "My invoices",
+    "NouvelleFacture": "New invoice",
+    "Article": "Article",
+    "NouvelArticle": "New article",
+    "Visualiser": "View",
+    "Client": "Customer",
+    "NouveauClient": "New customer",
+    "Contrat": "Contract",
+    "NouveauContrat": "New contract",
+    "Configuration": "Settings",
+    "Aide": "Help"
+  }
+}
