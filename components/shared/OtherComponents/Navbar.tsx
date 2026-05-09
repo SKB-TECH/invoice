@@ -31,18 +31,18 @@ export function Navbar() {
     const [openMobileSubmenu, setOpenMobileSubmenu] =
         React.useState<string | null>(null);
 
-    const navTriggerClass = "h-20 bg-transparent px-4 py-0 text-[14px] font-semibold text-white shadow-none hover:bg-white/10 hover:text-white data-[state=open]:bg-white data-[state=open]:text-[#0879bd] data-[state=open]:font-semibold";
+    const navTriggerClass = "h-20 bg-transparent px-4 py-0 text-[14px] font-semibold text-white shadow-none hover:bg-white/10 hover:text-white data-[state=open]:bg-white data-[state=open]:text-[##0073C5] data-[state=open]:font-semibold";
     return (
-        <nav className="sticky top-0 z-50 w-full overflow-visible bg-[#0879bd]">
+        <nav className="sticky top-0 z-50 w-full overflow-visible bg-[#0073C5]">
             <div className="mx-auto flex h-20 w-full px-4 md:px-14 lg:px-14 items-center">
                 <Link
                     href="/"
-                    className="flex h-20 shrink-0 items-center gap-2 bg-[#0879bd] px-5 md:px-8"
+                    className="flex h-20 shrink-0 items-center gap-2 bg-[#0073C5] px-5 md:px-8"
                 >
                 <Image alt={"logo"} src={"/invoiceb.png"} width={160} height={160} />
                 </Link>
 
-                <div className="relative flex min-w-0 flex-1 items-center bg-[#0879bd] text-white">
+                <div className="relative flex min-w-0 flex-1 items-center bg-[#0073C5] text-white">
                     <div className="hidden flex-1 justify-center lg:flex">
                         <NavigationMenu
                             viewport={false}
@@ -107,12 +107,12 @@ export function Navbar() {
 
                         <button className="relative hidden text-white/90 transition hover:text-white md:inline-flex">
                             <WalletCards className="h-5 w-5" />
-                            <span className="absolute -right-1.5 -top-1.5 h-2.5 w-2.5 rounded-full bg-red-500 ring-2 ring-[#0879bd]" />
+                            <span className="absolute -right-1.5 -top-1.5 h-2.5 w-2.5 rounded-full bg-red-500 ring-2 ring-[#0073C5]" />
                         </button>
 
                         <button className="relative text-white/90 transition hover:text-white">
                             <Bell className="h-5 w-5" />
-                            <span className="absolute -right-1.5 -top-1.5 h-2.5 w-2.5 rounded-full bg-red-500 ring-2 ring-[#0879bd]" />
+                            <span className="absolute -right-1.5 -top-1.5 h-2.5 w-2.5 rounded-full bg-red-500 ring-2 ring-[#0073C5]" />
                         </button>
                         <button className="hidden items-center gap-2 bg-white px-3 py-1.5 transition hover:bg-slate-100 md:flex rounded-full">
                           <span className="flex h-6 w-6 items-center justify-center">
@@ -135,7 +135,7 @@ export function Navbar() {
 
                             <SheetContent side="right" className="w-[310px] p-0 sm:w-[380px]">
                                 <div className="flex h-full flex-col bg-white">
-                                    <div className="flex h-16 items-center gap-2 bg-[#0879bd] px-5">
+                                    <div className="flex h-16 items-center gap-2 bg-[#0073C5] px-5">
                                         <Image alt={"logo"} src={"/invoiceb.png"} width={200} height={200} />
                                     </div>
 
@@ -154,7 +154,7 @@ export function Navbar() {
                                                                             : item.title
                                                                     )
                                                                 }
-                                                                className="flex items-center justify-between px-3 py-3 text-left text-[14px] font-semibold text-slate-700 transition hover:bg-slate-100 hover:text-[#0879bd]"
+                                                                className="flex items-center justify-between px-3 py-3 text-left text-[14px] font-semibold text-slate-700 transition hover:bg-slate-100 hover:text-[#0073C5]"
                                                             >
                                                                 {item.title}
                                                                 <ChevronRight
@@ -173,7 +173,7 @@ export function Navbar() {
                                                                             key={subIndex}
                                                                             href={subItem.href}
                                                                             onClick={() => setIsOpen(false)}
-                                                                            className="px-3 py-2 text-sm md:text-[14px] text-slate-500 transition hover:bg-slate-100 hover:text-[#0879bd]"
+                                                                            className="px-3 py-2 text-sm md:text-[14px] text-slate-500 transition hover:bg-slate-100 hover:text-[#0073C5]"
                                                                         >
                                                                             {subItem.title}
                                                                         </Link>
@@ -185,7 +185,7 @@ export function Navbar() {
                                                         <Link
                                                             href={item.href || "#"}
                                                             onClick={() => setIsOpen(false)}
-                                                            className="px-3 py-3 text-[14px] font-semibold text-slate-700 transition hover:bg-slate-100 hover:text-[#0879bd]"
+                                                            className="px-3 py-3 text-[14px] font-semibold text-slate-700 transition hover:bg-slate-100 hover:text-[#0073C5]"
                                                         >
                                                             {item.title}
                                                         </Link>
