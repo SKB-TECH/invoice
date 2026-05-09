@@ -13,6 +13,9 @@ import {
 
 const CODE_ORDER = "ABCDEFGHIJKLMNOP";
 
+/** Nombre de groupes affichés par page dans le tableau. */
+const TAX_GROUPS_PAGE_SIZE = 4;
+
 function parseRatePercent(raw: string): number | null {
   const t = raw.trim().replace(/\s/g, "").replace(",", ".");
   if (t === "") return null;
@@ -36,7 +39,7 @@ function sortTaxGroups(list: TaxGroup[]): TaxGroup[] {
 }
 
 type RowPatch = Partial<
-  Pick<TaxGroup, "name" | "ratePercent" | "code" | "description" | "comments">
+  Pick<TaxGroup, "name" | "ratePercent" | "code" | "description">
 >;
 
 export function TaxGroupsSection() {
@@ -44,9 +47,9 @@ export function TaxGroupsSection() {
   const [newCode, setNewCode] = useState("");
   const [newName, setNewName] = useState("");
   const [newDescription, setNewDescription] = useState("");
-  const [newComments, setNewComments] = useState("");
   const [newRate, setNewRate] = useState("");
   const [newActive, setNewActive] = useState(true);
+  const [pageIndex, setPageIndex] = useState(0);
 
   const refresh = useCallback(() => {
     setGroups(readTaxGroups());
@@ -99,14 +102,13 @@ export function TaxGroupsSection() {
     const name = newName.trim();
     const code = newCode.trim().toUpperCase();
     const description = newDescription.trim();
-    const comments = newComments.trim();
     const rate = parseRatePercent(newRate);
     if (!name) {
       toast.error("Indiquez un nom de groupe.");
       return;
     }
     if (!code) {
-      toast.error("Indiquez une étiquette (code).");
+      toast.error("Indiquez un code de groupe.");
       return;
     }
     if (rate === null) {
@@ -120,7 +122,7 @@ export function TaxGroupsSection() {
       return;
     }
     if (current.some((g) => g.code.toUpperCase() === code)) {
-      toast.error("Ce code d’étiquette est déjà utilisé.");
+      toast.error("Ce code est déjà utilisé.");
       return;
     }
     const next: TaxGroup[] = [
@@ -130,7 +132,7 @@ export function TaxGroupsSection() {
         code,
         name,
         description,
-        comments,
+        comments: "",
         ratePercent: rate,
         active: newActive,
       },
@@ -139,7 +141,6 @@ export function TaxGroupsSection() {
     setNewCode("");
     setNewName("");
     setNewDescription("");
-    setNewComments("");
     setNewRate("");
     setNewActive(true);
     toast.success("Groupe de taxation créé.");
@@ -147,16 +148,32 @@ export function TaxGroupsSection() {
 
   const sorted = useMemo(() => sortTaxGroups(groups), [groups]);
 
+  const totalPages = Math.ceil(sorted.length / TAX_GROUPS_PAGE_SIZE) || 1;
+  const maxPageIndex = Math.max(0, totalPages - 1);
+  const effectivePageIndex = Math.min(pageIndex, maxPageIndex);
+  const pageSlice = useMemo(() => {
+    const start = effectivePageIndex * TAX_GROUPS_PAGE_SIZE;
+    return sorted.slice(start, start + TAX_GROUPS_PAGE_SIZE);
+  }, [sorted, effectivePageIndex]);
+
+  const goPrevPage = () =>
+    setPageIndex((p) =>
+      Math.max(0, Math.min(p, maxPageIndex) - 1)
+    );
+  const goNextPage = () =>
+    setPageIndex((p) =>
+      Math.min(maxPageIndex, Math.min(p, maxPageIndex) + 1)
+    );
+
   return (
     <>
       <div className="border border-slate-200 bg-white">
         <div className="border-b border-slate-200 px-5 py-4">
           <h2 className="text-[16px] font-semibold">Groupes de taxation</h2>
           <p className="mt-1 text-[13px] text-slate-500">
-            Référence réglementaire RDC (groupes A à P). Champs : groupe, étiquette,
-            description, taux (%), statut, commentaires. Les groupes{" "}
-            <span className="font-medium text-slate-700">actifs</span> sont proposés
-            sur les articles.
+            Catalogue des groupes que vous pouvez affecter à vos articles. Vous pouvez en ajouter ou adapter libellés et taux. Seuls les groupes{" "}
+            <span className="font-medium text-slate-700">actifs</span> sont
+            proposés sur les fiches articles.
           </p>
         </div>
 
@@ -167,106 +184,95 @@ export function TaxGroupsSection() {
           <p className="mb-4 text-[13px] font-medium text-slate-800">
             Nouveau groupe
           </p>
-          <div className="grid gap-4 md:grid-cols-12 md:items-end">
-            <div className="md:col-span-1">
-              <label className="mb-1 block text-[13px] font-medium">
-                Étiquette <span className="text-red-500">*</span>
-              </label>
-              <input
-                value={newCode}
-                onChange={(e) => setNewCode(e.target.value)}
-                placeholder="X"
-                maxLength={4}
-                className="h-11 w-full border border-slate-200 px-2 text-center text-[13px] uppercase outline-none focus:border-[#1f6a9a]"
-                aria-label="Étiquette du groupe de taxation"
-              />
+          <div className="flex flex-col gap-4">
+            <div className="flex flex-wrap items-end gap-x-4 gap-y-4">
+              <div className="w-[4.25rem] shrink-0">
+                <label className="mb-1 block text-[13px] font-medium">
+                  Code <span className="text-red-500">*</span>
+                </label>
+                <input
+                  value={newCode}
+                  onChange={(e) => setNewCode(e.target.value)}
+                  placeholder="X"
+                  maxLength={4}
+                  className="h-11 w-full border border-slate-200 px-2 text-center text-[13px] uppercase outline-none focus:border-[#1f6a9a]"
+                  aria-label="Code du groupe de taxation"
+                />
+              </div>
+              <div className="min-w-[10rem] flex-1 basis-48">
+                <label className="mb-1 block text-[13px] font-medium">
+                  Nom du groupe <span className="text-red-500">*</span>
+                </label>
+                <input
+                  value={newName}
+                  onChange={(e) => setNewName(e.target.value)}
+                  placeholder="Ex. Groupe X"
+                  className="h-11 w-full border border-slate-200 px-3 text-[13px] outline-none focus:border-[#1f6a9a]"
+                />
+              </div>
+              <div className="w-full shrink-0 sm:w-28">
+                <label className="mb-1 block text-[13px] font-medium">
+                  Taux de taxe (%) <span className="text-red-500">*</span>
+                </label>
+                <input
+                  value={newRate}
+                  onChange={(e) => setNewRate(e.target.value)}
+                  inputMode="decimal"
+                  placeholder="16"
+                  className="h-11 w-full border border-slate-200 px-3 text-[13px] outline-none focus:border-[#1f6a9a]"
+                />
+              </div>
+              <div className="w-full shrink-0 sm:w-36">
+                <label className="mb-1 block text-[13px] font-medium">
+                  Statut <span className="text-red-500">*</span>
+                </label>
+                <select
+                  value={newActive ? "actif" : "inactif"}
+                  onChange={(e) => setNewActive(e.target.value === "actif")}
+                  className="h-11 w-full border border-slate-200 bg-white px-3 text-[13px] outline-none focus:border-[#1f6a9a]"
+                  aria-label="Statut actif ou inactif"
+                >
+                  <option value="actif">Actif</option>
+                  <option value="inactif">Inactif</option>
+                </select>
+              </div>
+              <div className="w-full shrink-0 sm:w-auto">
+                <button
+                  type="submit"
+                  className="h-11 w-full bg-[#1f6a9a] px-6 text-[13px] font-semibold text-white hover:bg-[#18587f] sm:w-auto"
+                >
+                  Ajouter
+                </button>
+              </div>
             </div>
-            <div className="md:col-span-3">
-              <label className="mb-1 block text-[13px] font-medium">
-                Nom du groupe <span className="text-red-500">*</span>
-              </label>
-              <input
-                value={newName}
-                onChange={(e) => setNewName(e.target.value)}
-                placeholder="Ex. Groupe personnalisé"
-                className="h-11 w-full border border-slate-200 px-3 text-[13px] outline-none focus:border-[#1f6a9a]"
-              />
-            </div>
-            <div className="md:col-span-2">
-              <label className="mb-1 block text-[13px] font-medium">
-                Taux de taxe (%) <span className="text-red-500">*</span>
-              </label>
-              <input
-                value={newRate}
-                onChange={(e) => setNewRate(e.target.value)}
-                inputMode="decimal"
-                placeholder="16"
-                className="h-11 w-full border border-slate-200 px-3 text-[13px] outline-none focus:border-[#1f6a9a]"
-              />
-            </div>
-            <div className="md:col-span-2">
-              <label className="mb-1 block text-[13px] font-medium">
-                Statut <span className="text-red-500">*</span>
-              </label>
-              <select
-                value={newActive ? "actif" : "inactif"}
-                onChange={(e) => setNewActive(e.target.value === "actif")}
-                className="h-11 w-full border border-slate-200 bg-white px-3 text-[13px] outline-none focus:border-[#1f6a9a]"
-                aria-label="Statut actif ou inactif"
-              >
-                <option value="actif">Actif</option>
-                <option value="inactif">Inactif</option>
-              </select>
-            </div>
-            <div className="md:col-span-4 flex justify-end md:justify-start">
-              <button
-                type="submit"
-                className="h-11 w-full bg-[#1f6a9a] px-4 text-[13px] font-semibold text-white hover:bg-[#18587f] md:w-auto"
-              >
-                Ajouter
-              </button>
-            </div>
-            <div className="md:col-span-6">
+            <div>
               <label className="mb-1 block text-[13px] font-medium">
                 Description
               </label>
               <input
                 value={newDescription}
                 onChange={(e) => setNewDescription(e.target.value)}
-                placeholder="Résumé métier"
+                placeholder="Ex. Taxable au taux normal de 16 %"
                 className="h-11 w-full border border-slate-200 px-3 text-[13px] outline-none focus:border-[#1f6a9a]"
-              />
-            </div>
-            <div className="md:col-span-6">
-              <label className="mb-1 block text-[13px] font-medium">
-                Commentaires / références légales
-              </label>
-              <textarea
-                value={newComments}
-                onChange={(e) => setNewComments(e.target.value)}
-                rows={2}
-                placeholder="Détail technique, ordonnance-loi, obligations DEF…"
-                className="w-full resize-y border border-slate-200 px-3 py-2 text-[13px] outline-none focus:border-[#1f6a9a]"
               />
             </div>
           </div>
         </form>
 
         <div className="overflow-x-auto px-5 py-5">
-          <table className="w-full min-w-[56rem] border-collapse text-left text-[13px]">
+          <table className="w-full min-w-[44rem] border-collapse text-left text-[13px]">
             <thead>
               <tr className="border-b border-slate-200 text-slate-500">
-                <th className="pb-2 pr-2 font-medium">Ét.</th>
+                <th className="pb-2 pr-2 font-medium">Code</th>
                 <th className="pb-2 pr-3 font-medium">Nom du groupe</th>
                 <th className="pb-2 pr-3 font-medium">Description</th>
                 <th className="pb-2 pr-3 font-medium">Taux (%)</th>
                 <th className="pb-2 pr-3 font-medium">Statut</th>
-                <th className="pb-2 pr-2 font-medium">Commentaires</th>
                 <th className="pb-2 text-right font-medium">Actions</th>
               </tr>
             </thead>
             <tbody>
-              {sorted.map((g) => (
+              {pageSlice.map((g) => (
                 <tr key={g.id} className="border-b border-slate-100 align-top">
                   <td className="py-3 pr-2">
                     <input
@@ -283,7 +289,7 @@ export function TaxGroupsSection() {
                           ? "Code figé pour le référentiel A–P"
                           : undefined
                       }
-                      aria-label={`Étiquette ${g.name}`}
+                      aria-label={`Code ${g.name}`}
                     />
                   </td>
                   <td className="max-w-[10rem] py-3 pr-3">
@@ -328,21 +334,6 @@ export function TaxGroupsSection() {
                       {g.active ? "Actif" : "Inactif"}
                     </span>
                   </td>
-                  <td className="max-w-[14rem] py-3 pr-2">
-                    <details className="text-[12px] text-slate-600">
-                      <summary className="cursor-pointer text-[#1f6a9a]">
-                        Voir / modifier
-                      </summary>
-                      <textarea
-                        value={g.comments}
-                        onChange={(e) =>
-                          updateRow(g.id, { comments: e.target.value })
-                        }
-                        rows={5}
-                        className="mt-2 w-full resize-y border border-slate-200 px-2 py-1 text-[12px] leading-relaxed outline-none focus:border-[#1f6a9a]"
-                      />
-                    </details>
-                  </td>
                   <td className="py-3 text-right whitespace-nowrap">
                     <button
                       type="button"
@@ -364,6 +355,42 @@ export function TaxGroupsSection() {
               ))}
             </tbody>
           </table>
+          {sorted.length > TAX_GROUPS_PAGE_SIZE ? (
+            <div className="mt-4 flex flex-col gap-3 border-t border-slate-100 pt-4 sm:flex-row sm:items-center sm:justify-between">
+              <p className="text-[13px] text-slate-500">
+                <span className="font-medium text-slate-700">
+                  {effectivePageIndex * TAX_GROUPS_PAGE_SIZE + 1}
+                  {" — "}
+                  {Math.min(
+                    (effectivePageIndex + 1) * TAX_GROUPS_PAGE_SIZE,
+                    sorted.length
+                  )}
+                </span>{" "}
+                sur {sorted.length} groupes
+              </p>
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  disabled={effectivePageIndex <= 0}
+                  onClick={goPrevPage}
+                  className="h-9 border border-slate-200 px-3 text-[13px] text-slate-700 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
+                >
+                  Précédent
+                </button>
+                <span className="px-1 text-[13px] text-slate-500">
+                  Page {effectivePageIndex + 1} / {totalPages}
+                </span>
+                <button
+                  type="button"
+                  disabled={effectivePageIndex >= maxPageIndex}
+                  onClick={goNextPage}
+                  className="h-9 border border-slate-200 px-3 text-[13px] text-slate-700 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
+                >
+                  Suivant
+                </button>
+              </div>
+            </div>
+          ) : null}
         </div>
       </div>
 
