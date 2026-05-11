@@ -1,17 +1,17 @@
-import type { Metadata } from 'next';
-import './globals.css';
+import type { Metadata } from "next";
+import "./globals.css";
 
-import {NextIntlClientProvider} from 'next-intl';
-import {getMessages, getLocale} from 'next-intl/server';
+import { NextIntlClientProvider } from "next-intl";
+import { getMessages, getLocale } from "next-intl/server";
+import { ThemeProvider } from "next-themes";
 
-import {Providers} from '@/core/config/providers/providers';
-import {ThemeProvider} from "next-themes";
+import { Providers } from "@/core/config/providers/providers";
 
 export const metadata: Metadata = {
-    title: 'invoice',
-    description: 'iKwook invoice',
+    title: "invoice",
+    description: "iKwook invoice",
     icons: {
-        icon: '/invoiceb.png',
+        icon: "/invoiceb.png",
     },
 };
 
@@ -25,17 +25,16 @@ export default async function RootLayout({
 
     return (
         <html lang={locale} suppressHydrationWarning>
-        <body className="font-sans">
-        <NextIntlClientProvider messages={messages}>
-            <Providers>
-                <ThemeProvider
-                    attribute="class"
-                    defaultTheme="light"
-                    enableSystem={false}
-                >
-                    {children}
-                </ThemeProvider>
-            </Providers>
+        <body className="min-h-screen font-sans antialiased">
+        <NextIntlClientProvider locale={locale} messages={messages}>
+            <ThemeProvider
+                attribute="class"
+                defaultTheme="light"
+                enableSystem={false}
+                disableTransitionOnChange
+            >
+                <Providers>{children}</Providers>
+            </ThemeProvider>
         </NextIntlClientProvider>
         </body>
         </html>
