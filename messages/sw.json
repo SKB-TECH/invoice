@@ -39,19 +39,18 @@
   },
   "navbar": {
     "openMenu": "Fungua menyu",
-    "dashboard": "Dashibodi",
-    "customers": "Wateja",
-    "customerList": "Orodha ya wateja",
-    "customerListDescription": "Tazama na simamia wateja wako wote.",
-    "newCustomer": "Mteja mpya",
-    "newCustomerDescription": "Ongeza mteja mpya haraka.",
-    "invoices": "Ankara",
-    "invoiceList": "Orodha ya ankara",
-    "invoiceListDescription": "Fuatilia ankara zote zilizotolewa.",
-    "newInvoice": "Ankara mpya",
-    "newInvoiceDescription": "Tengeneza ankara mpya.",
-    "contracts": "Mikataba",
-    "payments": "Malipo",
-    "settings": "Mipangilio"
+    "Accueil": "Nyumbani",
+    "Facture": "Ankara",
+    "MesFactures": "Ankara zangu",
+    "NouvelleFacture": "Ankara mpya",
+    "Article": "Bidhaa",
+    "NouvelArticle": "Bidhaa mpya",
+    "Visualiser": "Tazama",
+    "Client": "Mteja",
+    "NouveauClient": "Mteja mpya",
+    "Contrat": "Mkataba",
+    "NouveauContrat": "Mkataba mpya",
+    "Configuration": "Mipangilio",
+    "Aide": "Msaada"
   }
 }
