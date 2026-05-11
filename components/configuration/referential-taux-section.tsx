@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useMemo, useState } from "react";
+import { useLocale, useTranslations } from "next-intl";
 import { toast } from "sonner";
 import { Pencil, Trash2 } from "lucide-react";
 
@@ -23,7 +24,17 @@ function parsePercent(raw: string): number | null {
   return n;
 }
 
+function numberLocaleTag(locale: string): string {
+  if (locale === "en") return "en-US";
+  return "fr-FR";
+}
+
 export function ReferentialTauxSection() {
+  const t = useTranslations("configuration.referentialRates");
+  const locale = useLocale();
+  const sortLocale = locale === "en" ? "en" : "fr";
+  const numberTag = numberLocaleTag(locale);
+
   const [rows, setRows] = useState<ReferentialTaux[]>(INITIAL);
   const [newLibelle, setNewLibelle] = useState("");
   const [newTaux, setNewTaux] = useState("");
@@ -32,8 +43,11 @@ export function ReferentialTauxSection() {
   const [editTaux, setEditTaux] = useState("");
 
   const sorted = useMemo(
-    () => [...rows].sort((a, b) => a.libelle.localeCompare(b.libelle, "fr")),
-    [rows],
+    () =>
+      [...rows].sort((a, b) =>
+        a.libelle.localeCompare(b.libelle, sortLocale),
+      ),
+    [rows, sortLocale],
   );
 
   const resetNew = useCallback(() => {
@@ -46,11 +60,11 @@ export function ReferentialTauxSection() {
     const libelle = newLibelle.trim();
     const rate = parsePercent(newTaux);
     if (!libelle) {
-      toast.error("Indiquez un libellé pour le taux.");
+      toast.error(t("toasts.labelRequired"));
       return;
     }
     if (rate === null) {
-      toast.error("Indiquez un taux valide entre 0 et 100 %.");
+      toast.error(t("toasts.rateInvalid"));
       return;
     }
     const id =
@@ -59,13 +73,13 @@ export function ReferentialTauxSection() {
         : `t-${Date.now()}`;
     setRows((prev) => [...prev, { id, libelle, valeurPercent: rate }]);
     resetNew();
-    toast.success("Taux créé.");
+    toast.success(t("toasts.created"));
   };
 
-  const openEdit = (t: ReferentialTaux) => {
-    setEditingId(t.id);
-    setEditLibelle(t.libelle);
-    setEditTaux(String(t.valeurPercent));
+  const openEdit = (row: ReferentialTaux) => {
+    setEditingId(row.id);
+    setEditLibelle(row.libelle);
+    setEditTaux(String(row.valeurPercent));
   };
 
   const closeEdit = () => {
@@ -80,11 +94,11 @@ export function ReferentialTauxSection() {
     const libelle = editLibelle.trim();
     const rate = parsePercent(editTaux);
     if (!libelle) {
-      toast.error("Indiquez un libellé pour le taux.");
+      toast.error(t("toasts.labelRequired"));
       return;
     }
     if (rate === null) {
-      toast.error("Indiquez un taux valide entre 0 et 100 %.");
+      toast.error(t("toasts.rateInvalid"));
       return;
     }
     setRows((prev) =>
@@ -93,19 +107,19 @@ export function ReferentialTauxSection() {
       ),
     );
     closeEdit();
-    toast.success("Taux modifié.");
+    toast.success(t("toasts.updated"));
   };
 
   const handleDelete = (id: string) => {
     setRows((prev) => prev.filter((r) => r.id !== id));
     if (editingId === id) closeEdit();
-    toast.success("Taux supprimé.");
+    toast.success(t("toasts.deleted"));
   };
 
   return (
     <div className="border border-slate-200 bg-white">
       <div className="border-b border-slate-200 px-5 py-4">
-        <h2 className="text-[16px] font-semibold">Référentiel des taux</h2>
+        <h2 className="text-[16px] font-semibold">{t("title")}</h2>
         <p className="mt-1 text-[12px] text-slate-500">
         </p>
       </div>
@@ -115,21 +129,21 @@ export function ReferentialTauxSection() {
         className="flex flex-col gap-4 border-b border-slate-100 px-5 py-5 sm:flex-row sm:flex-wrap sm:items-end"
       >
         <div className="min-w-0 flex-1 sm:w-32">
-          <label className="mb-1 block text-[13px] font-medium">Libellé</label>
+          <label className="mb-1 block text-[13px] font-medium">{t("label")}</label>
           <input
             value={newLibelle}
             onChange={(e) => setNewLibelle(e.target.value)}
-            placeholder="Ex. TVA services"
+            placeholder={t("placeholderLabel")}
             className="h-11 w-full border border-slate-200 px-3 text-[13px] outline-none focus:border-[#1f6a9a]"
           />
         </div>
         <div className="min-w-0 flex-1 sm:w-32">
-          <label className="mb-1 block text-[13px] font-medium">Taux (%)</label>
+          <label className="mb-1 block text-[13px] font-medium">{t("ratePercent")}</label>
           <input
             value={newTaux}
             onChange={(e) => setNewTaux(e.target.value)}
             inputMode="decimal"
-            placeholder="16"
+            placeholder={t("placeholderRate")}
             className="h-11 w-full border border-slate-200 px-3 text-[13px] outline-none focus:border-[#1f6a9a]"
           />
         </div>
@@ -137,7 +151,7 @@ export function ReferentialTauxSection() {
           type="submit"
           className="h-11 shrink-0 bg-[#0073C5] px-6 text-[13px] font-semibold text-white hover:bg-[#005999]"
         >
-          Enregistrer
+          {t("save")}
         </button>
       </form>
 
@@ -145,15 +159,15 @@ export function ReferentialTauxSection() {
         <table className="w-full min-w-[320px] border-collapse text-left text-[13px]">
           <thead>
             <tr className="border-b border-slate-200 text-slate-600">
-              <th className="py-2 pr-4 font-medium">Libellé</th>
-              <th className="py-2 pr-4 font-medium">Taux</th>
-              <th className="w-32 py-2 text-right font-medium">Actions</th>
+              <th className="py-2 pr-4 font-medium">{t("label")}</th>
+              <th className="py-2 pr-4 font-medium">{t("rateColumn")}</th>
+              <th className="w-32 py-2 text-right font-medium">{t("actions")}</th>
             </tr>
           </thead>
           <tbody>
-            {sorted.map((t) =>
-              editingId === t.id ? (
-                <tr key={t.id} className="border-b border-slate-100 align-top">
+            {sorted.map((row) =>
+              editingId === row.id ? (
+                <tr key={row.id} className="border-b border-slate-100 align-top">
                   <td colSpan={3} className="py-3">
                     <form
                       onSubmit={handleSaveEdit}
@@ -161,7 +175,7 @@ export function ReferentialTauxSection() {
                     >
                       <div className="min-w-0 flex-1 sm:max-w-xs">
                         <label className="mb-1 block text-[12px] font-medium">
-                          Libellé
+                          {t("label")}
                         </label>
                         <input
                           value={editLibelle}
@@ -171,7 +185,7 @@ export function ReferentialTauxSection() {
                       </div>
                       <div className="w-full sm:w-28">
                         <label className="mb-1 block text-[12px] font-medium">
-                          Taux (%)
+                          {t("ratePercent")}
                         </label>
                         <input
                           value={editTaux}
@@ -185,26 +199,26 @@ export function ReferentialTauxSection() {
                           type="submit"
                           className="h-10 bg-[#1f6a9a] px-4 text-[12px] font-semibold text-white hover:bg-[#18587f]"
                         >
-                          Enregistrer
+                          {t("save")}
                         </button>
                         <button
                           type="button"
                           onClick={closeEdit}
                           className="h-10 border border-slate-200 px-4 text-[12px] font-medium hover:bg-slate-50"
                         >
-                          Annuler
+                          {t("cancel")}
                         </button>
                       </div>
                     </form>
                   </td>
                 </tr>
               ) : (
-                <tr key={t.id} className="border-b border-slate-100">
+                <tr key={row.id} className="border-b border-slate-100">
                   <td className="py-3 pr-4 font-medium text-slate-800">
-                    {t.libelle}
+                    {row.libelle}
                   </td>
                   <td className="py-3 pr-4 tabular-nums text-slate-700">
-                    {t.valeurPercent.toLocaleString("fr-FR", {
+                    {row.valeurPercent.toLocaleString(numberTag, {
                       minimumFractionDigits: 0,
                       maximumFractionDigits: 2,
                     })}
@@ -214,17 +228,17 @@ export function ReferentialTauxSection() {
                     <div className="flex justify-end gap-1">
                       <button
                         type="button"
-                        onClick={() => openEdit(t)}
+                        onClick={() => openEdit(row)}
                         className="inline-flex h-9 w-9 items-center justify-center border border-slate-200 text-slate-600 hover:bg-slate-50"
-                        aria-label="Modifier"
+                        aria-label={t("editAria")}
                       >
                         <Pencil className="h-4 w-4" />
                       </button>
                       <button
                         type="button"
-                        onClick={() => handleDelete(t.id)}
+                        onClick={() => handleDelete(row.id)}
                         className="inline-flex h-9 w-9 items-center justify-center border border-slate-200 text-red-600 hover:bg-red-50"
-                        aria-label="Supprimer"
+                        aria-label={t("deleteAria")}
                       >
                         <Trash2 className="h-4 w-4" />
                       </button>

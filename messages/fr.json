@@ -210,6 +210,139 @@
       },
       "toastSaved": "Article mis à jour."
     }
+  },
+  "configuration": {
+    "pageTitle": "Configuration",
+    "menu": {
+      "basicInfo": "Informations de base",
+      "changePassword": "Changer mot de passe",
+      "referentials": "Référentielles",
+      "taxGroups": "Groupes de taxation"
+    },
+    "basicInfo": {
+      "sectionTitle": "Informations de base",
+      "changePhoto": "Changer",
+      "name": "Nom",
+      "email": "Email",
+      "saveChanges": "Enregistrer les modifications"
+    },
+    "password": {
+      "sectionTitle": "Changer mot de passe",
+      "oldPassword": "Ancien mot de passe",
+      "newPassword": "Nouveau mot de passe",
+      "confirmPassword": "Confirmer le mot de passe",
+      "placeholder": "Entrez votre mot de passe",
+      "submit": "Modifier le mot de passe",
+      "errors": {
+        "minLength": "Le nouveau mot de passe doit contenir au moins 6 caractères.",
+        "mismatch": "Les mots de passe ne correspondent pas."
+      }
+    },
+    "referentials": {
+      "preferencesTitle": "Préférences",
+      "theme": "Thème",
+      "language": "Langue",
+      "timezone": "Fuseau horaire",
+      "themeOptions": {
+        "light": "Mode clair",
+        "dark": "Mode sombre",
+        "system": "Système"
+      },
+      "languageOptions": {
+        "fr": "Français",
+        "en": "English"
+      },
+      "timezoneOptions": {
+        "kinshasa": "Kinshasa",
+        "lubumbashi": "Lubumbashi",
+        "goma": "Goma"
+      },
+      "connectedAccounts": "Comptes connectés",
+      "devices": "Appareils",
+      "google": "Google",
+      "connectedWith": "Connecté avec {email}",
+      "deviceIphone": "iPhone 14 Pro",
+      "deviceMacbook": "MacBook Pro",
+      "lastUsed2Days": "Dernière utilisation il y a 2 jours",
+      "lastUsed1Week": "Dernière utilisation il y a 1 semaine",
+      "disconnect": "Déconnecter",
+      "remove": "Retirer",
+      "savePreferences": "Enregistrer les préférences"
+    },
+    "referentialRates": {
+      "title": "Référentiel des taux",
+      "label": "Libellé",
+      "ratePercent": "Taux (%)",
+      "save": "Enregistrer",
+      "actions": "Actions",
+      "rateColumn": "Taux",
+      "placeholderLabel": "Ex. TVA services",
+      "placeholderRate": "16",
+      "editAria": "Modifier le taux",
+      "deleteAria": "Supprimer le taux",
+      "toasts": {
+        "labelRequired": "Indiquez un libellé pour le taux.",
+        "rateInvalid": "Indiquez un taux valide entre 0 et 100 %.",
+        "created": "Taux créé.",
+        "updated": "Taux modifié.",
+        "deleted": "Taux supprimé."
+      },
+      "cancel": "Annuler"
+    },
+    "taxGroups": {
+      "title": "Groupes de taxation",
+      "intro": "Catalogue des groupes que vous pouvez affecter à vos articles. Vous pouvez en ajouter ou adapter libellés et taux. Seuls les groupes actifs sont proposés sur les fiches articles.",
+      "newGroup": "Nouveau groupe",
+      "code": "Code",
+      "groupName": "Nom du groupe",
+      "taxRate": "Taux de taxe (%)",
+      "status": "Statut",
+      "description": "Description",
+      "add": "Ajouter",
+      "placeholderCode": "X",
+      "placeholderName": "Ex. Groupe X",
+      "placeholderRate": "16",
+      "placeholderDescription": "Ex. Taxable au taux normal de 16 %",
+      "codeAria": "Code du groupe de taxation",
+      "statusAria": "Statut actif ou inactif",
+      "active": "Actif",
+      "inactive": "Inactif",
+      "table": {
+        "code": "Code",
+        "groupName": "Nom du groupe",
+        "description": "Description",
+        "rate": "Taux (%)",
+        "status": "Statut",
+        "actions": "Actions",
+        "emptyCell": "—"
+      },
+      "edit": "Modifier",
+      "deactivate": "Désactiver",
+      "activate": "Activer",
+      "delete": "Supprimer",
+      "editGroupTitle": "Modifier le groupe",
+      "codeFrozenHint": "Code figé pour le référentiel A–P",
+      "save": "Enregistrer",
+      "cancel": "Annuler",
+      "pagination": {
+        "range": "{from} — {to} sur {total} groupes",
+        "page": "Page {current} / {total}",
+        "prev": "Précédent",
+        "next": "Suivant"
+      },
+      "autoSaveHint": "Les modifications sont enregistrées automatiquement.",
+      "toasts": {
+        "builtinDelete": "Ce groupe du référentiel officiel ne peut pas être supprimé.",
+        "deleted": "Groupe supprimé.",
+        "nameRequired": "Indiquez un nom de groupe.",
+        "codeRequired": "Indiquez un code de groupe.",
+        "rateInvalid": "Indiquez un taux valide entre 0 et 100 %.",
+        "codeDuplicate": "Ce code est déjà utilisé.",
+        "updated": "Groupe mis à jour.",
+        "idDuplicate": "Identifiant déjà utilisé ; réessayez.",
+        "created": "Groupe de taxation créé."
+      }
+    }
   }
 }
 

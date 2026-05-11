@@ -1,33 +1,38 @@
 "use client";
 
-import React, { useMemo, useState } from "react";
+import React, { useState } from "react";
 import {
     Laptop,
     Mail,
     Smartphone,
     User,
 } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 import { ReferentialTauxSection } from "@/components/configuration/referential-taux-section";
 import { TaxGroupsSection } from "@/components/configuration/tax-groups-section";
 
-type MenuItem =
-    | "Informations de base"
-    | "Changer mot de passe"
-    | "Référencielles"
-    | "Groupe de taxations";
+type ConfigMenuId =
+    | "basicInfo"
+    | "changePassword"
+    | "referentials"
+    | "taxGroups";
 
-
-const menuItems: MenuItem[] = [
-    "Informations de base",
-    "Changer mot de passe",
-    "Référencielles",
-    "Groupe de taxations",
+const MENU_IDS: ConfigMenuId[] = [
+    "basicInfo",
+    "changePassword",
+    "referentials",
+    "taxGroups",
 ];
 
+type ThemePref = "light" | "dark" | "system";
+type LanguagePref = "fr" | "en";
+type TimezonePref = "kinshasa" | "lubumbashi" | "goma";
+
 export default function ConfigurationPage() {
+    const t = useTranslations("configuration");
     const [activeMenu, setActiveMenu] =
-        useState<MenuItem>("Informations de base");
+        useState<ConfigMenuId>("basicInfo");
 
     const [profileForm, setProfileForm] = useState({
         name: "Benjamin Shako",
@@ -41,21 +46,19 @@ export default function ConfigurationPage() {
     });
 
     const [preferences, setPreferences] = useState({
-        theme: "Mode clair",
-        language: "Français",
-        timezone: "Kinshasa",
+        theme: "light" as ThemePref,
+        language: "fr" as LanguagePref,
+        timezone: "kinshasa" as TimezonePref,
     });
 
-    const passwordError = useMemo(() => {
-        if (!passwordForm.newPassword && !passwordForm.confirmPassword) return "";
+    let passwordError = "";
+    if (passwordForm.newPassword || passwordForm.confirmPassword) {
         if (passwordForm.newPassword.length < 6) {
-            return "Le nouveau mot de passe doit contenir au moins 6 caractères.";
+            passwordError = t("password.errors.minLength");
+        } else if (passwordForm.newPassword !== passwordForm.confirmPassword) {
+            passwordError = t("password.errors.mismatch");
         }
-        if (passwordForm.newPassword !== passwordForm.confirmPassword) {
-            return "Les mots de passe ne correspondent pas.";
-        }
-        return "";
-    }, [passwordForm]);
+    }
 
     const handleSaveProfile = () => {
         console.log("Profil sauvegardé", profileForm);
@@ -77,31 +80,48 @@ export default function ConfigurationPage() {
         console.log("Préférences sauvegardées", preferences);
     };
 
+    const themeOptions: { value: ThemePref; label: string }[] = [
+        { value: "light", label: t("referentials.themeOptions.light") },
+        { value: "dark", label: t("referentials.themeOptions.dark") },
+        { value: "system", label: t("referentials.themeOptions.system") },
+    ];
+
+    const languageOptions: { value: LanguagePref; label: string }[] = [
+        { value: "fr", label: t("referentials.languageOptions.fr") },
+        { value: "en", label: t("referentials.languageOptions.en") },
+    ];
+
+    const timezoneOptions: { value: TimezonePref; label: string }[] = [
+        { value: "kinshasa", label: t("referentials.timezoneOptions.kinshasa") },
+        { value: "lubumbashi", label: t("referentials.timezoneOptions.lubumbashi") },
+        { value: "goma", label: t("referentials.timezoneOptions.goma") },
+    ];
+
     return (
         <main className="min-h-0 bg-white px-6 py-8 text-slate-800">
             <div className="mx-auto w-full">
                 <h1 className="mb-8 text-[28px] font-bold text-slate-900">
-                    Configuration
+                    {t("pageTitle")}
                 </h1>
 
                 <div className="flex flex-col gap-8 lg:flex-row lg:items-start">
                     <aside className="w-full shrink-0 lg:sticky lg:top-20 lg:z-10 lg:w-64 lg:self-start lg:bg-white xl:w-72">
                         <nav className="space-y-1 border border-slate-100 lg:border-0">
-                            {menuItems.map((item) => {
-                                const isActive = activeMenu === item;
+                            {MENU_IDS.map((id) => {
+                                const isActive = activeMenu === id;
 
                                 return (
                                     <button
-                                        key={item}
+                                        key={id}
                                         type="button"
-                                        onClick={() => setActiveMenu(item)}
+                                        onClick={() => setActiveMenu(id)}
                                         className={`block w-full px-4 py-3 text-left text-[15px] font-medium cursor-pointer ${
                                             isActive
                                                 ? "font-bold bg-[#0073C5] text-white"
                                                 : "text-slate-500 hover:text-slate-800"
                                         }`}
                                     >
-                                        {item}
+                                        {t(`menu.${id}`)}
                                     </button>
                                 );
                             })}
@@ -109,12 +129,12 @@ export default function ConfigurationPage() {
                     </aside>
 
                     <section className="min-h-0 w-full flex-1 space-y-5 overflow-y-auto lg:max-h-[calc(100dvh-8.5rem)] lg:overflow-y-auto lg:pb-10 lg:pr-2">
-                        {activeMenu === "Informations de base" && (
+                        {activeMenu === "basicInfo" && (
                             <>
                                 <div className="border border-slate-200 bg-white">
                                     <div className="border-b border-slate-200 px-5 py-4">
                                         <h2 className="text-[16px] font-semibold">
-                                            Informations de base
+                                            {t("basicInfo.sectionTitle")}
                                         </h2>
                                     </div>
 
@@ -125,14 +145,14 @@ export default function ConfigurationPage() {
                                             </div>
 
                                             <button className="border border-slate-200 px-4 py-2 text-[13px] font-medium hover:bg-slate-50">
-                                                Changer
+                                                {t("basicInfo.changePhoto")}
                                             </button>
                                         </div>
 
                                         <div className="grid gap-5 md:grid-cols-2">
                                             <div>
                                                 <label className="mb-1 block text-[13px] font-medium">
-                                                    Nom
+                                                    {t("basicInfo.name")}
                                                 </label>
                                                 <input
                                                     value={profileForm.name}
@@ -148,7 +168,7 @@ export default function ConfigurationPage() {
 
                                             <div>
                                                 <label className="mb-1 block text-[13px] font-medium">
-                                                    Email
+                                                    {t("basicInfo.email")}
                                                 </label>
                                                 <input
                                                     value={profileForm.email}
@@ -170,25 +190,25 @@ export default function ConfigurationPage() {
                                         onClick={handleSaveProfile}
                                         className="h-11 bg-[#0073C5] px-8 text-[14px] font-semibold text-white hover:bg-[#005999]"
                                     >
-                                        Enregistrer les modifications
+                                        {t("basicInfo.saveChanges")}
                                     </button>
                                 </div>
                             </>
                         )}
 
-                        {activeMenu === "Changer mot de passe" && (
+                        {activeMenu === "changePassword" && (
                             <>
                                 <div className="border border-slate-200 bg-white">
                                     <div className="border-b border-slate-200 px-5 py-4">
                                         <h2 className="text-[16px] font-semibold">
-                                            Changer mot de passe
+                                            {t("password.sectionTitle")}
                                         </h2>
                                     </div>
 
                                     <div className="grid gap-5 px-5 py-5 md:grid-cols-3">
                                         <div>
                                             <label className="mb-1 block text-[13px] font-medium">
-                                                Ancien mot de passe
+                                                {t("password.oldPassword")}
                                             </label>
                                             <input
                                                 type="password"
@@ -199,14 +219,14 @@ export default function ConfigurationPage() {
                                                         oldPassword: e.target.value,
                                                     }))
                                                 }
-                                                placeholder="Entrer votre mot de passe"
+                                                placeholder={t("password.placeholder")}
                                                 className="h-11 w-full border border-slate-200 px-3 text-[13px] outline-none focus:border-[#1f6a9a]"
                                             />
                                         </div>
 
                                         <div>
                                             <label className="mb-1 block text-[13px] font-medium">
-                                                Nouveau mot de passe
+                                                {t("password.newPassword")}
                                             </label>
                                             <input
                                                 type="password"
@@ -217,14 +237,14 @@ export default function ConfigurationPage() {
                                                         newPassword: e.target.value,
                                                     }))
                                                 }
-                                                placeholder="Entrer votre mot de passe"
+                                                placeholder={t("password.placeholder")}
                                                 className="h-11 w-full border border-slate-200 px-3 text-[13px] outline-none focus:border-[#1f6a9a]"
                                             />
                                         </div>
 
                                         <div>
                                             <label className="mb-1 block text-[13px] font-medium">
-                                                Confirmer le mot de passe
+                                                {t("password.confirmPassword")}
                                             </label>
                                             <input
                                                 type="password"
@@ -235,7 +255,7 @@ export default function ConfigurationPage() {
                                                         confirmPassword: e.target.value,
                                                     }))
                                                 }
-                                                placeholder="Entrer votre mot de passe"
+                                                placeholder={t("password.placeholder")}
                                                 className="h-11 w-full border border-slate-200 px-3 text-[13px] outline-none focus:border-[#1f6a9a]"
                                             />
                                         </div>
@@ -254,54 +274,54 @@ export default function ConfigurationPage() {
                                         disabled={!!passwordError}
                                         className="h-11 bg-[#0073C5] px-8 text-[14px] font-semibold text-white hover:bg-[#005999] disabled:cursor-not-allowed disabled:bg-slate-300"
                                     >
-                                        Modifier le mot de passe
+                                        {t("password.submit")}
                                     </button>
                                 </div>
                             </>
                         )}
 
-                        {activeMenu === "Référencielles" && (
+                        {activeMenu === "referentials" && (
                             <>
                                 <div className="border border-slate-200 bg-white">
                                     <div className="border-b border-slate-200 px-5 py-4">
                                         <h2 className="text-[16px] font-semibold">
-                                            Préférences
+                                            {t("referentials.preferencesTitle")}
                                         </h2>
                                     </div>
 
                                     <div className="grid gap-5 px-5 py-5 md:grid-cols-3">
                                         <SelectBox
-                                            label="Thème"
+                                            label={t("referentials.theme")}
                                             value={preferences.theme}
-                                            options={["Mode clair", "Mode sombre", "Système"]}
+                                            options={themeOptions}
                                             onChange={(value) =>
                                                 setPreferences((prev) => ({
                                                     ...prev,
-                                                    theme: value,
+                                                    theme: value as ThemePref,
                                                 }))
                                             }
                                         />
 
                                         <SelectBox
-                                            label="Langue"
+                                            label={t("referentials.language")}
                                             value={preferences.language}
-                                            options={["Français", "English"]}
+                                            options={languageOptions}
                                             onChange={(value) =>
                                                 setPreferences((prev) => ({
                                                     ...prev,
-                                                    language: value,
+                                                    language: value as LanguagePref,
                                                 }))
                                             }
                                         />
 
                                         <SelectBox
-                                            label="Fuseau horaire"
+                                            label={t("referentials.timezone")}
                                             value={preferences.timezone}
-                                            options={["Kinshasa", "Lubumbashi", "Goma"]}
+                                            options={timezoneOptions}
                                             onChange={(value) =>
                                                 setPreferences((prev) => ({
                                                     ...prev,
-                                                    timezone: value,
+                                                    timezone: value as TimezonePref,
                                                 }))
                                             }
                                         />
@@ -314,15 +334,18 @@ export default function ConfigurationPage() {
                                     <div className="border border-slate-200 bg-white">
                                         <div className="border-b border-slate-200 px-5 py-4">
                                             <h2 className="text-[16px] font-semibold">
-                                                Comptes connectés
+                                                {t("referentials.connectedAccounts")}
                                             </h2>
                                         </div>
 
                                         <div className="space-y-4 px-5 py-5">
                                             <ConnectedAccount
+                                                disconnectLabel={t("referentials.disconnect")}
                                                 icon={<Mail className="h-5 w-5 text-red-500" />}
-                                                title="Google"
-                                                subtitle="Connecté avec benjamin@gmail.com"
+                                                title={t("referentials.google")}
+                                                subtitle={t("referentials.connectedWith", {
+                                                    email: "benjamin@gmail.com",
+                                                })}
                                             />
                                         </div>
                                     </div>
@@ -330,21 +353,23 @@ export default function ConfigurationPage() {
                                     <div className="border border-slate-200 bg-white">
                                         <div className="border-b border-slate-200 px-5 py-4">
                                             <h2 className="text-[16px] font-semibold">
-                                                Appareils
+                                                {t("referentials.devices")}
                                             </h2>
                                         </div>
 
                                         <div className="space-y-4 px-5 py-5">
                                             <Device
+                                                removeLabel={t("referentials.remove")}
                                                 icon={<Smartphone className="h-5 w-5" />}
-                                                title="iPhone 14 Pro"
-                                                subtitle="Dernière utilisation il y a 2 jours"
+                                                title={t("referentials.deviceIphone")}
+                                                subtitle={t("referentials.lastUsed2Days")}
                                             />
 
                                             <Device
+                                                removeLabel={t("referentials.remove")}
                                                 icon={<Laptop className="h-5 w-5" />}
-                                                title="MacBook Pro"
-                                                subtitle="Dernière utilisation il y a 1 semaine"
+                                                title={t("referentials.deviceMacbook")}
+                                                subtitle={t("referentials.lastUsed1Week")}
                                             />
                                         </div>
                                     </div>
@@ -355,13 +380,13 @@ export default function ConfigurationPage() {
                                         onClick={handleSavePreferences}
                                         className="h-11 bg-[#0073C5] px-8 text-[14px] font-semibold text-white hover:bg-[#005999]"
                                     >
-                                        Enregistrer les préférences
+                                        {t("referentials.savePreferences")}
                                     </button>
                                 </div>
                             </>
                         )}
 
-                        {activeMenu === "Groupe de taxations" && (
+                        {activeMenu === "taxGroups" && (
                             <TaxGroupsSection />
                         )}
                     </section>
@@ -371,27 +396,29 @@ export default function ConfigurationPage() {
     );
 }
 
-function SelectBox({
-                       label,
-                       value,
-                       options,
-                       onChange,
-                   }: {
+function SelectBox<T extends string>({
+    label,
+    value,
+    options,
+    onChange,
+}: {
     label: string;
-    value: string;
-    options: string[];
-    onChange: (value: string) => void;
+    value: T;
+    options: { value: T; label: string }[];
+    onChange: (value: T) => void;
 }) {
     return (
         <div>
             <label className="mb-1 block text-[13px] font-medium">{label}</label>
             <select
                 value={value}
-                onChange={(e) => onChange(e.target.value)}
+                onChange={(e) => onChange(e.target.value as T)}
                 className="h-11 w-full border border-slate-200 bg-white px-3 text-[13px] outline-none focus:border-[#1f6a9a]"
             >
                 {options.map((option) => (
-                    <option key={option}>{option}</option>
+                    <option key={option.value} value={option.value}>
+                        {option.label}
+                    </option>
                 ))}
             </select>
         </div>
@@ -399,13 +426,15 @@ function SelectBox({
 }
 
 function ConnectedAccount({
-                              icon,
-                              title,
-                              subtitle,
-                          }: {
+    icon,
+    title,
+    subtitle,
+    disconnectLabel,
+}: {
     icon: React.ReactNode;
     title: string;
     subtitle: string;
+    disconnectLabel: string;
 }) {
     const [connected, setConnected] = useState(true);
 
@@ -425,20 +454,22 @@ function ConnectedAccount({
                 onClick={() => setConnected(false)}
                 className="border border-slate-200 px-3 py-2 text-[12px] font-medium hover:bg-slate-50"
             >
-                Déconnecter
+                {disconnectLabel}
             </button>
         </div>
     );
 }
 
 function Device({
-                    icon,
-                    title,
-                    subtitle,
-                }: {
+    icon,
+    title,
+    subtitle,
+    removeLabel,
+}: {
     icon: React.ReactNode;
     title: string;
     subtitle: string;
+    removeLabel: string;
 }) {
     const [visible, setVisible] = useState(true);
 
@@ -458,7 +489,7 @@ function Device({
                 onClick={() => setVisible(false)}
                 className="border border-slate-200 px-3 py-2 text-[12px] font-medium hover:bg-slate-50"
             >
-                Retirer
+                {removeLabel}
             </button>
         </div>
     );
