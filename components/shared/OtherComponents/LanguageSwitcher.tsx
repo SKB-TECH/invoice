@@ -30,16 +30,16 @@ const languages = [
         label: 'Lingala',
         country: 'CD',
     },
-    {
-        code: 'sw',
-        label: 'Swahili',
-        country: 'CD',
-    },
-    {
-        code: 'lua',
-        label: 'Tshiluba',
-        country: 'CD',
-    },
+    // {
+    //     code: 'sw',
+    //     label: 'Swahili',
+    //     country: 'CD',
+    // },
+    // {
+    //     code: 'lua',
+    //     label: 'Tshiluba',
+    //     country: 'CD',
+    // },
 ];
 
 export default function LanguageSwitcher() {
