@@ -51,6 +51,177 @@
     "Configuration": "Settings",
     "Aide": "Help"
   },
+  "login": {
+    "illustrationAlt": "illustration",
+    "logoAlt": "logo",
+    "description": "Manage your customers, contracts, and invoices easily with iKwook Invoice.",
+    "title": "Login",
+    "identifier": "Username",
+    "identifierPlaceholder": "email@ikwook.cd",
+    "password": "Password",
+    "passwordPlaceholder": "********",
+    "submit": "Sign in",
+    "noAccount": "Don't have an account yet?",
+    "createAccount": "Click here to create your account"
+  },
+  "invoicesPage": {
+    "breadcrumb": {
+      "invoices": "Invoices",
+      "view": "View"
+    },
+    "title": "Invoice list",
+    "createInvoice": "Create invoice",
+    "table": {
+      "invoice": "Invoice",
+      "client": "Client",
+      "article": "Item",
+      "amount": "Amount",
+      "status": "Status",
+      "phone": "Phone",
+      "comments": "Comments",
+      "interactions": "Interactions",
+      "actions": "Actions",
+      "viewInvoice": "Invoice details",
+      "viewInteractions": "View interactions"
+    },
+    "drawer": {
+      "reviewInvoice": "Invoice review",
+      "amount": "Amount",
+      "status": "Status",
+      "interactions": "Interactions",
+      "decision": "Decision",
+      "validate": "Validate",
+      "pause": "Pause",
+      "reject": "Reject",
+      "comments": "Comments",
+      "noComment": "No comments for this invoice.",
+      "addComment": "Add a comment",
+      "commentPlaceholder": "Write a comment about this invoice...",
+      "sendComment": "Send comment",
+      "you": "You",
+      "reviewer": "Reviewer",
+      "now": "Now"
+    }
+  },
+  "invoiceViewer": {
+    "breadcrumbInvoices": "Invoices",
+    "breadcrumbView": "Viewer",
+    "print": "Print",
+    "download": "Download",
+    "share": "Share",
+    "documentPreview": "Invoice preview",
+    "documentHelp": "The invoice stays visible during the review, like a shared document.",
+    "invoice": "Invoice",
+    "billedTo": "Billed to",
+    "createdAt": "Created at",
+    "dueDate": "Due date",
+    "status": "Status",
+    "amount": "Amount",
+    "designation": "Description",
+    "quantity": "Qty",
+    "unitPrice": "Unit price",
+    "lineTotal": "Total",
+    "subtotal": "Subtotal",
+    "tax": "Tax",
+    "total": "Total",
+    "note": "Note",
+    "noteText": "This invoice is subject to internal validation before final delivery to the client.",
+    "reviewAndComments": "Review and comments",
+    "reviewHelp": "Follow reviewers’ notes and add your own comment.",
+    "decision": "Decision",
+    "validate": "Validate",
+    "pause": "Pause",
+    "reject": "Reject",
+    "interactions": "Interactions",
+    "comments": "Comments",
+    "noComment": "No comments for this invoice.",
+    "resolve": "Mark as resolved",
+    "resolved": "Resolved",
+    "addComment": "Add a comment",
+    "commentPlaceholder": "Write a comment about this invoice...",
+    "sendComment": "Send comment",
+    "you": "You",
+    "reviewer": "Reviewer",
+    "now": "Now"
+  },
+  "createInvoice": {
+    "title": "Create invoice",
+    "breadcrumb": {
+      "home": "Home",
+      "createInvoice": "Create invoice"
+    },
+    "common": {
+      "select": "Select",
+      "add": "Add",
+      "next": "Next",
+      "previous": "Previous",
+      "cancel": "Cancel",
+      "save": "Save",
+      "submit": "Submit",
+      "normalize": "Normalize"
+    },
+    "steps": {
+      "client": "Client information",
+      "preview": "Preview"
+    },
+    "kind": {
+      "article": "Item",
+      "service": "Service"
+    },
+    "invoiceTypes": {
+      "sale": "Sale",
+      "creditNote": "Credit note",
+      "proforma": "Proforma"
+    },
+    "client": {
+      "client": "Client",
+      "searchPlaceholder": "Search or select a client",
+      "empty": "No client found",
+      "clientName": "Client name",
+      "nif": "Tax number / NIF",
+      "rccm": "RCCM",
+      "idNat": "National ID",
+      "address": "Address",
+      "phone": "Phone",
+      "email": "Email",
+      "invoiceType": "Invoice type",
+      "invoiceTypePlaceholder": "Sale or credit note",
+      "itemKind": "Item or Service"
+    },
+    "catalog": {
+      "searchArticle": "Search item",
+      "searchService": "Search service",
+      "loading": "Searching...",
+      "empty": "No result found",
+      "dailyService": "Daily service",
+      "noArticle": "No item added.",
+      "noService": "No service added."
+    },
+    "table": {
+      "number": "N°",
+      "quantity": "Qty",
+      "tax": "Tax",
+      "priceHT": "Price excl. tax",
+      "men": "Men",
+      "days": "Days",
+      "dailyPrice": "Daily price",
+      "dailyPriceShort": "Price/day",
+      "totalHT": "Total excl. tax"
+    },
+    "preview": {
+      "settings": "Settings",
+      "editClient": "Edit client",
+      "editArticles": "Edit items",
+      "editServices": "Edit services",
+      "invoiceNumber": "Invoice n°101",
+      "date": "Date 02/11/2026"
+    },
+    "summary": {
+      "subtotal": "Subtotal",
+      "tax": "Tax",
+      "total": "Total"
+    }
+  },
   "clients": {
     "createClient": {
       "breadcrumb": {
@@ -60,8 +231,8 @@
       "title": "New customer",
       "form": {
         "reference": "Reference number",
-        "nom": "customer name",
-        "sousTitre": "subtitle",
+        "nom": "Customer name",
+        "sousTitre": "Subtitle",
         "nif": "Tax ID Number (NIF)",
         "rccm": "Registration of Commerce and Companies (RCCM)",
         "tel": "Phone number",
@@ -69,7 +240,7 @@
         "adresse": "Address",
         "pays": "Country",
         "status": {
-          "title": "status of customer",
+          "title": "Status of customer",
           "options": {
             "actif": "Active",
             "suspendu": "Suspended",
@@ -77,10 +248,10 @@
           }
         },
         "type": {
-          "title": "type of customer",
+          "title": "Type of customer",
           "options": {
             "ponctuel": "Punctual",
-            "recurrent": "recurring"
+            "recurrent": "Recurring"
           }
         },
         "annule": "Cancel",
@@ -90,7 +261,7 @@
     "listClients": {
       "breadcrumb": {
         "Step1": "Customers",
-        "Step2": "view"
+        "Step2": "View"
       },
       "title": "List of customers",
       "btn": {
@@ -105,7 +276,7 @@
         "nif": "Tax ID Number (NIF)",
         "tel": "Phone number",
         "status": {
-          "title": "status",
+          "title": "Status",
           "options": {
             "actif": "Active",
             "suspendu": "Suspended",

@@ -51,6 +51,177 @@
     "Configuration": "Configuration",
     "Aide": "Aide"
   },
+  "login": {
+    "illustrationAlt": "illustration",
+    "logoAlt": "logo",
+    "description": "Gérez vos clients, contrats et factures en toute simplicité avec iKwook Invoice.",
+    "title": "Connexion",
+    "identifier": "Identifiant",
+    "identifierPlaceholder": "email@ikwook.cd",
+    "password": "Mot de passe",
+    "passwordPlaceholder": "********",
+    "submit": "Se connecter",
+    "noAccount": "Vous n'avez pas encore de compte ?",
+    "createAccount": "Cliquez ici pour créer votre compte"
+  },
+  "invoicesPage": {
+    "breadcrumb": {
+      "invoices": "Factures",
+      "view": "Visualiser"
+    },
+    "title": "Liste de factures",
+    "createInvoice": "Créer facture",
+    "table": {
+      "invoice": "Invoice",
+      "client": "Client",
+      "article": "Article",
+      "amount": "Montant",
+      "status": "Statut",
+      "phone": "Téléphone",
+      "comments": "Commentaires",
+      "interactions": "Interactions",
+      "actions": "Actions",
+      "viewInvoice": "Détails de la facture",
+      "viewInteractions": "Voir les interactions"
+    },
+    "drawer": {
+      "reviewInvoice": "Review facture",
+      "amount": "Montant",
+      "status": "Statut",
+      "interactions": "Interactions",
+      "decision": "Décision",
+      "validate": "Valider",
+      "pause": "Pause",
+      "reject": "Rejeter",
+      "comments": "Commentaires",
+      "noComment": "Aucun commentaire pour cette facture.",
+      "addComment": "Ajouter un commentaire",
+      "commentPlaceholder": "Écrire un commentaire sur cette facture...",
+      "sendComment": "Envoyer le commentaire",
+      "you": "Vous",
+      "reviewer": "Reviewer",
+      "now": "Maintenant"
+    }
+  },
+  "invoiceViewer": {
+    "breadcrumbInvoices": "Factures",
+    "breadcrumbView": "Visualisation",
+    "print": "Imprimer",
+    "download": "Télécharger",
+    "share": "Partager",
+    "documentPreview": "Aperçu de la facture",
+    "documentHelp": "La facture reste visible pendant la review, comme un document partagé.",
+    "invoice": "Facture",
+    "billedTo": "Facturé à",
+    "createdAt": "Date création",
+    "dueDate": "Échéance",
+    "status": "Statut",
+    "amount": "Montant",
+    "designation": "Désignation",
+    "quantity": "Qté",
+    "unitPrice": "Prix unitaire",
+    "lineTotal": "Total",
+    "subtotal": "Sous-total",
+    "tax": "TVA",
+    "total": "Total",
+    "note": "Note",
+    "noteText": "Cette facture est soumise à validation interne avant transmission finale au client.",
+    "reviewAndComments": "Review et commentaires",
+    "reviewHelp": "Suivez les remarques des validateurs et ajoutez votre commentaire.",
+    "decision": "Décision",
+    "validate": "Valider",
+    "pause": "Pause",
+    "reject": "Rejeter",
+    "interactions": "Interactions",
+    "comments": "Commentaires",
+    "noComment": "Aucun commentaire pour cette facture.",
+    "resolve": "Marquer comme résolu",
+    "resolved": "Résolu",
+    "addComment": "Ajouter un commentaire",
+    "commentPlaceholder": "Écrire un commentaire sur cette facture...",
+    "sendComment": "Envoyer le commentaire",
+    "you": "Vous",
+    "reviewer": "Reviewer",
+    "now": "Maintenant"
+  },
+  "createInvoice": {
+    "title": "Créer la facture",
+    "breadcrumb": {
+      "home": "Accueil",
+      "createInvoice": "Créer la facture"
+    },
+    "common": {
+      "select": "Sélectionnez",
+      "add": "Ajouter",
+      "next": "Suivant",
+      "previous": "Précédent",
+      "cancel": "Annuler",
+      "save": "Enregistrer",
+      "submit": "Soumettre",
+      "normalize": "Normaliser"
+    },
+    "steps": {
+      "client": "Informations client",
+      "preview": "Prévisualisation"
+    },
+    "kind": {
+      "article": "Article",
+      "service": "Service"
+    },
+    "invoiceTypes": {
+      "sale": "Vente",
+      "creditNote": "Avoir",
+      "proforma": "Proforma"
+    },
+    "client": {
+      "client": "Client",
+      "searchPlaceholder": "Rechercher ou sélectionnez un client",
+      "empty": "Aucun client trouvé",
+      "clientName": "Nom client",
+      "nif": "Numéro Impôt / NIF",
+      "rccm": "RCCM",
+      "idNat": "ID NAT",
+      "address": "Adresse",
+      "phone": "Téléphone",
+      "email": "E-mail",
+      "invoiceType": "Type de facture",
+      "invoiceTypePlaceholder": "Vente ou Avoir",
+      "itemKind": "Article ou Service"
+    },
+    "catalog": {
+      "searchArticle": "Recherche article",
+      "searchService": "Recherche service",
+      "loading": "Recherche en cours...",
+      "empty": "Aucun résultat trouvé",
+      "dailyService": "Service journalier",
+      "noArticle": "Aucun article ajouté.",
+      "noService": "Aucun service ajouté."
+    },
+    "table": {
+      "number": "N°",
+      "quantity": "Qté",
+      "tax": "Taxe",
+      "priceHT": "Prix HT",
+      "men": "Hommes",
+      "days": "Jours",
+      "dailyPrice": "Prix journalier",
+      "dailyPriceShort": "Prix/jour",
+      "totalHT": "Total HT"
+    },
+    "preview": {
+      "settings": "Paramètre",
+      "editClient": "Modifier le client",
+      "editArticles": "Modifier les articles",
+      "editServices": "Modifier les services",
+      "invoiceNumber": "Invoice n°101",
+      "date": "Date 02/11/2026"
+    },
+    "summary": {
+      "subtotal": "Sous-total",
+      "tax": "TVA",
+      "total": "Total"
+    }
+  },
   "clients": {
     "createClient": {
       "breadcrumb": {
