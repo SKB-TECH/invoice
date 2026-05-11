@@ -50,5 +50,174 @@
     "NouveauContrat": "Kontra ya sika",
     "Configuration": "Bobongisi",
     "Aide": "Lisalisi"
+  },
+  "login": {
+    "illustrationAlt": "elilingi",
+    "logoAlt": "logo",
+    "description": "Bongisa bakiliya, mikanda ya boyokani mpe bafaktire na pete na iKwook Invoice.",
+    "title": "Kokota",
+    "identifier": "Nkombo ya mosaleli",
+    "identifierPlaceholder": "email@ikwook.cd",
+    "password": "Mot de passe",
+    "passwordPlaceholder": "********",
+    "submit": "Kokota",
+    "noAccount": "Ozali naino na compte te?",
+    "createAccount": "Finá awa mpo na kosala compte"
+  },
+  "invoicesPage": {
+    "breadcrumb": {
+      "invoices": "Bafaktire",
+      "view": "Komona"
+    },
+    "title": "Liste ya bafaktire",
+    "createInvoice": "Kosala faktire",
+    "table": {
+      "invoice": "Faktire",
+      "client": "Kiliya",
+      "article": "Eloko",
+      "amount": "Motuya",
+      "status": "Statut",
+      "phone": "Telefone",
+      "comments": "Ba commentaire",
+      "interactions": "Ba interactions",
+      "actions": "Misala",
+      "viewInvoice": "Komona détails ya faktire",
+      "viewInteractions": "Komona ba interactions"
+    },
+    "drawer": {
+      "reviewInvoice": "Kotala faktire",
+      "amount": "Motuya",
+      "status": "Statut",
+      "interactions": "Ba interactions",
+      "decision": "Mokano",
+      "validate": "Kondima",
+      "pause": "Kotia pause",
+      "reject": "Koboya",
+      "comments": "Ba commentaire",
+      "noComment": "Commentaire ezali te mpo na faktire oyo.",
+      "addComment": "Bakisa commentaire",
+      "commentPlaceholder": "Koma commentaire mpo na faktire oyo...",
+      "sendComment": "Tinda commentaire",
+      "you": "Yo",
+      "reviewer": "Moto azali kotala",
+      "now": "Sikoyo"
+    }
+  },
+  "invoiceViewer": {
+    "breadcrumbInvoices": "Bafaktire",
+    "breadcrumbView": "Kotala",
+    "print": "Kobimisa",
+    "download": "Kozwa",
+    "share": "Kokabola",
+    "documentPreview": "Komona faktire",
+    "documentHelp": "Faktire ekotikala komonana tango bozali kosala review, lokola document ya kokabola.",
+    "invoice": "Faktire",
+    "billedTo": "Epesami na",
+    "createdAt": "Mokolo ya kosala",
+    "dueDate": "Mokolo ya suka",
+    "status": "Statut",
+    "amount": "Motuya",
+    "designation": "Ndimbola",
+    "quantity": "Motango",
+    "unitPrice": "Prix moko",
+    "lineTotal": "Total",
+    "subtotal": "Sous-total",
+    "tax": "TVA",
+    "total": "Total",
+    "note": "Liyebisi",
+    "noteText": "Faktire oyo esengeli kondimama na kati liboso ya kotindama na kiliya.",
+    "reviewAndComments": "Review mpe ba commentaire",
+    "reviewHelp": "Tala makanisi ya ba validateurs mpe bakisa commentaire na yo.",
+    "decision": "Mokano",
+    "validate": "Kondima",
+    "pause": "Kotia pause",
+    "reject": "Koboya",
+    "interactions": "Ba interactions",
+    "comments": "Ba commentaire",
+    "noComment": "Commentaire ezali te mpo na faktire oyo.",
+    "resolve": "Kotia lokola esili",
+    "resolved": "Esili",
+    "addComment": "Bakisa commentaire",
+    "commentPlaceholder": "Koma commentaire mpo na faktire oyo...",
+    "sendComment": "Tinda commentaire",
+    "you": "Yo",
+    "reviewer": "Moto azali kotala",
+    "now": "Sikoyo"
+  },
+  "createInvoice": {
+    "title": "Kosala faktire",
+    "breadcrumb": {
+      "home": "Accueil",
+      "createInvoice": "Kosala faktire"
+    },
+    "common": {
+      "select": "Pona",
+      "add": "Bakisa",
+      "next": "Kokende liboso",
+      "previous": "Kozonga",
+      "cancel": "Kolongola",
+      "save": "Kobomba"
+    },
+    "steps": {
+      "client": "Ba informations ya kiliya",
+      "preview": "Komona liboso"
+    },
+    "kind": {
+      "article": "Eloko",
+      "service": "Service"
+    },
+    "invoiceTypes": {
+      "sale": "Vente",
+      "creditNote": "Avoir",
+      "proforma": "Proforma"
+    },
+    "client": {
+      "client": "Kiliya",
+      "searchPlaceholder": "Luka to pona kiliya",
+      "empty": "Kiliya amonani te",
+      "clientName": "Kombo ya kiliya",
+      "nif": "Nimero ya impôt / NIF",
+      "rccm": "RCCM",
+      "idNat": "ID NAT",
+      "address": "Adresse",
+      "phone": "Telefone",
+      "email": "E-mail",
+      "invoiceType": "Lolenge ya faktire",
+      "invoiceTypePlaceholder": "Vente to Avoir",
+      "itemKind": "Eloko to Service"
+    },
+    "catalog": {
+      "searchArticle": "Luka eloko",
+      "searchService": "Luka service",
+      "loading": "Boluki ezali kosalama...",
+      "empty": "Eloko emonani te",
+      "dailyService": "Service ya mokolo",
+      "noArticle": "Eloko ebakisami te.",
+      "noService": "Service ebakisami te."
+    },
+    "table": {
+      "number": "N°",
+      "quantity": "Motango",
+      "tax": "Taxe",
+      "priceHT": "Prix HT",
+      "men": "Bato",
+      "days": "Mikolo",
+      "dailyPrice": "Prix ya mokolo",
+      "dailyPriceShort": "Prix/mokolo",
+      "totalHT": "Total HT"
+    },
+    "preview": {
+      "settings": "Paramètre",
+      "editClient": "Kobongisa kiliya",
+      "editArticles": "Kobongisa biloko",
+      "editServices": "Kobongisa ba services",
+      "invoiceNumber": "Faktire n°101",
+      "date": "Mokolo 02/11/2026"
+    },
+    "summary": {
+      "subtotal": "Sous-total",
+      "tax": "TVA",
+      "total": "Total"
+    }
   }
 }

@@ -24,11 +24,11 @@ export const menuItems: MenuItem[] = [
         subItems: [
             {
                 title: "MesFactures",
-                href: "/home",
+                href: "/home/factures",
             },
             {
                 title: "NouvelleFacture",
-                href: "/home/facture/nouveau",
+                href: "/home/factures/new",
             },
         ],
     },
