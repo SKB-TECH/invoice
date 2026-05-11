@@ -51,6 +51,77 @@
     "Configuration": "Bobongisi",
     "Aide": "Lisalisi"
   },
+  "clients": {
+    "createClient": {
+      "breadcrumb": {
+        "Step1": "Bakiliya",
+        "Step2": "Ya sika"
+      },
+      "title": "Kiliya ya sika",
+      "form": {
+        "reference": "Numelo ya Reference",
+        "nom": "Kombo ya kiliya",
+        "sousTitre": "Motó ya nse",
+        "nif": "Numelo ya NIF",
+        "rccm": "Numelo ya RCCM",
+        "tel": "Telefɔ́ni",
+        "email": "Email ya kiliya",
+        "adresse": "Adresi ya kiliya",
+        "pays": "Mboka",
+        "status": {
+          "title": "Etaleli ya kiliya",
+          "options": {
+            "actif": "Eloko ya motuya",
+            "suspendu": "Bakangisi",
+            "complet": "Esika esili"
+          }
+        },
+        "type": {
+          "title": "Lolenge ya kiliya",
+          "options": {
+            "ponctuel": "Na ngonga",
+            "entreprise": "Kompanyi"
+          }
+        },
+        "annule": "Kanga",
+        "save": "Bomba"
+      }
+    },
+    "listClients": {
+      "breadcrumb": {
+        "Step1": "Bakiliya",
+        "Step2": "Komona"
+      },
+      "title": "Liste ya bakiliya",
+      "btn": {
+        "new": "Kiliya ya sika"
+      },
+      "search": {
+        "placeholder": "Luka mokiliya"
+      },
+      "table": {
+        "reference": "Numelo ya Reference",
+        "titre": "Motó ya likambo",
+        "nif": "Numelo ya NIF",
+        "tel": "Telefɔ́ni",
+        "status": {
+          "title": "Etaleli ya kiliya",
+          "options": {
+            "actif": "Eloko ya motuya",
+            "suspendu": "Bakangisi",
+            "complet": "Esika esili"
+          }
+        },
+        "type": {
+          "title": "Lolenge ya kiliya",
+          "options": {
+            "ponctuel": "Na ngonga",
+            "entreprise": "Kompanyi"
+          }
+        }
+      }
+    }
+  },
   "articles": {
     "list": {
       "title": "Biloko",

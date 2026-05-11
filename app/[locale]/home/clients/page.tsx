@@ -63,7 +63,7 @@ export default function ClientsPage() {
         </Button>
       </div>
       <div className="mb-6 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
-        <Input type="text" placeholder="Rechercher un client" className="h-12 w-100 rounded border-1 border-slate-200 bg-white" />
+        <Input type="text" placeholder={t("search.placeholder")} className="h-12 w-100 rounded border-1 border-slate-200 bg-white" />
       </div>
 
       <div className="overflow-hidden border border-slate-200/80 bg-white">
@@ -77,7 +77,7 @@ export default function ClientsPage() {
                 {t("table.titre")}
               </TableHead>
               <TableHead className="h-11 bg-slate-100 px-4 text-left text-sm font-semibold text-slate-700">
-                {t("table.type")}
+                {t("table.type.title")}
               </TableHead>
               <TableHead className="h-11 bg-slate-100 px-4 text-left text-sm font-semibold text-slate-700">
                 {t("table.nif")}
@@ -89,7 +89,7 @@ export default function ClientsPage() {
                 {t("table.tel")}
               </TableHead>
               <TableHead className="h-11 bg-slate-100 px-4 text-right text-sm font-semibold text-slate-700">
-                <span className="sr-only">{t("table.actions")}</span>
+                <span className="sr-only"></span>
               </TableHead>
             </TableRow>
           </TableHeader>

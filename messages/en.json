@@ -122,6 +122,66 @@
       }
     }
   },
+  "contrats": {
+    "createContrat": {
+      "breadcrumb": {
+        "Step1": "Contracts",
+        "Step2": "New"
+      },
+      "title": "New contract",
+      "form": {
+        "reference": "Reference number",
+        "nom": "Contract name",
+        "auto-renew": {
+          "title": "Automatic renewal",
+          "options": {
+            "oui": "Yes",
+            "non": "No"
+          }
+        },
+        "tel": "Phone number",
+        "dateStart": "Start date",
+        "dateEnd": "End date",
+        "valeur": "Contract amount",
+        "status": {
+          "title": "Status",
+          "options": {
+            "actif": "Active",
+            "suspendu": "Suspended",
+            "complet": "Complete"
+          }
+        },
+        "description": "Description"
+      }
+    },
+    "listContrats": {
+      "breadcrumb": {
+        "Step1": "Contracts",
+        "Step2": "View"
+      },
+      "title": "List of contracts",
+      "btn": {
+        "new": "New contract"
+      },
+      "search": {
+        "placeholder": "Search contract"
+      },
+      "table": {
+        "titre": "Title",
+        "client": "Customer",
+        "Montant": "Amount",
+        "status": {
+          "title": "Status",
+          "options": {
+            "actif": "Active",
+            "suspendu": "Suspended",
+            "complet": "Complete"
+          }
+        },
+        "period": "Period"
+      }
+    }
+  },
   "articles": {
     "list": {
       "title": "Articles",
