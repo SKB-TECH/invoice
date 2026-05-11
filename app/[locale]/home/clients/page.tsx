@@ -16,6 +16,7 @@ import {
   demoClients,
   type ClientStatutUi,
 } from "@/lib/clients/clients-data";
+import { Input } from "@/components/ui/input";
 
 function StatutBadge({ statut }: { statut: ClientStatutUi }) {
   const styles: Record<ClientStatutUi, string> = {
@@ -50,15 +51,18 @@ export default function ClientsPage() {
       </span>
       <div className="mb-6 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
         <h1 className="text-2xl font-bold tracking-tight text-slate-800 sm:text-3xl">
-          Clients
+          Liste de clients
         </h1>
         <Button
           size="lg"
-          className="h-12 w-52 cursor-pointer rounded bg-[#0879bd] px-5 text-white"
+          className="h-12 w-52 cursor-pointer rounded bg-[#0073C5] px-5 text-white"
           asChild
         >
           <Link href="/home/clients/new">Nouveau client</Link>
         </Button>
+      </div>
+      <div className="mb-6 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
+        <Input type="text" placeholder="Rechercher un client" className="h-12 w-100 rounded border-1 border-slate-200 bg-white" />
       </div>
 
       <div className="overflow-hidden border border-slate-200/80 bg-white">
