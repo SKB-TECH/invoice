@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
+import { useTranslations } from "next-intl";
 
 const textareaClassName = cn(
   "flex min-h-[120px] w-full resize-y rounded border border-input bg-transparent px-2.5 py-2 text-sm text-foreground transition-colors outline-none placeholder:text-muted-foreground focus-visible:ring-3 focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm dark:bg-input/30",
@@ -75,6 +76,7 @@ function DateField({
 }
 
 export function ContratForm(props: ContratFormProps) {
+  const t = useTranslations("contrats.createContrat");
   const cancelHref = props.cancelHref;
   const validateContractDatesDistinct =
     props.validateContractDatesDistinct === true;
@@ -134,7 +136,7 @@ export function ContratForm(props: ContratFormProps) {
       <div className="grid gap-6 sm:grid-cols-2">
         <div className="flex flex-col gap-2">
           <Label htmlFor="reference" className="font-medium text-slate-700">
-            Numéro Référence <span className="text-red-500">*</span>
+            {t("form.reference")} <span className="text-red-500">*</span>
           </Label>
           <Input
             id="reference"
@@ -147,7 +149,7 @@ export function ContratForm(props: ContratFormProps) {
 
         <div className="flex flex-col gap-2">
           <Label htmlFor="nom-contrat" className="font-medium text-slate-700">
-            Nom contrat <span className="text-red-500">*</span>
+            {t("form.nom")} <span className="text-red-500">*</span>
           </Label>
           <Input
             id="nom-contrat"
@@ -160,7 +162,7 @@ export function ContratForm(props: ContratFormProps) {
 
         <div className="flex flex-col gap-2">
           <Label htmlFor="auto-renew" className="font-medium text-slate-700">
-            Rénouvellement automatique <span className="text-red-500">*</span>
+            {t("form.auto-renew.title")} <span className="text-red-500">*</span>
           </Label>
           <select
             id="auto-renew"
@@ -169,14 +171,14 @@ export function ContratForm(props: ContratFormProps) {
             className={selectClassName}
             required
           >
-            <option value="oui">Oui</option>
-            <option value="non">Non</option>
+            <option value="oui">{t("form.auto-renew.options.oui")}</option>
+            <option value="non">{t("form.auto-renew.options.non")}</option>
           </select>
         </div>
 
         <div className="flex flex-col gap-2">
           <Label htmlFor="telephone" className="font-medium text-slate-700">
-            Téléphone
+            {t("form.tel")}
           </Label>
           <Input
             id="telephone"
@@ -190,21 +192,21 @@ export function ContratForm(props: ContratFormProps) {
         <DateField
           id="date-debut"
           name="dateDebut"
-          label="Date de debut"
+          label={t("form.dateStart")}
           defaultValue={defaultDateDebut}
           required={validateContractDatesDistinct}
         />
         <DateField
           id="date-fin"
           name="dateFin"
-          label="Date de fin"
+          label={t("form.dateEnd")}
           defaultValue={defaultDateFin}
           required={validateContractDatesDistinct}
         />
 
         <div className="flex flex-col gap-2">
           <Label htmlFor="valeur" className="font-medium text-slate-700">
-            Valeur du Contrat<span className="text-red-500">*</span>
+            {t("form.valeur")}<span className="text-red-500">*</span>
           </Label>
           <Input
             id="valeur"
@@ -219,7 +221,7 @@ export function ContratForm(props: ContratFormProps) {
 
         <div className="flex flex-col gap-2">
           <Label htmlFor="statut" className="font-medium text-slate-700">
-            Statut<span className="text-red-500">*</span>
+            {t("form.status.title")}<span className="text-red-500">*</span>
           </Label>
           <select
             id="statut"
@@ -228,15 +230,15 @@ export function ContratForm(props: ContratFormProps) {
             className={selectClassName}
             required
           >
-            <option value="actif">Actif</option>
-            <option value="suspendu">Suspendu</option>
-            <option value="complet">Complet</option>
+            <option value="actif">{t("form.status.options.actif")}</option>
+            <option value="suspendu">{t("form.status.options.suspendu")}</option>
+            <option value="complet">{t("form.status.options.complet")}</option>
           </select>
         </div>
 
         <div className="flex flex-col gap-2 sm:col-span-2">
           <Label htmlFor="description" className="font-medium text-slate-700">
-            Description
+            {t("form.description")}
           </Label>
           <textarea
             id="description"
@@ -255,14 +257,14 @@ export function ContratForm(props: ContratFormProps) {
             variant="secondary"
             className="h-12 w-52 rounded bg-[#949B9F] px-5 text-white hover:bg-[#949B9F]/80 cursor-pointer"
           >
-            Annuler
+            {t("cancel")}
           </Button>
         </Link>
         <Button
           type="submit"
           className="h-12 w-52 rounded bg-[#0073C5] px-5 text-white shadow-none hover:bg-[#066aa8] cursor-pointer"
         >
-          Enregistrer
+          {t("save")}
         </Button>
       </div>
     </form>

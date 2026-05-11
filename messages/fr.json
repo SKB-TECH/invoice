@@ -122,6 +122,68 @@
       }
     }
   },
+  "contrats": {
+    "createContrat": {
+      "breadcrumb": {
+        "Step1": "Contrats",
+        "Step2": "Nouveau"
+      },
+      "title": "Nouveau contrat",
+      "form": {
+        "reference": "N° Référence",
+        "nom": "Nom contrat",
+        "auto-renew": {
+          "title": "Renouvellement automatique",
+          "options": {
+            "oui": "Oui",
+            "non": "Non"
+          }
+        },
+        "tel": "Téléphone",
+        "dateStart": "Date de début",
+        "dateEnd": "Date de fin",
+        "valeur": "Valeur du contrat",
+        "status": {
+          "title": "Statut",
+          "options": {
+            "actif": "Actif",
+            "suspendu": "Suspendu",
+            "complet": "Complet"
+          }
+        },
+        "description": "Description"
+      },
+      "cancel": "Annuler",
+      "save": "Enregistrer"
+    },
+    "listContrats": {
+      "breadcrumb": {
+        "Step1": "Contrats",
+        "Step2": "Visualiser"
+      },
+      "title": "Liste de contrats",
+      "btn": {
+        "new": "Nouveau contrat"
+      },
+      "search": {
+        "placeholder": "Rechercher un contrat"
+      },
+      "table": {
+        "titre": "Titre",
+        "client": "Client",
+        "Montant": "Montant",
+        "status": {
+          "title": "Statut",
+          "options": {
+            "actif": "Actif",
+            "suspendu": "Suspendu",
+            "complet": "Complet"
+          }
+        },
+        "period": "Période"
+      }
+    }
+  },
   "articles": {
     "list": {
       "title": "Articles",
@@ -345,4 +407,3 @@
     }
   }
 }
-
