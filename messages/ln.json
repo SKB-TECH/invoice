@@ -50,5 +50,94 @@
     "NouveauContrat": "Kontra ya sika",
     "Configuration": "Bobongisi",
     "Aide": "Lisalisi"
+  },
+  "articles": {
+    "list": {
+      "title": "Biloko",
+      "searchPlaceholder": "Luka na ID, titre, groupe, prix TTC, statut, période...",
+      "searchAriaLabel": "Luka eloko",
+      "empty": "Eloko moko te ezali na recherche na yo.",
+      "columns": {
+        "idIkwook": "Code",
+        "title": "Motó ya likambo",
+        "group": "Etuluku",
+        "priceTtc": "Ntalo na TVA",
+        "status": "Etaleli",
+        "period": "Eleko"
+      },
+      "action": "Etamboli",
+      "viewArticleDetail": "Komona eloko {id}",
+      "status": {
+        "suspendu": "Epekisami",
+        "actif": "Ezali kotiya",
+        "complet": "Esilisi"
+      }
+    },
+    "create": {
+      "breadcrumbNew": "Ya sika",
+      "fields": {
+        "name": "Kombo",
+        "code": "Code",
+        "priceExclTax": "Ntalo kozanga TVA",
+        "priceInclTax": "Ntalo na TVA",
+        "currency": "Mbongo",
+        "taxGroup": "Etuluku ya TVA",
+        "specialPrice": "Loposo ya ntina / Promotion",
+        "pieceUnit": "Mokapo / Moto",
+        "unit": "Moto",
+        "articleGroup": "Etuluku"
+      },
+      "placeholders": {
+        "priceExclTaxExample": "Ex: 10 000",
+        "priceInclTaxExample": "Ex: 11 800",
+        "optional": "Esengeli te"
+      },
+      "selectPlaceholder": "Pona",
+      "taxGroupSelectAria": "Pona etuluku",
+      "units": {
+        "piece": "Eloko",
+        "kg": "Kg",
+        "hour": "Eleko",
+        "flatRate": "Forfait"
+      },
+      "articleGroups": {
+        "a": "Etuluku A",
+        "b": "Etuluku B",
+        "c": "Etuluku C"
+      },
+      "actions": {
+        "cancel": "Kanga",
+        "save": "Bomba"
+      }
+    },
+    "view": {
+      "title": "Makambo matali eloko",
+      "referenceLabel": "Ref.",
+      "fields": {
+        "name": "Kombo",
+        "code": "Code",
+        "description": "Ndimbola",
+        "priceExclTax": "Ntalo kozanga TVA",
+        "priceInclTax": "Ntalo na TVA",
+        "taxGroup": "Etuluku ya TVA"
+      },
+      "actions": {
+        "backToList": "Kozonga na liste",
+        "edit": "Kobongisa"
+      }
+    },
+    "edit": {
+      "title": "Kobongisa eloko",
+      "breadcrumbSegment": "Kobongisa",
+      "referencePrefix": "Ref. : ",
+      "unknownTaxGroupName": "Etuluku (ebumi to epesami)",
+      "taxGroupHint": "Ntalo na TVA elandi ntalo avant TVA (pe liboso) selon groupe fiscal oyo.",
+      "fields": {
+        "description": "Ndimbola",
+        "status": "Etaleli",
+        "period": "Eleko"
+      },
+      "toastSaved": "Eloko ebakisami."
+    }
   }
 }

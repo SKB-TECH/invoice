@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import type { ArticleDetailRecord } from "@/lib/fournitures/articles/articles-data";
@@ -16,7 +16,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 import type { ArticleRowStatus } from "@/components/articles/types";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/routing";
 
 const selectClass =
   "h-12 w-full rounded-none border border-input bg-transparent py-2 pr-2 pl-2.5 text-sm whitespace-nowrap transition-colors outline-none select-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 data-placeholder:text-muted-foreground dark:bg-input/30 dark:hover:bg-input/50 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4";
@@ -41,6 +41,10 @@ type ModifierArticleFormProps = {
 
 export function ModifierArticleForm({ initial }: ModifierArticleFormProps) {
   const router = useRouter();
+  const tCreate = useTranslations("articles.create");
+  const tEdit = useTranslations("articles.edit");
+  const tList = useTranslations("articles.list");
+
   const [taxGroups, setTaxGroups] = useState<TaxGroup[]>(() =>
     typeof window !== "undefined" ? readTaxGroups() : []
   );
@@ -52,6 +56,8 @@ export function ModifierArticleForm({ initial }: ModifierArticleFormProps) {
     return () => window.removeEventListener(TAX_GROUPS_CHANGED_EVENT, sync);
   }, []);
 
+  const unknownTaxGroupLabel = tEdit("unknownTaxGroupName");
+
   const selectableTaxGroups = useMemo(() => {
     const base = taxGroups.filter((g) => g.active || g.id === initial.groupeTax);
     const ids = new Set(base.map((g) => g.id));
@@ -61,7 +67,7 @@ export function ModifierArticleForm({ initial }: ModifierArticleFormProps) {
       {
         id: initial.groupeTax,
         code: "?",
-        name: "Groupe (inconnu ou supprimé)",
+        name: unknownTaxGroupLabel,
         description: "",
         comments: "",
         ratePercent:
@@ -69,7 +75,7 @@ export function ModifierArticleForm({ initial }: ModifierArticleFormProps) {
         active: false,
       },
     ];
-  }, [taxGroups, initial.groupeTax]);
+  }, [taxGroups, initial.groupeTax, unknownTaxGroupLabel]);
 
   const [nom, setNom] = useState(initial.title);
   const [code, setCode] = useState(initial.code);
@@ -132,6 +138,13 @@ export function ModifierArticleForm({ initial }: ModifierArticleFormProps) {
     if (ht !== null) setPrixTtc(formatMoneyFr(ht * (1 + r)));
   };
 
+  const requiredStar = (
+    <>
+      {" "}
+      <span className="text-red-500">*</span>
+    </>
+  );
+
   return (
     <form
       className="rounded-none border border-slate-200/80 bg-white p-6 sm:p-8"
@@ -139,7 +152,7 @@ export function ModifierArticleForm({ initial }: ModifierArticleFormProps) {
       method="post"
       onSubmit={(e) => {
         e.preventDefault();
-        toast.success("Article mis à jour.");
+        toast.success(tEdit("toastSaved"));
       }}
     >
       <div className="grid gap-6 sm:grid-cols-2">
@@ -147,7 +160,8 @@ export function ModifierArticleForm({ initial }: ModifierArticleFormProps) {
 
         <div className="flex flex-col gap-2">
           <Label htmlFor="nom" className="font-medium text-slate-700">
-            Nom <span className="text-red-500">*</span>
+            {tCreate("fields.name")}
+            {requiredStar}
           </Label>
           <Input
             id="nom"
@@ -161,7 +175,8 @@ export function ModifierArticleForm({ initial }: ModifierArticleFormProps) {
 
         <div className="flex flex-col gap-2">
           <Label htmlFor="code" className="font-medium text-slate-700">
-            Code <span className="text-red-500">*</span>
+            {tCreate("fields.code")}
+            {requiredStar}
           </Label>
           <Input
             id="code"
@@ -175,7 +190,8 @@ export function ModifierArticleForm({ initial }: ModifierArticleFormProps) {
 
         <div className="flex flex-col gap-2 sm:col-span-2">
           <Label htmlFor="description" className="font-medium text-slate-700">
-            Description <span className="text-red-500">*</span>
+            {tEdit("fields.description")}
+            {requiredStar}
           </Label>
           <textarea
             id="description"
@@ -192,7 +208,8 @@ export function ModifierArticleForm({ initial }: ModifierArticleFormProps) {
 
         <div className="flex flex-col gap-2">
           <Label htmlFor="prix-ht" className="font-medium text-slate-700">
-            Prix HT <span className="text-red-500">*</span>
+            {tCreate("fields.priceExclTax")}
+            {requiredStar}
           </Label>
           <Input
             id="prix-ht"
@@ -208,7 +225,8 @@ export function ModifierArticleForm({ initial }: ModifierArticleFormProps) {
 
         <div className="flex flex-col gap-2">
           <Label htmlFor="prix-ttc" className="font-medium text-slate-700">
-            Prix TTC <span className="text-red-500">*</span>
+            {tCreate("fields.priceInclTax")}
+            {requiredStar}
           </Label>
           <Input
             id="prix-ttc"
@@ -224,7 +242,8 @@ export function ModifierArticleForm({ initial }: ModifierArticleFormProps) {
 
         <div className="flex flex-col gap-2">
           <Label htmlFor="devise" className="font-medium text-slate-700">
-            Devise <span className="text-red-500">*</span>
+            {tCreate("fields.currency")}
+            {requiredStar}
           </Label>
           <select
             id="devise"
@@ -232,6 +251,7 @@ export function ModifierArticleForm({ initial }: ModifierArticleFormProps) {
             required
             className={selectClass}
             value={devise}
+            aria-label={tCreate("fields.currency")}
             onChange={(e) =>
               setDevise(e.target.value as ArticleDetailRecord["devise"])
             }
@@ -244,7 +264,8 @@ export function ModifierArticleForm({ initial }: ModifierArticleFormProps) {
 
         <div className="flex flex-col gap-2">
           <Label htmlFor="groupe-tax" className="font-medium text-slate-700">
-            Groupe de tax <span className="text-red-500">*</span>
+            {tCreate("fields.taxGroup")}
+            {requiredStar}
           </Label>
           <select
             id="groupe-tax"
@@ -252,6 +273,7 @@ export function ModifierArticleForm({ initial }: ModifierArticleFormProps) {
             required
             className={selectClass}
             value={groupeTax}
+            aria-label={tCreate("taxGroupSelectAria")}
             onChange={(e) => onGroupeTaxChange(e.target.value)}
           >
             {selectableTaxGroups.map((g) => (
@@ -260,20 +282,18 @@ export function ModifierArticleForm({ initial }: ModifierArticleFormProps) {
               </option>
             ))}
           </select>
-          <p className="text-xs text-slate-500">
-            Le prix TTC suit le HT (ou inversement) selon ce groupe fiscal.
-          </p>
+          <p className="text-xs text-slate-500">{tEdit("taxGroupHint")}</p>
         </div>
 
         <div className="flex flex-col gap-2">
           <Label htmlFor="prix-special" className="font-medium text-slate-700">
-            Prix spécial / Promotion
+            {tCreate("fields.specialPrice")}
           </Label>
           <Input
             id="prix-special"
             name="prixSpecial"
             inputMode="decimal"
-            placeholder="Facultatif"
+            placeholder={tCreate("placeholders.optional")}
             className="h-12 rounded-none"
             value={prixSpecial}
             onChange={(e) => setPrixSpecial(e.target.value)}
@@ -283,26 +303,27 @@ export function ModifierArticleForm({ initial }: ModifierArticleFormProps) {
         <div className="flex flex-col gap-3 sm:flex-row sm:items-end">
           <div className="flex min-w-0 flex-1 flex-col gap-2">
             <Label htmlFor="piece-unite" className="font-medium text-slate-700">
-              Pièce / Unité
+              {tCreate("fields.pieceUnit")}
             </Label>
             <select
               id="piece-unite"
               name="pieceUnite"
               className={selectClass}
               value={pieceUnite}
+              aria-label={tCreate("fields.pieceUnit")}
               onChange={(e) =>
                 setPieceUnite(e.target.value as ArticleDetailRecord["pieceUnite"])
               }
             >
-              <option value="piece">Pièce</option>
-              <option value="kg">Kg</option>
-              <option value="heure">Heure</option>
-              <option value="forfait">Forfait</option>
+              <option value="piece">{tCreate("units.piece")}</option>
+              <option value="kg">{tCreate("units.kg")}</option>
+              <option value="hour">{tCreate("units.hour")}</option>
+              <option value="forfait">{tCreate("units.flatRate")}</option>
             </select>
           </div>
           <div className="flex w-full flex-col gap-2 sm:w-[7.5rem] sm:shrink-0">
             <Label htmlFor="unite" className="font-medium text-slate-700">
-              Unité
+              {tCreate("fields.unit")}
             </Label>
             <Input
               id="unite"
@@ -316,7 +337,8 @@ export function ModifierArticleForm({ initial }: ModifierArticleFormProps) {
 
         <div className="flex flex-col gap-2">
           <Label htmlFor="statut" className="font-medium text-slate-700">
-            Statut <span className="text-red-500">*</span>
+            {tEdit("fields.status")}
+            {requiredStar}
           </Label>
           <select
             id="statut"
@@ -324,17 +346,19 @@ export function ModifierArticleForm({ initial }: ModifierArticleFormProps) {
             required
             className={selectClass}
             value={statut}
+            aria-label={tEdit("fields.status")}
             onChange={(e) => setStatut(e.target.value as ArticleRowStatus)}
           >
-            <option value="actif">Actif</option>
-            <option value="suspendu">Suspendu</option>
-            <option value="complet">Complet</option>
+            <option value="actif">{tList("status.actif")}</option>
+            <option value="suspendu">{tList("status.suspendu")}</option>
+            <option value="complet">{tList("status.complet")}</option>
           </select>
         </div>
 
         <div className="flex flex-col gap-2">
           <Label htmlFor="period" className="font-medium text-slate-700">
-            Période <span className="text-red-500">*</span>
+            {tEdit("fields.period")}
+            {requiredStar}
           </Label>
           <Input
             id="period"
@@ -342,6 +366,7 @@ export function ModifierArticleForm({ initial }: ModifierArticleFormProps) {
             type="date"
             required
             className="h-12 rounded-none"
+            aria-label={tEdit("fields.period")}
             value={period}
             onChange={(e) => setPeriod(e.target.value)}
           />
@@ -349,7 +374,8 @@ export function ModifierArticleForm({ initial }: ModifierArticleFormProps) {
 
         <div className="flex flex-col gap-2 sm:col-span-2">
           <Label htmlFor="groupe" className="font-medium text-slate-700">
-            Groupe <span className="text-red-500">*</span>
+            {tCreate("fields.articleGroup")}
+            {requiredStar}
           </Label>
           <select
             id="groupe"
@@ -357,13 +383,14 @@ export function ModifierArticleForm({ initial }: ModifierArticleFormProps) {
             required
             className={selectClass}
             value={groupe}
+            aria-label={tCreate("fields.articleGroup")}
             onChange={(e) =>
               setGroupe(e.target.value as ArticleDetailRecord["groupe"])
             }
           >
-            <option value="a">Groupe A</option>
-            <option value="b">Groupe B</option>
-            <option value="c">Groupe C</option>
+            <option value="a">{tCreate("articleGroups.a")}</option>
+            <option value="b">{tCreate("articleGroups.b")}</option>
+            <option value="c">{tCreate("articleGroups.c")}</option>
           </select>
         </div>
       </div>
@@ -375,14 +402,14 @@ export function ModifierArticleForm({ initial }: ModifierArticleFormProps) {
           variant="secondary"
           className="h-12 w-52 cursor-pointer rounded-none bg-[#949B9F] px-5 text-white hover:bg-[#949B9F]/80"
         >
-          Annuler
+          {tCreate("actions.cancel")}
         </Button>
         <Button
           onClick={() => router.push("/home/articles")}
           type="submit"
           className="h-12 w-52 cursor-pointer rounded-none bg-[#0879bd] px-5 text-white shadow-none hover:bg-[#066aa8]"
         >
-          Enregistrer
+          {tCreate("actions.save")}
         </Button>
       </div>
     </form>

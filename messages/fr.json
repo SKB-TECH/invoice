@@ -121,6 +121,95 @@
         }
       }
     }
+  },
+  "articles": {
+    "list": {
+      "title": "Articles",
+      "searchPlaceholder": "Recherche par ID, titre, groupe, prix TTC, statut, période...",
+      "searchAriaLabel": "Rechercher un article",
+      "empty": "Aucun article ne correspond à votre recherche.",
+      "columns": {
+        "idIkwook": "Code",
+        "title": "Titre",
+        "group": "Groupe",
+        "priceTtc": "Prix TTC",
+        "status": "Statut",
+        "period": "Période"
+      },
+      "action": "Action",
+      "viewArticleDetail": "Voir le détail de l'article {id}",
+      "status": {
+        "suspendu": "Suspendu",
+        "actif": "Actif",
+        "complet": "Complet"
+      }
+    },
+    "create": {
+      "breadcrumbNew": "Nouveau",
+      "fields": {
+        "name": "Nom",
+        "code": "Code",
+        "priceExclTax": "Prix HT",
+        "priceInclTax": "Prix TTC",
+        "currency": "Devise",
+        "taxGroup": "Groupe de tax",
+        "specialPrice": "Prix spécial / Promotion",
+        "pieceUnit": "Pièce / Unité",
+        "unit": "Unité",
+        "articleGroup": "Groupe"
+      },
+      "placeholders": {
+        "priceExclTaxExample": "Ex: 10 000",
+        "priceInclTaxExample": "Ex: 11 800",
+        "optional": "Facultatif"
+      },
+      "selectPlaceholder": "Sélectionner",
+      "taxGroupSelectAria": "Sélectionner un groupe",
+      "units": {
+        "piece": "Pièce",
+        "kg": "Kg",
+        "hour": "Heure",
+        "flatRate": "Forfait"
+      },
+      "articleGroups": {
+        "a": "Groupe A",
+        "b": "Groupe B",
+        "c": "Groupe C"
+      },
+      "actions": {
+        "cancel": "Annuler",
+        "save": "Enregistrer"
+      }
+    },
+    "view": {
+      "title": "Détail de l'article",
+      "referenceLabel": "Réf.",
+      "fields": {
+        "name": "Nom",
+        "code": "Code",
+        "description": "Description",
+        "priceExclTax": "Prix hors taxes",
+        "priceInclTax": "Prix TTC",
+        "taxGroup": "Groupe de tax"
+      },
+      "actions": {
+        "backToList": "Retour à la liste",
+        "edit": "Modifier"
+      }
+    },
+    "edit": {
+      "title": "Modifier l'article",
+      "breadcrumbSegment": "Modifier",
+      "referencePrefix": "Réf. : ",
+      "unknownTaxGroupName": "Groupe (inconnu ou supprimé)",
+      "taxGroupHint": "Le prix TTC suit le HT (ou inversement) selon ce groupe fiscal.",
+      "fields": {
+        "description": "Description",
+        "status": "Statut",
+        "period": "Période"
+      },
+      "toastSaved": "Article mis à jour."
+    }
   }
 }
 

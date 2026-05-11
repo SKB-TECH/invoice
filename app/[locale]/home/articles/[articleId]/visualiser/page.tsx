@@ -1,10 +1,11 @@
-import Link from "next/link";
+import { getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { ChevronRight, House } from "lucide-react";
 
-import { formatDeviseLibelle, getArticleDetailById } from "@/lib/fournitures/articles/articles-data";
 import { ArticleTaxGroupLabel } from "@/components/articles/article-tax-group-label";
 import { VisualiserArticleActions } from "@/components/articles/visualiser-article-actions";
+import { Link } from "@/i18n/routing";
+import { formatDeviseLibelle, getArticleDetailById } from "@/lib/fournitures/articles/articles-data";
 
 type PageProps = {
   params: Promise<{ articleId: string }>;
@@ -25,37 +26,39 @@ export default async function VisualiserArticlePage({ params }: PageProps) {
     notFound();
   }
 
+  const t = await getTranslations("articles.view");
+  const tNavbar = await getTranslations("navbar");
+  const tList = await getTranslations("articles.list");
+
   const devise = formatDeviseLibelle(article.devise);
   const basePath = `/home/articles/${encodeURIComponent(article.idIkwook)}`;
 
   return (
     <main className="mx-auto w-full min-w-full text-foreground">
       <span className="mb-6 flex flex-wrap items-center gap-1 text-sm text-slate-500">
-        <Link href="/home">
+        <Link href="/home" aria-label={tNavbar("Accueil")}>
           <House className="size-4" />
         </Link>
         <ChevronRight className="size-4 shrink-0" />
-        <Link
-          href="/home/articles"
-          className="hover:text-slate-700"
-        >
-          Articles
+        <Link href="/home/articles" className="hover:text-slate-700">
+          {tList("title")}
         </Link>
         <ChevronRight className="size-4 shrink-0" />
         <span className="max-w-[12rem] truncate text-slate-600 sm:max-w-md">
           {article.title}
         </span>
         <ChevronRight className="size-4 shrink-0" />
-        Visualiser
+        {tNavbar("Visualiser")}
       </span>
 
       <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-slate-800 sm:text-3xl">
-            Détail de l&apos;article
+            {t("title")}
           </h1>
           <p className="mt-1 text-sm text-slate-600">
-            Réf.&nbsp;{" "}
+            {t("referenceLabel")}
+            {"\u00a0"}
             <span className="font-medium text-slate-800">{article.idIkwook}</span>
           </p>
         </div>
@@ -65,7 +68,7 @@ export default async function VisualiserArticlePage({ params }: PageProps) {
         <dl className="grid gap-8 sm:grid-cols-2">
           <div>
             <dt className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-              Nom
+              {t("fields.name")}
             </dt>
             <dd className="mt-1 text-base font-medium text-slate-900">
               {article.title}
@@ -74,7 +77,7 @@ export default async function VisualiserArticlePage({ params }: PageProps) {
 
           <div>
             <dt className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-              Code
+              {t("fields.code")}
             </dt>
             <dd className="mt-1 text-base font-medium text-slate-900">
               {article.code}
@@ -83,7 +86,7 @@ export default async function VisualiserArticlePage({ params }: PageProps) {
 
           <div className="sm:col-span-2">
             <dt className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-              Description
+              {t("fields.description")}
             </dt>
             <dd className="mt-2 rounded border border-slate-100 bg-slate-50/80 px-4 py-3 text-sm leading-relaxed text-slate-800">
               {article.description}
@@ -92,7 +95,7 @@ export default async function VisualiserArticlePage({ params }: PageProps) {
 
           <div>
             <dt className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-              Prix hors taxes
+              {t("fields.priceExclTax")}
             </dt>
             <dd className="mt-1 text-base font-semibold tabular-nums text-slate-900">
               {formatMontant(article.prixHt)} {devise}
@@ -101,7 +104,7 @@ export default async function VisualiserArticlePage({ params }: PageProps) {
 
           <div>
             <dt className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-              Prix TTC
+              {t("fields.priceInclTax")}
             </dt>
             <dd className="mt-1 text-base font-semibold tabular-nums text-slate-900">
               {formatMontant(article.prixTtc)} {devise}
@@ -110,7 +113,7 @@ export default async function VisualiserArticlePage({ params }: PageProps) {
 
           <div className="sm:col-span-2">
             <dt className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-              Tax
+              {t("fields.taxGroup")}
             </dt>
             <dd className="mt-1 text-base font-medium text-slate-900">
               <ArticleTaxGroupLabel taxGroupId={article.groupeTax} />
