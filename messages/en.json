@@ -210,5 +210,138 @@
       },
       "toastSaved": "Article updated."
     }
+  },
+  "configuration": {
+    "pageTitle": "Settings",
+    "menu": {
+      "basicInfo": "Basic information",
+      "changePassword": "Change password",
+      "referentials": "Reference data",
+      "taxGroups": "Tax groups"
+    },
+    "basicInfo": {
+      "sectionTitle": "Basic information",
+      "changePhoto": "Change",
+      "name": "Name",
+      "email": "Email",
+      "saveChanges": "Save changes"
+    },
+    "password": {
+      "sectionTitle": "Change password",
+      "oldPassword": "Current password",
+      "newPassword": "New password",
+      "confirmPassword": "Confirm password",
+      "placeholder": "Enter your password",
+      "submit": "Update password",
+      "errors": {
+        "minLength": "The new password must be at least 6 characters.",
+        "mismatch": "Passwords do not match."
+      }
+    },
+    "referentials": {
+      "preferencesTitle": "Preferences",
+      "theme": "Theme",
+      "language": "Language",
+      "timezone": "Time zone",
+      "themeOptions": {
+        "light": "Light mode",
+        "dark": "Dark mode",
+        "system": "System"
+      },
+      "languageOptions": {
+        "fr": "French",
+        "en": "English"
+      },
+      "timezoneOptions": {
+        "kinshasa": "Kinshasa",
+        "lubumbashi": "Lubumbashi",
+        "goma": "Goma"
+      },
+      "connectedAccounts": "Connected accounts",
+      "devices": "Devices",
+      "google": "Google",
+      "connectedWith": "Signed in with {email}",
+      "deviceIphone": "iPhone 14 Pro",
+      "deviceMacbook": "MacBook Pro",
+      "lastUsed2Days": "Last used 2 days ago",
+      "lastUsed1Week": "Last used 1 week ago",
+      "disconnect": "Disconnect",
+      "remove": "Remove",
+      "savePreferences": "Save preferences"
+    },
+    "referentialRates": {
+      "title": "Rate reference list",
+      "label": "Label",
+      "ratePercent": "Rate (%)",
+      "save": "Save",
+      "actions": "Actions",
+      "rateColumn": "Rate",
+      "placeholderLabel": "E.g. VAT services",
+      "placeholderRate": "16",
+      "editAria": "Edit rate",
+      "deleteAria": "Delete rate",
+      "toasts": {
+        "labelRequired": "Enter a label for the rate.",
+        "rateInvalid": "Enter a valid rate between 0 and 100%.",
+        "created": "Rate created.",
+        "updated": "Rate updated.",
+        "deleted": "Rate deleted."
+      },
+      "cancel": "Cancel"
+    },
+    "taxGroups": {
+      "title": "Tax groups",
+      "intro": "Catalog of groups you can assign to your articles. You can add groups or adjust labels and rates. Only active groups are offered on article forms.",
+      "newGroup": "New group",
+      "code": "Code",
+      "groupName": "Group name",
+      "taxRate": "Tax rate (%)",
+      "status": "Status",
+      "description": "Description",
+      "add": "Add",
+      "placeholderCode": "X",
+      "placeholderName": "E.g. Group X",
+      "placeholderRate": "16",
+      "placeholderDescription": "E.g. Standard 16% rate",
+      "codeAria": "Tax group code",
+      "statusAria": "Active or inactive status",
+      "active": "Active",
+      "inactive": "Inactive",
+      "table": {
+        "code": "Code",
+        "groupName": "Group name",
+        "description": "Description",
+        "rate": "Rate (%)",
+        "status": "Status",
+        "actions": "Actions",
+        "emptyCell": "—"
+      },
+      "edit": "Edit",
+      "deactivate": "Deactivate",
+      "activate": "Activate",
+      "delete": "Delete",
+      "editGroupTitle": "Edit group",
+      "codeFrozenHint": "Code locked for the A–P reference set",
+      "save": "Save",
+      "cancel": "Cancel",
+      "pagination": {
+        "range": "{from} — {to} of {total} groups",
+        "page": "Page {current} / {total}",
+        "prev": "Previous",
+        "next": "Next"
+      },
+      "autoSaveHint": "Changes are saved automatically.",
+      "toasts": {
+        "builtinDelete": "This official reference group cannot be deleted.",
+        "deleted": "Group deleted.",
+        "nameRequired": "Enter a group name.",
+        "codeRequired": "Enter a group code.",
+        "rateInvalid": "Enter a valid rate between 0 and 100%.",
+        "codeDuplicate": "This code is already in use.",
+        "updated": "Group updated.",
+        "idDuplicate": "Identifier already in use; please try again.",
+        "created": "Tax group created."
+      }
+    }
   }
 }

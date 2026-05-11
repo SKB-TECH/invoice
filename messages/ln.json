@@ -139,5 +139,138 @@
       },
       "toastSaved": "Eloko ebakisami."
     }
+  },
+  "configuration": {
+    "pageTitle": "Bobongisi",
+    "menu": {
+      "basicInfo": "Bansango ya moboko",
+      "changePassword": "Bongola mot de passe",
+      "referentials": "Mibeko",
+      "taxGroups": "Etuluku ya mpako"
+    },
+    "basicInfo": {
+      "sectionTitle": "Bansango ya moboko",
+      "changePhoto": "Kobongola",
+      "name": "Kombo",
+      "email": "Email",
+      "saveChanges": "Bomba mbongwana"
+    },
+    "password": {
+      "sectionTitle": "Kobongola mot de passe",
+      "oldPassword": "Mot de passe ya kala",
+      "newPassword": "Mot de passe ya sika",
+      "confirmPassword": "Kondimisa mot de passe ",
+      "placeholder": "Tyá mot de passe na yo",
+      "submit": "Kobongola mot de passe",
+      "errors": {
+        "minLength": "Mot de passe ya sika esengeli kozala na mbula 6 minimum.",
+        "mismatch": "Ba mots de passe bazali te lokola moko."
+      }
+    },
+    "referentials": {
+      "preferencesTitle": "Ba préférences",
+      "theme": "Thème",
+      "language": "Lokota",
+      "timezone": "Eleko ya ntango",
+      "themeOptions": {
+        "light": "Mokolo ya pole",
+        "dark": "Mokolo ya molili",
+        "system": "Système"
+      },
+      "languageOptions": {
+        "fr": "Falansi",
+        "en": "Anglɛ"
+      },
+      "timezoneOptions": {
+        "kinshasa": "Kinshasa",
+        "lubumbashi": "Lubumbashi",
+        "goma": "Goma"
+      },
+      "connectedAccounts": "Ba comptes okangi",
+      "devices": "Ba appareils",
+      "google": "Google",
+      "connectedWith": "Okangi na {email}",
+      "deviceIphone": "iPhone 14 Pro",
+      "deviceMacbook": "MacBook Pro",
+      "lastUsed2Days": "Bolingo ya liboso mibale ya mikolo eleka",
+      "lastUsed1Week": "Bolingo ya liboso poso moko eleka",
+      "disconnect": "Kolongola",
+      "remove": "Kolongola",
+      "savePreferences": "Kobomba ba préférences"
+    },
+    "referentialRates": {
+      "title": "Liste ya ba taux ya référence",
+      "label": "Libellé",
+      "ratePercent": "Taux (%)",
+      "save": "Kobomba",
+      "actions": "Actions",
+      "rateColumn": "Taux",
+      "placeholderLabel": "Ex. TVA ba services",
+      "placeholderRate": "16",
+      "editAria": "Kobongisa taux",
+      "deleteAria": "Kolongola taux",
+      "toasts": {
+        "labelRequired": "Tondisa libellé ya taux.",
+        "rateInvalid": "Taux esengeli kozala entre 0 na 100 %.",
+        "created": "Taux ebakisami.",
+        "updated": "Taux ebongisami.",
+        "deleted": "Taux elongolami."
+      },
+      "cancel": "Kanga"
+    },
+    "taxGroups": {
+      "title": "Ba groupes ya taxation",
+      "intro": "Catalogue ya ba groupes okoki kopesa na ba articles. Okoki kongerisa to kobongisa. Kaka ba groupes actifs ezali na ba fiches articles.",
+      "newGroup": "Groupe ya sika",
+      "code": "Code",
+      "groupName": "Kombo ya groupe",
+      "taxRate": "Taux ya taxe (%)",
+      "status": "Statut",
+      "description": "Ndimbola",
+      "add": "Kongerisa",
+      "placeholderCode": "X",
+      "placeholderName": "Ex. Groupe X",
+      "placeholderRate": "16",
+      "placeholderDescription": "Ex. Taxable na 16 %",
+      "codeAria": "Code ya groupe ya taxation",
+      "statusAria": "Statut actif to inactif",
+      "active": "Actif",
+      "inactive": "Inactif",
+      "table": {
+        "code": "Code",
+        "groupName": "Kombo ya groupe",
+        "description": "Ndimbola",
+        "rate": "Taux (%)",
+        "status": "Statut",
+        "actions": "Actions",
+        "emptyCell": "—"
+      },
+      "edit": "Kobongisa",
+      "deactivate": "Kopekisa",
+      "activate": "Kokoma actif",
+      "delete": "Kolongola",
+      "editGroupTitle": "Kobongisa groupe",
+      "codeFrozenHint": "Code epesi te mpo na référentiel A–P",
+      "save": "Kobomba",
+      "cancel": "Kanga",
+      "pagination": {
+        "range": "{from} — {to} na {total} groupes",
+        "page": "Page {current} / {total}",
+        "prev": "Ya liboso",
+        "next": "Landí"
+      },
+      "autoSaveHint": "Ba changements ebombami automatiquement.",
+      "toasts": {
+        "builtinDelete": "Groupe oyo ya référentiel officiel elongoli te.",
+        "deleted": "Groupe elongolami.",
+        "nameRequired": "Tondisa nkombo ya groupe.",
+        "codeRequired": "Tondisa code ya groupe.",
+        "rateInvalid": "Taux esengeli kozala entre 0 na 100 %.",
+        "codeDuplicate": "Code oyo ezali kaka déjà.",
+        "updated": "Groupe ebongisami.",
+        "idDuplicate": "Identifiant ezali déjà ; meka lisusu.",
+        "created": "Groupe ya taxation ebakisami."
+      }
+    }
   }
 }
