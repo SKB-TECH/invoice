@@ -156,7 +156,9 @@
       "next": "Kokende liboso",
       "previous": "Kozonga",
       "cancel": "Kolongola",
-      "save": "Kobomba"
+      "save": "Kobomba",
+      "submit": "Kotinda",
+      "normalize": "Normaliser"
     },
     "steps": {
       "client": "Ba informations ya kiliya",
@@ -218,6 +220,299 @@
       "subtotal": "Sous-total",
       "tax": "TVA",
       "total": "Total"
+    }
+  },
+  "clients": {
+    "createClient": {
+      "breadcrumb": {
+        "Step1": "Bakiliya",
+        "Step2": "Ya sika"
+      },
+      "title": "Kiliya ya sika",
+      "form": {
+        "reference": "Numelo ya Reference",
+        "nom": "Kombo ya kiliya",
+        "sousTitre": "Motó ya nse",
+        "nif": "Numelo ya NIF",
+        "rccm": "Numelo ya RCCM",
+        "tel": "Telefɔ́ni",
+        "email": "Email ya kiliya",
+        "adresse": "Adresi ya kiliya",
+        "pays": "Mboka",
+        "status": {
+          "title": "Etaleli ya kiliya",
+          "options": {
+            "actif": "Eloko ya motuya",
+            "suspendu": "Bakangisi",
+            "complet": "Esika esili"
+          }
+        },
+        "type": {
+          "title": "Lolenge ya kiliya",
+          "options": {
+            "ponctuel": "Na ngonga",
+            "entreprise": "Kompanyi"
+          }
+        },
+        "annule": "Kanga",
+        "save": "Bomba"
+      }
+    },
+    "listClients": {
+      "breadcrumb": {
+        "Step1": "Bakiliya",
+        "Step2": "Komona"
+      },
+      "title": "Liste ya bakiliya",
+      "btn": {
+        "new": "Kiliya ya sika"
+      },
+      "search": {
+        "placeholder": "Luka mokiliya"
+      },
+      "table": {
+        "reference": "Numelo ya Reference",
+        "titre": "Motó ya likambo",
+        "nif": "Numelo ya NIF",
+        "tel": "Telefɔ́ni",
+        "status": {
+          "title": "Etaleli ya kiliya",
+          "options": {
+            "actif": "Eloko ya motuya",
+            "suspendu": "Bakangisi",
+            "complet": "Esika esili"
+          }
+        },
+        "type": {
+          "title": "Lolenge ya kiliya",
+          "options": {
+            "ponctuel": "Na ngonga",
+            "entreprise": "Kompanyi"
+          }
+        }
+      }
+    }
+  },
+  "articles": {
+    "list": {
+      "title": "Biloko",
+      "searchPlaceholder": "Luka na ID, titre, groupe, prix TTC, statut, période...",
+      "searchAriaLabel": "Luka eloko",
+      "empty": "Eloko moko te ezali na recherche na yo.",
+      "columns": {
+        "idIkwook": "Code",
+        "title": "Motó ya likambo",
+        "group": "Etuluku",
+        "priceTtc": "Ntalo na TVA",
+        "status": "Etaleli",
+        "period": "Eleko"
+      },
+      "action": "Etamboli",
+      "viewArticleDetail": "Komona eloko {id}",
+      "status": {
+        "suspendu": "Epekisami",
+        "actif": "Ezali kotiya",
+        "complet": "Esilisi"
+      }
+    },
+    "create": {
+      "breadcrumbNew": "Ya sika",
+      "fields": {
+        "name": "Kombo",
+        "code": "Code",
+        "priceExclTax": "Ntalo kozanga TVA",
+        "priceInclTax": "Ntalo na TVA",
+        "currency": "Mbongo",
+        "taxGroup": "Etuluku ya TVA",
+        "specialPrice": "Loposo ya ntina / Promotion",
+        "pieceUnit": "Mokapo / Moto",
+        "unit": "Moto",
+        "articleGroup": "Etuluku"
+      },
+      "placeholders": {
+        "priceExclTaxExample": "Ex: 10 000",
+        "priceInclTaxExample": "Ex: 11 800",
+        "optional": "Esengeli te"
+      },
+      "selectPlaceholder": "Pona",
+      "taxGroupSelectAria": "Pona etuluku",
+      "units": {
+        "piece": "Eloko",
+        "kg": "Kg",
+        "hour": "Eleko",
+        "flatRate": "Forfait"
+      },
+      "articleGroups": {
+        "a": "Etuluku A",
+        "b": "Etuluku B",
+        "c": "Etuluku C"
+      },
+      "actions": {
+        "cancel": "Kanga",
+        "save": "Bomba"
+      }
+    },
+    "view": {
+      "title": "Makambo matali eloko",
+      "referenceLabel": "Ref.",
+      "fields": {
+        "name": "Kombo",
+        "code": "Code",
+        "description": "Ndimbola",
+        "priceExclTax": "Ntalo kozanga TVA",
+        "priceInclTax": "Ntalo na TVA",
+        "taxGroup": "Etuluku ya TVA"
+      },
+      "actions": {
+        "backToList": "Kozonga na liste",
+        "edit": "Kobongisa"
+      }
+    },
+    "edit": {
+      "title": "Kobongisa eloko",
+      "breadcrumbSegment": "Kobongisa",
+      "referencePrefix": "Ref. : ",
+      "unknownTaxGroupName": "Etuluku (ebumi to epesami)",
+      "taxGroupHint": "Ntalo na TVA elandi ntalo avant TVA (pe liboso) selon groupe fiscal oyo.",
+      "fields": {
+        "description": "Ndimbola",
+        "status": "Etaleli",
+        "period": "Eleko"
+      },
+      "toastSaved": "Eloko ebakisami."
+    }
+  },
+  "configuration": {
+    "pageTitle": "Bobongisi",
+    "menu": {
+      "basicInfo": "Bansango ya moboko",
+      "changePassword": "Bongola mot de passe",
+      "referentials": "Mibeko",
+      "taxGroups": "Etuluku ya mpako"
+    },
+    "basicInfo": {
+      "sectionTitle": "Bansango ya moboko",
+      "changePhoto": "Kobongola",
+      "name": "Kombo",
+      "email": "Email",
+      "saveChanges": "Bomba mbongwana"
+    },
+    "password": {
+      "sectionTitle": "Kobongola mot de passe",
+      "oldPassword": "Mot de passe ya kala",
+      "newPassword": "Mot de passe ya sika",
+      "confirmPassword": "Kondimisa mot de passe ",
+      "placeholder": "Tyá mot de passe na yo",
+      "submit": "Kobongola mot de passe",
+      "errors": {
+        "minLength": "Mot de passe ya sika esengeli kozala na mbula 6 minimum.",
+        "mismatch": "Ba mots de passe bazali te lokola moko."
+      }
+    },
+    "referentials": {
+      "preferencesTitle": "Ba préférences",
+      "theme": "Thème",
+      "language": "Lokota",
+      "timezone": "Eleko ya ntango",
+      "themeOptions": {
+        "light": "Mokolo ya pole",
+        "dark": "Mokolo ya molili",
+        "system": "Système"
+      },
+      "languageOptions": {
+        "fr": "Falansi",
+        "en": "Anglɛ"
+      },
+      "timezoneOptions": {
+        "kinshasa": "Kinshasa",
+        "lubumbashi": "Lubumbashi",
+        "goma": "Goma"
+      },
+      "connectedAccounts": "Ba comptes okangi",
+      "devices": "Ba appareils",
+      "google": "Google",
+      "connectedWith": "Okangi na {email}",
+      "deviceIphone": "iPhone 14 Pro",
+      "deviceMacbook": "MacBook Pro",
+      "lastUsed2Days": "Bolingo ya liboso mibale ya mikolo eleka",
+      "lastUsed1Week": "Bolingo ya liboso poso moko eleka",
+      "disconnect": "Kolongola",
+      "remove": "Kolongola",
+      "savePreferences": "Kobomba ba préférences"
+    },
+    "referentialRates": {
+      "title": "Liste ya ba taux ya référence",
+      "label": "Libellé",
+      "ratePercent": "Taux (%)",
+      "save": "Kobomba",
+      "actions": "Actions",
+      "rateColumn": "Taux",
+      "placeholderLabel": "Ex. TVA ba services",
+      "placeholderRate": "16",
+      "editAria": "Kobongisa taux",
+      "deleteAria": "Kolongola taux",
+      "toasts": {
+        "labelRequired": "Tondisa libellé ya taux.",
+        "rateInvalid": "Taux esengeli kozala entre 0 na 100 %.",
+        "created": "Taux ebakisami.",
+        "updated": "Taux ebongisami.",
+        "deleted": "Taux elongolami."
+      },
+      "cancel": "Kanga"
+    },
+    "taxGroups": {
+      "title": "Ba groupes ya taxation",
+      "intro": "Catalogue ya ba groupes okoki kopesa na ba articles. Okoki kongerisa to kobongisa. Kaka ba groupes actifs ezali na ba fiches articles.",
+      "newGroup": "Groupe ya sika",
+      "code": "Code",
+      "groupName": "Kombo ya groupe",
+      "taxRate": "Taux ya taxe (%)",
+      "status": "Statut",
+      "description": "Ndimbola",
+      "add": "Kongerisa",
+      "placeholderCode": "X",
+      "placeholderName": "Ex. Groupe X",
+      "placeholderRate": "16",
+      "placeholderDescription": "Ex. Taxable na 16 %",
+      "codeAria": "Code ya groupe ya taxation",
+      "statusAria": "Statut actif to inactif",
+      "active": "Actif",
+      "inactive": "Inactif",
+      "table": {
+        "code": "Code",
+        "groupName": "Kombo ya groupe",
+        "description": "Ndimbola",
+        "rate": "Taux (%)",
+        "status": "Statut",
+        "actions": "Actions",
+        "emptyCell": "—"
+      },
+      "edit": "Kobongisa",
+      "deactivate": "Kopekisa",
+      "activate": "Kokoma actif",
+      "delete": "Kolongola",
+      "editGroupTitle": "Kobongisa groupe",
+      "codeFrozenHint": "Code epesi te mpo na référentiel A–P",
+      "save": "Kobomba",
+      "cancel": "Kanga",
+      "pagination": {
+        "range": "{from} — {to} na {total} groupes",
+        "page": "Page {current} / {total}",
+        "prev": "Ya liboso",
+        "next": "Landí"
+      },
+      "autoSaveHint": "Ba changements ebombami automatiquement.",
+      "toasts": {
+        "builtinDelete": "Groupe oyo ya référentiel officiel elongoli te.",
+        "deleted": "Groupe elongolami.",
+        "nameRequired": "Tondisa nkombo ya groupe.",
+        "codeRequired": "Tondisa code ya groupe.",
+        "rateInvalid": "Taux esengeli kozala entre 0 na 100 %.",
+        "codeDuplicate": "Code oyo ezali kaka déjà.",
+        "updated": "Groupe ebongisami.",
+        "idDuplicate": "Identifiant ezali déjà ; meka lisusu.",
+        "created": "Groupe ya taxation ebakisami."
+      }
     }
   }
 }

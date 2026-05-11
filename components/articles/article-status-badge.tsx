@@ -1,11 +1,8 @@
+"use client";
+
+import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
 import type { ArticleRowStatus } from "./types";
-
-const statusLabel: Record<ArticleRowStatus, string> = {
-  suspendu: "Suspendu",
-  actif: "Actif",
-  complet: "Complet",
-};
 
 const statusClass: Record<ArticleRowStatus, string> = {
   suspendu: "bg-[#FCF5E5] text-[#E8BC52]",
@@ -19,6 +16,7 @@ type ArticleStatusBadgeProps = {
 };
 
 export function ArticleStatusBadge({ status, className }: ArticleStatusBadgeProps) {
+  const t = useTranslations("articles.list");
   return (
     <span
       className={cn(
@@ -27,7 +25,7 @@ export function ArticleStatusBadge({ status, className }: ArticleStatusBadgeProp
         className
       )}
     >
-      {statusLabel[status]}
+      {t(`status.${status}`)}
     </span>
   );
 }

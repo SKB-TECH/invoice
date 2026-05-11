@@ -6,6 +6,7 @@ import type { ClientDetailRecord } from "@/lib/clients/clients-data";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useTranslations } from "next-intl";
 
 const selectClassName =
   "h-12 w-full rounded border border-input bg-transparent py-2 pr-2 pl-2.5 text-sm whitespace-nowrap transition-colors outline-none select-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 data-placeholder:text-muted-foreground data-[size=default]:h-8 data-[size=sm]:h-7 data-[size=sm]:rounded-[min(var(--radius-md),10px)] *:data-[slot=select-value]:line-clamp-1 *:data-[slot=select-value]:flex *:data-[slot=select-value]:items-center *:data-[slot=select-value]:gap-1.5 dark:bg-input/30 dark:hover:bg-input/50 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4";
@@ -27,7 +28,7 @@ export type ClientFormProps = ClientFormCreateProps | ClientFormEditProps;
 
 export function ClientForm(props: ClientFormProps) {
   const cancelHref = props.cancelHref;
-
+  const t = useTranslations("clients.createClient.form");
   const defaults =
     props.variant === "edit"
       ? {
@@ -54,7 +55,7 @@ export function ClientForm(props: ClientFormProps) {
       <div className="grid gap-6 sm:grid-cols-2">
         <div className="flex flex-col gap-2">
           <Label htmlFor="reference" className="font-medium text-slate-700">
-            N° Référence <span className="text-red-500">*</span>
+            {t("reference")} <span className="text-red-500">*</span>
           </Label>
           <Input
             id="reference"
@@ -67,7 +68,7 @@ export function ClientForm(props: ClientFormProps) {
 
         <div className="flex flex-col gap-2">
           <Label htmlFor="nom-client" className="font-medium text-slate-700">
-            Nom client <span className="text-red-500">*</span>
+            {t("nom")} <span className="text-red-500">*</span>
           </Label>
           <Input
             id="nom-client"
@@ -80,7 +81,7 @@ export function ClientForm(props: ClientFormProps) {
 
         <div className="flex flex-col gap-2">
           <Label htmlFor="sous-titre" className="font-medium text-slate-700">
-            Sous titre <span className="text-red-500">*</span>
+            {t("sousTitre")} <span className="text-red-500">*</span>
           </Label>
           <Input
             id="sous-titre"
@@ -93,7 +94,7 @@ export function ClientForm(props: ClientFormProps) {
 
         <div className="flex flex-col gap-2">
           <Label htmlFor="nif" className="font-medium text-slate-700">
-            Numéro impôt/NIF
+            {t("nif")}
           </Label>
           <Input
             id="nif"
@@ -105,7 +106,7 @@ export function ClientForm(props: ClientFormProps) {
 
         <div className="flex flex-col gap-2">
           <Label htmlFor="rccm" className="font-medium text-slate-700">
-            RCCM <span className="text-red-500">*</span>
+            {t("rccm")} <span className="text-red-500">*</span>
           </Label>
           <Input
             id="rccm"
@@ -118,7 +119,7 @@ export function ClientForm(props: ClientFormProps) {
 
         <div className="flex flex-col gap-2">
           <Label htmlFor="telephone" className="font-medium text-slate-700">
-            Téléphone
+            {t("tel")}
           </Label>
           <Input
             id="telephone"
@@ -131,7 +132,7 @@ export function ClientForm(props: ClientFormProps) {
 
         <div className="flex flex-col gap-2">
           <Label htmlFor="email" className="font-medium text-slate-700">
-            Email
+            {t("email")}
           </Label>
           <Input
             id="email"
@@ -144,7 +145,7 @@ export function ClientForm(props: ClientFormProps) {
 
         <div className="flex flex-col gap-2">
           <Label htmlFor="adresse" className="font-medium text-slate-700">
-            Adresse
+            {t("adresse")}
           </Label>
           <Input
             id="adresse"
@@ -157,7 +158,7 @@ export function ClientForm(props: ClientFormProps) {
 
         <div className="flex flex-col gap-2">
           <Label htmlFor="pays" className="font-medium text-slate-700">
-            Pays
+            {t("pays")}
           </Label>
           <Input
             id="pays"
@@ -170,7 +171,7 @@ export function ClientForm(props: ClientFormProps) {
 
         <div className="flex flex-col gap-2">
           <Label htmlFor="statut" className="font-medium text-slate-700">
-            Statut
+            {t("status.title")}
           </Label>
           <select
             id="statut"
@@ -179,15 +180,15 @@ export function ClientForm(props: ClientFormProps) {
             className={selectClassName}
             required
           >
-            <option value="actif">Actif</option>
-            <option value="suspendu">Suspendu</option>
-            <option value="complet">Complet</option>
+            <option value="actif">{t("status.options.actif")}</option>
+            <option value="suspendu">{t("status.options.suspendu")}</option>
+            <option value="complet">{t("status.options.complet")}</option>
           </select>
         </div>
 
         <div className="flex flex-col gap-2">
           <Label htmlFor="type-client" className="font-medium text-slate-700">
-            Type de client
+            {t("type.title")}
           </Label>
           <select
             id="type-client"
@@ -196,8 +197,8 @@ export function ClientForm(props: ClientFormProps) {
             className={selectClassName}
             required
           >
-            <option value="ponctuel">Ponctuel</option>
-            <option value="recurrent">Récurrent</option>
+            <option value="ponctuel">{t("type.options.ponctuel")}</option>
+            <option value="recurrent">{t("type.options.recurrent")}</option>
           </select>
         </div>
       </div>
@@ -209,14 +210,14 @@ export function ClientForm(props: ClientFormProps) {
             variant="secondary"
             className="h-12 w-52 cursor-pointer rounded bg-[#949B9F] px-5 text-white hover:bg-[#949B9F]/80"
           >
-            Annuler
+            {t("annule")}
           </Button>
         </Link>
         <Button
           type="submit"
           className="h-12 w-52 cursor-pointer rounded bg-[#0879bd] px-5 text-white shadow-none hover:bg-[#066aa8]"
         >
-          Enregistrer
+          {t("save")}
         </Button>
       </div>
     </form>

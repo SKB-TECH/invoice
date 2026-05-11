@@ -103,47 +103,47 @@
       "now": "Now"
     }
   },
-"invoiceViewer": {
-  "breadcrumbInvoices": "Invoices",
-  "breadcrumbView": "Viewer",
-  "print": "Print",
-  "download": "Download",
-  "share": "Share",
-  "documentPreview": "Invoice preview",
-  "documentHelp": "The invoice stays visible during the review, like a shared document.",
-  "invoice": "Invoice",
-  "billedTo": "Billed to",
-  "createdAt": "Created at",
-  "dueDate": "Due date",
-  "status": "Status",
-  "amount": "Amount",
-  "designation": "Description",
-  "quantity": "Qty",
-  "unitPrice": "Unit price",
-  "lineTotal": "Total",
-  "subtotal": "Subtotal",
-  "tax": "Tax",
-  "total": "Total",
-  "note": "Note",
-  "noteText": "This invoice is subject to internal validation before final delivery to the client.",
-  "reviewAndComments": "Review and comments",
-  "reviewHelp": "Follow reviewers’ notes and add your own comment.",
-  "decision": "Decision",
-  "validate": "Validate",
-  "pause": "Pause",
-  "reject": "Reject",
-  "interactions": "Interactions",
-  "comments": "Comments",
-  "noComment": "No comments for this invoice.",
-  "resolve": "Mark as resolved",
-  "resolved": "Resolved",
-  "addComment": "Add a comment",
-  "commentPlaceholder": "Write a comment about this invoice...",
-  "sendComment": "Send comment",
-  "you": "You",
-  "reviewer": "Reviewer",
-  "now": "Now"
-},
+  "invoiceViewer": {
+    "breadcrumbInvoices": "Invoices",
+    "breadcrumbView": "Viewer",
+    "print": "Print",
+    "download": "Download",
+    "share": "Share",
+    "documentPreview": "Invoice preview",
+    "documentHelp": "The invoice stays visible during the review, like a shared document.",
+    "invoice": "Invoice",
+    "billedTo": "Billed to",
+    "createdAt": "Created at",
+    "dueDate": "Due date",
+    "status": "Status",
+    "amount": "Amount",
+    "designation": "Description",
+    "quantity": "Qty",
+    "unitPrice": "Unit price",
+    "lineTotal": "Total",
+    "subtotal": "Subtotal",
+    "tax": "Tax",
+    "total": "Total",
+    "note": "Note",
+    "noteText": "This invoice is subject to internal validation before final delivery to the client.",
+    "reviewAndComments": "Review and comments",
+    "reviewHelp": "Follow reviewers’ notes and add your own comment.",
+    "decision": "Decision",
+    "validate": "Validate",
+    "pause": "Pause",
+    "reject": "Reject",
+    "interactions": "Interactions",
+    "comments": "Comments",
+    "noComment": "No comments for this invoice.",
+    "resolve": "Mark as resolved",
+    "resolved": "Resolved",
+    "addComment": "Add a comment",
+    "commentPlaceholder": "Write a comment about this invoice...",
+    "sendComment": "Send comment",
+    "you": "You",
+    "reviewer": "Reviewer",
+    "now": "Now"
+  },
   "createInvoice": {
     "title": "Create invoice",
     "breadcrumb": {
@@ -156,7 +156,9 @@
       "next": "Next",
       "previous": "Previous",
       "cancel": "Cancel",
-      "save": "Save"
+      "save": "Save",
+      "submit": "Submit",
+      "normalize": "Normalize"
     },
     "steps": {
       "client": "Client information",
@@ -218,6 +220,361 @@
       "subtotal": "Subtotal",
       "tax": "Tax",
       "total": "Total"
+    }
+  },
+  "clients": {
+    "createClient": {
+      "breadcrumb": {
+        "Step1": "Customers",
+        "Step2": "New"
+      },
+      "title": "New customer",
+      "form": {
+        "reference": "Reference number",
+        "nom": "Customer name",
+        "sousTitre": "Subtitle",
+        "nif": "Tax ID Number (NIF)",
+        "rccm": "Registration of Commerce and Companies (RCCM)",
+        "tel": "Phone number",
+        "email": "Email",
+        "adresse": "Address",
+        "pays": "Country",
+        "status": {
+          "title": "Status of customer",
+          "options": {
+            "actif": "Active",
+            "suspendu": "Suspended",
+            "complet": "Complete"
+          }
+        },
+        "type": {
+          "title": "Type of customer",
+          "options": {
+            "ponctuel": "Punctual",
+            "recurrent": "Recurring"
+          }
+        },
+        "annule": "Cancel",
+        "save": "Save"
+      }
+    },
+    "listClients": {
+      "breadcrumb": {
+        "Step1": "Customers",
+        "Step2": "View"
+      },
+      "title": "List of customers",
+      "btn": {
+        "new": "New customer"
+      },
+      "search": {
+        "placeholder": "Search customer"
+      },
+      "table": {
+        "reference": "Reference number",
+        "titre": "Title",
+        "nif": "Tax ID Number (NIF)",
+        "tel": "Phone number",
+        "status": {
+          "title": "Status",
+          "options": {
+            "actif": "Active",
+            "suspendu": "Suspended",
+            "complet": "Complete"
+          }
+        },
+        "type": {
+          "title": "Type",
+          "options": {
+            "ponctuel": "Punctual",
+            "entreprise": "Company"
+          }
+        }
+      }
+    }
+  },
+  "contrats": {
+    "createContrat": {
+      "breadcrumb": {
+        "Step1": "Contracts",
+        "Step2": "New"
+      },
+      "title": "New contract",
+      "form": {
+        "reference": "Reference number",
+        "nom": "Contract name",
+        "auto-renew": {
+          "title": "Automatic renewal",
+          "options": {
+            "oui": "Yes",
+            "non": "No"
+          }
+        },
+        "tel": "Phone number",
+        "dateStart": "Start date",
+        "dateEnd": "End date",
+        "valeur": "Contract amount",
+        "status": {
+          "title": "Status",
+          "options": {
+            "actif": "Active",
+            "suspendu": "Suspended",
+            "complet": "Complete"
+          }
+        },
+        "description": "Description"
+      },
+      "cancel": "Cancel",
+      "save": "Save"
+    },
+    "listContrats": {
+      "breadcrumb": {
+        "Step1": "Contracts",
+        "Step2": "View"
+      },
+      "title": "List of contracts",
+      "btn": {
+        "new": "New contract"
+      },
+      "search": {
+        "placeholder": "Search contract"
+      },
+      "table": {
+        "titre": "Title",
+        "client": "Customer",
+        "Montant": "Amount",
+        "status": {
+          "title": "Status",
+          "options": {
+            "actif": "Active",
+            "suspendu": "Suspended",
+            "complet": "Complete"
+          }
+        },
+        "period": "Period"
+      }
+    }
+  },
+  "articles": {
+    "list": {
+      "title": "Articles",
+      "searchPlaceholder": "Search by ID, title, group, price incl. tax, status, period...",
+      "searchAriaLabel": "Search for an article",
+      "empty": "No articles match your search.",
+      "columns": {
+        "idIkwook": "ID iKwook",
+        "title": "Title",
+        "group": "Group",
+        "priceTtc": "Price (incl. tax)",
+        "status": "Status",
+        "period": "Period"
+      },
+      "action": "Action",
+      "viewArticleDetail": "View details for article {id}",
+      "status": {
+        "suspendu": "Suspended",
+        "actif": "Active",
+        "complet": "Complete"
+      }
+    },
+    "create": {
+      "breadcrumbNew": "New",
+      "fields": {
+        "name": "Name",
+        "code": "Code",
+        "priceExclTax": "Price excl. tax",
+        "priceInclTax": "Price incl. tax",
+        "currency": "Currency",
+        "taxGroup": "Tax group",
+        "specialPrice": "Special price / Promotion",
+        "pieceUnit": "Piece / Unit",
+        "unit": "Unit",
+        "articleGroup": "Group"
+      },
+      "placeholders": {
+        "priceExclTaxExample": "E.g.: 10,000",
+        "priceInclTaxExample": "E.g.: 11,800",
+        "optional": "Optional"
+      },
+      "selectPlaceholder": "Select",
+      "taxGroupSelectAria": "Select a tax group",
+      "units": {
+        "piece": "Piece",
+        "kg": "Kg",
+        "hour": "Hour",
+        "flatRate": "Flat rate"
+      },
+      "articleGroups": {
+        "a": "Group A",
+        "b": "Group B",
+        "c": "Group C"
+      },
+      "actions": {
+        "cancel": "Cancel",
+        "save": "Save"
+      }
+    },
+    "view": {
+      "title": "Article details",
+      "referenceLabel": "Ref.",
+      "fields": {
+        "name": "Name",
+        "code": "Code",
+        "description": "Description",
+        "priceExclTax": "Price excl. tax",
+        "priceInclTax": "Price incl. tax",
+        "taxGroup": "Tax group"
+      },
+      "actions": {
+        "backToList": "Back to list",
+        "edit": "Edit"
+      }
+    },
+    "edit": {
+      "title": "Edit article",
+      "breadcrumbSegment": "Edit",
+      "referencePrefix": "Ref.: ",
+      "unknownTaxGroupName": "Tax group (unknown or removed)",
+      "taxGroupHint": "Prices stay in sync: incl. tax is derived from excl. tax (or vice versa) using this tax group.",
+      "fields": {
+        "description": "Description",
+        "status": "Status",
+        "period": "Period"
+      },
+      "toastSaved": "Article updated."
+    }
+  },
+  "configuration": {
+    "pageTitle": "Settings",
+    "menu": {
+      "basicInfo": "Basic information",
+      "changePassword": "Change password",
+      "referentials": "Reference data",
+      "taxGroups": "Tax groups"
+    },
+    "basicInfo": {
+      "sectionTitle": "Basic information",
+      "changePhoto": "Change",
+      "name": "Name",
+      "email": "Email",
+      "saveChanges": "Save changes"
+    },
+    "password": {
+      "sectionTitle": "Change password",
+      "oldPassword": "Current password",
+      "newPassword": "New password",
+      "confirmPassword": "Confirm password",
+      "placeholder": "Enter your password",
+      "submit": "Update password",
+      "errors": {
+        "minLength": "The new password must be at least 6 characters.",
+        "mismatch": "Passwords do not match."
+      }
+    },
+    "referentials": {
+      "preferencesTitle": "Preferences",
+      "theme": "Theme",
+      "language": "Language",
+      "timezone": "Time zone",
+      "themeOptions": {
+        "light": "Light mode",
+        "dark": "Dark mode",
+        "system": "System"
+      },
+      "languageOptions": {
+        "fr": "French",
+        "en": "English"
+      },
+      "timezoneOptions": {
+        "kinshasa": "Kinshasa",
+        "lubumbashi": "Lubumbashi",
+        "goma": "Goma"
+      },
+      "connectedAccounts": "Connected accounts",
+      "devices": "Devices",
+      "google": "Google",
+      "connectedWith": "Signed in with {email}",
+      "deviceIphone": "iPhone 14 Pro",
+      "deviceMacbook": "MacBook Pro",
+      "lastUsed2Days": "Last used 2 days ago",
+      "lastUsed1Week": "Last used 1 week ago",
+      "disconnect": "Disconnect",
+      "remove": "Remove",
+      "savePreferences": "Save preferences"
+    },
+    "referentialRates": {
+      "title": "Rate reference list",
+      "label": "Label",
+      "ratePercent": "Rate (%)",
+      "save": "Save",
+      "actions": "Actions",
+      "rateColumn": "Rate",
+      "placeholderLabel": "E.g. VAT services",
+      "placeholderRate": "16",
+      "editAria": "Edit rate",
+      "deleteAria": "Delete rate",
+      "toasts": {
+        "labelRequired": "Enter a label for the rate.",
+        "rateInvalid": "Enter a valid rate between 0 and 100%.",
+        "created": "Rate created.",
+        "updated": "Rate updated.",
+        "deleted": "Rate deleted."
+      },
+      "cancel": "Cancel"
+    },
+    "taxGroups": {
+      "title": "Tax groups",
+      "intro": "Catalog of groups you can assign to your articles. You can add groups or adjust labels and rates. Only active groups are offered on article forms.",
+      "newGroup": "New group",
+      "code": "Code",
+      "groupName": "Group name",
+      "taxRate": "Tax rate (%)",
+      "status": "Status",
+      "description": "Description",
+      "add": "Add",
+      "placeholderCode": "X",
+      "placeholderName": "E.g. Group X",
+      "placeholderRate": "16",
+      "placeholderDescription": "E.g. Standard 16% rate",
+      "codeAria": "Tax group code",
+      "statusAria": "Active or inactive status",
+      "active": "Active",
+      "inactive": "Inactive",
+      "table": {
+        "code": "Code",
+        "groupName": "Group name",
+        "description": "Description",
+        "rate": "Rate (%)",
+        "status": "Status",
+        "actions": "Actions",
+        "emptyCell": "—"
+      },
+      "edit": "Edit",
+      "deactivate": "Deactivate",
+      "activate": "Activate",
+      "delete": "Delete",
+      "editGroupTitle": "Edit group",
+      "codeFrozenHint": "Code locked for the A–P reference set",
+      "save": "Save",
+      "cancel": "Cancel",
+      "pagination": {
+        "range": "{from} — {to} of {total} groups",
+        "page": "Page {current} / {total}",
+        "prev": "Previous",
+        "next": "Next"
+      },
+      "autoSaveHint": "Changes are saved automatically.",
+      "toasts": {
+        "builtinDelete": "This official reference group cannot be deleted.",
+        "deleted": "Group deleted.",
+        "nameRequired": "Enter a group name.",
+        "codeRequired": "Enter a group code.",
+        "rateInvalid": "Enter a valid rate between 0 and 100%.",
+        "codeDuplicate": "This code is already in use.",
+        "updated": "Group updated.",
+        "idDuplicate": "Identifier already in use; please try again.",
+        "created": "Tax group created."
+      }
     }
   }
 }

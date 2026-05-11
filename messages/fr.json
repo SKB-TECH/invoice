@@ -51,7 +51,6 @@
     "Configuration": "Configuration",
     "Aide": "Aide"
   },
-
   "login": {
     "illustrationAlt": "illustration",
     "logoAlt": "logo",
@@ -157,7 +156,9 @@
       "next": "Suivant",
       "previous": "Précédent",
       "cancel": "Annuler",
-      "save": "Enregistrer"
+      "save": "Enregistrer",
+      "submit": "Soumettre",
+      "normalize": "Normaliser"
     },
     "steps": {
       "client": "Informations client",
@@ -220,6 +221,360 @@
       "tax": "TVA",
       "total": "Total"
     }
+  },
+  "clients": {
+    "createClient": {
+      "breadcrumb": {
+        "Step1": "Clients",
+        "Step2": "Nouveau"
+      },
+      "title": "Nouveau client",
+      "form": {
+        "reference": "N° Référence",
+        "nom": "Nom client",
+        "sousTitre": "Sous titre",
+        "nif": "Numéro impôt/NIF",
+        "rccm": "RCCM",
+        "tel": "Téléphone",
+        "email": "Email",
+        "adresse": "Adresse",
+        "pays": "Pays",
+        "status": {
+          "title": "Statut",
+          "options": {
+            "actif": "Actif",
+            "suspendu": "Suspendu",
+            "complet": "Complet"
+          }
+        },
+        "type": {
+          "title": "Type de client",
+          "options": {
+            "ponctuel": "Ponctuel",
+            "entreprise": "Entreprise"
+          }
+        },
+        "annule": "Annuler",
+        "save": "Enregistrer"
+      }
+    },
+    "listClients": {
+      "breadcrumb": {
+        "Step1": "Clients",
+        "Step2": "Visualiser"
+      },
+      "title": "Liste de clients",
+      "btn": {
+        "new": "Nouveau client"
+      },
+      "search": {
+        "placeholder": "Rechercher un client"
+      },
+      "table": {
+        "reference": "N° Référence",
+        "titre": "Titre",
+        "nif": "Numéro impôt/NIF",
+        "tel": "Téléphone",
+        "status": {
+          "title": "Statut",
+          "options": {
+            "actif": "Actif",
+            "suspendu": "Suspendu",
+            "complet": "Complet"
+          }
+        },
+        "type": {
+          "title": "Type de client",
+          "options": {
+            "ponctuel": "Ponctuel",
+            "entreprise": "Entreprise"
+          }
+        }
+      }
+    }
+  },
+  "contrats": {
+    "createContrat": {
+      "breadcrumb": {
+        "Step1": "Contrats",
+        "Step2": "Nouveau"
+      },
+      "title": "Nouveau contrat",
+      "form": {
+        "reference": "N° Référence",
+        "nom": "Nom contrat",
+        "auto-renew": {
+          "title": "Renouvellement automatique",
+          "options": {
+            "oui": "Oui",
+            "non": "Non"
+          }
+        },
+        "tel": "Téléphone",
+        "dateStart": "Date de début",
+        "dateEnd": "Date de fin",
+        "valeur": "Valeur du contrat",
+        "status": {
+          "title": "Statut",
+          "options": {
+            "actif": "Actif",
+            "suspendu": "Suspendu",
+            "complet": "Complet"
+          }
+        },
+        "description": "Description"
+      },
+      "cancel": "Annuler",
+      "save": "Enregistrer"
+    },
+    "listContrats": {
+      "breadcrumb": {
+        "Step1": "Contrats",
+        "Step2": "Visualiser"
+      },
+      "title": "Liste de contrats",
+      "btn": {
+        "new": "Nouveau contrat"
+      },
+      "search": {
+        "placeholder": "Rechercher un contrat"
+      },
+      "table": {
+        "titre": "Titre",
+        "client": "Client",
+        "Montant": "Montant",
+        "status": {
+          "title": "Statut",
+          "options": {
+            "actif": "Actif",
+            "suspendu": "Suspendu",
+            "complet": "Complet"
+          }
+        },
+        "period": "Période"
+      }
+    }
+  },
+  "articles": {
+    "list": {
+      "title": "Articles",
+      "searchPlaceholder": "Recherche par ID, titre, groupe, prix TTC, statut, période...",
+      "searchAriaLabel": "Rechercher un article",
+      "empty": "Aucun article ne correspond à votre recherche.",
+      "columns": {
+        "idIkwook": "Code",
+        "title": "Titre",
+        "group": "Groupe",
+        "priceTtc": "Prix TTC",
+        "status": "Statut",
+        "period": "Période"
+      },
+      "action": "Action",
+      "viewArticleDetail": "Voir le détail de l'article {id}",
+      "status": {
+        "suspendu": "Suspendu",
+        "actif": "Actif",
+        "complet": "Complet"
+      }
+    },
+    "create": {
+      "breadcrumbNew": "Nouveau",
+      "fields": {
+        "name": "Nom",
+        "code": "Code",
+        "priceExclTax": "Prix HT",
+        "priceInclTax": "Prix TTC",
+        "currency": "Devise",
+        "taxGroup": "Groupe de tax",
+        "specialPrice": "Prix spécial / Promotion",
+        "pieceUnit": "Pièce / Unité",
+        "unit": "Unité",
+        "articleGroup": "Groupe"
+      },
+      "placeholders": {
+        "priceExclTaxExample": "Ex: 10 000",
+        "priceInclTaxExample": "Ex: 11 800",
+        "optional": "Facultatif"
+      },
+      "selectPlaceholder": "Sélectionner",
+      "taxGroupSelectAria": "Sélectionner un groupe",
+      "units": {
+        "piece": "Pièce",
+        "kg": "Kg",
+        "hour": "Heure",
+        "flatRate": "Forfait"
+      },
+      "articleGroups": {
+        "a": "Groupe A",
+        "b": "Groupe B",
+        "c": "Groupe C"
+      },
+      "actions": {
+        "cancel": "Annuler",
+        "save": "Enregistrer"
+      }
+    },
+    "view": {
+      "title": "Détail de l'article",
+      "referenceLabel": "Réf.",
+      "fields": {
+        "name": "Nom",
+        "code": "Code",
+        "description": "Description",
+        "priceExclTax": "Prix hors taxes",
+        "priceInclTax": "Prix TTC",
+        "taxGroup": "Groupe de tax"
+      },
+      "actions": {
+        "backToList": "Retour à la liste",
+        "edit": "Modifier"
+      }
+    },
+    "edit": {
+      "title": "Modifier l'article",
+      "breadcrumbSegment": "Modifier",
+      "referencePrefix": "Réf. : ",
+      "unknownTaxGroupName": "Groupe (inconnu ou supprimé)",
+      "taxGroupHint": "Le prix TTC suit le HT (ou inversement) selon ce groupe fiscal.",
+      "fields": {
+        "description": "Description",
+        "status": "Statut",
+        "period": "Période"
+      },
+      "toastSaved": "Article mis à jour."
+    }
+  },
+  "configuration": {
+    "pageTitle": "Configuration",
+    "menu": {
+      "basicInfo": "Informations de base",
+      "changePassword": "Changer mot de passe",
+      "referentials": "Référentielles",
+      "taxGroups": "Groupes de taxation"
+    },
+    "basicInfo": {
+      "sectionTitle": "Informations de base",
+      "changePhoto": "Changer",
+      "name": "Nom",
+      "email": "Email",
+      "saveChanges": "Enregistrer les modifications"
+    },
+    "password": {
+      "sectionTitle": "Changer mot de passe",
+      "oldPassword": "Ancien mot de passe",
+      "newPassword": "Nouveau mot de passe",
+      "confirmPassword": "Confirmer le mot de passe",
+      "placeholder": "Entrez votre mot de passe",
+      "submit": "Modifier le mot de passe",
+      "errors": {
+        "minLength": "Le nouveau mot de passe doit contenir au moins 6 caractères.",
+        "mismatch": "Les mots de passe ne correspondent pas."
+      }
+    },
+    "referentials": {
+      "preferencesTitle": "Préférences",
+      "theme": "Thème",
+      "language": "Langue",
+      "timezone": "Fuseau horaire",
+      "themeOptions": {
+        "light": "Mode clair",
+        "dark": "Mode sombre",
+        "system": "Système"
+      },
+      "languageOptions": {
+        "fr": "Français",
+        "en": "English"
+      },
+      "timezoneOptions": {
+        "kinshasa": "Kinshasa",
+        "lubumbashi": "Lubumbashi",
+        "goma": "Goma"
+      },
+      "connectedAccounts": "Comptes connectés",
+      "devices": "Appareils",
+      "google": "Google",
+      "connectedWith": "Connecté avec {email}",
+      "deviceIphone": "iPhone 14 Pro",
+      "deviceMacbook": "MacBook Pro",
+      "lastUsed2Days": "Dernière utilisation il y a 2 jours",
+      "lastUsed1Week": "Dernière utilisation il y a 1 semaine",
+      "disconnect": "Déconnecter",
+      "remove": "Retirer",
+      "savePreferences": "Enregistrer les préférences"
+    },
+    "referentialRates": {
+      "title": "Référentiel des taux",
+      "label": "Libellé",
+      "ratePercent": "Taux (%)",
+      "save": "Enregistrer",
+      "actions": "Actions",
+      "rateColumn": "Taux",
+      "placeholderLabel": "Ex. TVA services",
+      "placeholderRate": "16",
+      "editAria": "Modifier le taux",
+      "deleteAria": "Supprimer le taux",
+      "toasts": {
+        "labelRequired": "Indiquez un libellé pour le taux.",
+        "rateInvalid": "Indiquez un taux valide entre 0 et 100 %.",
+        "created": "Taux créé.",
+        "updated": "Taux modifié.",
+        "deleted": "Taux supprimé."
+      },
+      "cancel": "Annuler"
+    },
+    "taxGroups": {
+      "title": "Groupes de taxation",
+      "intro": "Catalogue des groupes que vous pouvez affecter à vos articles. Vous pouvez en ajouter ou adapter libellés et taux. Seuls les groupes actifs sont proposés sur les fiches articles.",
+      "newGroup": "Nouveau groupe",
+      "code": "Code",
+      "groupName": "Nom du groupe",
+      "taxRate": "Taux de taxe (%)",
+      "status": "Statut",
+      "description": "Description",
+      "add": "Ajouter",
+      "placeholderCode": "X",
+      "placeholderName": "Ex. Groupe X",
+      "placeholderRate": "16",
+      "placeholderDescription": "Ex. Taxable au taux normal de 16 %",
+      "codeAria": "Code du groupe de taxation",
+      "statusAria": "Statut actif ou inactif",
+      "active": "Actif",
+      "inactive": "Inactif",
+      "table": {
+        "code": "Code",
+        "groupName": "Nom du groupe",
+        "description": "Description",
+        "rate": "Taux (%)",
+        "status": "Statut",
+        "actions": "Actions",
+        "emptyCell": "—"
+      },
+      "edit": "Modifier",
+      "deactivate": "Désactiver",
+      "activate": "Activer",
+      "delete": "Supprimer",
+      "editGroupTitle": "Modifier le groupe",
+      "codeFrozenHint": "Code figé pour le référentiel A–P",
+      "save": "Enregistrer",
+      "cancel": "Annuler",
+      "pagination": {
+        "range": "{from} — {to} sur {total} groupes",
+        "page": "Page {current} / {total}",
+        "prev": "Précédent",
+        "next": "Suivant"
+      },
+      "autoSaveHint": "Les modifications sont enregistrées automatiquement.",
+      "toasts": {
+        "builtinDelete": "Ce groupe du référentiel officiel ne peut pas être supprimé.",
+        "deleted": "Groupe supprimé.",
+        "nameRequired": "Indiquez un nom de groupe.",
+        "codeRequired": "Indiquez un code de groupe.",
+        "rateInvalid": "Indiquez un taux valide entre 0 et 100 %.",
+        "codeDuplicate": "Ce code est déjà utilisé.",
+        "updated": "Groupe mis à jour.",
+        "idDuplicate": "Identifiant déjà utilisé ; réessayez.",
+        "created": "Groupe de taxation créé."
+      }
+    }
   }
 }
-

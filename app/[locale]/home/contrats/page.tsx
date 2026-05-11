@@ -16,6 +16,7 @@ import {
   demoContrats,
   type ContratStatutUi,
 } from "@/lib/contrats/contrats-data";
+import { useTranslations } from "next-intl";
 
 function StatutBadge({ statut }: { statut: ContratStatutUi }) {
   const styles: Record<ContratStatutUi, string> = {
@@ -37,6 +38,7 @@ function StatutBadge({ statut }: { statut: ContratStatutUi }) {
 }
 
 export default function ContratsPage() {
+  const t = useTranslations("contrats.listContrats");
   return (
     <div className="min-h-screen text-foreground">
       <main className="mx-auto w-full min-w-full py-4">
@@ -45,18 +47,18 @@ export default function ContratsPage() {
             <House className="size-4" />
           </Link>
           <ChevronRight className="size-4" />
-          <span className="text-slate-800">Liste de contrats</span>
+          <span className="text-slate-800">{t("title")}</span>
         </span>
         <div className="mb-6 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
           <h1 className="text-2xl font-bold tracking-tight text-slate-800 sm:text-3xl">
-            Contrat
+            {t("title")}
           </h1>
           <Button
             size="lg"
             className="h-12 w-52 cursor-pointer rounded bg-[#0073C5] px-5 text-white"
             asChild
           >
-            <Link href="/home/contrats/new">Nouveau contrat</Link>
+            <Link href="/home/contrats/new">{t("btn.new")}</Link>
           </Button>
         </div>
 
@@ -65,19 +67,19 @@ export default function ContratsPage() {
             <TableHeader className="bg-[#F4F4F4BB]">
               <TableRow className="border-slate-200 bg-[#F4F4F4BB] hover:bg-transparent">
                 <TableHead className="h-11 bg-slate-100 px-4 text-left text-sm font-semibold text-slate-700">
-                  Titre
+                  {t("table.titre")}
                 </TableHead>
                 <TableHead className="h-11 bg-slate-100 px-4 text-left text-sm font-semibold text-slate-700">
-                  Client
+                  {t("table.client")}
                 </TableHead>
                 <TableHead className="h-11 bg-slate-100 px-4 text-left text-sm font-semibold text-slate-700">
-                  Montant
+                  {t("table.Montant")}
                 </TableHead>
                 <TableHead className="h-11 bg-slate-100 px-4 text-left text-sm font-semibold text-slate-700">
-                  Statut
+                  {t("table.status.title")}
                 </TableHead>
                 <TableHead className="h-11 bg-slate-100 px-4 text-left text-sm font-semibold text-slate-700">
-                  Période
+                  {t("table.period")}
                 </TableHead>
                 <TableHead className="h-11 w-14 bg-slate-100 px-4 text-right text-sm font-semibold text-slate-700">
                   <span className="sr-only">Actions</span>

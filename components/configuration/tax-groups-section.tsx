@@ -1,6 +1,7 @@
 "use client";
 
 import { Fragment, useCallback, useEffect, useMemo, useState } from "react";
+import { useLocale, useTranslations } from "next-intl";
 import { toast } from "sonner";
 import {
   BUILTIN_TAX_GROUP_IDS,
@@ -24,7 +25,7 @@ function parseRatePercent(raw: string): number | null {
   return n;
 }
 
-function sortTaxGroups(list: TaxGroup[]): TaxGroup[] {
+function sortTaxGroups(list: TaxGroup[], sortLocale: string): TaxGroup[] {
   const weight = (g: TaxGroup) => {
     const c = g.code.trim().toUpperCase();
     const idx = c.length === 1 ? CODE_ORDER.indexOf(c) : -1;
@@ -34,7 +35,7 @@ function sortTaxGroups(list: TaxGroup[]): TaxGroup[] {
     const wa = weight(a);
     const wb = weight(b);
     if (wa !== wb) return wa - wb;
-    return a.name.localeCompare(b.name, "fr");
+    return a.name.localeCompare(b.name, sortLocale);
   });
 }
 
@@ -43,6 +44,9 @@ type RowPatch = Partial<
 >;
 
 export function TaxGroupsSection() {
+  const t = useTranslations("configuration.taxGroups");
+  const locale = useLocale();
+  const sortLocale = locale === "en" ? "en" : "fr";
   const [groups, setGroups] = useState<TaxGroup[]>([]);
   const [newCode, setNewCode] = useState("");
   const [newName, setNewName] = useState("");
@@ -78,13 +82,13 @@ export function TaxGroupsSection() {
 
   const deleteGroup = (id: string) => {
     if (BUILTIN_TAX_GROUP_IDS.has(id)) {
-      toast.error("Ce groupe du référentiel officiel ne peut pas être supprimé.");
+      toast.error(t("toasts.builtinDelete"));
       return;
     }
     const current = readTaxGroups();
     persist(current.filter((g) => g.id !== id));
     setEditingId((e) => (e === id ? null : e));
-    toast.success("Groupe supprimé.");
+    toast.success(t("toasts.deleted"));
   };
 
   const toggleActive = (id: string) => {
@@ -123,15 +127,15 @@ export function TaxGroupsSection() {
     const description = editDescription.trim();
     const rate = parseRatePercent(editRate);
     if (!name) {
-      toast.error("Indiquez un nom de groupe.");
+      toast.error(t("toasts.nameRequired"));
       return;
     }
     if (!code) {
-      toast.error("Indiquez un code de groupe.");
+      toast.error(t("toasts.codeRequired"));
       return;
     }
     if (rate === null) {
-      toast.error("Indiquez un taux valide entre 0 et 100 %.");
+      toast.error(t("toasts.rateInvalid"));
       return;
     }
     const current = readTaxGroups();
@@ -140,7 +144,7 @@ export function TaxGroupsSection() {
         (x) => x.id !== editingId && x.code.toUpperCase() === code
       )
     ) {
-      toast.error("Ce code est déjà utilisé.");
+      toast.error(t("toasts.codeDuplicate"));
       return;
     }
     updateRow(editingId, {
@@ -150,7 +154,7 @@ export function TaxGroupsSection() {
       ratePercent: rate,
     });
     closeEditor();
-    toast.success("Groupe mis à jour.");
+    toast.success(t("toasts.updated"));
   };
 
   const handleAdd = (e: React.FormEvent) => {
@@ -160,25 +164,25 @@ export function TaxGroupsSection() {
     const description = newDescription.trim();
     const rate = parseRatePercent(newRate);
     if (!name) {
-      toast.error("Indiquez un nom de groupe.");
+      toast.error(t("toasts.nameRequired"));
       return;
     }
     if (!code) {
-      toast.error("Indiquez un code de groupe.");
+      toast.error(t("toasts.codeRequired"));
       return;
     }
     if (rate === null) {
-      toast.error("Indiquez un taux valide entre 0 et 100 %.");
+      toast.error(t("toasts.rateInvalid"));
       return;
     }
     const id = generateNewTaxGroupId(name);
     const current = readTaxGroups();
     if (current.some((g) => g.id === id)) {
-      toast.error("Identifiant déjà utilisé ; réessayez.");
+      toast.error(t("toasts.idDuplicate"));
       return;
     }
     if (current.some((g) => g.code.toUpperCase() === code)) {
-      toast.error("Ce code est déjà utilisé.");
+      toast.error(t("toasts.codeDuplicate"));
       return;
     }
     const next: TaxGroup[] = [
@@ -199,10 +203,13 @@ export function TaxGroupsSection() {
     setNewDescription("");
     setNewRate("");
     setNewActive(true);
-    toast.success("Groupe de taxation créé.");
+    toast.success(t("toasts.created"));
   };
 
-  const sorted = useMemo(() => sortTaxGroups(groups), [groups]);
+  const sorted = useMemo(
+    () => sortTaxGroups(groups, sortLocale),
+    [groups, sortLocale],
+  );
 
   const totalPages = Math.ceil(sorted.length / TAX_GROUPS_PAGE_SIZE) || 1;
   const maxPageIndex = Math.max(0, totalPages - 1);
@@ -225,11 +232,9 @@ export function TaxGroupsSection() {
     <>
       <div className="border border-slate-200 bg-white">
         <div className="border-b border-slate-200 px-5 py-4">
-          <h2 className="text-[16px] font-semibold">Groupes de taxation</h2>
+          <h2 className="text-[16px] font-semibold">{t("title")}</h2>
           <p className="mt-1 text-[13px] text-slate-500">
-            Catalogue des groupes que vous pouvez affecter à vos articles. Vous pouvez en ajouter ou adapter libellés et taux. Seuls les groupes{" "}
-            <span className="font-medium text-slate-700">actifs</span> sont
-            proposés sur les fiches articles.
+            {t("intro")}
           </p>
         </div>
 
@@ -238,58 +243,58 @@ export function TaxGroupsSection() {
           className="border-b border-slate-100 px-5 py-5"
         >
           <p className="mb-4 text-[13px] font-medium text-slate-800">
-            Nouveau groupe
+            {t("newGroup")}
           </p>
           <div className="flex flex-col gap-4">
             <div className="flex flex-wrap items-end gap-x-4 gap-y-4">
               <div className="w-[4.25rem] shrink-0">
                 <label className="mb-1 block text-[13px] font-medium">
-                  Code <span className="text-red-500">*</span>
+                  {t("code")} <span className="text-red-500">*</span>
                 </label>
                 <input
                   value={newCode}
                   onChange={(e) => setNewCode(e.target.value)}
-                  placeholder="X"
+                  placeholder={t("placeholderCode")}
                   maxLength={4}
                   className="h-11 w-full border border-slate-200 px-2 text-center text-[13px] uppercase outline-none focus:border-[#1f6a9a]"
-                  aria-label="Code du groupe de taxation"
+                  aria-label={t("codeAria")}
                 />
               </div>
               <div className="min-w-[10rem] flex-1 basis-48">
                 <label className="mb-1 block text-[13px] font-medium">
-                  Nom du groupe <span className="text-red-500">*</span>
+                  {t("groupName")} <span className="text-red-500">*</span>
                 </label>
                 <input
                   value={newName}
                   onChange={(e) => setNewName(e.target.value)}
-                  placeholder="Ex. Groupe X"
+                  placeholder={t("placeholderName")}
                   className="h-11 w-full border border-slate-200 px-3 text-[13px] outline-none focus:border-[#1f6a9a]"
                 />
               </div>
               <div className="w-full shrink-0 sm:w-28">
                 <label className="mb-1 block text-[13px] font-medium">
-                  Taux de taxe (%) <span className="text-red-500">*</span>
+                  {t("taxRate")} <span className="text-red-500">*</span>
                 </label>
                 <input
                   value={newRate}
                   onChange={(e) => setNewRate(e.target.value)}
                   inputMode="decimal"
-                  placeholder="16"
+                  placeholder={t("placeholderRate")}
                   className="h-11 w-full border border-slate-200 px-3 text-[13px] outline-none focus:border-[#1f6a9a]"
                 />
               </div>
               <div className="w-full shrink-0 sm:w-36">
                 <label className="mb-1 block text-[13px] font-medium">
-                  Statut <span className="text-red-500">*</span>
+                  {t("status")} <span className="text-red-500">*</span>
                 </label>
                 <select
                   value={newActive ? "actif" : "inactif"}
                   onChange={(e) => setNewActive(e.target.value === "actif")}
                   className="h-11 w-full border border-slate-200 bg-white px-3 text-[13px] outline-none focus:border-[#1f6a9a]"
-                  aria-label="Statut actif ou inactif"
+                  aria-label={t("statusAria")}
                 >
-                  <option value="actif">Actif</option>
-                  <option value="inactif">Inactif</option>
+                  <option value="actif">{t("active")}</option>
+                  <option value="inactif">{t("inactive")}</option>
                 </select>
               </div>
               <div className="w-full shrink-0 sm:w-auto">
@@ -297,18 +302,18 @@ export function TaxGroupsSection() {
                   type="submit"
                   className="h-11 w-full bg-[#1f6a9a] px-6 text-[13px] font-semibold text-white hover:bg-[#18587f] sm:w-auto"
                 >
-                  Ajouter
+                  {t("add")}
                 </button>
               </div>
             </div>
             <div>
               <label className="mb-1 block text-[13px] font-medium">
-                Description
+                {t("description")}
               </label>
               <input
                 value={newDescription}
                 onChange={(e) => setNewDescription(e.target.value)}
-                placeholder="Ex. Taxable au taux normal de 16 %"
+                placeholder={t("placeholderDescription")}
                 className="h-11 w-full border border-slate-200 px-3 text-[13px] outline-none focus:border-[#1f6a9a]"
               />
             </div>
@@ -320,15 +325,15 @@ export function TaxGroupsSection() {
             <thead>
               <tr className="border-b border-slate-200 align-top text-slate-500">
                 <th className="px-3 pb-2 text-left font-medium whitespace-nowrap">
-                  Code
+                  {t("table.code")}
                 </th>
-                <th className="px-3 pb-2 text-left font-medium">Nom du groupe</th>
-                <th className="px-3 pb-2 text-left font-medium">Description</th>
+                <th className="px-3 pb-2 text-left font-medium">{t("table.groupName")}</th>
+                <th className="px-3 pb-2 text-left font-medium">{t("table.description")}</th>
                 <th className="px-3 pb-2 text-left font-medium whitespace-nowrap">
-                  Taux (%)
+                  {t("table.rate")}
                 </th>
-                <th className="px-3 pb-2 text-left font-medium">Statut</th>
-                <th className="px-3 pb-2 text-right font-medium">Actions</th>
+                <th className="px-3 pb-2 text-left font-medium">{t("table.status")}</th>
+                <th className="px-3 pb-2 text-right font-medium">{t("table.actions")}</th>
               </tr>
             </thead>
             <tbody>
@@ -345,7 +350,7 @@ export function TaxGroupsSection() {
                     </td>
                     <td className="max-w-[12rem] px-3 py-3 align-top">
                       <p className="m-0 text-[12px] leading-snug text-slate-700">
-                        {g.description || "—"}
+                        {g.description || t("table.emptyCell")}
                       </p>
                     </td>
                     <td className="px-3 py-3 align-top text-[13px] tabular-nums text-slate-800">
@@ -359,7 +364,7 @@ export function TaxGroupsSection() {
                             : "inline-block rounded bg-slate-100 px-2 py-0.5 text-slate-600"
                         }
                       >
-                        {g.active ? "Actif" : "Inactif"}
+                        {g.active ? t("active") : t("inactive")}
                       </span>
                     </td>
                     <td className="px-3 py-3 text-right align-top">
@@ -369,14 +374,14 @@ export function TaxGroupsSection() {
                           onClick={() => openEditor(g)}
                           className="border border-slate-200 px-2 py-1 text-[12px] text-[#1f6a9a] hover:bg-slate-50"
                         >
-                          Modifier
+                          {t("edit")}
                         </button>
                         <button
                           type="button"
                           onClick={() => toggleActive(g.id)}
                           className="border border-slate-200 px-2 py-1 text-[12px] hover:bg-slate-50"
                         >
-                          {g.active ? "Désactiver" : "Activer"}
+                          {g.active ? t("deactivate") : t("activate")}
                         </button>
                         <button
                           type="button"
@@ -384,7 +389,7 @@ export function TaxGroupsSection() {
                           disabled={BUILTIN_TAX_GROUP_IDS.has(g.id)}
                           className="border border-slate-200 px-2 py-1 text-[12px] text-red-600 hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-40"
                         >
-                          Supprimer
+                          {t("delete")}
                         </button>
                       </div>
                     </td>
@@ -397,7 +402,7 @@ export function TaxGroupsSection() {
                           className="space-y-4"
                         >
                           <p className="text-[13px] font-medium text-slate-800">
-                            Modifier le groupe{" "}
+                            {t("editGroupTitle")}{" "}
                             <span className="text-slate-600">
                               ({g.code} — {g.name})
                             </span>
@@ -408,7 +413,7 @@ export function TaxGroupsSection() {
                                 htmlFor={`edit-code-${g.id}`}
                                 className="mb-1 block text-[13px] font-medium"
                               >
-                                Code
+                                {t("code")}
                               </label>
                               <input
                                 id={`edit-code-${g.id}`}
@@ -422,7 +427,7 @@ export function TaxGroupsSection() {
                                 disabled={BUILTIN_TAX_GROUP_IDS.has(g.id)}
                                 title={
                                   BUILTIN_TAX_GROUP_IDS.has(g.id)
-                                    ? "Code figé pour le référentiel A–P"
+                                    ? t("codeFrozenHint")
                                     : undefined
                                 }
                                 className="h-11 w-full border border-slate-200 px-2 text-center text-[13px] uppercase outline-none focus:border-[#1f6a9a] disabled:cursor-not-allowed disabled:bg-slate-100"
@@ -433,7 +438,7 @@ export function TaxGroupsSection() {
                                 htmlFor={`edit-name-${g.id}`}
                                 className="mb-1 block text-[13px] font-medium"
                               >
-                                Nom du groupe
+                                {t("groupName")}
                               </label>
                               <input
                                 id={`edit-name-${g.id}`}
@@ -447,7 +452,7 @@ export function TaxGroupsSection() {
                                 htmlFor={`edit-rate-${g.id}`}
                                 className="mb-1 block text-[13px] font-medium"
                               >
-                                Taux (%)
+                                {t("table.rate")}
                               </label>
                               <input
                                 id={`edit-rate-${g.id}`}
@@ -463,7 +468,7 @@ export function TaxGroupsSection() {
                               htmlFor={`edit-desc-${g.id}`}
                               className="mb-1 block text-[13px] font-medium"
                             >
-                              Description
+                              {t("description")}
                             </label>
                             <textarea
                               id={`edit-desc-${g.id}`}
@@ -480,14 +485,14 @@ export function TaxGroupsSection() {
                               type="submit"
                               className="h-10 bg-[#1f6a9a] px-4 text-[13px] font-semibold text-white hover:bg-[#18587f]"
                             >
-                              Enregistrer
+                              {t("save")}
                             </button>
                             <button
                               type="button"
                               onClick={closeEditor}
                               className="h-10 border border-slate-200 bg-white px-4 text-[13px] text-slate-700 hover:bg-slate-50"
                             >
-                              Annuler
+                              {t("cancel")}
                             </button>
                           </div>
                         </form>
@@ -501,15 +506,14 @@ export function TaxGroupsSection() {
           {sorted.length > TAX_GROUPS_PAGE_SIZE ? (
             <div className="mt-4 flex flex-col gap-3 border-t border-slate-100 pt-4 sm:flex-row sm:items-center sm:justify-between">
               <p className="text-[13px] text-slate-500">
-                <span className="font-medium text-slate-700">
-                  {effectivePageIndex * TAX_GROUPS_PAGE_SIZE + 1}
-                  {" — "}
-                  {Math.min(
+                {t("pagination.range", {
+                  from: effectivePageIndex * TAX_GROUPS_PAGE_SIZE + 1,
+                  to: Math.min(
                     (effectivePageIndex + 1) * TAX_GROUPS_PAGE_SIZE,
                     sorted.length
-                  )}
-                </span>{" "}
-                sur {sorted.length} groupes
+                  ),
+                  total: sorted.length,
+                })}
               </p>
               <div className="flex items-center gap-2">
                 <button
@@ -518,10 +522,13 @@ export function TaxGroupsSection() {
                   onClick={goPrevPage}
                   className="h-9 border border-slate-200 px-3 text-[13px] text-slate-700 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
                 >
-                  Précédent
+                  {t("pagination.prev")}
                 </button>
                 <span className="px-1 text-[13px] text-slate-500">
-                  Page {effectivePageIndex + 1} / {totalPages}
+                  {t("pagination.page", {
+                    current: effectivePageIndex + 1,
+                    total: totalPages,
+                  })}
                 </span>
                 <button
                   type="button"
@@ -529,7 +536,7 @@ export function TaxGroupsSection() {
                   onClick={goNextPage}
                   className="h-9 border border-slate-200 px-3 text-[13px] text-slate-700 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
                 >
-                  Suivant
+                  {t("pagination.next")}
                 </button>
               </div>
             </div>
@@ -539,7 +546,7 @@ export function TaxGroupsSection() {
 
       <div className="flex justify-end">
         <p className="text-[12px] text-slate-500">
-          Les modifications sont enregistrées automatiquement.
+          {t("autoSaveHint")}
         </p>
       </div>
     </>

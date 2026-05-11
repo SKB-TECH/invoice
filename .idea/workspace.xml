@@ -4,10 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9602d195-f5e2-40d9-afb3-436a1b354bdb" name="Changes" comment="Resolve conflit">
+    <list default="true" id="9602d195-f5e2-40d9-afb3-436a1b354bdb" name="Changes" comment="Create facture design">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/home/layout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/home/layout.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/shared/OtherComponents/Navbar.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/shared/OtherComponents/Navbar.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/messages/en.json" beforeDir="false" afterPath="$PROJECT_DIR$/messages/en.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/messages/fr.json" beforeDir="false" afterPath="$PROJECT_DIR$/messages/fr.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/messages/ln.json" beforeDir="false" afterPath="$PROJECT_DIR$/messages/ln.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -55,7 +56,7 @@
     "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
     "RunOnceActivity.git.unshallow": "true",
     "RunOnceActivity.typescript.service.memoryLimit.init": "true",
-    "git-widget-placeholder": "ben__dev",
+    "git-widget-placeholder": "Merging ben__dev",
     "javascript.preferred.runtime.type.id": "node",
     "js.debugger.nextJs.config.created.client": "true",
     "js.debugger.nextJs.config.created.server": "true",
@@ -83,6 +84,7 @@
       <recent name="$PROJECT_DIR$/public" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/app/[locale]" />
       <recent name="$PROJECT_DIR$/app" />
       <recent name="$PROJECT_DIR$/app/(auth)/home/fournitures" />
       <recent name="$PROJECT_DIR$/components/shared/OtherComponents" />
@@ -122,7 +124,13 @@
       <workItem from="1777641108683" duration="4830000" />
       <workItem from="1777646077633" duration="3064000" />
       <workItem from="1778082432412" duration="16004000" />
-      <workItem from="1778150115091" duration="1744000" />
+      <workItem from="1778150115091" duration="2081000" />
+      <workItem from="1778330645300" duration="3522000" />
+      <workItem from="1778364550408" duration="5093000" />
+      <workItem from="1778429904621" duration="675000" />
+      <workItem from="1778485169671" duration="15000" />
+      <workItem from="1778488270438" duration="3599000" />
+      <workItem from="1778509443117" duration="12545000" />
     </task>
     <task id="LOCAL-00001" summary="Initial commit">
       <option name="closed" value="true" />
@@ -172,7 +180,63 @@
       <option name="project" value="LOCAL" />
       <updated>1778146918282</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="Resolve conflit">
+      <option name="closed" value="true" />
+      <created>1778151999303</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1778151999303</updated>
+    </task>
+    <task id="LOCAL-00008" summary="Add multi langue">
+      <option name="closed" value="true" />
+      <created>1778369192239</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1778369192239</updated>
+    </task>
+    <task id="LOCAL-00009" summary="Add multi langue">
+      <option name="closed" value="true" />
+      <created>1778369481329</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1778369481329</updated>
+    </task>
+    <task id="LOCAL-00010" summary="Add multi langue">
+      <option name="closed" value="true" />
+      <created>1778489141262</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1778489141262</updated>
+    </task>
+    <task id="LOCAL-00011" summary="Add multi langue">
+      <option name="closed" value="true" />
+      <created>1778489220695</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1778489220695</updated>
+    </task>
+    <task id="LOCAL-00012" summary="Add multi langue">
+      <option name="closed" value="true" />
+      <created>1778494327735</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1778494327735</updated>
+    </task>
+    <task id="LOCAL-00013" summary="Create facture design">
+      <option name="closed" value="true" />
+      <created>1778522307264</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1778522307264</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -192,6 +256,20 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Initial commit" />
     <MESSAGE value="Resolve conflit" />
-    <option name="LAST_COMMIT_MESSAGE" value="Resolve conflit" />
+    <MESSAGE value="Add multi langue" />
+    <MESSAGE value="Create facture design" />
+    <option name="LAST_COMMIT_MESSAGE" value="Create facture design" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/core/data/index.ts</url>
+          <line>12</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="2" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>
