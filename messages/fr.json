@@ -50,6 +50,77 @@
     "NouveauContrat": "Nouveau contrat",
     "Configuration": "Configuration",
     "Aide": "Aide"
+  },
+  "clients": {
+    "createClient": {
+      "breadcrumb": {
+        "Step1": "Clients",
+        "Step2": "Nouveau"
+      },
+      "title": "Nouveau client",
+      "form": {
+        "reference": "N° Référence",
+        "nom": "Nom client",
+        "sousTitre": "Sous titre",
+        "nif": "Numéro impôt/NIF",
+        "rccm": "RCCM",
+        "tel": "Téléphone",
+        "email": "Email",
+        "adresse": "Adresse",
+        "pays": "Pays",
+        "status": {
+          "title": "Statut",
+          "options": {
+            "actif": "Actif",
+            "suspendu": "Suspendu",
+            "complet": "Complet"
+          }
+        },
+        "type": {
+          "title": "Type de client",
+          "options": {
+            "ponctuel": "Ponctuel",
+            "entreprise": "Entreprise"
+          }
+        },
+        "annule": "Annuler",
+        "save": "Enregistrer"
+      }
+    },
+    "listClients": {
+      "breadcrumb": {
+        "Step1": "Clients",
+        "Step2": "Visualiser"
+      },
+      "title": "Liste de clients",
+      "btn": {
+        "new": "Nouveau client"
+      },
+      "search": {
+        "placeholder": "Rechercher un client"
+      },
+      "table": {
+        "reference": "N° Référence",
+        "titre": "Titre",
+        "nif": "Numéro impôt/NIF",
+        "tel": "Téléphone",
+        "status": {
+          "title": "Statut",
+          "options": {
+            "actif": "Actif",
+            "suspendu": "Suspendu",
+            "complet": "Complet"
+          }
+        },
+        "type": {
+          "title": "Type de client",
+          "options": {
+            "ponctuel": "Ponctuel",
+            "entreprise": "Entreprise"
+          }
+        }
+      }
+    }
   }
 }
 

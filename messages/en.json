@@ -50,5 +50,76 @@
     "NouveauContrat": "New contract",
     "Configuration": "Settings",
     "Aide": "Help"
+  },
+  "clients": {
+    "createClient": {
+      "breadcrumb": {
+        "Step1": "Customers",
+        "Step2": "New"
+      },
+      "title": "New customer",
+      "form": {
+        "reference": "Reference number",
+        "nom": "customer name",
+        "sousTitre": "subtitle",
+        "nif": "Tax ID Number (NIF)",
+        "rccm": "Registration of Commerce and Companies (RCCM)",
+        "tel": "Phone number",
+        "email": "Email",
+        "adresse": "Address",
+        "pays": "Country",
+        "status": {
+          "title": "status of customer",
+          "options": {
+            "actif": "Active",
+            "suspendu": "Suspended",
+            "complet": "Complete"
+          }
+        },
+        "type": {
+          "title": "type of customer",
+          "options": {
+            "ponctuel": "Punctual",
+            "recurrent": "recurring"
+          }
+        },
+        "annule": "Cancel",
+        "save": "Save"
+      }
+    },
+    "listClients": {
+      "breadcrumb": {
+        "Step1": "Customers",
+        "Step2": "view"
+      },
+      "title": "List of customers",
+      "btn": {
+        "new": "New customer"
+      },
+      "search": {
+        "placeholder": "Search customer"
+      },
+      "table": {
+        "reference": "Reference number",
+        "titre": "Title",
+        "nif": "Tax ID Number (NIF)",
+        "tel": "Phone number",
+        "status": {
+          "title": "status",
+          "options": {
+            "actif": "Active",
+            "suspendu": "Suspended",
+            "complet": "Complete"
+          }
+        },
+        "type": {
+          "title": "Type",
+          "options": {
+            "ponctuel": "Punctual",
+            "entreprise": "Company"
+          }
+        }
+      }
+    }
   }
 }
