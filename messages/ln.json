@@ -50,5 +50,28 @@
     "NouveauContrat": "Kontra ya sika",
     "Configuration": "Bobongisi",
     "Aide": "Lisalisi"
+  },
+  "articles": {
+    "list": {
+      "title": "Biloko",
+      "searchPlaceholder": "Luka na ID, titre, groupe, prix TTC, statut, période...",
+      "searchAriaLabel": "Luka eloko",
+      "empty": "Eloko moko te ezali na recherche na yo.",
+      "columns": {
+        "idIkwook": "Code",
+        "title": "Motó ya likambo",
+        "group": "Etuluku",
+        "priceTtc": "Ntalo na TVA",
+        "status": "Etaleli",
+        "period": "Eleko"
+      },
+      "action": "Etamboli",
+      "viewArticleDetail": "Komona eloko {id}",
+      "status": {
+        "suspendu": "Epekisami",
+        "actif": "Ezali kotiya",
+        "complet": "Esilisi"
+      }
+    }
   }
 }

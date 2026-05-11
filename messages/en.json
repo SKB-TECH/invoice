@@ -121,5 +121,28 @@
         }
       }
     }
+  },
+  "articles": {
+    "list": {
+      "title": "Articles",
+      "searchPlaceholder": "Search by ID, title, group, price incl. tax, status, period...",
+      "searchAriaLabel": "Search for an article",
+      "empty": "No articles match your search.",
+      "columns": {
+        "idIkwook": "ID iKwook",
+        "title": "Title",
+        "group": "Group",
+        "priceTtc": "Price (incl. tax)",
+        "status": "Status",
+        "period": "Period"
+      },
+      "action": "Action",
+      "viewArticleDetail": "View details for article {id}",
+      "status": {
+        "suspendu": "Suspended",
+        "actif": "Active",
+        "complet": "Complete"
+      }
+    }
   }
 }

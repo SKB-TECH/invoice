@@ -1,20 +1,12 @@
 "use client";
 
 import { Eye } from "lucide-react";
+import { useTranslations } from "next-intl";
+import { useRouter } from "@/i18n/routing";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { ArticleStatusBadge } from "./article-status-badge";
 import type { ArticleTableRow } from "./types";
-import { useRouter } from "next/navigation";
-
-export const ARTICLES_TABLE_COLUMN_LABELS = {
-  idIkwook: "ID iKwook",
-  title: "Titre",
-  group: "Groupe",
-  priceTtc: "Prix TTC",
-  status: "Statut",
-  period: "Période",
-} as const satisfies Record<keyof ArticleTableRow, string>;
 
 const COLUMN_ORDER = [
   "idIkwook",
@@ -32,6 +24,7 @@ type ArticlesTableProps = {
 
 export function ArticlesTable({ rows, className }: ArticlesTableProps) {
   const router = useRouter();
+  const t = useTranslations("articles.list");
   return (
     <div
       className={cn(
@@ -44,10 +37,12 @@ export function ArticlesTable({ rows, className }: ArticlesTableProps) {
           <tr className="border-b border-slate-200 bg-slate-50 text-slate-500">
             {COLUMN_ORDER.map((key) => (
               <th key={key} className="px-5 py-3 font-semibold">
-                {ARTICLES_TABLE_COLUMN_LABELS[key]}
+                {t(`columns.${key}`)}
               </th>
             ))}
-            <th className="px-5 py-3 text-right font-semibold">Action</th>
+            <th className="px-5 py-3 text-right font-semibold">
+              {t("action")}
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -68,7 +63,9 @@ export function ArticlesTable({ rows, className }: ArticlesTableProps) {
                   variant="ghost"
                   size="icon"
                   className="h-8 w-8 text-slate-500 hover:bg-slate-100 hover:text-slate-700 cursor-pointer"
-                  aria-label={`Voir le détail de l'article ${row.idIkwook}`}
+                  aria-label={t("viewArticleDetail", {
+                    id: row.idIkwook,
+                  })}
                   onClick={() => router.push(`/home/articles/${encodeURIComponent(row.idIkwook)}/visualiser`)}
                 >
                   <Eye className="size-4" />
