@@ -257,14 +257,14 @@ export function ContratForm(props: ContratFormProps) {
             variant="secondary"
             className="h-12 w-52 rounded bg-[#949B9F] px-5 text-white hover:bg-[#949B9F]/80 cursor-pointer"
           >
-            {t("form.cancel")}
+            {t("cancel")}
           </Button>
         </Link>
         <Button
           type="submit"
           className="h-12 w-52 rounded bg-[#0073C5] px-5 text-white shadow-none hover:bg-[#066aa8] cursor-pointer"
         >
-          {t("form.save")}
+          {t("save")}
         </Button>
       </div>
     </form>

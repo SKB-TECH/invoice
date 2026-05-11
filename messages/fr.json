@@ -152,7 +152,9 @@
           }
         },
         "description": "Description"
-      }
+      },
+      "cancel": "Annuler",
+      "save": "Enregistrer"
     },
     "listContrats": {
       "breadcrumb": {
