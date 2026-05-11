@@ -343,5 +343,68 @@
         "created": "Groupe ya taxation ebakisami."
       }
     }
+  },
+  "contrats": {
+    "createContrat": {
+      "breadcrumb": {
+        "Step1": "Kontras",
+        "Step2": "Ya sika"
+      },
+      "title": "Kontra ya sika",
+      "form": {
+        "reference": "Numelo ya Reference",
+        "nom": "Kombo ya kontra",
+        "auto-renew": {
+          "title": "Kozongisa yango moko",
+          "options": {
+            "oui": "Iyo",
+            "non": "Te"
+          }
+        },
+        "tel": "Telefɔ́ni",
+        "dateStart": "Mokolo ya kobanda",
+        "dateEnd": "Mokolo ya suka",
+        "valeur": "Motuya ya kontra",
+        "status": {
+          "title": "Etaleli",
+          "options": {
+            "actif": "Eloko ya motuya",
+            "suspendu": "Bakangisi",
+            "complet": "Esika esili"
+          }
+        },
+        "description": "Ndimbola"
+      },
+      "cancel": "Kanga",
+      "save": "Bomba"
+    },
+    "listContrats": {
+      "breadcrumb": {
+        "Step1": "Kontras",
+        "Step2": "Komona"
+      },
+      "title": "Liste ya kontras",
+      "btn": {
+        "new": "Kontra ya sika"
+      },
+      "search": {
+        "placeholder": "Luka na numelo ya reference, motó ya kontra, motuya ya kontra, statut, mokolo ya kobanda, mokolo ya suka..."
+      },
+      "table": {
+        "reference": "Numelo ya Reference",
+        "titre": "Motó ya kontra",
+        "client": "Kiliya",
+        "Montant": "Motuya",
+        "status": {
+          "title": "Etaleli",
+          "options": {
+            "actif": "Eloko ya motuya",
+            "suspendu": "Bakangisi",
+            "complet": "Esika esili"
+          }
+        },
+        "period": "Eleko"
+      }
+    }
   }
 }
