@@ -50,11 +50,6 @@
     "NouveauContrat": "Nouveau contrat",
     "Configuration": "Configuration",
     "Aide": "Aide"
-  },
-  "client": {
-    "form": {},
-    "viewClient": {}
   }
-
 }
 
