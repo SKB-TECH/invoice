@@ -1,11 +1,7 @@
 "use client";
 
 import React from "react";
-import {
-    Bar,
-    Line,
-    Doughnut,
-} from "react-chartjs-2";
+import { Bar, Doughnut } from "react-chartjs-2";
 import {
     Chart as ChartJS,
     CategoryScale,
@@ -22,6 +18,7 @@ import {
     FileText,
     Wallet,
     ClipboardList,
+    ReceiptText,
 } from "lucide-react";
 
 ChartJS.register(
@@ -48,7 +45,7 @@ const cards = [
     {
         title: "TOTAL TVA COLLECTÉE",
         value: "5,000",
-        subtitle: "Mois encours",
+        subtitle: "Mois en cours",
         icon: Wallet,
         color: "text-green-500",
         bg: "bg-green-50",
@@ -60,6 +57,14 @@ const cards = [
         icon: ClipboardList,
         color: "text-blue-500",
         bg: "bg-blue-50",
+    },
+    {
+        title: "TOTAL FACTURES",
+        value: "122",
+        subtitle: "Mois en cours",
+        icon: ReceiptText,
+        color: "text-purple-500",
+        bg: "bg-purple-50",
     },
 ];
 
@@ -164,10 +169,10 @@ const barOptions = {
 const doughnutData = {
     labels: [
         "Factures émises",
-        "Factures payés",
+        "Factures payées",
         "Factures en attente",
-        "Factures annulés",
-        "Contrat encours",
+        "Factures annulées",
+        "Contrats en cours",
     ],
     datasets: [
         {
@@ -200,15 +205,16 @@ const doughnutOptions = {
 
 export default function InvoiceDashboard() {
     return (
-            <div className="min-h-full mt-6 min-w-full text-slate-700">
+        <div className="min-h-full min-w-full text-slate-700">
             <div className="grid grid-cols-12 gap-5">
-                <div className="col-span-12 lg:col-span-7">
-                    <div className="grid grid-cols-3 gap-5">
+                <div className="col-span-12">
+                    <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-4">
                         {cards.map((card) => {
                             const Icon = card.icon;
+
                             return (
                                 <div
-                                    key={card.title + card.value}
+                                    key={card.title + card.value + card.subtitle}
                                     className="border border-slate-200 bg-white px-5 py-4"
                                 >
                                     <div className="flex items-center gap-4">
@@ -232,8 +238,10 @@ export default function InvoiceDashboard() {
                             );
                         })}
                     </div>
+                </div>
 
-                    <div className="mt-6 border border-slate-200 bg-white">
+                <div className="col-span-12 lg:col-span-7">
+                    <div className="h-full border border-slate-200 bg-white">
                         <div className="border-b border-slate-200 px-5 py-4">
                             <h2 className="text-[13px] font-semibold text-slate-700">
                                 Projects Overview
@@ -253,42 +261,42 @@ export default function InvoiceDashboard() {
                     </div>
                 </div>
 
-                <div className="col-span-12 border border-slate-200 bg-white lg:col-span-5">
+                <div className="col-span-12 h-full border border-slate-200 bg-white lg:col-span-5">
                     <div className="border-b border-slate-200 px-5 py-4">
                         <h2 className="text-[13px] font-semibold text-slate-700">
-                            Mois encours
+                            Mois en cours
                         </h2>
                     </div>
 
-                    <div className="flex justify-center py-8">
-                        <div className="h-[190px] w-[190px]">
+                    <div className="flex justify-center py-5">
+                        <div className="h-[145px] w-[145px]">
                             <Doughnut data={doughnutData} options={doughnutOptions} />
                         </div>
                     </div>
 
-                    <div className="px-8 pb-8">
+                    <div className="px-6 pb-5">
                         {doughnutData.labels.map((label, index) => (
                             <div
                                 key={label}
-                                className="grid grid-cols-[1fr_40px_80px] items-center gap-3 border-b border-slate-100 py-3 text-[11px]"
+                                className="grid grid-cols-[1fr_35px_70px] items-center gap-3 border-b border-slate-100 py-2 text-[11px]"
                             >
                                 <div className="flex items-center gap-2">
-                  <span
-                      className="h-2.5 w-2.5 rounded-full"
-                      style={{
-                          backgroundColor:
-                              doughnutData.datasets[0].backgroundColor[index],
-                      }}
-                  />
+                    <span
+                        className="h-2.5 w-2.5 rounded-full"
+                        style={{
+                            backgroundColor:
+                                doughnutData.datasets[0].backgroundColor[index],
+                        }}
+                    />
                                     <span className="text-slate-600">{label}</span>
                                 </div>
 
                                 <span className="text-right text-slate-700">
-                  {doughnutData.datasets[0].data[index]}
+                    {doughnutData.datasets[0].data[index]}
                 </span>
 
                                 <span className="text-right font-semibold text-green-500">
-                  10,000 $
+                    10,000 $
                 </span>
                             </div>
                         ))}
@@ -305,7 +313,7 @@ export default function InvoiceDashboard() {
                     <table className="w-full border-collapse text-left text-[11px]">
                         <thead>
                         <tr className="border-b border-slate-200 bg-slate-50 text-slate-500">
-                            <th className="px-5 py-3 font-semibold">Cliens</th>
+                            <th className="px-5 py-3 font-semibold">Clients</th>
                             <th className="px-5 py-3 font-semibold">Référence</th>
                             <th className="px-5 py-3 font-semibold">Montant</th>
                             <th className="px-5 py-3 font-semibold">Statut</th>
@@ -320,15 +328,15 @@ export default function InvoiceDashboard() {
                                 <td className="px-5 py-4">{row[1]}</td>
                                 <td className="px-5 py-4">{row[2]}</td>
                                 <td className="px-5 py-4">
-                    <span
-                        className={`px-2 py-1 text-[10px] font-semibold ${
-                            row[3] === "Non payée"
-                                ? "bg-yellow-50 text-yellow-600"
-                                : "bg-green-50 text-green-600"
-                        }`}
-                    >
-                      {row[3]}
-                    </span>
+                                        <span
+                                            className={`px-2 py-1 text-[10px] font-semibold ${
+                                                row[3] === "Non payée"
+                                                    ? "bg-yellow-50 text-yellow-600"
+                                                    : "bg-green-50 text-green-600"
+                                            }`}
+                                        >
+                                            {row[3]}
+                                        </span>
                                 </td>
                                 <td className="px-5 py-4">{row[4]}</td>
                             </tr>
@@ -340,14 +348,14 @@ export default function InvoiceDashboard() {
                 <div className="col-span-12 border border-slate-200 bg-white lg:col-span-5">
                     <div className="border-b border-slate-200 px-5 py-4">
                         <h2 className="text-[13px] font-semibold text-slate-700">
-                            Derniers paiements des factures en attente
+                            Derniers paiements validés
                         </h2>
                     </div>
 
                     <table className="w-full border-collapse text-left text-[11px]">
                         <thead>
                         <tr className="border-b border-slate-200 bg-slate-50 text-slate-500">
-                            <th className="px-5 py-3 font-semibold">Cliens</th>
+                            <th className="px-5 py-3 font-semibold">Clients</th>
                             <th className="px-5 py-3 font-semibold">Référence</th>
                             <th className="px-5 py-3 font-semibold">Montant</th>
                             <th className="px-5 py-3 font-semibold">Statut</th>
@@ -369,8 +377,6 @@ export default function InvoiceDashboard() {
                     </table>
                 </div>
             </div>
-
-
         </div>
     );
 }
