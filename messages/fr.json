@@ -180,6 +180,35 @@
         "cancel": "Annuler",
         "save": "Enregistrer"
       }
+    },
+    "view": {
+      "title": "Détail de l'article",
+      "referenceLabel": "Réf.",
+      "fields": {
+        "name": "Nom",
+        "code": "Code",
+        "description": "Description",
+        "priceExclTax": "Prix hors taxes",
+        "priceInclTax": "Prix TTC",
+        "taxGroup": "Groupe de tax"
+      },
+      "actions": {
+        "backToList": "Retour à la liste",
+        "edit": "Modifier"
+      }
+    },
+    "edit": {
+      "title": "Modifier l'article",
+      "breadcrumbSegment": "Modifier",
+      "referencePrefix": "Réf. : ",
+      "unknownTaxGroupName": "Groupe (inconnu ou supprimé)",
+      "taxGroupHint": "Le prix TTC suit le HT (ou inversement) selon ce groupe fiscal.",
+      "fields": {
+        "description": "Description",
+        "status": "Statut",
+        "period": "Période"
+      },
+      "toastSaved": "Article mis à jour."
     }
   }
 }

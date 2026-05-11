@@ -109,6 +109,35 @@
         "cancel": "Kanga",
         "save": "Bomba"
       }
+    },
+    "view": {
+      "title": "Makambo matali eloko",
+      "referenceLabel": "Ref.",
+      "fields": {
+        "name": "Kombo",
+        "code": "Code",
+        "description": "Ndimbola",
+        "priceExclTax": "Ntalo kozanga TVA",
+        "priceInclTax": "Ntalo na TVA",
+        "taxGroup": "Etuluku ya TVA"
+      },
+      "actions": {
+        "backToList": "Kozonga na liste",
+        "edit": "Kobongisa"
+      }
+    },
+    "edit": {
+      "title": "Kobongisa eloko",
+      "breadcrumbSegment": "Kobongisa",
+      "referencePrefix": "Ref. : ",
+      "unknownTaxGroupName": "Etuluku (ebumi to epesami)",
+      "taxGroupHint": "Ntalo na TVA elandi ntalo avant TVA (pe liboso) selon groupe fiscal oyo.",
+      "fields": {
+        "description": "Ndimbola",
+        "status": "Etaleli",
+        "period": "Eleko"
+      },
+      "toastSaved": "Eloko ebakisami."
     }
   }
 }

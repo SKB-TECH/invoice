@@ -180,6 +180,35 @@
         "cancel": "Cancel",
         "save": "Save"
       }
+    },
+    "view": {
+      "title": "Article details",
+      "referenceLabel": "Ref.",
+      "fields": {
+        "name": "Name",
+        "code": "Code",
+        "description": "Description",
+        "priceExclTax": "Price excl. tax",
+        "priceInclTax": "Price incl. tax",
+        "taxGroup": "Tax group"
+      },
+      "actions": {
+        "backToList": "Back to list",
+        "edit": "Edit"
+      }
+    },
+    "edit": {
+      "title": "Edit article",
+      "breadcrumbSegment": "Edit",
+      "referencePrefix": "Ref.: ",
+      "unknownTaxGroupName": "Tax group (unknown or removed)",
+      "taxGroupHint": "Prices stay in sync: incl. tax is derived from excl. tax (or vice versa) using this tax group.",
+      "fields": {
+        "description": "Description",
+        "status": "Status",
+        "period": "Period"
+      },
+      "toastSaved": "Article updated."
     }
   }
 }
