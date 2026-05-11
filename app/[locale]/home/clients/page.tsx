@@ -17,7 +17,7 @@ import {
   type ClientStatutUi,
 } from "@/lib/clients/clients-data";
 import { Input } from "@/components/ui/input";
-
+import { useTranslations } from "next-intl";
 function StatutBadge({ statut }: { statut: ClientStatutUi }) {
   const styles: Record<ClientStatutUi, string> = {
     Suspendu:
@@ -38,6 +38,7 @@ function StatutBadge({ statut }: { statut: ClientStatutUi }) {
 }
 
 export default function ClientsPage() {
+  const t = useTranslations("clients.listClients");
   return (
     <main className="mx-auto w-full min-w-full py-4 text-foreground">
       <span className="mb-6 flex flex-wrap items-center gap-1 text-sm text-slate-500">
@@ -45,20 +46,20 @@ export default function ClientsPage() {
           <House className="size-4" />
         </Link>
         <ChevronRight className="size-4 shrink-0" />
-        <span>Clients</span>
+        <span>{t("breadcrumb.Step1")}</span>
         <ChevronRight className="size-4 shrink-0" />
-        <span className="text-slate-800">Visualiser</span>
+        <span className="text-slate-800">{t("breadcrumb.Step2")}</span>
       </span>
       <div className="mb-6 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
         <h1 className="text-2xl font-bold tracking-tight text-slate-800 sm:text-3xl">
-          Liste de clients
+          {t("title")}
         </h1>
         <Button
           size="lg"
           className="h-12 w-52 cursor-pointer rounded bg-[#0073C5] px-5 text-white"
           asChild
         >
-          <Link href="/home/clients/new">Nouveau client</Link>
+          <Link href="/home/clients/new">{t("btn.new")}</Link>
         </Button>
       </div>
       <div className="mb-6 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
@@ -70,25 +71,25 @@ export default function ClientsPage() {
           <TableHeader className="bg-[#F4F4F4BB]">
             <TableRow className="border-slate-200 bg-[#F4F4F4BB] hover:bg-transparent">
               <TableHead className="h-11 bg-slate-100 px-4 text-left text-sm font-semibold text-slate-700">
-                N° Référence
+                {t("table.reference")}
               </TableHead>
               <TableHead className="h-11 bg-slate-100 px-4 text-left text-sm font-semibold text-slate-700">
-                Titre
+                {t("table.titre")}
               </TableHead>
               <TableHead className="h-11 bg-slate-100 px-4 text-left text-sm font-semibold text-slate-700">
-                Type
+                {t("table.type")}
               </TableHead>
               <TableHead className="h-11 bg-slate-100 px-4 text-left text-sm font-semibold text-slate-700">
-                NIF
+                {t("table.nif")}
               </TableHead>
               <TableHead className="h-11 bg-slate-100 px-4 text-left text-sm font-semibold text-slate-700">
-                Statut
+                {t("table.status.title")}
               </TableHead>
               <TableHead className="h-11 bg-slate-100 px-4 text-left text-sm font-semibold text-slate-700">
-                Téléphone
+                {t("table.tel")}
               </TableHead>
               <TableHead className="h-11 bg-slate-100 px-4 text-right text-sm font-semibold text-slate-700">
-                <span className="sr-only">Actions</span>
+                <span className="sr-only">{t("table.actions")}</span>
               </TableHead>
             </TableRow>
           </TableHeader>
