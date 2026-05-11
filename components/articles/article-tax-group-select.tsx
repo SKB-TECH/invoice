@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import {
   formatTaxGroupOptionLabel,
@@ -37,6 +38,7 @@ export function ArticleTaxGroupSelect({
   defaultValue = "",
   includeInactiveIds,
 }: Props) {
+  const t = useTranslations("articles.create");
   const [groups, setGroups] = useState<TaxGroup[]>([]);
 
   useEffect(() => {
@@ -55,10 +57,10 @@ export function ArticleTaxGroupSelect({
       required={required}
       defaultValue={defaultValue}
       className={className}
-      aria-label="Sélectionner un groupe"
+      aria-label={t("taxGroupSelectAria")}
     >
       <option value="" disabled>
-        Sélectionner
+        {t("selectPlaceholder")}
       </option>
       {options.map((g) => (
         <option key={g.id} value={g.id}>

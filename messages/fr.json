@@ -143,6 +143,43 @@
         "actif": "Actif",
         "complet": "Complet"
       }
+    },
+    "create": {
+      "breadcrumbNew": "Nouveau",
+      "fields": {
+        "name": "Nom",
+        "code": "Code",
+        "priceExclTax": "Prix HT",
+        "priceInclTax": "Prix TTC",
+        "currency": "Devise",
+        "taxGroup": "Groupe de tax",
+        "specialPrice": "Prix spécial / Promotion",
+        "pieceUnit": "Pièce / Unité",
+        "unit": "Unité",
+        "articleGroup": "Groupe"
+      },
+      "placeholders": {
+        "priceExclTaxExample": "Ex: 10 000",
+        "priceInclTaxExample": "Ex: 11 800",
+        "optional": "Facultatif"
+      },
+      "selectPlaceholder": "Sélectionner",
+      "taxGroupSelectAria": "Sélectionner un groupe",
+      "units": {
+        "piece": "Pièce",
+        "kg": "Kg",
+        "hour": "Heure",
+        "flatRate": "Forfait"
+      },
+      "articleGroups": {
+        "a": "Groupe A",
+        "b": "Groupe B",
+        "c": "Groupe C"
+      },
+      "actions": {
+        "cancel": "Annuler",
+        "save": "Enregistrer"
+      }
     }
   }
 }
