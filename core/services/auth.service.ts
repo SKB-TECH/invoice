@@ -5,10 +5,9 @@ import type {
     Permission,
     RolePermission,
 } from "@/core/types/rbac";
-import {api} from "@/core/services/api";
+import { api } from "@/core/services/api";
 import { mfaStore } from "@/core/utils/mfaStore";
 import type {
-    LoginResponse,
     RegisterPayload,
     RegisterResponse,
 } from "@/core/types/auth";
@@ -16,6 +15,9 @@ import type {
 const AUTH_USER_KEY = "auth_user";
 const USER_COOKIE = "bank_user";
 const AUTH_EXPIRES_KEY = "accessToken_expires_at";
+const AUTH_REFRESH_TOKEN_KEY = "refresh_token";
+const AUTH_ACCESS_TOKEN_KEY = "auth_access_token";
+
 const DEFAULT_TOKEN_EXPIRE_SECONDS = 24 * 60 * 60;
 
 function getCookieOrLocalStorage(name: string): string | null {
@@ -60,6 +62,14 @@ interface ApiPermission {
     LongCode_10?: string;
     ShortCode_11?: string;
     Description_12?: string;
+
+    id?: string | number;
+    module?: string;
+    resource?: string;
+    action?: string;
+    longCode?: string;
+    shortCode?: string;
+    description?: string;
 }
 
 export interface ApiUserData {
@@ -67,11 +77,31 @@ export interface ApiUserData {
     challenge_id?: string;
     expires_in?: number;
     resend_in?: number;
-    token?: string;
-    status?: number;
+    status?: string | number;
     message?: string;
 
+    /**
+     * Nouveau retour Loras
+     */
+    access_token?: string;
+    refresh_token?: string;
+
     user?: {
+        id?: string | number;
+        account_id?: string | number;
+        email?: string;
+        firstname?: string;
+        lastname?: string;
+        phone?: string;
+        userType?: string;
+        permissions?: Permission[];
+        modules?: unknown[];
+        createdAt?: string;
+        updatedAt?: string;
+
+        /**
+         * Ancien format conservé au cas où
+         */
         Id_0?: string | number;
         Identifier_7?: string;
         RoleId_9?: string | number;
@@ -91,7 +121,7 @@ export interface ApiUserData {
         name?: string;
         desc?: string;
         permissions?: ApiPermission[];
-    };
+    } | null;
 
     branch?: unknown;
     till?: unknown;
@@ -133,60 +163,89 @@ function getTokenExpiration(token: string): number | null {
 export function mapApiUser(data: ApiUserData): AuthUser {
     const userData = data?.user || {};
     const profileData = data?.profile || {};
-    const roleData = data?.role || {};
+    const roleData = data?.role || null;
 
     const rolePermissions: RolePermission[] = (
         roleData?.permissions || []
     ).map((p, index) => ({
-        id: String(p?.Id_0 ?? index + 1),
-        module: String(p?.Module_7 ?? ""),
-        resource: String(p?.Resource_8 ?? ""),
-        action: String(p?.Action_9 ?? ""),
-        longCode: String(p?.LongCode_10 ?? ""),
-        shortCode: String(p?.ShortCode_11 ?? ""),
-        description: String(p?.Description_12 ?? ""),
+        id: String(p?.id ?? p?.Id_0 ?? index + 1),
+        module: String(p?.module ?? p?.Module_7 ?? ""),
+        resource: String(p?.resource ?? p?.Resource_8 ?? ""),
+        action: String(p?.action ?? p?.Action_9 ?? ""),
+        longCode: String(p?.longCode ?? p?.LongCode_10 ?? ""),
+        shortCode: String(p?.shortCode ?? p?.ShortCode_11 ?? ""),
+        description: String(
+            p?.description ?? p?.Description_12 ?? ""
+        ),
     }));
 
-    const permissions: Permission[] = rolePermissions
+    const rolePermissionsCodes: Permission[] = rolePermissions
         .map((p) => p.longCode || p.shortCode)
         .filter(Boolean) as Permission[];
 
-    const firstName = String(
-        profileData?.Firstname_9 ?? userData?.Identifier_7 ?? ""
+    const directUserPermissions = Array.isArray(userData?.permissions)
+        ? userData.permissions
+        : [];
+
+    const permissions: Permission[] = Array.from(
+        new Set([...directUserPermissions, ...rolePermissionsCodes])
     );
 
-    const lastName = String(profileData?.Lastname_10 ?? "");
+    const firstName = String(
+        userData?.firstname ??
+        profileData?.Firstname_9 ??
+        userData?.Identifier_7 ??
+        ""
+    );
 
-    const fullName = lastName ? `${firstName} ${lastName}`.trim() : firstName;
+    const lastName = String(
+        userData?.lastname ?? profileData?.Lastname_10 ?? ""
+    );
+
+    const fullName = `${firstName} ${lastName}`.trim();
 
     return {
-        id: String(userData?.Id_0 ?? ""),
-        username: String(userData?.Identifier_7 ?? ""),
-        name: fullName,
-        email: String(profileData?.Email_13 ?? userData?.Identifier_7 ?? ""),
-        phone: String(profileData?.Cellphone_12 ?? ""),
+        id: String(userData?.id ?? userData?.Id_0 ?? ""),
+        username: String(
+            userData?.email ??
+            userData?.Identifier_7 ??
+            ""
+        ),
+        name: fullName || String(userData?.email ?? ""),
+        email: String(
+            userData?.email ??
+            profileData?.Email_13 ??
+            userData?.Identifier_7 ??
+            ""
+        ),
+        phone: String(
+            userData?.phone ??
+            profileData?.Cellphone_12 ??
+            ""
+        ),
         countryCode: String(userData?.CountryCode_20 ?? ""),
-        roleId: String(userData?.RoleId_9 ?? roleData?.id ?? ""),
+        roleId: String(
+            roleData?.id ??
+            userData?.RoleId_9 ??
+            ""
+        ),
         role: {
             id: String(roleData?.id ?? userData?.RoleId_9 ?? ""),
-            name: String(roleData?.name ?? ""),
+            name: String(roleData?.name ?? userData?.userType ?? ""),
             desc: String(roleData?.desc ?? ""),
             permissions: rolePermissions,
         },
         permissions,
         photo: profileData?.Photo_16 ?? null,
         branch: data?.branch ?? null,
-    };
+        accountId: String(userData?.account_id ?? ""),
+        userType: String(userData?.userType ?? ""),
+    } as AuthUser;
 }
 
 export const authService = {
-    /* =========================================================
-     * REGISTER
-     * ======================================================= */
-
     async register(payload: RegisterPayload): Promise<RegisterResponse> {
         const formData = new FormData();
-
         formData.append("email", payload.email);
         formData.append("firstname", payload.firstname);
         formData.append("lastname", payload.lastname);
@@ -194,7 +253,6 @@ export const authService = {
         formData.append("password", payload.password);
         formData.append("password_confirm", payload.password_confirm);
         formData.append("type", payload.type);
-
         if (payload.type === "pme" || payload.type === "corporate") {
             formData.append("company_name", payload.company_name);
             formData.append("rccm", payload.rccm);
@@ -202,15 +260,10 @@ export const authService = {
             formData.append("position", payload.position);
             formData.append("business_sector", payload.business_sector);
             formData.append("company_size", payload.company_size);
-
-            /**
-             * Logo facultatif
-             */
             if (payload.logo) {
                 formData.append("logo", payload.logo);
             }
         }
-
         const { data } = await api.post<RegisterResponse>(
             "/auth/register",
             formData,
@@ -227,11 +280,6 @@ export const authService = {
 
         return data;
     },
-
-    /* =========================================================
-     * LOGIN
-     * ======================================================= */
-
     async login(identifier: string, password: string) {
         const { data } = await api.post<ApiUserData>("/auth/login", {
             identifier,
@@ -264,7 +312,10 @@ export const authService = {
             };
         }
 
-        if (!data?.token) {
+        /**
+         * Loras retourne access_token et non token
+         */
+        if (!data?.access_token) {
             throw new Error("Token introuvable dans la réponse API.");
         }
 
@@ -272,7 +323,8 @@ export const authService = {
 
         return {
             mfaRequired: false as const,
-            token: data.token,
+            token: data.access_token,
+            refreshToken: data.refresh_token ?? null,
             user,
             profile: data.profile ?? null,
             role: data.role ?? null,
@@ -282,32 +334,23 @@ export const authService = {
             raw: data,
         };
     },
-
-    /* =========================================================
-     * SESSION
-     * ======================================================= */
-
     saveSession(
         token: string,
         user: AuthUser,
-        expiresInSeconds = DEFAULT_TOKEN_EXPIRE_SECONDS
+        expiresInSeconds = DEFAULT_TOKEN_EXPIRE_SECONDS,
+        refreshToken?: string | null
     ) {
         const tokenExpiresAt = getTokenExpiration(token);
-
-        const effectiveExpiresAt =
-            tokenExpiresAt ?? Date.now() + expiresInSeconds * 1000;
-
-        const effectiveSeconds = Math.max(
-            Math.floor((effectiveExpiresAt - Date.now()) / 1000),
-            0
-        );
-
+        const effectiveExpiresAt = tokenExpiresAt ?? Date.now() + expiresInSeconds * 1000;
+        const effectiveSeconds = Math.max(Math.floor((effectiveExpiresAt - Date.now()) / 1000), 0);
         const expiresInDays = effectiveSeconds / (24 * 60 * 60);
-
         tokenStore.set(token, expiresInDays);
-
+        setCookieAndLocalStorage(
+            AUTH_ACCESS_TOKEN_KEY,
+            token,
+            expiresInDays
+        );
         const userJson = JSON.stringify(user);
-
         setCookieAndLocalStorage(AUTH_USER_KEY, userJson, expiresInDays);
         setCookieAndLocalStorage(USER_COOKIE, userJson, expiresInDays);
         setCookieAndLocalStorage(
@@ -315,25 +358,54 @@ export const authService = {
             String(effectiveExpiresAt),
             expiresInDays
         );
+
+        if (refreshToken) {
+            setCookieAndLocalStorage(
+                AUTH_REFRESH_TOKEN_KEY,
+                refreshToken,
+                7
+            );
+        }
+
+        if (process.env.NODE_ENV === "development") {
+            console.log("SAVE SESSION DEBUG:", {
+                tokenStored: !!tokenStore.get(),
+                authAccessTokenStored:
+                    !!getCookieOrLocalStorage(AUTH_ACCESS_TOKEN_KEY),
+                userStored: !!getCookieOrLocalStorage(AUTH_USER_KEY),
+                expiresStored: !!getCookieOrLocalStorage(AUTH_EXPIRES_KEY),
+                refreshStored:
+                    !!getCookieOrLocalStorage(AUTH_REFRESH_TOKEN_KEY),
+            });
+        }
     },
 
     restoreSession() {
-        const token = tokenStore.get();
+        const token =
+            tokenStore.get() ??
+            getCookieOrLocalStorage(AUTH_ACCESS_TOKEN_KEY);
 
         const userRaw =
             getCookieOrLocalStorage(AUTH_USER_KEY) ??
             getCookieOrLocalStorage(USER_COOKIE);
 
         const expiresRaw = getCookieOrLocalStorage(AUTH_EXPIRES_KEY);
+        const refreshToken = getCookieOrLocalStorage(AUTH_REFRESH_TOKEN_KEY);
 
-        if (!token || !userRaw || !expiresRaw) {
-            authService.clearSession();
-            return null;
+        if (process.env.NODE_ENV === "development") {
+            console.log("RESTORE SESSION DEBUG:", {
+                tokenExists: !!token,
+                tokenStoreExists: !!tokenStore.get(),
+                authAccessTokenExists:
+                    !!getCookieOrLocalStorage(AUTH_ACCESS_TOKEN_KEY),
+                userExists: !!userRaw,
+                expiresExists: !!expiresRaw,
+                refreshTokenExists: !!refreshToken,
+                expiresRaw,
+            });
         }
 
-        const expiresAt = Number(expiresRaw);
-
-        if (Number.isNaN(expiresAt) || expiresAt <= Date.now()) {
+        if (!token || !userRaw) {
             authService.clearSession();
             return null;
         }
@@ -345,6 +417,15 @@ export const authService = {
             return null;
         }
 
+        if (expiresRaw) {
+            const expiresAt = Number(expiresRaw);
+
+            if (Number.isNaN(expiresAt) || expiresAt <= Date.now()) {
+                authService.clearSession();
+                return null;
+            }
+        }
+
         try {
             const user = JSON.parse(userRaw) as AuthUser;
 
@@ -352,9 +433,21 @@ export const authService = {
                 authService.clearSession();
                 return null;
             }
+            if (!tokenStore.get()) {
+                const payloadExpiresAt = getTokenExpiration(token);
+                const remainingSeconds = payloadExpiresAt
+                    ? Math.max(
+                        Math.floor((payloadExpiresAt - Date.now()) / 1000),
+                        0
+                    )
+                    : DEFAULT_TOKEN_EXPIRE_SECONDS;
+
+                tokenStore.set(token, remainingSeconds / (24 * 60 * 60));
+            }
 
             return {
                 token,
+                refreshToken,
                 user,
                 profile: null,
                 role: null,
@@ -374,6 +467,8 @@ export const authService = {
         deleteCookieAndLocalStorage(AUTH_USER_KEY);
         deleteCookieAndLocalStorage(USER_COOKIE);
         deleteCookieAndLocalStorage(AUTH_EXPIRES_KEY);
+        deleteCookieAndLocalStorage(AUTH_REFRESH_TOKEN_KEY);
+        deleteCookieAndLocalStorage(AUTH_ACCESS_TOKEN_KEY);
     },
 
     async logout() {

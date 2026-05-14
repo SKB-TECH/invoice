@@ -1,13 +1,14 @@
 "use client";
 
 import { useState } from "react";
+import type { KeyboardEvent } from "react";
 import Image from "next/image";
 import { useRouter } from "@/i18n/routing";
 import { useTranslations } from "next-intl";
 import { z } from "zod";
 
 import Loader from "@/components/loader/Loader";
-import { useLogin } from "@/core/hooks/auth/useAuthQuery";
+import { useAuth } from "@/context/AuthContext";
 
 type FormValues = {
     identifier: string;
@@ -42,6 +43,7 @@ function getApiErrorMessage(error: unknown): string {
 export default function LoginPage() {
     const router = useRouter();
     const t = useTranslations("login");
+    const { login } = useAuth();
 
     const [form, setForm] = useState<FormValues>({
         identifier: "",
@@ -50,8 +52,7 @@ export default function LoginPage() {
 
     const [errors, setErrors] = useState<FormErrors>({});
     const [apiErrorMessage, setApiErrorMessage] = useState("");
-
-    const loginMutation = useLogin();
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const createLoginSchema = () =>
         z.object({
@@ -83,8 +84,8 @@ export default function LoginPage() {
         }
     };
 
-    const handleSubmit = () => {
-        if (loginMutation.isPending) return;
+    const handleSubmit = async () => {
+        if (isSubmitting) return;
 
         const schema = createLoginSchema();
         const result = schema.safeParse(form);
@@ -104,41 +105,34 @@ export default function LoginPage() {
             return;
         }
 
-        setErrors({});
-        setApiErrorMessage("");
+        try {
+            setErrors({});
+            setApiErrorMessage("");
+            setIsSubmitting(true);
 
-        loginMutation.mutate(
-            {
-                identifier: result.data.identifier.trim(),
-                password: result.data.password,
-            },
-            {
-                onSuccess: () => {
-                    router.push(
-                        `/otp?email=${encodeURIComponent(
-                            result.data.identifier.trim()
-                        )}&flow=login`
-                    );
-                },
+            await login(
+                result.data.identifier.trim(),
+                result.data.password
+            );
 
-                onError: (error) => {
-                    setApiErrorMessage(getApiErrorMessage(error));
-                },
-            }
-        );
+            router.replace("/home");
+        } catch (error) {
+            setApiErrorMessage(getApiErrorMessage(error));
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
-    const handleKeyDown = (
-        event: React.KeyboardEvent<HTMLInputElement>
-    ) => {
+    const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
         if (event.key === "Enter") {
+            event.preventDefault();
             handleSubmit();
         }
     };
 
     return (
         <>
-            {loginMutation.isPending ? (
+            {isSubmitting ? (
                 <Loader variant="overlay" text={t("loading")} />
             ) : null}
 
@@ -166,7 +160,7 @@ export default function LoginPage() {
                     </div>
                 </div>
 
-                <div className="flex w-full flex-1 items-center justify-center bg-[#FFFFFF] px-6 py-10 sm:px-10 lg:w-1/2 lg:px-16">
+                <div className="flex w-full flex-1 items-center justify-center bg-white px-6 py-10 sm:px-10 lg:w-1/2 lg:px-16">
                     <div className="w-full max-w-[500px]">
                         <div className="mb-6 flex justify-start">
                             <Image
@@ -203,8 +197,9 @@ export default function LoginPage() {
                                         )
                                     }
                                     onKeyDown={handleKeyDown}
-                                    disabled={loginMutation.isPending}
+                                    disabled={isSubmitting}
                                     placeholder={t("identifierPlaceholder")}
+                                    autoComplete="username"
                                     className="h-12 w-full border border-slate-300 px-3 py-2 text-sm outline-none focus:border-[#1f6a9a] disabled:cursor-not-allowed disabled:bg-slate-100 sm:text-base"
                                 />
 
@@ -230,8 +225,9 @@ export default function LoginPage() {
                                         )
                                     }
                                     onKeyDown={handleKeyDown}
-                                    disabled={loginMutation.isPending}
+                                    disabled={isSubmitting}
                                     placeholder={t("passwordPlaceholder")}
+                                    autoComplete="current-password"
                                     className="h-12 w-full border border-slate-300 px-3 py-2 text-sm outline-none focus:border-[#1f6a9a] disabled:cursor-not-allowed disabled:bg-slate-100 sm:text-base"
                                 />
 
@@ -244,7 +240,7 @@ export default function LoginPage() {
 
                             <button
                                 type="button"
-                                disabled={loginMutation.isPending}
+                                disabled={isSubmitting}
                                 className="mt-2 h-12 bg-[#1f6a9a] py-2 text-sm font-medium text-white hover:bg-[#18587f] disabled:cursor-not-allowed disabled:opacity-70 sm:text-base"
                                 onClick={handleSubmit}
                             >
@@ -256,7 +252,7 @@ export default function LoginPage() {
                             {t("noAccount")}{" "}
                             <button
                                 type="button"
-                                disabled={loginMutation.isPending}
+                                disabled={isSubmitting}
                                 className="cursor-pointer text-[#1f6a9a] hover:underline disabled:cursor-not-allowed disabled:opacity-70"
                                 onClick={() => router.push("/signup")}
                             >

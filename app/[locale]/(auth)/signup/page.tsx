@@ -24,9 +24,12 @@ type FormValues = {
     phone: string;
     password: string;
     confirmPassword: string;
+
     companyName: string;
     rccm: string;
     nif: string;
+    idNat: string;
+
     companyRole: string;
     businessSector: string;
     companySize: string;
@@ -92,9 +95,12 @@ function getApiFieldErrors(error: unknown): FormErrors {
         phone: apiErrors.phone,
         password: apiErrors.password,
         confirmPassword: apiErrors.password_confirm,
-        companyName: apiErrors.company_name,
+
+        companyName: apiErrors.legal_name ?? apiErrors.company_name,
         rccm: apiErrors.rccm,
         nif: apiErrors.nif,
+        idNat: apiErrors.idnat,
+
         companyRole: apiErrors.position,
         businessSector: apiErrors.business_sector,
         companySize: apiErrors.company_size,
@@ -221,9 +227,12 @@ export default function RegisterPage() {
         phone: "",
         password: "",
         confirmPassword: "",
+
         companyName: "",
         rccm: "",
         nif: "",
+        idNat: "",
+
         companyRole: "",
         businessSector: "",
         companySize: "",
@@ -232,6 +241,7 @@ export default function RegisterPage() {
     const [errors, setErrors] = useState<FormErrors>({});
 
     const isBusiness = profile === "PME" || profile === "ENTREPRISE";
+    const isCorporate = profile === "ENTREPRISE";
 
     const registerMutation = useRegister({
         onSuccess: (_, variables) => {
@@ -296,6 +306,8 @@ export default function RegisterPage() {
                 companyName: z.string().trim(),
                 rccm: z.string().trim(),
                 nif: z.string().trim(),
+                idNat: z.string().trim(),
+
                 companyRole: z.string().trim(),
                 businessSector: z.string().trim(),
                 companySize: z.string().trim(),
@@ -361,6 +373,14 @@ export default function RegisterPage() {
                     });
                 }
             }
+
+            if (isCorporate && !data.idNat) {
+                ctx.addIssue({
+                    code: z.ZodIssueCode.custom,
+                    path: ["idNat"],
+                    message: t("validation.idNatRequired"),
+                });
+            }
         });
     };
 
@@ -402,9 +422,17 @@ export default function RegisterPage() {
                 companyName: "",
                 rccm: "",
                 nif: "",
+                idNat: "",
                 companyRole: "",
                 businessSector: "",
                 companySize: "",
+            }));
+        }
+
+        if (nextProfile === "PME") {
+            setForm((prev) => ({
+                ...prev,
+                idNat: "",
             }));
         }
     };
@@ -425,19 +453,35 @@ export default function RegisterPage() {
             return {
                 ...basePayload,
                 type: "personal",
-            };
+            } as RegisterPayload;
+        }
+
+        if (accountType === "pme") {
+            return {
+                ...basePayload,
+                type: "pme",
+
+                company_name: data.companyName.trim(),
+                rccm: data.rccm.trim(),
+                nif: data.nif.trim(),
+                position: data.companyRole.trim(),
+                business_sector: data.businessSector.trim(),
+                company_size: data.companySize.trim(),
+            } as RegisterPayload;
         }
 
         return {
             ...basePayload,
-            type: accountType,
-            company_name: data.companyName.trim(),
+            type: "corporate",
+
+            legal_name: data.companyName.trim(),
+            idnat: data.idNat.trim(),
             rccm: data.rccm.trim(),
             nif: data.nif.trim(),
             position: data.companyRole.trim(),
             business_sector: data.businessSector.trim(),
             company_size: data.companySize.trim(),
-        };
+        } as RegisterPayload;
     };
 
     const handleSubmit = () => {
@@ -656,6 +700,38 @@ export default function RegisterPage() {
                                             ) : null}
                                         </div>
                                     </div>
+
+                                    {isCorporate && (
+                                        <div>
+                                            <label className="mb-1 block text-[13px] font-medium text-slate-600">
+                                                ID NAT
+                                            </label>
+
+                                            <input
+                                                type="text"
+                                                value={form.idNat}
+                                                onChange={(e) =>
+                                                    handleChange(
+                                                        "idNat",
+                                                        e.target.value
+                                                    )
+                                                }
+                                                placeholder={t(
+                                                    "placeholders.idNat"
+                                                )}
+                                                disabled={
+                                                    registerMutation.isPending
+                                                }
+                                                className="h-11 w-full border border-slate-300 px-3 text-[13px] outline-none focus:border-[#1f6a9a] disabled:cursor-not-allowed disabled:bg-slate-100"
+                                            />
+
+                                            {errors.idNat ? (
+                                                <p className="mt-1 text-[12px] text-red-600">
+                                                    {errors.idNat}
+                                                </p>
+                                            ) : null}
+                                        </div>
+                                    )}
 
                                     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                                         <div>
