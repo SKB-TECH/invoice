@@ -1,13 +1,14 @@
-import axios, { type InternalAxiosRequestConfig } from 'axios';
-import { ENV } from '@/core/constants/env';
-import { tokenStore } from '@/core/utils/tokenStore';
-import { authEvents } from '@/core/utils/authEvents';
+import axios, { type InternalAxiosRequestConfig } from "axios";
+import { ENV } from "@/core/constants/env";
+import { tokenStore } from "@/core/utils/tokenStore";
+import { authEvents } from "@/core/utils/authEvents";
 
-declare module 'axios' {
+declare module "axios" {
     export interface InternalAxiosRequestConfig {
         skipAuth?: boolean;
     }
 }
+
 export const publicApi = axios.create({
     baseURL: ENV.API_URL,
     withCredentials: true,
@@ -18,42 +19,68 @@ export const api = axios.create({
     withCredentials: true,
 });
 
-api.interceptors.request.use((config: InternalAxiosRequestConfig) => {
-    if (config.skipAuth) {
-    } else {
-        const token = tokenStore.get();
-        if (token) {
-            config.headers = config.headers ?? {};
-            config.headers.Authorization = `Bearer ${token}`;
-        }
-    }
+function cleanFormDataHeaders(config: InternalAxiosRequestConfig) {
     const isFormData =
-        typeof FormData !== 'undefined' && config.data instanceof FormData;
+        typeof FormData !== "undefined" && config.data instanceof FormData;
+
     if (isFormData) {
         config.maxBodyLength = Infinity;
         config.maxContentLength = Infinity;
-        const hdrs = config.headers;
-        if (hdrs != null && typeof hdrs === 'object') {
-            if (typeof hdrs.delete === 'function') {
-                hdrs.delete('Content-Type');
-                hdrs.delete('content-type');
+
+        const headers = config.headers;
+
+        if (headers != null && typeof headers === "object") {
+            if (typeof headers.delete === "function") {
+                headers.delete("Content-Type");
+                headers.delete("content-type");
             } else {
-                const rec = hdrs as Record<string, unknown>;
-                delete rec['Content-Type'];
-                delete rec['content-type'];
+                const record = headers as Record<string, unknown>;
+                delete record["Content-Type"];
+                delete record["content-type"];
             }
         }
     }
+
     return config;
-});
+}
+
+/* =========================================================
+ * PUBLIC API
+ * ======================================================= */
+
+publicApi.interceptors.request.use(
+    (config: InternalAxiosRequestConfig) => {
+        return cleanFormDataHeaders(config);
+    }
+);
+
+/* =========================================================
+ * AUTHENTICATED API
+ * ======================================================= */
+
+api.interceptors.request.use(
+    (config: InternalAxiosRequestConfig) => {
+        if (!config.skipAuth) {
+            const token = tokenStore.get();
+
+            if (token) {
+                config.headers = config.headers ?? {};
+                config.headers.Authorization = `Bearer ${token}`;
+            }
+        }
+
+        return cleanFormDataHeaders(config);
+    }
+);
 
 api.interceptors.response.use(
-    (res) => res,
+    (response) => response,
     (error) => {
         if (axios.isAxiosError(error) && error.response?.status === 401) {
             tokenStore.clear();
             authEvents.emitLogout();
         }
+
         return Promise.reject(error);
     }
 );

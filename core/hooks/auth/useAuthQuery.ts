@@ -1,12 +1,13 @@
-'use client';
+"use client";
 
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { authService } from '@/core/services/auth.service';
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { authService } from "@/core/services/auth.service";
+import type { LoginPayload } from "@/core/types/auth";
 
 export function useAuthSession() {
     return useQuery({
-        queryKey: ['auth', 'session'],
-        queryFn: async () => authService.restoreSession(),
+        queryKey: ["auth", "session"],
+        queryFn: () => authService.restoreSession(),
         staleTime: Infinity,
         retry: false,
     });
@@ -14,20 +15,13 @@ export function useAuthSession() {
 
 export function useLogin() {
     return useMutation({
-        mutationFn: (payload: { login: string; password: string }) =>
-            authService.login(payload.login, payload.password),
+        mutationFn: ({ identifier, password }: LoginPayload) =>
+            authService.login(identifier, password),
     });
 }
 
 export function useLogout() {
-    const queryClient = useQueryClient();
-
     return useMutation({
         mutationFn: () => authService.logout(),
-
-        onSuccess: () => {
-            queryClient.setQueryData(['auth', 'session'], null);
-            queryClient.invalidateQueries();
-        },
     });
 }
