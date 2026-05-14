@@ -97,7 +97,9 @@
       "lastNameRequired": "Last name is required.",
       "emailInvalid": "Please enter a valid email address.",
       "nifInvalid": "The tax ID must follow the format A1202401Z."
-    }
+    },
+
+    "loading": "Creating your account..."
   },
   "navbar": {
     "openMenu": "Open menu",
@@ -641,7 +643,6 @@
       }
     }
   },
-  "loading": "Creating your account...",
   "otp": {
     "title": "OTP Verification",
     "heroText": "Verify your account to secure your access to iKwook Invoice.",
