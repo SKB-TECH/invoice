@@ -97,7 +97,9 @@
       "lastNameRequired": "Le nom est requis.",
       "emailInvalid": "Veuillez saisir une adresse email valide.",
       "nifInvalid": "Le NIF doit respecter le format A1202401Z."
-    }
+    },
+
+    "loading": "Création du compte en cours..."
   },
   "navbar": {
     "openMenu": "Ouvrir le menu",
@@ -641,7 +643,6 @@
       }
     }
   },
-  "loading": "Création du compte en cours...",
   "otp": {
     "title": "Vérification OTP",
     "heroText": "Vérifiez votre compte pour sécuriser votre accès à iKwook Invoice.",
