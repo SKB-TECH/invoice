@@ -12,7 +12,6 @@ import { useQueryClient } from "@tanstack/react-query";
 import type { AuthUser, Permission } from "@/core/types/rbac";
 import { authEvents } from "@/core/utils/authEvents";
 import { authService } from "@/core/services/auth.service";
-import { mfaStore } from "@/core/utils/mfaStore";
 import {
     useAuthSession,
     useLogin,
@@ -45,6 +44,7 @@ type ApiBranch = {
 
 export type AuthSession = {
     token: string;
+    refreshToken: string | null;
     user: AuthUser;
     profile: ApiProfile | null;
     role: ApiRole | null;
@@ -53,44 +53,37 @@ export type AuthSession = {
     raw: unknown;
 };
 
-type LoginMfaResponse = {
-    token: null;
-    user: null;
-    raw?: unknown;
-    mfaRequired: true;
-    challengeId: string;
-    resendIn?: number;
-    expiresIn?: number;
-};
-
-type LoginSuccessResponse = {
-    token: string;
+type LorasLoginSuccessResponse = {
+    status: string;
+    message: string;
     user: AuthUser;
-    profile?: ApiProfile | null;
+    access_token: string;
+    refresh_token?: string;
+    expires_in?: number;
     role?: ApiRole | null;
     branch?: ApiBranch | null;
     till?: unknown | null;
-    raw?: unknown;
-    expiresIn?: number;
-    mfaRequired?: false;
+    profile?: ApiProfile | null;
 };
-
-type LoginResponse = LoginSuccessResponse | LoginMfaResponse;
-
-function isMfaResponse(response: LoginResponse): response is LoginMfaResponse {
-    return response.mfaRequired === true;
-}
-
-function isSuccessResponse(
-    response: LoginResponse
-): response is LoginSuccessResponse {
-    return typeof response.token === "string" && !!response.user;
-}
 
 function normalizePermission(value?: string | null): string[] {
     if (!value) return [];
 
     return [value, value.replaceAll(".", ":"), value.replaceAll(":", ".")];
+}
+
+function isLoginSuccessResponse(
+    response: unknown
+): response is LoginSuccessResponse {
+    if (!response || typeof response !== "object") return false;
+
+    const data = response as Record<string, unknown>;
+
+    return (
+        typeof data.token === "string" &&
+        !!data.user &&
+        typeof data.user === "object"
+    );
 }
 
 interface AuthContextType {
@@ -100,10 +93,11 @@ interface AuthContextType {
     branch: ApiBranch | null;
     till: unknown | null;
     token: string | null;
+    refreshToken: string | null;
     raw: unknown;
     loading: boolean;
     isAuthenticated: boolean;
-    login: (identifier: string, password: string) => Promise<void>;
+    login: (identifier: string, password: string) => Promise<AuthSession>;
     logout: () => Promise<void>;
     hasPermission: (permission: Permission) => boolean;
     hasAnyPermission: (permissions: Permission[]) => boolean;
@@ -124,6 +118,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     const user = session?.user ?? null;
     const token = session?.token ?? null;
+    const refreshToken = session?.refreshToken ?? null;
     const profile = session?.profile ?? null;
     const role = session?.role ?? null;
     const branch = session?.branch ?? null;
@@ -228,44 +223,40 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         );
     };
 
-    const login = async (identifier: string, password: string) => {
-        const res = (await loginMutation.mutateAsync({
+    const login = async (
+        identifier: string,
+        password: string
+    ): Promise<AuthSession> => {
+        const response = await loginMutation.mutateAsync({
             identifier,
             password,
-        })) as LoginResponse;
+        });
 
-        if (isMfaResponse(res)) {
-            if (res.challengeId) {
-                mfaStore.set(
-                    res.challengeId,
-                    res.resendIn ?? 60,
-                    res.expiresIn ?? 300
-                );
-            }
-
-            queryClient.setQueryData(["auth", "session"], null);
-            return;
+        if (!isLoginSuccessResponse(response)) {
+            throw new Error("Réponse de connexion invalide.");
         }
 
-        if (isSuccessResponse(res)) {
-            const nextSession: AuthSession = {
-                token: res.token,
-                user: res.user,
-                profile: res.profile ?? null,
-                role: res.role ?? null,
-                branch: res.branch ?? null,
-                till: res.till ?? null,
-                raw: res.raw ?? res,
-            };
+        const nextSession: AuthSession = {
+            token: response.token,
+            refreshToken: response.refreshToken ?? null,
+            user: response.user,
+            profile: response.profile ?? null,
+            role: response.role ?? null,
+            branch: response.branch ?? null,
+            till: response.till ?? null,
+            raw: response.raw ?? response,
+        };
 
-            authService.saveSession(
-                nextSession.token,
-                nextSession.user,
-                res.expiresIn
-            );
+        authService.saveSession(
+            nextSession.token,
+            nextSession.user,
+            response.expiresIn,
+            nextSession.refreshToken
+        );
 
-            queryClient.setQueryData(["auth", "session"], nextSession);
-        }
+        queryClient.setQueryData(["auth", "session"], nextSession);
+
+        return nextSession;
     };
 
     const logout = async () => {
@@ -275,6 +266,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         queryClient.setQueryData(["auth", "session"], null);
 
         if (typeof window !== "undefined") {
+            localStorage.removeItem("auth_refresh_token");
             window.location.replace("/sign-in");
         }
     };
@@ -286,6 +278,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         branch,
         till,
         token,
+        refreshToken,
         raw,
         loading: sessionQuery.isLoading,
         isAuthenticated: !!user && !!token,
