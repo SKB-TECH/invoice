@@ -97,7 +97,9 @@
       "lastNameRequired": "Last name is required.",
       "emailInvalid": "Please enter a valid email address.",
       "nifInvalid": "The tax ID must follow the format A1202401Z."
-    }
+    },
+
+    "loading": "Creating your account..."
   },
   "navbar": {
     "openMenu": "Open menu",
@@ -220,7 +222,9 @@
       "next": "Next",
       "previous": "Previous",
       "cancel": "Cancel",
-      "save": "Save"
+      "save": "Save",
+      "submit": "Submit",
+      "normalize": "Normalize"
     },
     "steps": {
       "client": "Client information",
@@ -293,8 +297,8 @@
       "title": "New customer",
       "form": {
         "reference": "Reference number",
-        "nom": "customer name",
-        "sousTitre": "subtitle",
+        "nom": "Customer name",
+        "sousTitre": "Subtitle",
         "nif": "Tax ID Number (NIF)",
         "rccm": "Registration of Commerce and Companies (RCCM)",
         "tel": "Phone number",
@@ -302,7 +306,7 @@
         "adresse": "Address",
         "pays": "Country",
         "status": {
-          "title": "status of customer",
+          "title": "Status of customer",
           "options": {
             "actif": "Active",
             "suspendu": "Suspended",
@@ -310,10 +314,10 @@
           }
         },
         "type": {
-          "title": "type of customer",
+          "title": "Type of customer",
           "options": {
             "ponctuel": "Punctual",
-            "recurrent": "recurring"
+            "recurrent": "Recurring"
           }
         },
         "annule": "Cancel",
@@ -323,7 +327,7 @@
     "listClients": {
       "breadcrumb": {
         "Step1": "Customers",
-        "Step2": "view"
+        "Step2": "View"
       },
       "title": "List of customers",
       "btn": {
@@ -338,7 +342,7 @@
         "nif": "Tax ID Number (NIF)",
         "tel": "Phone number",
         "status": {
-          "title": "status",
+          "title": "Status",
           "options": {
             "actif": "Active",
             "suspendu": "Suspended",
@@ -639,7 +643,6 @@
       }
     }
   },
-  "loading": "Creating your account...",
   "otp": {
     "title": "OTP Verification",
     "heroText": "Verify your account to secure your access to iKwook Invoice.",

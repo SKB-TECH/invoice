@@ -97,7 +97,9 @@
       "lastNameRequired": "Kombo esengeli.",
       "emailInvalid": "Koma adresse email ya solo.",
       "nifInvalid": "NIF esengeli kozala lokola A1202401Z."
-    }
+    },
+
+    "loading": "Tozali kokanga compte..."
   },
   "navbar": {
     "openMenu": "Fungola menu",
@@ -220,7 +222,9 @@
       "next": "Kokende liboso",
       "previous": "Kozonga",
       "cancel": "Kolongola",
-      "save": "Kobomba"
+      "save": "Kobomba",
+      "submit": "Kotinda",
+      "normalize": "Normaliser"
     },
     "steps": {
       "client": "Ba informations ya kiliya",
@@ -640,7 +644,7 @@
       }
     }
   },
-  "loading": "Bobakisami compte ezali kosala...",
+
   "otp": {
     "title": "Kotala OTP",
     "heroText": "Talá compte na yo mpo na kobatela bokɔti na iKwook Invoice.",
