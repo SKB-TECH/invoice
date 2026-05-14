@@ -4,35 +4,99 @@
     "login": "Kokota"
   },
   "register": {
-    "heroText": "Sala compte na yo mpe gérer ba clients, contrats mpe factures na iKwook Invoice.",
-    "title": "Sala compte",
-    "subtitle": "Pona profil na yo mpe tondisa ba informations ya liboso.",
-    "continue": "Kokende liboso",
+    "title": "Fungola compte",
+    "subtitle": "Pona profil na yo mpe koma ba informations na yo.",
+    "heroText": "Fungola compte na yo mpe salela gestion ya pete, ya sika, mpe oyo ebongi na posa na yo.",
+    "continue": "Koba",
     "alreadyHaveAccount": "Ozali déjà na compte ?",
     "login": "Kokota",
+
     "profiles": {
       "company": "Entreprise",
       "sme": "PME",
-      "personal": "Personnel"
+      "personal": "Ya moto moko"
     },
+
     "fields": {
       "companyName": "Kombo ya entreprise",
       "rccm": "RCCM",
+      "firstName": "Prénom",
+      "lastName": "Kombo",
       "nif": "NIF",
+      "companyRole": "Mosala na yo",
+      "businessSector": "Secteur ya mosala",
+      "companySize": "Bonene ya entreprise",
       "fullName": "Kombo mobimba",
-      "email": "Email",
+      "email": "Adresse email",
       "phone": "Téléphone",
       "password": "Mot de passe",
-      "confirmPassword": "Confirmer mot de passe"
+      "confirmPassword": "Ndimisa mot de passe"
     },
+
     "placeholders": {
-      "companyName": "Ex: iKwook SARL",
-      "rccm": "Ex: CD/KIN/RCCM/...",
-      "nif": "Ex: A1234567",
-      "fullName": "Ex: Benjamin Shako",
-      "email": "email@ikwook.cd",
-      "phone": "+243 000 000 000",
-      "password": "********"
+      "companyName": "Koma kombo ya entreprise",
+      "rccm": "Koma RCCM",
+      "firstName": "Koma prénom na yo",
+      "lastName": "Koma kombo na yo",
+      "nif": "Ndakisa : A1202401Z",
+      "companyRole": "Pona mosala na yo",
+      "businessSector": "Pona secteur moko",
+      "companySize": "Pona bonene ya entreprise",
+      "fullName": "Koma kombo na yo mobimba",
+      "email": "Koma adresse email na yo",
+      "phone": "Koma numéro na yo ya téléphone",
+      "password": "Koma mot de passe na yo",
+      "confirmPassword": "Ndimisa mot de passe na yo"
+    },
+
+    "companyRoles": {
+      "it": "Informaticien",
+      "sales": "Commercial",
+      "owner": "Nkolo ya entreprise",
+      "manager": "Mokambi",
+      "other": "Mosusu"
+    },
+
+    "businessSectors": {
+      "bankingInsurance": "Banque & Assurance",
+      "restaurantsHotels": "Restaurants & Hôtels",
+      "tradeDistribution": "Commerce & Distribution",
+      "technologyIt": "Technologie & Informatique",
+      "health": "Santé",
+      "education": "Éducation",
+      "constructionRealEstate": "Construction & Immobilier",
+      "transportLogistics": "Transport & Logistique",
+      "industry": "Industrie",
+      "other": "Mosusu"
+    },
+
+    "companySizes": {
+      "oneToTen": "Basali 1 kino 10",
+      "elevenToFifty": "Basali 11 kino 50",
+      "fiftyOneToTwoHundred": "Basali 51 kino 200",
+      "twoHundredOneToFiveHundred": "Basali 201 kino 500",
+      "moreThanFiveHundred": "Basali koleka 500"
+    },
+
+    "validation": {
+      "fullNameRequired": "Kombo mobimba esengeli.",
+      "emailRequired": "Adresse email esengeli.",
+      "phoneRequired": "Numéro ya téléphone esengeli.",
+      "phoneInvalid": "Numéro ya téléphone ezali malamu te.",
+      "passwordRequired": "Mot de passe esengeli.",
+      "passwordMin": "Mot de passe esengeli kozala na ba caractères 8 to koleka.",
+      "confirmPasswordRequired": "Ndimisa mot de passe.",
+      "passwordsMismatch": "Ba mot de passe ekokani te.",
+      "companyNameRequired": "Kombo ya entreprise esengeli.",
+      "rccmRequired": "RCCM esengeli.",
+      "nifRequired": "NIF esengeli.",
+      "companyRoleRequired": "Pona mosala na yo.",
+      "businessSectorRequired": "Pona secteur ya mosala.",
+      "companySizeRequired": "Pona bonene ya entreprise.",
+      "firstNameRequired": "Prénom esengeli.",
+      "lastNameRequired": "Kombo esengeli.",
+      "emailInvalid": "Koma adresse email ya solo.",
+      "nifInvalid": "NIF esengeli kozala lokola A1202401Z."
     }
   },
   "navbar": {
@@ -291,6 +355,69 @@
       }
     }
   },
+  "contrats": {
+    "createContrat": {
+      "breadcrumb": {
+        "Step1": "Kontras",
+        "Step2": "Ya sika"
+      },
+      "title": "Kontra ya sika",
+      "form": {
+        "reference": "Numelo ya Reference",
+        "nom": "Kombo ya kontra",
+        "auto-renew": {
+          "title": "Kozongisa yango moko",
+          "options": {
+            "oui": "Iyo",
+            "non": "Te"
+          }
+        },
+        "tel": "Telefɔ́ni",
+        "dateStart": "Mokolo ya kobanda",
+        "dateEnd": "Mokolo ya suka",
+        "valeur": "Motuya ya kontra",
+        "status": {
+          "title": "Etaleli",
+          "options": {
+            "actif": "Eloko ya motuya",
+            "suspendu": "Bakangisi",
+            "complet": "Esika esili"
+          }
+        },
+        "description": "Ndimbola"
+      },
+      "cancel": "Kanga",
+      "save": "Bomba"
+    },
+    "listContrats": {
+      "breadcrumb": {
+        "Step1": "Kontras",
+        "Step2": "Komona"
+      },
+      "title": "Liste ya kontras",
+      "btn": {
+        "new": "Kontra ya sika"
+      },
+      "search": {
+        "placeholder": "Luka na numelo ya reference, motó ya kontra, motuya ya kontra, statut, mokolo ya kobanda, mokolo ya suka..."
+      },
+      "table": {
+        "reference": "Numelo ya Reference",
+        "titre": "Motó ya kontra",
+        "client": "Kiliya",
+        "Montant": "Motuya",
+        "status": {
+          "title": "Etaleli",
+          "options": {
+            "actif": "Eloko ya motuya",
+            "suspendu": "Bakangisi",
+            "complet": "Esika esili"
+          }
+        },
+        "period": "Eleko"
+      }
+    }
+  },
   "articles": {
     "list": {
       "title": "Biloko",
@@ -513,67 +640,31 @@
       }
     }
   },
-  "contrats": {
-    "createContrat": {
-      "breadcrumb": {
-        "Step1": "Kontras",
-        "Step2": "Ya sika"
-      },
-      "title": "Kontra ya sika",
-      "form": {
-        "reference": "Numelo ya Reference",
-        "nom": "Kombo ya kontra",
-        "auto-renew": {
-          "title": "Kozongisa yango moko",
-          "options": {
-            "oui": "Iyo",
-            "non": "Te"
-          }
-        },
-        "tel": "Telefɔ́ni",
-        "dateStart": "Mokolo ya kobanda",
-        "dateEnd": "Mokolo ya suka",
-        "valeur": "Motuya ya kontra",
-        "status": {
-          "title": "Etaleli",
-          "options": {
-            "actif": "Eloko ya motuya",
-            "suspendu": "Bakangisi",
-            "complet": "Esika esili"
-          }
-        },
-        "description": "Ndimbola"
-      },
-      "cancel": "Kanga",
-      "save": "Bomba"
+  "loading": "Bobakisami compte ezali kosala...",
+  "otp": {
+    "title": "Kotala OTP",
+    "heroText": "Talá compte na yo mpo na kobatela bokɔti na iKwook Invoice.",
+    "description": {
+      "register": "Kotá code ya motango 6 oyo etindami na email na yo mpo compte na yo endimama.",
+      "login": "Kotá code ya motango 6 oyo etindami na email na yo mpo okota malamu."
     },
-    "listContrats": {
-      "breadcrumb": {
-        "Step1": "Kontras",
-        "Step2": "Komona"
-      },
-      "title": "Liste ya kontras",
-      "btn": {
-        "new": "Kontra ya sika"
-      },
-      "search": {
-        "placeholder": "Luka na numelo ya reference, motó ya kontra, motuya ya kontra, statut, mokolo ya kobanda, mokolo ya suka..."
-      },
-      "table": {
-        "reference": "Numelo ya Reference",
-        "titre": "Motó ya kontra",
-        "client": "Kiliya",
-        "Montant": "Motuya",
-        "status": {
-          "title": "Etaleli",
-          "options": {
-            "actif": "Eloko ya motuya",
-            "suspendu": "Bakangisi",
-            "complet": "Esika esili"
-          }
-        },
-        "period": "Eleko"
-      }
+    "actions": {
+      "verify": "Tala compte",
+      "resend": "Tinda lisusu code"
+    },
+    "wrongEmail": "Email ezali mabe?",
+    "backToRegister": "Zonga na inscription",
+    "errors": {
+      "missingEmail": "Email ezwami te. Zonga na etape ya liboso.",
+      "incompleteCode": "Kotá code OTP nyonso ya motango 6."
+    },
+    "success": {
+      "verified": "Code endimami malamu.",
+      "resent": "Code OTP ya sika etindami."
+    },
+    "loading": {
+      "verify": "Tozali kotala code...",
+      "resend": "Tozali kotinda code ya sika..."
     }
   }
 }

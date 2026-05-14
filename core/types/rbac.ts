@@ -17,15 +17,6 @@ export interface Role {
     permissions: RolePermission[];
 }
 
-
-export interface AuthUserBranch {
-    id: string;
-    code: string;
-    name: string;
-    address?: string | null;
-    city?: string | null;
-}
-
 export interface AuthUser {
     id: string;
     username: string;
@@ -37,5 +28,4 @@ export interface AuthUser {
     role: Role;
     permissions: Permission[];
     photo?: string | null;
-    branch?: AuthUserBranch | null;
 }

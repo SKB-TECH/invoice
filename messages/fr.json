@@ -4,35 +4,99 @@
     "login": "Connexion"
   },
   "register": {
-    "heroText": "Créez votre compte et gérez vos clients, contrats et factures avec iKwook Invoice.",
     "title": "Créer un compte",
-    "subtitle": "Choisissez votre profil et renseignez les premières informations.",
+    "subtitle": "Choisissez votre profil et renseignez vos informations.",
+    "heroText": "Créez votre compte et accédez à une gestion simple, moderne et adaptée à vos besoins.",
     "continue": "Continuer",
     "alreadyHaveAccount": "Vous avez déjà un compte ?",
     "login": "Se connecter",
+
     "profiles": {
       "company": "Entreprise",
       "sme": "PME",
       "personal": "Personnel"
     },
+
     "fields": {
       "companyName": "Nom de l’entreprise",
       "rccm": "RCCM",
+      "firstName": "Prénom",
+      "lastName": "Nom",
       "nif": "NIF",
+      "companyRole": "Votre rôle",
+      "businessSector": "Secteur d’activité",
+      "companySize": "Taille de l’entreprise",
       "fullName": "Nom complet",
-      "email": "Email",
+      "email": "Adresse email",
       "phone": "Téléphone",
       "password": "Mot de passe",
       "confirmPassword": "Confirmer le mot de passe"
     },
+
     "placeholders": {
-      "companyName": "Ex: iKwook SARL",
-      "rccm": "Ex: CD/KIN/RCCM/...",
-      "nif": "Ex: A1234567",
-      "fullName": "Ex: Benjamin Shako",
-      "email": "email@ikwook.cd",
-      "phone": "+243 000 000 000",
-      "password": "********"
+      "companyName": "Saisissez le nom de l’entreprise",
+      "rccm": "Saisissez le RCCM",
+      "firstName": "Saisissez votre prénom",
+      "lastName": "Saisissez votre nom",
+      "nif": "Exemple : A1200001Z",
+      "companyRole": "Sélectionnez votre rôle",
+      "businessSector": "Sélectionnez un secteur",
+      "companySize": "Sélectionnez la taille de l’entreprise",
+      "fullName": "Saisissez votre nom complet",
+      "email": "Saisissez votre adresse email",
+      "phone": "Saisissez votre numéro de téléphone",
+      "password": "Saisissez votre mot de passe",
+      "confirmPassword": "Confirmez votre mot de passe"
+    },
+
+    "companyRoles": {
+      "it": "Informaticien",
+      "sales": "Commercial",
+      "owner": "Propriétaire",
+      "manager": "Gérant",
+      "other": "Autre"
+    },
+
+    "businessSectors": {
+      "bankingInsurance": "Banque & Assurance",
+      "restaurantsHotels": "Restaurants & Hôtels",
+      "tradeDistribution": "Commerce & Distribution",
+      "technologyIt": "Technologie & Informatique",
+      "health": "Santé",
+      "education": "Éducation",
+      "constructionRealEstate": "Construction & Immobilier",
+      "transportLogistics": "Transport & Logistique",
+      "industry": "Industrie",
+      "other": "Autre"
+    },
+
+    "companySizes": {
+      "oneToTen": "1 à 10 employés",
+      "elevenToFifty": "11 à 50 employés",
+      "fiftyOneToTwoHundred": "51 à 200 employés",
+      "twoHundredOneToFiveHundred": "201 à 500 employés",
+      "moreThanFiveHundred": "Plus de 500 employés"
+    },
+
+    "validation": {
+      "fullNameRequired": "Le nom complet est requis.",
+      "emailRequired": "L’adresse email est requise.",
+      "phoneRequired": "Le numéro de téléphone est requis.",
+      "phoneInvalid": "Le numéro de téléphone est invalide.",
+      "passwordRequired": "Le mot de passe est requis.",
+      "passwordMin": "Le mot de passe doit contenir au moins 8 caractères.",
+      "confirmPasswordRequired": "Veuillez confirmer le mot de passe.",
+      "passwordsMismatch": "Les mots de passe ne correspondent pas.",
+      "companyNameRequired": "Le nom de l’entreprise est requis.",
+      "rccmRequired": "Le RCCM est requis.",
+      "nifRequired": "Le NIF est requis.",
+      "companyRoleRequired": "Veuillez sélectionner votre rôle.",
+      "businessSectorRequired": "Veuillez sélectionner un secteur d’activité.",
+      "companySizeRequired": "Veuillez sélectionner la taille de l’entreprise.",
+      "firstNameRequired": "Le prénom est requis.",
+      "lastNameRequired": "Le nom est requis.",
+      "emailInvalid": "Veuillez saisir une adresse email valide.",
+      "nifInvalid": "Le NIF doit respecter le format A1202401Z."
     }
   },
   "navbar": {
@@ -573,6 +637,33 @@
         "idDuplicate": "Identifiant déjà utilisé ; réessayez.",
         "created": "Groupe de taxation créé."
       }
+    }
+  },
+  "loading": "Création du compte en cours...",
+  "otp": {
+    "title": "Vérification OTP",
+    "heroText": "Vérifiez votre compte pour sécuriser votre accès à iKwook Invoice.",
+    "description": {
+      "register": "Entrez le code à 6 chiffres envoyé à votre adresse email pour valider votre compte.",
+      "login": "Entrez le code à 6 chiffres envoyé à votre adresse email pour finaliser votre connexion."
+    },
+    "actions": {
+      "verify": "Vérifier le compte",
+      "resend": "Renvoyer le code"
+    },
+    "wrongEmail": "Mauvais email ?",
+    "backToRegister": "Retour à l’inscription",
+    "errors": {
+      "missingEmail": "Adresse email introuvable. Retournez à l’étape précédente.",
+      "incompleteCode": "Veuillez saisir le code OTP complet à 6 chiffres."
+    },
+    "success": {
+      "verified": "Code vérifié avec succès.",
+      "resent": "Un nouveau code OTP a été envoyé."
+    },
+    "loading": {
+      "verify": "Vérification du code en cours...",
+      "resend": "Envoi d’un nouveau code..."
     }
   }
 }
