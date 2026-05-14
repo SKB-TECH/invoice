@@ -4,35 +4,99 @@
     "login": "Login"
   },
   "register": {
-    "heroText": "Create your account and manage your customers, contracts and invoices with iKwook Invoice.",
-    "title": "Create account",
-    "subtitle": "Choose your profile and enter the first information.",
+    "title": "Create an account",
+    "subtitle": "Choose your profile and fill in your information.",
+    "heroText": "Create your account and access simple, modern management tailored to your needs.",
     "continue": "Continue",
     "alreadyHaveAccount": "Already have an account?",
     "login": "Sign in",
+
     "profiles": {
       "company": "Company",
       "sme": "SME",
       "personal": "Personal"
     },
+
     "fields": {
       "companyName": "Company name",
-      "rccm": "RCCM",
-      "nif": "TIN",
+      "rccm": "Business registration number",
+      "firstName": "First name",
+      "lastName": "Last name",
+      "nif": "Tax ID",
+      "companyRole": "Your role",
+      "businessSector": "Business sector",
+      "companySize": "Company size",
       "fullName": "Full name",
-      "email": "Email",
-      "phone": "Phone",
+      "email": "Email address",
+      "phone": "Phone number",
       "password": "Password",
       "confirmPassword": "Confirm password"
     },
+
     "placeholders": {
-      "companyName": "Ex: iKwook LLC",
-      "rccm": "Ex: CD/KIN/RCCM/...",
-      "nif": "Ex: A1234567",
-      "fullName": "Ex: Benjamin Shako",
-      "email": "email@ikwook.cd",
-      "phone": "+243 000 000 000",
-      "password": "********"
+      "companyName": "Enter the company name",
+      "rccm": "Enter the business registration number",
+      "companyRole": "Select your role",
+      "businessSector": "Select a sector",
+      "companySize": "Select the company size",
+      "fullName": "Enter your full name",
+      "email": "Enter your email address",
+      "phone": "Enter your phone number",
+      "password": "Enter your password",
+      "confirmPassword": "Confirm your password",
+      "firstName": "Enter your first name",
+      "lastName": "Enter your last name",
+      "nif": "Example: A1200001Z"
+    },
+
+    "companyRoles": {
+      "it": "IT specialist",
+      "sales": "Sales representative",
+      "owner": "Owner",
+      "manager": "Manager",
+      "other": "Other"
+    },
+
+    "businessSectors": {
+      "bankingInsurance": "Banking & Insurance",
+      "restaurantsHotels": "Restaurants & Hotels",
+      "tradeDistribution": "Trade & Distribution",
+      "technologyIt": "Technology & IT",
+      "health": "Healthcare",
+      "education": "Education",
+      "constructionRealEstate": "Construction & Real Estate",
+      "transportLogistics": "Transport & Logistics",
+      "industry": "Industry",
+      "other": "Other"
+    },
+
+    "companySizes": {
+      "oneToTen": "1 to 10 employees",
+      "elevenToFifty": "11 to 50 employees",
+      "fiftyOneToTwoHundred": "51 to 200 employees",
+      "twoHundredOneToFiveHundred": "201 to 500 employees",
+      "moreThanFiveHundred": "More than 500 employees"
+    },
+
+    "validation": {
+      "fullNameRequired": "Full name is required.",
+      "emailRequired": "Email address is required.",
+      "phoneRequired": "Phone number is required.",
+      "phoneInvalid": "Phone number is invalid.",
+      "passwordRequired": "Password is required.",
+      "passwordMin": "Password must contain at least 8 characters.",
+      "confirmPasswordRequired": "Please confirm your password.",
+      "passwordsMismatch": "Passwords do not match.",
+      "companyNameRequired": "Company name is required.",
+      "rccmRequired": "Business registration number is required.",
+      "nifRequired": "Tax identification number is required.",
+      "companyRoleRequired": "Please select your role.",
+      "businessSectorRequired": "Please select a business sector.",
+      "companySizeRequired": "Please select the company size.",
+      "firstNameRequired": "First name is required.",
+      "lastNameRequired": "Last name is required.",
+      "emailInvalid": "Please enter a valid email address.",
+      "nifInvalid": "The tax ID must follow the format A1202401Z."
     }
   },
   "navbar": {
@@ -575,6 +639,33 @@
         "idDuplicate": "Identifier already in use; please try again.",
         "created": "Tax group created."
       }
+    }
+  },
+  "loading": "Creating your account...",
+  "otp": {
+    "title": "OTP Verification",
+    "heroText": "Verify your account to secure your access to iKwook Invoice.",
+    "description": {
+      "register": "Enter the 6-digit code sent to your email address to validate your account.",
+      "login": "Enter the 6-digit code sent to your email address to complete your sign-in."
+    },
+    "actions": {
+      "verify": "Verify account",
+      "resend": "Resend code"
+    },
+    "wrongEmail": "Wrong email?",
+    "backToRegister": "Back to registration",
+    "errors": {
+      "missingEmail": "Email address not found. Please return to the previous step.",
+      "incompleteCode": "Please enter the complete 6-digit OTP code."
+    },
+    "success": {
+      "verified": "Code verified successfully.",
+      "resent": "A new OTP code has been sent."
+    },
+    "loading": {
+      "verify": "Verifying code...",
+      "resend": "Sending a new code..."
     }
   }
 }
