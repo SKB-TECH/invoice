@@ -97,7 +97,9 @@
       "lastNameRequired": "Kombo esengeli.",
       "emailInvalid": "Koma adresse email ya solo.",
       "nifInvalid": "NIF esengeli kozala lokola A1202401Z."
-    }
+    },
+
+    "loading": "Tozali kokanga compte..."
   },
   "navbar": {
     "openMenu": "Fungola menu",
