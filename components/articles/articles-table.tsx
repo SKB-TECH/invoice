@@ -9,7 +9,7 @@ import { ArticleStatusBadge } from "./article-status-badge";
 import type { ArticleTableRow } from "./types";
 
 const COLUMN_ORDER = [
-  "idIkwook",
+  "code",
   "title",
   "group",
   "priceTtc",
@@ -47,7 +47,7 @@ export function ArticlesTable({ rows, className }: ArticlesTableProps) {
         </thead>
         <tbody>
           {rows.map((row) => (
-            <tr key={row.idIkwook} className="border-b border-slate-100">
+            <tr key={row.navigationId} className="border-b border-slate-100">
               {COLUMN_ORDER.map((key) => (
                 <td key={key} className="px-5 py-4">
                   {key === "status" ? (
@@ -64,9 +64,13 @@ export function ArticlesTable({ rows, className }: ArticlesTableProps) {
                   size="icon"
                   className="h-8 w-8 text-slate-500 hover:bg-slate-100 hover:text-slate-700 cursor-pointer"
                   aria-label={t("viewArticleDetail", {
-                    id: row.idIkwook,
+                    id: row.code,
                   })}
-                  onClick={() => router.push(`/home/articles/${encodeURIComponent(row.idIkwook)}/visualiser`)}
+                  onClick={() =>
+                    router.push(
+                      `/home/articles/${encodeURIComponent(row.navigationId)}/visualiser`
+                    )
+                  }
                 >
                   <Eye className="size-4" />
                 </Button>

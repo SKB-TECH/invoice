@@ -426,9 +426,14 @@
       "title": "Articles",
       "searchPlaceholder": "Search by ID, title, group, price incl. tax, status, period...",
       "searchAriaLabel": "Search for an article",
+      "loading": "Loading articles…",
+      "refreshing": "Updating…",
+      "loadError": "Could not load the article list.",
+      "loadErrorDetail": "Could not load this article.",
+      "retry": "Retry",
       "empty": "No articles match your search.",
       "columns": {
-        "idIkwook": "ID iKwook",
+        "code": "Code",
         "title": "Title",
         "group": "Group",
         "priceTtc": "Price (incl. tax)",
@@ -448,6 +453,7 @@
       "fields": {
         "name": "Name",
         "code": "Code",
+        "description": "Description",
         "priceExclTax": "Price excl. tax",
         "priceInclTax": "Price incl. tax",
         "currency": "Currency",
@@ -478,7 +484,9 @@
       "actions": {
         "cancel": "Cancel",
         "save": "Save"
-      }
+      },
+      "creating": "Creating article…",
+      "invalidForm": "Please check required fields and amounts."
     },
     "view": {
       "title": "Article details",
@@ -507,6 +515,7 @@
         "status": "Status",
         "period": "Period"
       },
+      "saving": "Saving…",
       "toastSaved": "Article updated."
     }
   },

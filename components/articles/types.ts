@@ -1,7 +1,8 @@
 export type ArticleRowStatus = "suspendu" | "actif" | "complet";
 
 export type ArticleTableRow = {
-  idIkwook: string;
+  navigationId: string;
+  code: string;
   title: string;
   group: string;
   priceTtc: string;

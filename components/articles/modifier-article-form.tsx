@@ -3,7 +3,20 @@
 import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
+
+import Loader from "@/components/loader/Loader";
+import { useUpdateFourniture } from "@/core/hooks/fournitures/useUpdateFourniture";
+import { getAxiosErrorMessage } from "@/core/utils/axiosErrorMessage";
+import type {
+  FournitureArticle,
+  CreateFourniturePayload,
+} from "@/core/types/fourniture";
 import type { ArticleDetailRecord } from "@/lib/fournitures/articles/articles-data";
+import {
+  articleUiGroupToGroupId,
+  detailPieceUniteToUnitId,
+  taxGroupSlugToNumericId,
+} from "@/lib/fournitures/articles/fournitures-mappers";
 import { resolveTaxRateDecimal } from "@/lib/fournitures/articles/tax-rates";
 import {
   formatTaxGroupOptionLabel,
@@ -37,13 +50,32 @@ function parseMoneyInput(s: string): number | null {
 
 type ModifierArticleFormProps = {
   initial: ArticleDetailRecord;
+  /** Réponse GET initiale pour réinjecter les champs absents du formulaire dans le PUT */
+  apiBaseline: FournitureArticle;
 };
 
-export function ModifierArticleForm({ initial }: ModifierArticleFormProps) {
+export function ModifierArticleForm({
+  initial,
+  apiBaseline,
+}: ModifierArticleFormProps) {
   const router = useRouter();
   const tCreate = useTranslations("articles.create");
   const tEdit = useTranslations("articles.edit");
   const tList = useTranslations("articles.list");
+
+  const updateMutation = useUpdateFourniture({
+    onSuccess: () => {
+      toast.success(tEdit("toastSaved"));
+      router.push(
+        `/home/articles/${encodeURIComponent(initial.idIkwook)}/visualiser`
+      );
+    },
+    onError: (error) => {
+      toast.error(
+        getAxiosErrorMessage(error, "Impossible de mettre à jour l’article.")
+      );
+    },
+  });
 
   const [taxGroups, setTaxGroups] = useState<TaxGroup[]>(() =>
     typeof window !== "undefined" ? readTaxGroups() : []
@@ -147,14 +179,67 @@ export function ModifierArticleForm({ initial }: ModifierArticleFormProps) {
 
   return (
     <form
-      className="rounded-none border border-slate-200/80 bg-white p-6 sm:p-8"
-      action="#"
+      className="relative rounded-none border border-slate-200/80 bg-white p-6 sm:p-8"
       method="post"
       onSubmit={(e) => {
         e.preventDefault();
-        toast.success(tEdit("toastSaved"));
+        if (updateMutation.isPending) return;
+
+        const id = Number(initial.idIkwook);
+        if (!Number.isFinite(id) || id <= 0) {
+          toast.error(tCreate("invalidForm"));
+          return;
+        }
+
+        const price_before = parseMoneyInput(prixHt);
+        const price_after = parseMoneyInput(prixTtc);
+        if (price_before === null || price_after === null) {
+          toast.error(tCreate("invalidForm"));
+          return;
+        }
+
+        const nomTrim = nom.trim();
+        const codeTrim = code.trim();
+        const descTrim = description.trim();
+        if (!nomTrim || !codeTrim || !descTrim) {
+          toast.error(tCreate("invalidForm"));
+          return;
+        }
+
+        const specialParsed = parseMoneyInput(prixSpecial.trim());
+        const special_price =
+          specialParsed !== null && specialParsed > 0 ? specialParsed : 0;
+
+        const payload: CreateFourniturePayload = {
+          name: nomTrim,
+          description: descTrim,
+          code: codeTrim,
+          price_before,
+          price_after,
+          currency: devise.toUpperCase(),
+          tax_group: taxGroupSlugToNumericId(groupeTax),
+          special_price,
+          category_id: apiBaseline.category_id,
+          group_id: articleUiGroupToGroupId(groupe),
+          unit_id: detailPieceUniteToUnitId(pieceUnite),
+          supplier_id: apiBaseline.supplier_id,
+          barcode: apiBaseline.barcode ?? "",
+          stock_min: apiBaseline.stock_min,
+          stock_current: apiBaseline.stock_current,
+          images: Array.isArray(apiBaseline.images) ? apiBaseline.images : [],
+          external_id: apiBaseline.external_id ?? "",
+          notes: unite.trim()
+            ? `Unité : ${unite.trim()}`
+            : (apiBaseline.notes ?? ""),
+        };
+
+        updateMutation.mutate({ id, payload });
       }}
     >
+      {updateMutation.isPending ? (
+        <Loader variant="overlay" text={tEdit("saving")} />
+      ) : null}
+
       <div className="grid gap-6 sm:grid-cols-2">
         <input type="hidden" name="idIkwook" value={initial.idIkwook} />
 
@@ -317,7 +402,7 @@ export function ModifierArticleForm({ initial }: ModifierArticleFormProps) {
             >
               <option value="piece">{tCreate("units.piece")}</option>
               <option value="kg">{tCreate("units.kg")}</option>
-              <option value="hour">{tCreate("units.hour")}</option>
+              <option value="heure">{tCreate("units.hour")}</option>
               <option value="forfait">{tCreate("units.flatRate")}</option>
             </select>
           </div>
@@ -405,8 +490,8 @@ export function ModifierArticleForm({ initial }: ModifierArticleFormProps) {
           {tCreate("actions.cancel")}
         </Button>
         <Button
-          onClick={() => router.push("/home/articles")}
           type="submit"
+          disabled={updateMutation.isPending}
           className="h-12 w-52 cursor-pointer rounded-none bg-[#0879bd] px-5 text-white shadow-none hover:bg-[#066aa8]"
         >
           {tCreate("actions.save")}

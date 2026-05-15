@@ -1,0 +1,153 @@
+import type { ArticleRowStatus, ArticleTableRow } from "@/components/articles/types";
+import type { FournitureArticle } from "@/core/types/fourniture";
+import type { ArticleDetailRecord } from "@/lib/fournitures/articles/articles-data";
+import { REFERENCE_TAX_GROUPS } from "@/lib/tax-groups/default-reference-tax-groups";
+
+const API_STATUS_MAP: Partial<Record<number, ArticleRowStatus>> = {
+    0: "suspendu",
+    1: "actif",
+    2: "complet",
+};
+
+export function mapApiArticleStatus(code: number): ArticleRowStatus {
+    return API_STATUS_MAP[code] ?? "actif";
+}
+
+export function taxGroupSlugToNumericId(slug: string): number {
+    const idx = REFERENCE_TAX_GROUPS.findIndex((g) => g.id === slug);
+    return idx >= 0 ? idx + 1 : 1;
+}
+
+export function numericTaxGroupToSlug(num: number): string {
+    return REFERENCE_TAX_GROUPS[num - 1]?.id ?? "groupe-a";
+}
+
+const ARTICLE_UI_GROUP_IDS: Record<"a" | "b" | "c", number> = {
+    a: 1,
+    b: 2,
+    c: 3,
+};
+
+export function articleUiGroupToGroupId(value: string): number {
+    const lower = value.toLowerCase();
+    if (lower === "a" || lower === "b" || lower === "c") {
+        return ARTICLE_UI_GROUP_IDS[lower as "a" | "b" | "c"];
+    }
+    return 1;
+}
+
+export function apiGroupIdToDisplayLetter(groupId: number): string {
+    if (groupId >= 1 && groupId <= 3) {
+        return ["A", "B", "C"][groupId - 1] ?? String(groupId);
+    }
+    return String(groupId);
+}
+
+function apiGroupToDetailGroupe(
+    groupId: number
+): ArticleDetailRecord["groupe"] {
+    if (groupId === 1) return "a";
+    if (groupId === 2) return "b";
+    if (groupId === 3) return "c";
+    return "a";
+}
+
+const UNIT_ID_TO_DETAIL: Record<
+    number,
+    ArticleDetailRecord["pieceUnite"]
+> = {
+    1: "piece",
+    2: "kg",
+    3: "heure",
+    4: "forfait",
+};
+
+const DETAIL_TO_UNIT_ID: Record<ArticleDetailRecord["pieceUnite"], number> = {
+    piece: 1,
+    kg: 2,
+    heure: 3,
+    forfait: 4,
+};
+
+export function apiUnitIdToPieceUnite(
+    unitId: number
+): ArticleDetailRecord["pieceUnite"] {
+    return UNIT_ID_TO_DETAIL[unitId] ?? "piece";
+}
+
+export function detailPieceUniteToUnitId(
+    pu: ArticleDetailRecord["pieceUnite"]
+): number {
+    return DETAIL_TO_UNIT_ID[pu] ?? 1;
+}
+
+export function normalizeCurrency(code: string): ArticleDetailRecord["devise"] {
+    const lower = code.trim().toLowerCase();
+    if (lower === "usd" || lower === "cdf" || lower === "eur") {
+        return lower;
+    }
+    return "usd";
+}
+
+export function formatApiTimestampToDdMmYyyy(ts: string): string {
+    const day = ts.slice(8, 10);
+    const month = ts.slice(5, 7);
+    const year = ts.slice(0, 4);
+    if (
+        day.length === 2 &&
+        month.length === 2 &&
+        year.length === 4
+    ) {
+        return `${day}-${month}-${year}`;
+    }
+    return ts.slice(0, 10).split("-").reverse().join("-") || ts;
+}
+
+export function mapFournitureToTableRow(item: FournitureArticle): ArticleTableRow {
+    const currencyLabel = item.currency?.trim()?.toUpperCase() ?? "";
+    const priceFmt = Number.isFinite(item.price_after)
+        ? item.price_after.toLocaleString("fr-FR", {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+          })
+        : String(item.price_after);
+
+    return {
+        navigationId: String(item.id),
+        code: item.code,
+        title: item.name,
+        group: apiGroupIdToDisplayLetter(item.group_id),
+        priceTtc: `${priceFmt} ${currencyLabel}`.trim(),
+        status: mapApiArticleStatus(item.status),
+        period: formatApiTimestampToDdMmYyyy(item.created_at ?? ""),
+    };
+}
+
+export function mapFournitureArticleToDetailRecord(
+    item: FournitureArticle
+): ArticleDetailRecord {
+    const devise = normalizeCurrency(item.currency || "usd");
+    const special =
+        typeof item.special_price === "number" &&
+        Number.isFinite(item.special_price) &&
+        item.special_price > 0
+            ? item.special_price
+            : null;
+
+    return {
+        idIkwook: String(item.id),
+        title: item.name,
+        description: item.description ?? "",
+        groupe: apiGroupToDetailGroupe(item.group_id),
+        code: item.code,
+        prixHt: item.price_before,
+        prixTtc: item.price_after,
+        devise,
+        groupeTax: numericTaxGroupToSlug(item.tax_group),
+        prixSpecial: special,
+        pieceUnite: apiUnitIdToPieceUnite(item.unit_id),
+        unite: "",
+        status: mapApiArticleStatus(item.status),
+        period: item.created_at?.slice(0, 10) ?? "",
+    };
+}
