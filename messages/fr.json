@@ -426,9 +426,14 @@
       "title": "Articles",
       "searchPlaceholder": "Recherche par ID, titre, groupe, prix TTC, statut, période...",
       "searchAriaLabel": "Rechercher un article",
+      "loading": "Chargement des articles…",
+      "refreshing": "Mise à jour…",
+      "loadError": "Impossible de charger la liste des articles.",
+      "loadErrorDetail": "Impossible de charger cet article.",
+      "retry": "Réessayer",
       "empty": "Aucun article ne correspond à votre recherche.",
       "columns": {
-        "idIkwook": "Code",
+        "code": "Code",
         "title": "Titre",
         "group": "Groupe",
         "priceTtc": "Prix TTC",
@@ -448,6 +453,7 @@
       "fields": {
         "name": "Nom",
         "code": "Code",
+        "description": "Description",
         "priceExclTax": "Prix HT",
         "priceInclTax": "Prix TTC",
         "currency": "Devise",
@@ -478,7 +484,9 @@
       "actions": {
         "cancel": "Annuler",
         "save": "Enregistrer"
-      }
+      },
+      "creating": "Création de l’article…",
+      "invalidForm": "Vérifiez les champs obligatoires et les montants."
     },
     "view": {
       "title": "Détail de l'article",

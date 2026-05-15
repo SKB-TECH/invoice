@@ -427,9 +427,14 @@
       "title": "Biloko",
       "searchPlaceholder": "Luka na ID, titre, groupe, prix TTC, statut, période...",
       "searchAriaLabel": "Luka eloko",
+      "loading": "Tozali kotia ba articles…",
+      "refreshing": "Kobongisa…",
+      "loadError": "Telemisi ya liste ya ba articles ewuti te.",
+      "loadErrorDetail": "Telemisi ya article oyo ewuti te.",
+      "retry": "Meka lisusu",
       "empty": "Eloko moko te ezali na recherche na yo.",
       "columns": {
-        "idIkwook": "Code",
+        "code": "Code",
         "title": "Motó ya likambo",
         "group": "Etuluku",
         "priceTtc": "Ntalo na TVA",
@@ -449,6 +454,7 @@
       "fields": {
         "name": "Kombo",
         "code": "Code",
+        "description": "Mokambi",
         "priceExclTax": "Ntalo kozanga TVA",
         "priceInclTax": "Ntalo na TVA",
         "currency": "Mbongo",
@@ -479,7 +485,9 @@
       "actions": {
         "cancel": "Kanga",
         "save": "Bomba"
-      }
+      },
+      "creating": "Kozala na kobakala article…",
+      "invalidForm": "Talá ba champs oyo esengeli mpe ntalo."
     },
     "view": {
       "title": "Makambo matali eloko",
