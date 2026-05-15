@@ -516,7 +516,14 @@
       "basicInfo": "Informations de base",
       "changePassword": "Changer mot de passe",
       "referentials": "Référentielles",
-      "taxGroups": "Groupes de taxation"
+      "taxGroups": "Groupes de taxation",
+      "logo": "Change le logo",
+      "bank": "Mode de paiement",
+      "members": "Membres",
+      "roles": "Roles",
+      "permissions": "Permissions",
+      "language": "Langue par defaut",
+      "modelFactures": "Models de factures"
     },
     "basicInfo": {
       "sectionTitle": "Informations de base",
