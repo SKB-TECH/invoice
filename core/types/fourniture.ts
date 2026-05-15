@@ -40,7 +40,7 @@ export type FournituresListResponse = {
     meta: FournituresListMeta;
 };
 
-/** Corps POST — champs alignés sur la spec API. */
+/** Corps POST */
 export type CreateFourniturePayload = {
     name: string;
     description: string;
@@ -61,6 +61,9 @@ export type CreateFourniturePayload = {
     external_id: string;
     notes: string;
 };
+
+/** Corps PUT — même payload que POST */
+export type UpdateFourniturePayload = CreateFourniturePayload;
 
 export type ApiErrorBody = {
     status?: number;

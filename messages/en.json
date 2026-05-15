@@ -515,6 +515,7 @@
         "status": "Status",
         "period": "Period"
       },
+      "saving": "Saving…",
       "toastSaved": "Article updated."
     }
   },

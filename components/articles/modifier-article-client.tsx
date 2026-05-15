@@ -73,7 +73,7 @@ export function ModifierArticleClient({ articleId }: Props) {
                 <span className="font-medium text-slate-800">{article.code}</span>
             </p>
 
-            <ModifierArticleForm initial={article} />
+            <ModifierArticleForm initial={article} apiBaseline={data} />
         </main>
     );
 }

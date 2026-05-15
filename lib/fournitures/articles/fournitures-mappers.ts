@@ -148,6 +148,6 @@ export function mapFournitureArticleToDetailRecord(
         pieceUnite: apiUnitIdToPieceUnite(item.unit_id),
         unite: "",
         status: mapApiArticleStatus(item.status),
-        period: formatApiTimestampToDdMmYyyy(item.created_at ?? ""),
+        period: item.created_at?.slice(0, 10) ?? "",
     };
 }

@@ -1,5 +1,6 @@
 import type {
     CreateFourniturePayload,
+    UpdateFourniturePayload,
     FournitureArticle,
     FournituresListResponse,
 } from "@/core/types/fourniture";
@@ -32,6 +33,17 @@ export async function createFourniture(
 ): Promise<FournitureArticle> {
     const { data } = await api.post<FournitureArticle>(
         FOURNITURES_PATH,
+        payload
+    );
+    return data;
+}
+
+export async function updateFourniture(
+    id: number | string,
+    payload: UpdateFourniturePayload
+): Promise<FournitureArticle> {
+    const { data } = await api.put<FournitureArticle>(
+        `${FOURNITURES_PATH}/${encodeURIComponent(String(id))}`,
         payload
     );
     return data;

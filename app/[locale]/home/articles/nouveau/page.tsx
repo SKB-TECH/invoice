@@ -32,7 +32,7 @@ function parseDecimalInput(raw: string): number | null {
 function formPieceToDetailKey(
     v: string
 ): ArticleDetailRecord["pieceUnite"] {
-    if (v === "hour") return "heure";
+    if (v === "heure" || v === "hour") return "heure";
     if (v === "piece" || v === "kg" || v === "forfait") return v;
     return "piece";
 }
@@ -300,7 +300,7 @@ export default function NouvelArticlePage() {
                                     {tCreate("units.piece")}
                                 </option>
                                 <option value="kg">{tCreate("units.kg")}</option>
-                                <option value="hour">
+                                <option value="heure">
                                     {tCreate("units.hour")}
                                 </option>
                                 <option value="forfait">
