@@ -14,15 +14,30 @@ import { TaxGroupsSection } from "@/components/configuration/tax-groups-section"
 
 type ConfigMenuId =
     | "basicInfo"
+    | "logo"
     | "changePassword"
     | "referentials"
-    | "taxGroups";
+    | "taxGroups"
+    | "bank"
+    | "members"
+    | "roles"
+    | "permissions"
+    | "language"
+    | "modelFactures"
+
 
 const MENU_IDS: ConfigMenuId[] = [
     "basicInfo",
+    "logo",
     "changePassword",
     "referentials",
     "taxGroups",
+    "bank",
+    "members",
+    "roles",
+    "permissions",
+    "language",
+    "modelFactures",
 ];
 
 type ThemePref = "light" | "dark" | "system";
@@ -100,7 +115,7 @@ export default function ConfigurationPage() {
     return (
         <main className="min-h-0 bg-white px-6 py-8 text-slate-800">
             <div className="mx-auto w-full">
-                <h1 className="mb-8 text-[28px] font-bold text-slate-900">
+                <h1 className="mb-8 px-2 text-[28px] font-bold text-slate-900">
                     {t("pageTitle")}
                 </h1>
 
@@ -115,7 +130,7 @@ export default function ConfigurationPage() {
                                         key={id}
                                         type="button"
                                         onClick={() => setActiveMenu(id)}
-                                        className={`block w-full px-4 py-3 text-left text-[15px] font-medium cursor-pointer ${
+                                        className={`block w-full px-2 py-3 text-left text-[15px] font-medium cursor-pointer ${
                                             isActive
                                                 ? "font-bold bg-[#0073C5] text-white"
                                                 : "text-slate-500 hover:text-slate-800"

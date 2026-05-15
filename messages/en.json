@@ -516,7 +516,14 @@
       "basicInfo": "Basic information",
       "changePassword": "Change password",
       "referentials": "Reference data",
-      "taxGroups": "Tax groups"
+      "taxGroups": "Tax groups",
+      "logo": "Change logo",
+      "bank": "Method of payment",
+      "members": "Members",
+      "roles": "Roles",
+      "permissions": "Permissions",
+      "language": "Default language",
+      "modelFactures": "Invoice templates"
     },
     "basicInfo": {
       "sectionTitle": "Basic information",

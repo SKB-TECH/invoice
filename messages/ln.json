@@ -514,10 +514,17 @@
   "configuration": {
     "pageTitle": "Bobongisi",
     "menu": {
-      "basicInfo": "Bansango ya moboko",
-      "changePassword": "Bongola mot de passe",
-      "referentials": "Mibeko",
-      "taxGroups": "Etuluku ya mpako"
+      "basicInfo": "Mayebisi ya ntina",
+      "changePassword": "Kobongola mot de passe",
+      "referentials": "Ba référentiels",
+      "taxGroups": "Bituluku ya mpako",
+      "logo": "Kobongola logo",
+      "bank": "Ndenge ya lifuta",
+      "members": "Bandeko ya ekipi",
+      "roles": "Mikumba",
+      "permissions": "Ndinga ya bokoki",
+      "language": "Lokota ya liboso",
+      "modelFactures": "Ba modèles ya factures"
     },
     "basicInfo": {
       "sectionTitle": "Bansango ya moboko",
