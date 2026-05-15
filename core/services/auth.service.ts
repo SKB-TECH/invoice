@@ -246,6 +246,7 @@ export function mapApiUser(data: ApiUserData): AuthUser {
 export const authService = {
     async register(payload: RegisterPayload): Promise<RegisterResponse> {
         const formData = new FormData();
+
         formData.append("email", payload.email);
         formData.append("firstname", payload.firstname);
         formData.append("lastname", payload.lastname);
@@ -253,17 +254,19 @@ export const authService = {
         formData.append("password", payload.password);
         formData.append("password_confirm", payload.password_confirm);
         formData.append("type", payload.type);
+
         if (payload.type === "pme" || payload.type === "corporate") {
             formData.append("company_name", payload.company_name);
+            formData.append("legal_name", payload.legal_name);
             formData.append("rccm", payload.rccm);
             formData.append("nif", payload.nif);
+            formData.append("idnat", payload.idnat);
             formData.append("position", payload.position);
             formData.append("business_sector", payload.business_sector);
             formData.append("company_size", payload.company_size);
-            if (payload.logo) {
-                formData.append("logo", payload.logo);
-            }
+
         }
+
         const { data } = await api.post<RegisterResponse>(
             "/auth/register",
             formData,

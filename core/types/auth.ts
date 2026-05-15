@@ -1,6 +1,7 @@
-import {AuthUser} from "@/core/types/rbac";
+import type { AuthUser } from "@/core/types/rbac";
 
 export type AccountType = "personal" | "pme" | "corporate";
+
 export type RegisterBasePayload = {
     email: string;
     firstname: string;
@@ -14,32 +15,34 @@ export type RegisterPersonalPayload = RegisterBasePayload & {
     type: "personal";
 };
 
-export type RegisterPmePayload = RegisterBasePayload & {
-    type: "pme";
+export type RegisterBusinessPayload = RegisterBasePayload & {
     company_name: string;
+    legal_name: string;
     rccm: string;
     nif: string;
+    idnat: string;
     position: string;
     business_sector: string;
     company_size: string;
 };
 
-export type RegisterCorporatePayload = RegisterBasePayload & {
-    type: "corporate";
+export type RegisterPmePayload = RegisterBusinessPayload & {
+    type: "pme";
+};
 
-    legal_name: string;
-    idnat: string;
-    rccm: string;
-    nif: string;
-    position: string;
-    business_sector: string;
-    company_size: string;
+export type RegisterCorporatePayload = RegisterBusinessPayload & {
+    type: "corporate";
 };
 
 export type RegisterPayload =
     | RegisterPersonalPayload
     | RegisterPmePayload
     | RegisterCorporatePayload;
+
+export type RegisterResponse = {
+    message?: string;
+    data?: unknown;
+};
 
 export type LoginSuccessResponse = {
     mfaRequired: false;
@@ -53,3 +56,16 @@ export type LoginSuccessResponse = {
     raw?: unknown;
     expiresIn?: number;
 };
+
+export type LoginMfaResponse = {
+    mfaRequired: true;
+    message?: string;
+    email?: string;
+    raw?: unknown;
+};
+
+export type LoginResponse = LoginSuccessResponse | LoginMfaResponse;
+
+export type ApiProfile = Record<string, unknown>;
+export type ApiRole = Record<string, unknown>;
+export type ApiBranch = Record<string, unknown>;

@@ -26,6 +26,7 @@ type FormValues = {
     confirmPassword: string;
 
     companyName: string;
+    legalName: string;
     rccm: string;
     nif: string;
     idNat: string;
@@ -96,7 +97,8 @@ function getApiFieldErrors(error: unknown): FormErrors {
         password: apiErrors.password,
         confirmPassword: apiErrors.password_confirm,
 
-        companyName: apiErrors.legal_name ?? apiErrors.company_name,
+        companyName: apiErrors.company_name,
+        legalName: apiErrors.legal_name,
         rccm: apiErrors.rccm,
         nif: apiErrors.nif,
         idNat: apiErrors.idnat,
@@ -229,6 +231,7 @@ export default function RegisterPage() {
         confirmPassword: "",
 
         companyName: "",
+        legalName: "",
         rccm: "",
         nif: "",
         idNat: "",
@@ -241,7 +244,6 @@ export default function RegisterPage() {
     const [errors, setErrors] = useState<FormErrors>({});
 
     const isBusiness = profile === "PME" || profile === "ENTREPRISE";
-    const isCorporate = profile === "ENTREPRISE";
 
     const registerMutation = useRegister({
         onSuccess: (_, variables) => {
@@ -304,6 +306,7 @@ export default function RegisterPage() {
                     .min(1, t("validation.confirmPasswordRequired")),
 
                 companyName: z.string().trim(),
+                legalName: z.string().trim(),
                 rccm: z.string().trim(),
                 nif: z.string().trim(),
                 idNat: z.string().trim(),
@@ -318,67 +321,75 @@ export default function RegisterPage() {
             });
 
         return baseSchema.superRefine((data, ctx) => {
-            if (isBusiness) {
-                if (!data.companyName) {
-                    ctx.addIssue({
-                        code: z.ZodIssueCode.custom,
-                        path: ["companyName"],
-                        message: t("validation.companyNameRequired"),
-                    });
-                }
+            if (!isBusiness) return;
 
-                if (!data.rccm) {
-                    ctx.addIssue({
-                        code: z.ZodIssueCode.custom,
-                        path: ["rccm"],
-                        message: t("validation.rccmRequired"),
-                    });
-                }
-
-                if (!data.nif) {
-                    ctx.addIssue({
-                        code: z.ZodIssueCode.custom,
-                        path: ["nif"],
-                        message: t("validation.nifRequired"),
-                    });
-                } else if (!NIF_REGEX.test(data.nif)) {
-                    ctx.addIssue({
-                        code: z.ZodIssueCode.custom,
-                        path: ["nif"],
-                        message: t("validation.nifInvalid"),
-                    });
-                }
-
-                if (!data.companyRole) {
-                    ctx.addIssue({
-                        code: z.ZodIssueCode.custom,
-                        path: ["companyRole"],
-                        message: t("validation.companyRoleRequired"),
-                    });
-                }
-
-                if (!data.businessSector) {
-                    ctx.addIssue({
-                        code: z.ZodIssueCode.custom,
-                        path: ["businessSector"],
-                        message: t("validation.businessSectorRequired"),
-                    });
-                }
-
-                if (!data.companySize) {
-                    ctx.addIssue({
-                        code: z.ZodIssueCode.custom,
-                        path: ["companySize"],
-                        message: t("validation.companySizeRequired"),
-                    });
-                }
+            if (!data.companyName) {
+                ctx.addIssue({
+                    code: z.ZodIssueCode.custom,
+                    path: ["companyName"],
+                    message: t("validation.companyNameRequired"),
+                });
             }
 
-            if (isCorporate && !data.idNat) {
+            if (!data.legalName) {
+                ctx.addIssue({
+                    code: z.ZodIssueCode.custom,
+                    path: ["legalName"],
+                    message: "La dénomination légale est obligatoire.",
+                });
+            }
+
+            if (!data.rccm) {
+                ctx.addIssue({
+                    code: z.ZodIssueCode.custom,
+                    path: ["rccm"],
+                    message: t("validation.rccmRequired"),
+                });
+            }
+
+            if (!data.nif) {
+                ctx.addIssue({
+                    code: z.ZodIssueCode.custom,
+                    path: ["nif"],
+                    message: t("validation.nifRequired"),
+                });
+            } else if (!NIF_REGEX.test(data.nif)) {
+                ctx.addIssue({
+                    code: z.ZodIssueCode.custom,
+                    path: ["nif"],
+                    message: t("validation.nifInvalid"),
+                });
+            }
+
+            if (!data.idNat) {
                 ctx.addIssue({
                     code: z.ZodIssueCode.custom,
                     path: ["idNat"],
                     message: t("validation.idNatRequired"),
+                });
+            }
+
+            if (!data.companyRole) {
+                ctx.addIssue({
+                    code: z.ZodIssueCode.custom,
+                    path: ["companyRole"],
+                    message: t("validation.companyRoleRequired"),
+                });
+            }
+
+            if (!data.businessSector) {
+                ctx.addIssue({
+                    code: z.ZodIssueCode.custom,
+                    path: ["businessSector"],
+                    message: t("validation.businessSectorRequired"),
+                });
+            }
+
+            if (!data.companySize) {
+                ctx.addIssue({
+                    code: z.ZodIssueCode.custom,
+                    path: ["companySize"],
+                    message: t("validation.companySizeRequired"),
                 });
             }
         });
@@ -420,19 +431,13 @@ export default function RegisterPage() {
             setForm((prev) => ({
                 ...prev,
                 companyName: "",
+                legalName: "",
                 rccm: "",
                 nif: "",
                 idNat: "",
                 companyRole: "",
                 businessSector: "",
                 companySize: "",
-            }));
-        }
-
-        if (nextProfile === "PME") {
-            setForm((prev) => ({
-                ...prev,
-                idNat: "",
             }));
         }
     };
@@ -453,35 +458,22 @@ export default function RegisterPage() {
             return {
                 ...basePayload,
                 type: "personal",
-            } as RegisterPayload;
-        }
-
-        if (accountType === "pme") {
-            return {
-                ...basePayload,
-                type: "pme",
-
-                company_name: data.companyName.trim(),
-                rccm: data.rccm.trim(),
-                nif: data.nif.trim(),
-                position: data.companyRole.trim(),
-                business_sector: data.businessSector.trim(),
-                company_size: data.companySize.trim(),
-            } as RegisterPayload;
+            };
         }
 
         return {
             ...basePayload,
-            type: "corporate",
+            type: accountType,
 
-            legal_name: data.companyName.trim(),
-            idnat: data.idNat.trim(),
+            company_name: data.companyName.trim(),
+            legal_name: data.legalName.trim(),
             rccm: data.rccm.trim(),
             nif: data.nif.trim(),
+            idnat: data.idNat.trim(),
             position: data.companyRole.trim(),
             business_sector: data.businessSector.trim(),
             company_size: data.companySize.trim(),
-        } as RegisterPayload;
+        };
     };
 
     const handleSubmit = () => {
@@ -611,32 +603,64 @@ export default function RegisterPage() {
                         <div className="space-y-4">
                             {isBusiness && (
                                 <div className="space-y-4">
-                                    <div>
-                                        <label className="mb-1 block text-[13px] font-medium text-slate-600">
-                                            {t("fields.companyName")}
-                                        </label>
+                                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                                        <div>
+                                            <label className="mb-1 block text-[13px] font-medium text-slate-600">
+                                                {t("fields.companyName")}
+                                            </label>
 
-                                        <input
-                                            type="text"
-                                            value={form.companyName}
-                                            onChange={(e) =>
-                                                handleChange(
-                                                    "companyName",
-                                                    e.target.value
-                                                )
-                                            }
-                                            placeholder={t(
-                                                "placeholders.companyName"
-                                            )}
-                                            disabled={registerMutation.isPending}
-                                            className="h-11 w-full border border-slate-300 px-3 text-[13px] outline-none focus:border-[#1f6a9a] disabled:cursor-not-allowed disabled:bg-slate-100"
-                                        />
+                                            <input
+                                                type="text"
+                                                value={form.companyName}
+                                                onChange={(e) =>
+                                                    handleChange(
+                                                        "companyName",
+                                                        e.target.value
+                                                    )
+                                                }
+                                                placeholder={t(
+                                                    "placeholders.companyName"
+                                                )}
+                                                disabled={
+                                                    registerMutation.isPending
+                                                }
+                                                className="h-11 w-full border border-slate-300 px-3 text-[13px] outline-none focus:border-[#1f6a9a] disabled:cursor-not-allowed disabled:bg-slate-100"
+                                            />
 
-                                        {errors.companyName ? (
-                                            <p className="mt-1 text-[12px] text-red-600">
-                                                {errors.companyName}
-                                            </p>
-                                        ) : null}
+                                            {errors.companyName ? (
+                                                <p className="mt-1 text-[12px] text-red-600">
+                                                    {errors.companyName}
+                                                </p>
+                                            ) : null}
+                                        </div>
+
+                                        <div>
+                                            <label className="mb-1 block text-[13px] font-medium text-slate-600">
+                                                Dénomination légale
+                                            </label>
+
+                                            <input
+                                                type="text"
+                                                value={form.legalName}
+                                                onChange={(e) =>
+                                                    handleChange(
+                                                        "legalName",
+                                                        e.target.value
+                                                    )
+                                                }
+                                                placeholder="Dénomination légale complète"
+                                                disabled={
+                                                    registerMutation.isPending
+                                                }
+                                                className="h-11 w-full border border-slate-300 px-3 text-[13px] outline-none focus:border-[#1f6a9a] disabled:cursor-not-allowed disabled:bg-slate-100"
+                                            />
+
+                                            {errors.legalName ? (
+                                                <p className="mt-1 text-[12px] text-red-600">
+                                                    {errors.legalName}
+                                                </p>
+                                            ) : null}
+                                        </div>
                                     </div>
 
                                     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -701,37 +725,35 @@ export default function RegisterPage() {
                                         </div>
                                     </div>
 
-                                    {isCorporate && (
-                                        <div>
-                                            <label className="mb-1 block text-[13px] font-medium text-slate-600">
-                                                ID NAT
-                                            </label>
+                                    <div>
+                                        <label className="mb-1 block text-[13px] font-medium text-slate-600">
+                                            ID NAT
+                                        </label>
 
-                                            <input
-                                                type="text"
-                                                value={form.idNat}
-                                                onChange={(e) =>
-                                                    handleChange(
-                                                        "idNat",
-                                                        e.target.value
-                                                    )
-                                                }
-                                                placeholder={t(
-                                                    "placeholders.idNat"
-                                                )}
-                                                disabled={
-                                                    registerMutation.isPending
-                                                }
-                                                className="h-11 w-full border border-slate-300 px-3 text-[13px] outline-none focus:border-[#1f6a9a] disabled:cursor-not-allowed disabled:bg-slate-100"
-                                            />
+                                        <input
+                                            type="text"
+                                            value={form.idNat}
+                                            onChange={(e) =>
+                                                handleChange(
+                                                    "idNat",
+                                                    e.target.value
+                                                )
+                                            }
+                                            placeholder={t(
+                                                "placeholders.idNat"
+                                            )}
+                                            disabled={
+                                                registerMutation.isPending
+                                            }
+                                            className="h-11 w-full border border-slate-300 px-3 text-[13px] outline-none focus:border-[#1f6a9a] disabled:cursor-not-allowed disabled:bg-slate-100"
+                                        />
 
-                                            {errors.idNat ? (
-                                                <p className="mt-1 text-[12px] text-red-600">
-                                                    {errors.idNat}
-                                                </p>
-                                            ) : null}
-                                        </div>
-                                    )}
+                                        {errors.idNat ? (
+                                            <p className="mt-1 text-[12px] text-red-600">
+                                                {errors.idNat}
+                                            </p>
+                                        ) : null}
+                                    </div>
 
                                     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                                         <div>
