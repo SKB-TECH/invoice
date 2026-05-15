@@ -23,11 +23,7 @@ export default function NouveauContratPage() {
         {t("title")}
       </h1>
 
-      <ContratForm
-        variant="create"
-        cancelHref="/home/contrats"
-        validateContractDatesDistinct
-      />
+      <ContratForm variant="create" cancelHref="/home/contrats" />
     </main>
   );
 }
