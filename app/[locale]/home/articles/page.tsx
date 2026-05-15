@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
 import { ChevronRight, House, Search } from "lucide-react";
 import { ArticlesTable } from "@/components/articles/articles-table";
+import { ArticlesTableSkeleton } from "@/components/articles/articles-table-skeleton";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import type {
@@ -13,7 +14,6 @@ import type {
 } from "@/components/articles/types";
 import { useFournituresList } from "@/core/hooks/fournitures/useFournituresList";
 import { mapFournitureToTableRow } from "@/lib/fournitures/articles/fournitures-mappers";
-import Loader from "@/components/loader/Loader";
 
 function matchesArticleSearch(
     row: ArticleTableRow,
@@ -111,7 +111,7 @@ export default function HomeFournituresArticlesPage() {
 
             <div className="w-full min-w-full">
                 {showLoader ? (
-                    <Loader variant="inline" />
+                    <ArticlesTableSkeleton className="w-full" />
                 ) : isError ? (
                     <div className="rounded border border-slate-200 bg-white px-5 py-8 text-center text-sm space-y-3">
                         <p className="text-red-600">{t("loadError")}</p>

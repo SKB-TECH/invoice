@@ -8,7 +8,7 @@ import { VisualiserArticleActions } from "@/components/articles/visualiser-artic
 import { formatDeviseLibelle } from "@/lib/fournitures/articles/articles-data";
 import { mapFournitureArticleToDetailRecord } from "@/lib/fournitures/articles/fournitures-mappers";
 import { useFournitureDetail } from "@/core/hooks/fournitures/useFournitureDetail";
-import Loader from "@/components/loader/Loader";
+import { ArticleVisualiserSkeleton } from "@/components/articles/article-visualiser-skeleton";
 import { Button } from "@/components/ui/button";
 
 function formatMontant(n: number): string {
@@ -31,7 +31,7 @@ export function ArticleVisualiserClient({ articleId }: Props) {
         useFournitureDetail(articleId);
 
     if (isPending) {
-        return <Loader variant="page" text={tList("loading")} />;
+        return <ArticleVisualiserSkeleton />;
     }
 
     if (isError || !data) {
