@@ -1,15 +1,17 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import {
     Ban,
     CheckCircle2,
+    ChevronLeft,
     ChevronRight,
     Clock3,
     Eye,
     House,
+    Loader2,
     MessageSquareText,
     Send,
     X,
@@ -26,8 +28,10 @@ import {
     TableRow,
 } from "@/components/ui/table";
 import { cn } from "@/lib/utils";
+import {useInvoices} from "@/core/hooks/invoices/useInvoices";
 
-type InvoiceStatus = "Suspendu" | "Actif" | "Complet" | "Rejeté";
+
+type InvoiceStatus = "Brouillon" | "Émise" | "Payée" | "Annulée";
 
 type InvoiceComment = {
     id: string;
@@ -49,127 +53,23 @@ type Invoice = {
     client: string;
     article: string;
     amount: number;
-    currency: "CDF" | "USD";
+    currency: string;
     statut: InvoiceStatus;
     telephone: string;
     reviewers: Reviewer[];
     comments: InvoiceComment[];
 };
 
-const demoInvoices: Invoice[] = [
+type InvoiceOverrides = Record<
+    string,
     {
-        id: "1",
-        invoice: "INV-2024-001",
-        client: "Rawbank",
-        article: "Maintenance",
-        amount: 500000,
-        currency: "CDF",
-        statut: "Suspendu",
-        telephone: "0822204012",
-        reviewers: [
-            { id: "u1", name: "Benoît Makiese", initials: "BM" },
-            { id: "u2", name: "Ruth Kanku", initials: "RK" },
-        ],
-        comments: [
-            {
-                id: "c1",
-                author: "Benoît Makiese",
-                role: "Validateur",
-                message:
-                    "La facture doit être vérifiée. Le montant déclaré ne correspond pas totalement au contrat associé.",
-                date: "Aujourd’hui, 09:30",
-            },
-            {
-                id: "c2",
-                author: "Ruth Kanku",
-                role: "Superviseur",
-                message:
-                    "Merci d’ajouter la référence du bon de commande avant la validation finale.",
-                date: "Aujourd’hui, 10:12",
-            },
-        ],
-    },
-    {
-        id: "2",
-        invoice: "INV-2024-002",
-        client: "EquityBCDC",
-        article: "Installation",
-        amount: 1000000,
-        currency: "CDF",
-        statut: "Actif",
-        telephone: "0822204012",
-        reviewers: [{ id: "u3", name: "Kevin Mbala", initials: "KM" }],
-        comments: [
-            {
-                id: "c3",
-                author: "Kevin Mbala",
-                role: "Validateur",
-                message: "Facture conforme pour une première lecture.",
-                date: "Hier, 16:45",
-            },
-        ],
-    },
-    {
-        id: "3",
-        invoice: "INV-2024-003",
-        client: "Solidaire Banque",
-        article: "Installation",
-        amount: 1500000,
-        currency: "CDF",
-        statut: "Complet",
-        telephone: "0822204012",
-        reviewers: [
-            { id: "u4", name: "Sandra Ngoy", initials: "SN" },
-            { id: "u5", name: "Blaise Lumu", initials: "BL" },
-            { id: "u6", name: "David Kabasele", initials: "DK" },
-        ],
-        comments: [
-            {
-                id: "c4",
-                author: "Sandra Ngoy",
-                role: "Validateur",
-                message:
-                    "Tous les éléments sont conformes. La facture peut être clôturée.",
-                date: "12-05-2026",
-            },
-        ],
-    },
-    {
-        id: "4",
-        invoice: "INV-2024-004",
-        client: "Standardbank",
-        article: "Maintenance",
-        amount: 2500000,
-        currency: "CDF",
-        statut: "Complet",
-        telephone: "0822204012",
-        reviewers: [{ id: "u7", name: "Jean Makengo", initials: "JM" }],
-        comments: [],
-    },
-    {
-        id: "5",
-        invoice: "INV-2024-005",
-        client: "Tmb",
-        article: "Maintenance",
-        amount: 178500,
-        currency: "CDF",
-        statut: "Actif",
-        telephone: "0822204012",
-        reviewers: [
-            { id: "u1", name: "Benoît Makiese", initials: "BM" },
-            { id: "u4", name: "Sandra Ngoy", initials: "SN" },
-        ],
-        comments: [
-            {
-                id: "c5",
-                author: "Benoît Makiese",
-                role: "Validateur",
-                message: "Le dossier est en cours de vérification.",
-                date: "11-05-2026",
-            },
-        ],
-    },
-];
+        statut?: InvoiceStatus;
+        reviewers?: Reviewer[];
+        comments?: InvoiceComment[];
+    }
+>;
+
+const PER_PAGE = 20;
 
 function formatAmount(amount: number, currency: string) {
     if (amount >= 1_000_000) {
@@ -180,17 +80,36 @@ function formatAmount(amount: number, currency: string) {
         return `${currency} ${formatted}M`;
     }
 
-    return `${currency} ${new Intl.NumberFormat("fr-FR").format(amount).replace(/\s/g, ".")}`;
+    return `${currency} ${new Intl.NumberFormat("fr-FR")
+        .format(amount)
+        .replace(/\s/g, ".")}`;
+}
+
+function mapApiStatusToUiStatus(status: string): InvoiceStatus {
+    switch (status) {
+        case "draft":
+            return "Brouillon";
+        case "issued":
+            return "Émise";
+        case "paid":
+            return "Payée";
+        case "cancelled":
+            return "Annulée";
+        default:
+            return "Brouillon";
+    }
 }
 
 function StatutBadge({ statut }: { statut: InvoiceStatus }) {
     const styles: Record<InvoiceStatus, string> = {
-        Suspendu:
+        Brouillon:
             "border-transparent bg-[#FCF5E5] text-[#E8BC52] hover:bg-[#FCF5E5]",
-        Actif: "border-transparent bg-[#E8EFFB] text-[#6691E7] hover:bg-[#E8EFFB]",
-        Complet:
+        Émise:
+            "border-transparent bg-[#E8EFFB] text-[#6691E7] hover:bg-[#E8EFFB]",
+        Payée:
             "border-transparent bg-[#DCF6E9] text-[#13C56B] hover:bg-[#DCF6E9]",
-        Rejeté: "border-transparent bg-red-50 text-red-500 hover:bg-red-50",
+        Annulée:
+            "border-transparent bg-red-50 text-red-500 hover:bg-red-50",
     };
 
     return (
@@ -206,6 +125,10 @@ function StatutBadge({ statut }: { statut: InvoiceStatus }) {
 function AvatarStack({ reviewers }: { reviewers: Reviewer[] }) {
     const visibleReviewers = reviewers.slice(0, 3);
     const remaining = reviewers.length - visibleReviewers.length;
+
+    if (reviewers.length === 0) {
+        return <span className="text-sm text-slate-400">—</span>;
+    }
 
     return (
         <div className="flex items-center">
@@ -234,20 +157,74 @@ function AvatarStack({ reviewers }: { reviewers: Reviewer[] }) {
 export default function InvoicesPage() {
     const t = useTranslations("invoicesPage");
 
-    const [invoices, setInvoices] = useState<Invoice[]>(demoInvoices);
-    const [selectedInvoice, setSelectedInvoice] = useState<Invoice | null>(null);
+    const [page, setPage] = useState(1);
+    const [selectedInvoice, setSelectedInvoice] = useState<Invoice | null>(
+        null
+    );
     const [comment, setComment] = useState("");
+    const [invoiceOverrides, setInvoiceOverrides] =
+        useState<InvoiceOverrides>({});
+
+    const { data, isLoading, isError, isFetching } = useInvoices({
+        page,
+        perPage: PER_PAGE,
+    });
+
+    const totalItems = data?.meta?.total ?? 0;
+    const totalPages = Math.max(1, Math.ceil(totalItems / PER_PAGE));
+
+    const invoices: Invoice[] = useMemo(() => {
+        return (data?.items ?? []).map((item) => {
+            const override = invoiceOverrides[item.id.toString()];
+
+            const baseInvoice: Invoice = {
+                id: item.id.toString(),
+                invoice: item.invoice_number,
+                client:
+                    item.client?.legal_name ||
+                    item.client?.client_name ||
+                    "—",
+                article:
+                    item.line_items
+                        ?.map((line) => line.service_name)
+                        .filter(Boolean)
+                        .join(", ") || "—",
+                amount: Number(item.total ?? 0),
+                currency: item.currency || "USD",
+                statut: mapApiStatusToUiStatus(item.status),
+                telephone: "—",
+                reviewers: [],
+                comments: [],
+            };
+
+            return {
+                ...baseInvoice,
+                statut: override?.statut ?? baseInvoice.statut,
+                reviewers: override?.reviewers ?? baseInvoice.reviewers,
+                comments: override?.comments ?? baseInvoice.comments,
+            };
+        });
+    }, [data?.items, invoiceOverrides]);
+
 
     const handleChangeStatus = (statut: InvoiceStatus) => {
         if (!selectedInvoice) return;
 
-        const nextInvoices = invoices.map((invoice) =>
-            invoice.id === selectedInvoice.id ? { ...invoice, statut } : invoice
-        );
+        setInvoiceOverrides((prev) => ({
+            ...prev,
+            [selectedInvoice.id]: {
+                ...prev[selectedInvoice.id],
+                statut,
+            },
+        }));
 
-        setInvoices(nextInvoices);
-        setSelectedInvoice(
-            nextInvoices.find((invoice) => invoice.id === selectedInvoice.id) ?? null
+        setSelectedInvoice((prev) =>
+            prev
+                ? {
+                    ...prev,
+                    statut,
+                }
+                : null
         );
     };
 
@@ -268,38 +245,84 @@ export default function InvoicesPage() {
             initials: "VO",
         };
 
-        const nextInvoices = invoices.map((invoice) =>
-            invoice.id === selectedInvoice.id
+        const currentOverrides = invoiceOverrides[selectedInvoice.id];
+
+        const currentComments =
+            currentOverrides?.comments ?? selectedInvoice.comments;
+
+        const currentReviewers =
+            currentOverrides?.reviewers ?? selectedInvoice.reviewers;
+
+        const nextReviewers = currentReviewers.some(
+            (reviewer) => reviewer.id === currentUser.id
+        )
+            ? currentReviewers
+            : [...currentReviewers, currentUser];
+
+        const nextComments = [newComment, ...currentComments];
+
+        setInvoiceOverrides((prev) => ({
+            ...prev,
+            [selectedInvoice.id]: {
+                ...prev[selectedInvoice.id],
+                reviewers: nextReviewers,
+                comments: nextComments,
+            },
+        }));
+
+        setSelectedInvoice((prev) =>
+            prev
                 ? {
-                    ...invoice,
-                    reviewers: invoice.reviewers.some(
-                        (reviewer) => reviewer.id === currentUser.id
-                    )
-                        ? invoice.reviewers
-                        : [...invoice.reviewers, currentUser],
-                    comments: [newComment, ...invoice.comments],
+                    ...prev,
+                    reviewers: nextReviewers,
+                    comments: nextComments,
                 }
-                : invoice
+                : null
         );
 
-        setInvoices(nextInvoices);
-        setSelectedInvoice(
-            nextInvoices.find((invoice) => invoice.id === selectedInvoice.id) ?? null
-        );
         setComment("");
+    };
+
+    const handlePreviousPage = () => {
+        setPage((prev) => {
+            const nextPage = Math.max(1, prev - 1);
+
+            if (nextPage !== prev) {
+                setSelectedInvoice(null);
+                setComment("");
+            }
+            return nextPage;
+        });
+    };
+
+    const handleNextPage = () => {
+        setPage((prev) => {
+            const nextPage = Math.min(totalPages, prev + 1);
+
+            if (nextPage !== prev) {
+                setSelectedInvoice(null);
+                setComment("");
+            }
+
+            return nextPage;
+        });
     };
 
     return (
         <main className="mx-auto w-full min-w-full py-4 text-foreground">
-      <span className="mb-6 flex flex-wrap items-center gap-1 text-sm text-slate-500">
-        <Link href="/home">
-          <House className="size-4" />
-        </Link>
-        <ChevronRight className="size-4 shrink-0" />
-        <span>{t("breadcrumb.invoices")}</span>
-        <ChevronRight className="size-4 shrink-0" />
-        <span className="text-slate-800">{t("breadcrumb.view")}</span>
-      </span>
+            <span className="mb-6 flex flex-wrap items-center gap-1 text-sm text-slate-500">
+                <Link href="/home">
+                    <House className="size-4" />
+                </Link>
+
+                <ChevronRight className="size-4 shrink-0" />
+
+                <span>{t("breadcrumb.invoices")}</span>
+
+                <ChevronRight className="size-4 shrink-0" />
+
+                <span className="text-slate-800">{t("breadcrumb.view")}</span>
+            </span>
 
             <div className="mb-6 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
                 <h1 className="text-2xl font-bold tracking-tight text-slate-800 sm:text-3xl">
@@ -308,10 +331,12 @@ export default function InvoicesPage() {
 
                 <Button
                     size="lg"
-                    className="h-12 w-52 cursor-pointer rounded bg-[#0879bd] px-5 text-white"
+                    className="h-12 w-52 cursor-pointer rounded bg-[#0879bd] px-5 text-white hover:bg-[#076ca8]"
                     asChild
                 >
-                    <Link href="/home/factures/new">{t("createInvoice")}</Link>
+                    <Link href="/home/factures/new">
+                        {t("createInvoice")}
+                    </Link>
                 </Button>
             </div>
 
@@ -322,114 +347,199 @@ export default function InvoicesPage() {
                             <TableHead className="h-11 bg-slate-100 px-4 text-left text-sm font-semibold text-slate-700">
                                 {t("table.invoice")}
                             </TableHead>
+
                             <TableHead className="h-11 bg-slate-100 px-4 text-left text-sm font-semibold text-slate-700">
                                 {t("table.client")}
                             </TableHead>
+
                             <TableHead className="h-11 bg-slate-100 px-4 text-left text-sm font-semibold text-slate-700">
                                 {t("table.article")}
                             </TableHead>
+
                             <TableHead className="h-11 bg-slate-100 px-4 text-left text-sm font-semibold text-slate-700">
                                 {t("table.amount")}
                             </TableHead>
+
                             <TableHead className="h-11 bg-slate-100 px-4 text-left text-sm font-semibold text-slate-700">
                                 {t("table.status")}
                             </TableHead>
+
                             <TableHead className="h-11 bg-slate-100 px-4 text-left text-sm font-semibold text-slate-700">
                                 {t("table.phone")}
                             </TableHead>
+
                             <TableHead className="h-11 bg-slate-100 px-4 text-left text-sm font-semibold text-slate-700">
                                 {t("table.comments")}
                             </TableHead>
+
                             <TableHead className="h-11 bg-slate-100 px-4 text-left text-sm font-semibold text-slate-700">
                                 {t("table.interactions")}
                             </TableHead>
+
                             <TableHead className="h-11 bg-slate-100 px-4 text-right text-sm font-semibold text-slate-700">
-                                <span className="sr-only">{t("table.actions")}</span>
+                                <span className="sr-only">
+                                    {t("table.actions")}
+                                </span>
                             </TableHead>
                         </TableRow>
                     </TableHeader>
 
                     <TableBody>
-                        {invoices.map((row) => (
-                            <TableRow
-                                key={row.id}
-                                className="border-slate-200 hover:bg-slate-50/80"
-                            >
-                                <TableCell className="px-4 py-3 text-sm text-slate-800">
-                                    {row.invoice}
+                        {isLoading ? (
+                            <TableRow>
+                                <TableCell
+                                    colSpan={9}
+                                    className="h-40 text-center"
+                                >
+                                    <div className="flex items-center justify-center gap-2 text-sm text-slate-500">
+                                        <Loader2 className="size-4 animate-spin" />
+                                        Chargement des factures...
+                                    </div>
                                 </TableCell>
-
-                                <TableCell className="px-4 py-3 text-sm text-slate-800">
-                                    {row.client}
-                                </TableCell>
-
-                                <TableCell className="px-4 py-3 text-sm text-slate-800">
-                                    {row.article}
-                                </TableCell>
-
-                                <TableCell className="px-4 py-3 text-sm font-semibold text-slate-800">
-                                    {formatAmount(row.amount, row.currency)}
-                                </TableCell>
-
-                                <TableCell className="px-4 py-3 text-sm text-slate-800">
-                                    <StatutBadge statut={row.statut} />
-                                </TableCell>
-
-                                <TableCell className="px-4 py-3 text-sm text-slate-800">
-                                    {row.telephone}
-                                </TableCell>
-
-                                <TableCell className="px-4 py-3 text-sm text-slate-800">
-                                    <button
-                                        type="button"
-                                        onClick={() => setSelectedInvoice(row)}
-                                        className="inline-flex items-center gap-2 text-slate-500 hover:text-[#0879bd]"
-                                    >
-                                        <MessageSquareText className="size-4" />
-                                        <span>{row.comments.length}</span>
-                                    </button>
-                                </TableCell>
-
-                                <TableCell className="px-4 py-3 text-sm text-slate-800">
-                                    <button
-                                        type="button"
-                                        onClick={() => setSelectedInvoice(row)}
-                                        className="inline-flex items-center"
-                                        aria-label={t("table.viewInteractions")}
-                                    >
-                                        <AvatarStack reviewers={row.reviewers} />
-                                    </button>
-                                </TableCell>
-                                <TableCell className="px-4 py-3 text-right">
-                                    <Button
-                                        variant="ghost"
-                                        size="icon"
-                                        asChild
-                                        className="cursor-pointer text-slate-500 hover:bg-slate-100 hover:text-slate-700"
-                                    >
-                                        <Link
-                                            href={`/home/factures/${encodeURIComponent(row.id)}`}
-                                            aria-label={t("table.viewInvoice")}
-                                        >
-                                            <Eye className="size-4" />
-                                        </Link>
-                                    </Button>
-                                </TableCell>
-                                {/*<TableCell className="px-4 py-3 text-right">*/}
-                                {/*    <Button*/}
-                                {/*        variant="ghost"*/}
-                                {/*        size="icon"*/}
-                                {/*        onClick={() => setSelectedInvoice(row)}*/}
-                                {/*        className="cursor-pointer text-slate-500 hover:bg-slate-100 hover:text-slate-700"*/}
-                                {/*        aria-label={t("table.viewInvoice")}*/}
-                                {/*    >*/}
-                                {/*        <Eye className="size-4" />*/}
-                                {/*    </Button>*/}
-                                {/*</TableCell>*/}
                             </TableRow>
-                        ))}
+                        ) : isError ? (
+                            <TableRow>
+                                <TableCell
+                                    colSpan={9}
+                                    className="h-40 text-center text-sm text-red-500"
+                                >
+                                    Une erreur est survenue lors du chargement
+                                    des factures.
+                                </TableCell>
+                            </TableRow>
+                        ) : invoices.length === 0 ? (
+                            <TableRow>
+                                <TableCell
+                                    colSpan={9}
+                                    className="h-40 text-center text-sm text-slate-500"
+                                >
+                                    Aucune facture trouvée.
+                                </TableCell>
+                            </TableRow>
+                        ) : (
+                            invoices.map((row) => (
+                                <TableRow
+                                    key={row.id}
+                                    className="border-slate-200 hover:bg-slate-50/80"
+                                >
+                                    <TableCell className="px-4 py-3 text-sm text-slate-800">
+                                        {row.invoice}
+                                    </TableCell>
+
+                                    <TableCell className="px-4 py-3 text-sm text-slate-800">
+                                        {row.client}
+                                    </TableCell>
+
+                                    <TableCell className="px-4 py-3 text-sm text-slate-800">
+                                        {row.article}
+                                    </TableCell>
+
+                                    <TableCell className="px-4 py-3 text-sm font-semibold text-slate-800">
+                                        {formatAmount(
+                                            row.amount,
+                                            row.currency
+                                        )}
+                                    </TableCell>
+
+                                    <TableCell className="px-4 py-3 text-sm text-slate-800">
+                                        <StatutBadge statut={row.statut} />
+                                    </TableCell>
+
+                                    <TableCell className="px-4 py-3 text-sm text-slate-800">
+                                        {row.telephone}
+                                    </TableCell>
+
+                                    <TableCell className="px-4 py-3 text-sm text-slate-800">
+                                        <button
+                                            type="button"
+                                            onClick={() =>
+                                                setSelectedInvoice(row)
+                                            }
+                                            className="inline-flex items-center gap-2 text-slate-500 hover:text-[#0879bd]"
+                                        >
+                                            <MessageSquareText className="size-4" />
+                                            <span>{row.comments.length}</span>
+                                        </button>
+                                    </TableCell>
+
+                                    <TableCell className="px-4 py-3 text-sm text-slate-800">
+                                        <button
+                                            type="button"
+                                            onClick={() =>
+                                                setSelectedInvoice(row)
+                                            }
+                                            className="inline-flex items-center"
+                                            aria-label={t(
+                                                "table.viewInteractions"
+                                            )}
+                                        >
+                                            <AvatarStack
+                                                reviewers={row.reviewers}
+                                            />
+                                        </button>
+                                    </TableCell>
+
+                                    <TableCell className="px-4 py-3 text-right">
+                                        <Button
+                                            variant="ghost"
+                                            size="icon"
+                                            asChild
+                                            className="cursor-pointer text-slate-500 hover:bg-slate-100 hover:text-slate-700"
+                                        >
+                                            <Link
+                                                href={`/home/factures/${encodeURIComponent(
+                                                    row.id
+                                                )}`}
+                                                aria-label={t(
+                                                    "table.viewInvoice"
+                                                )}
+                                            >
+                                                <Eye className="size-4" />
+                                            </Link>
+                                        </Button>
+                                    </TableCell>
+                                </TableRow>
+                            ))
+                        )}
                     </TableBody>
                 </Table>
+            </div>
+
+            <div className="mt-5 flex flex-col items-center justify-between gap-4 sm:flex-row">
+                <p className="text-sm text-slate-500">
+                    {totalItems === 0
+                        ? "0 facture"
+                        : `${totalItems} facture${totalItems > 1 ? "s" : ""}`}
+                    {isFetching && !isLoading ? " • Mise à jour..." : ""}
+                </p>
+
+                <div className="flex items-center gap-2">
+                    <Button
+                        type="button"
+                        variant="outline"
+                        size="icon"
+                        onClick={handlePreviousPage}
+                        disabled={page <= 1 || isFetching}
+                        className="h-10 w-10 rounded"
+                    >
+                        <ChevronLeft className="size-4" />
+                    </Button>
+
+                    <div className="flex h-10 min-w-32 items-center justify-center border border-slate-200 px-4 text-sm font-medium text-slate-700">
+                        Page {page} / {totalPages}
+                    </div>
+
+                    <Button
+                        type="button"
+                        variant="outline"
+                        size="icon"
+                        onClick={handleNextPage}
+                        disabled={page >= totalPages || isFetching}
+                        className="h-10 w-10 rounded"
+                    >
+                        <ChevronRight className="size-4" />
+                    </Button>
+                </div>
             </div>
 
             {selectedInvoice && (
@@ -442,18 +552,23 @@ export default function InvoicesPage() {
                                         <p className="text-sm font-medium text-slate-500">
                                             {t("drawer.reviewInvoice")}
                                         </p>
+
                                         <h2 className="mt-1 text-2xl font-bold tracking-tight text-slate-800">
                                             {selectedInvoice.invoice}
                                         </h2>
+
                                         <p className="mt-1 text-sm text-slate-500">
-                                            {selectedInvoice.client} / {selectedInvoice.article}
+                                            {selectedInvoice.client} /{" "}
+                                            {selectedInvoice.article}
                                         </p>
                                     </div>
 
                                     <Button
                                         variant="ghost"
                                         size="icon"
-                                        onClick={() => setSelectedInvoice(null)}
+                                        onClick={() =>
+                                            setSelectedInvoice(null)
+                                        }
                                         className="text-slate-500 hover:bg-slate-100 hover:text-slate-700"
                                     >
                                         <X className="size-4" />
@@ -465,6 +580,7 @@ export default function InvoicesPage() {
                                         <p className="text-xs font-medium text-slate-500">
                                             {t("drawer.amount")}
                                         </p>
+
                                         <p className="mt-1 text-base font-bold text-slate-800">
                                             {formatAmount(
                                                 selectedInvoice.amount,
@@ -477,8 +593,13 @@ export default function InvoicesPage() {
                                         <p className="text-xs font-medium text-slate-500">
                                             {t("drawer.status")}
                                         </p>
+
                                         <div className="mt-1">
-                                            <StatutBadge statut={selectedInvoice.statut} />
+                                            <StatutBadge
+                                                statut={
+                                                    selectedInvoice.statut
+                                                }
+                                            />
                                         </div>
                                     </div>
 
@@ -486,8 +607,13 @@ export default function InvoicesPage() {
                                         <p className="text-xs font-medium text-slate-500">
                                             {t("drawer.interactions")}
                                         </p>
+
                                         <div className="mt-2">
-                                            <AvatarStack reviewers={selectedInvoice.reviewers} />
+                                            <AvatarStack
+                                                reviewers={
+                                                    selectedInvoice.reviewers
+                                                }
+                                            />
                                         </div>
                                     </div>
                                 </div>
@@ -505,7 +631,9 @@ export default function InvoicesPage() {
                                         <Button
                                             type="button"
                                             variant="outline"
-                                            onClick={() => handleChangeStatus("Complet")}
+                                            onClick={() =>
+                                                handleChangeStatus("Payée")
+                                            }
                                             className="h-10 rounded border-emerald-100 bg-emerald-50 text-emerald-600 hover:bg-emerald-100 hover:text-emerald-700"
                                         >
                                             <CheckCircle2 className="mr-2 size-4" />
@@ -515,7 +643,9 @@ export default function InvoicesPage() {
                                         <Button
                                             type="button"
                                             variant="outline"
-                                            onClick={() => handleChangeStatus("Suspendu")}
+                                            onClick={() =>
+                                                handleChangeStatus("Brouillon")
+                                            }
                                             className="h-10 rounded border-amber-100 bg-amber-50 text-amber-600 hover:bg-amber-100 hover:text-amber-700"
                                         >
                                             <Clock3 className="mr-2 size-4" />
@@ -525,7 +655,9 @@ export default function InvoicesPage() {
                                         <Button
                                             type="button"
                                             variant="outline"
-                                            onClick={() => handleChangeStatus("Rejeté")}
+                                            onClick={() =>
+                                                handleChangeStatus("Annulée")
+                                            }
                                             className="h-10 rounded border-red-100 bg-red-50 text-red-500 hover:bg-red-100 hover:text-red-600"
                                         >
                                             <Ban className="mr-2 size-4" />
@@ -544,57 +676,78 @@ export default function InvoicesPage() {
                                             variant="outline"
                                             className="rounded border-transparent bg-slate-100 text-slate-600"
                                         >
-                                            {selectedInvoice.comments.length}
+                                            {
+                                                selectedInvoice.comments
+                                                    .length
+                                            }
                                         </Badge>
                                     </div>
 
                                     <div className="space-y-3">
-                                        {selectedInvoice.comments.length === 0 ? (
+                                        {selectedInvoice.comments.length ===
+                                        0 ? (
                                             <div className="border border-dashed border-slate-200 bg-slate-50 px-4 py-8 text-center">
                                                 <MessageSquareText className="mx-auto size-5 text-slate-400" />
+
                                                 <p className="mt-2 text-sm font-medium text-slate-600">
                                                     {t("drawer.noComment")}
                                                 </p>
                                             </div>
                                         ) : (
-                                            selectedInvoice.comments.map((item) => (
-                                                <div
-                                                    key={item.id}
-                                                    className="border border-slate-200 bg-white px-4 py-4"
-                                                >
-                                                    <div className="flex items-start gap-3">
-                                                        <div className="flex size-9 shrink-0 items-center justify-center rounded-full bg-slate-100 text-[11px] font-bold text-slate-600">
-                                                            {item.author
-                                                                .split(" ")
-                                                                .map((name) => name[0])
-                                                                .join("")
-                                                                .slice(0, 2)
-                                                                .toUpperCase()}
-                                                        </div>
-
-                                                        <div className="min-w-0 flex-1">
-                                                            <div className="flex items-start justify-between gap-4">
-                                                                <div>
-                                                                    <p className="text-sm font-semibold text-slate-800">
-                                                                        {item.author}
-                                                                    </p>
-                                                                    <p className="text-xs text-slate-500">
-                                                                        {item.role}
-                                                                    </p>
-                                                                </div>
-
-                                                                <span className="shrink-0 text-xs text-slate-400">
-                                  {item.date}
-                                </span>
+                                            selectedInvoice.comments.map(
+                                                (item) => (
+                                                    <div
+                                                        key={item.id}
+                                                        className="border border-slate-200 bg-white px-4 py-4"
+                                                    >
+                                                        <div className="flex items-start gap-3">
+                                                            <div className="flex size-9 shrink-0 items-center justify-center rounded-full bg-slate-100 text-[11px] font-bold text-slate-600">
+                                                                {item.author
+                                                                    .split(" ")
+                                                                    .map(
+                                                                        (
+                                                                            name
+                                                                        ) =>
+                                                                            name[0]
+                                                                    )
+                                                                    .join("")
+                                                                    .slice(0, 2)
+                                                                    .toUpperCase()}
                                                             </div>
 
-                                                            <p className="mt-3 text-sm leading-relaxed text-slate-600">
-                                                                {item.message}
-                                                            </p>
+                                                            <div className="min-w-0 flex-1">
+                                                                <div className="flex items-start justify-between gap-4">
+                                                                    <div>
+                                                                        <p className="text-sm font-semibold text-slate-800">
+                                                                            {
+                                                                                item.author
+                                                                            }
+                                                                        </p>
+
+                                                                        <p className="text-xs text-slate-500">
+                                                                            {
+                                                                                item.role
+                                                                            }
+                                                                        </p>
+                                                                    </div>
+
+                                                                    <span className="shrink-0 text-xs text-slate-400">
+                                                                        {
+                                                                            item.date
+                                                                        }
+                                                                    </span>
+                                                                </div>
+
+                                                                <p className="mt-3 text-sm leading-relaxed text-slate-600">
+                                                                    {
+                                                                        item.message
+                                                                    }
+                                                                </p>
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                </div>
-                                            ))
+                                                )
+                                            )
                                         )}
                                     </div>
                                 </div>
@@ -607,8 +760,12 @@ export default function InvoicesPage() {
 
                                 <textarea
                                     value={comment}
-                                    onChange={(event) => setComment(event.target.value)}
-                                    placeholder={t("drawer.commentPlaceholder")}
+                                    onChange={(event) =>
+                                        setComment(event.target.value)
+                                    }
+                                    placeholder={t(
+                                        "drawer.commentPlaceholder"
+                                    )}
                                     className="h-24 w-full resize-none rounded border border-slate-300 px-4 py-3 text-sm outline-none focus:border-[#0879bd]"
                                 />
 
