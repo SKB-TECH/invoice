@@ -13,6 +13,7 @@ import {
 } from "@/lib/contrats/contrats-data";
 import { contractResponseToDetail } from "@/lib/contrats/contrat-api-mapper";
 import { useContract } from "@/core/hooks/contrat/useContrat";
+import { billingCycleFromApi, billingCycleLabelFr } from "@/core/schemas/contrat.schema";
 import { ENV } from "@/core/constants/env";
 
 function StatutBadge({ statut }: { statut: ContratStatutUi }) {
@@ -198,7 +199,9 @@ export default function VisualiserContratPage() {
                             Cycle de facturation
                         </dt>
                         <dd className="mt-1 text-base font-medium text-slate-900">
-                            {contrat.billing_cycle}
+                            {billingCycleLabelFr(
+                                billingCycleFromApi(contrat.billing_cycle)
+                            )}
                         </dd>
                     </div>
 

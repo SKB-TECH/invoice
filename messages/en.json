@@ -491,6 +491,7 @@
       "creating": "Creating article…",
       "invalidForm": "Please check required fields and amounts.",
       "referentialPlaceholder": "Select a referential",
+      "referentialLoading": "Loading referentials…",
       "retryReferentialsFetch": "Try again",
       "referentialLoadError": "Could not load referentials.",
       "referentialNoneForAxis": "No referential rows in the catalogue. Add some in settings.",
@@ -518,6 +519,7 @@
       "referencePrefix": "Ref.: ",
       "unknownTaxGroupName": "Tax group (unknown or removed)",
       "taxGroupHint": "Prices stay in sync: incl. tax is derived from excl. tax (or vice versa) using this tax group.",
+      "referentialFallback": "Referential no. {id}, not listed in catalogue",
       "fields": {
         "description": "Description",
         "status": "Status",

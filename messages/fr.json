@@ -491,6 +491,7 @@
       "creating": "Création de l’article…",
       "invalidForm": "Vérifiez les champs obligatoires et les montants.",
       "referentialPlaceholder": "Sélectionner un référentiel",
+      "referentialLoading": "Chargement des référentiels…",
       "retryReferentialsFetch": "Réessayer",
       "referentialLoadError": "Impossible de charger les référentiels.",
       "referentialNoneForAxis": "Aucun référentiel disponible dans le catalogue. Ajoutez-en dans la configuration.",
@@ -518,6 +519,7 @@
       "referencePrefix": "Réf. : ",
       "unknownTaxGroupName": "Groupe (inconnu ou supprimé)",
       "taxGroupHint": "Le prix TTC suit le HT (ou inversement) selon ce groupe fiscal.",
+      "referentialFallback": "Référentiel n° {id} — absent du catalogue",
       "fields": {
         "description": "Description",
         "status": "Statut",

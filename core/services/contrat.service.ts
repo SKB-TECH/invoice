@@ -47,7 +47,7 @@ export function minimalCreateContractPayload(
     payload: CreateContractInput
 ): Record<string, unknown> {
     const items = payload.items_template;
-    return {
+    const base: Record<string, unknown> = {
         client_id: coerceClientIdForApi(payload.client_id),
         title: payload.title,
         reference: payload.reference,
@@ -63,6 +63,10 @@ export function minimalCreateContractPayload(
         paid: payload.paid,
         description: payload.description ?? "",
     };
+    if (payload.type > 0) {
+        base.type = payload.type;
+    }
+    return base;
 }
 
 function contractCreateJsonBody(
@@ -94,6 +98,9 @@ function contractPayloadForMultipart(
         items_template: payload.items_template,
         auto_renew: payload.auto_renew,
     };
+    if (payload.type > 0) {
+        out.type = payload.type;
+    }
     return Object.fromEntries(
         Object.entries(out).filter(([, v]) => v !== undefined)
     );
