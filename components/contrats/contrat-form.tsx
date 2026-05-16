@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { Calendar } from "lucide-react";
 import { Controller, useForm, type Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -20,6 +20,8 @@ import {
     useUpdateContract,
 } from "@/core/hooks/contrat/useContrat";
 import { useClients } from "@/core/hooks/client/useClient";
+import { useContractCurrencies } from "@/core/hooks/currency/useCurrencies";
+import { currencyService } from "@/core/services/currency.service";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -154,6 +156,23 @@ export function ContratForm(props: ContratFormProps) {
     });
     const clients = clientsResult?.items ?? [];
 
+    const { data: currenciesFromApi } = useContractCurrencies();
+    const currencyOptions = useMemo(() => {
+        if (currenciesFromApi && currenciesFromApi.length > 0) {
+            return currenciesFromApi;
+        }
+        return currencyService.defaultContractCurrencies();
+    }, [currenciesFromApi]);
+
+    const currencyCodesKey = useMemo(
+        () =>
+            [...currencyOptions]
+                .map((c) => c.code)
+                .sort()
+                .join(","),
+        [currencyOptions]
+    );
+
     const defaults =
         props.variant === "edit"
             ? detailToContractInput(props.initial)
@@ -169,6 +188,20 @@ export function ContratForm(props: ContratFormProps) {
         defaultValues: defaults,
         mode: "onSubmit",
     });
+
+    useEffect(() => {
+        const opts = [...currencyOptions];
+        const valid = new Set(opts.map((c) => c.code));
+        const current =
+            form.getValues("currency")?.trim().toUpperCase() ?? "";
+        if (current && !valid.has(current)) {
+            form.setValue(
+                "currency",
+                opts[0]?.code ?? "USD",
+                { shouldValidate: true }
+            );
+        }
+    }, [currencyCodesKey]);
 
     const pending = createMut.isPending || updateMut.isPending;
     const isCreate = props.variant === "create";
@@ -379,8 +412,11 @@ export function ContratForm(props: ContratFormProps) {
                         disabled={pending}
                         {...form.register("currency")}
                     >
-                        <option value="USD">USD</option>
-                        <option value="CDF">CDF</option>
+                        {currencyOptions.map((cur) => (
+                            <option key={cur.code} value={cur.code}>
+                                {cur.label}
+                            </option>
+                        ))}
                     </select>
                     {form.formState.errors.currency?.message ? (
                         <p className="text-sm text-destructive">
