@@ -1,7 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 
 import Loader from "@/components/loader/Loader";
@@ -125,49 +125,37 @@ export function ModifierArticleForm({
   const [statut, setStatut] = useState<ArticleRowStatus>(initial.status);
   const [period, setPeriod] = useState(initial.period);
 
-  const syncTtcFromHt = useCallback((htStr: string, taxKey: string) => {
-    const ht = parseMoneyInput(htStr);
-    const r = resolveTaxRateDecimal(taxKey);
-    if (ht === null) return;
-    setPrixTtc(formatMoneyFr(ht * (1 + r)));
-  }, []);
-
-  const syncHtFromTtc = useCallback((ttcStr: string, taxKey: string) => {
-    const ttc = parseMoneyInput(ttcStr);
-    const r = 1 + resolveTaxRateDecimal(taxKey);
-    if (ttc === null) return;
-    if (r === 0) {
-      setPrixHt(formatMoneyFr(ttc));
-      return;
-    }
-    setPrixHt(formatMoneyFr(ttc / r));
-  }, []);
-
   const onPrixHtChange = (value: string) => {
     setPrixHt(value);
-    syncTtcFromHt(value, groupeTax);
+    const ht = parseMoneyInput(value);
+    if (ht !== null) {
+      setPrixTtc(
+        formatMoneyFr(ht * (1 + resolveTaxRateDecimal(groupeTax)))
+      );
+    } else {
+      setPrixTtc("");
+    }
   };
 
   const onPrixHtBlur = () => {
     const ht = parseMoneyInput(prixHt);
-    if (ht !== null) setPrixHt(formatMoneyFr(ht));
-  };
-
-  const onPrixTtcChange = (value: string) => {
-    setPrixTtc(value);
-    syncHtFromTtc(value, groupeTax);
-  };
-
-  const onPrixTtcBlur = () => {
-    const ttc = parseMoneyInput(prixTtc);
-    if (ttc !== null) setPrixTtc(formatMoneyFr(ttc));
+    if (ht !== null) {
+      const formatted = formatMoneyFr(ht);
+      setPrixHt(formatted);
+      setPrixTtc(
+        formatMoneyFr(ht * (1 + resolveTaxRateDecimal(groupeTax)))
+      );
+    }
   };
 
   const onGroupeTaxChange = (taxKey: string) => {
     setGroupeTax(taxKey);
     const ht = parseMoneyInput(prixHt);
-    const r = resolveTaxRateDecimal(taxKey);
-    if (ht !== null) setPrixTtc(formatMoneyFr(ht * (1 + r)));
+    if (ht !== null) {
+      setPrixTtc(
+        formatMoneyFr(ht * (1 + resolveTaxRateDecimal(taxKey)))
+      );
+    }
   };
 
   const requiredStar = (
@@ -192,8 +180,15 @@ export function ModifierArticleForm({
         }
 
         const price_before = parseMoneyInput(prixHt);
-        const price_after = parseMoneyInput(prixTtc);
-        if (price_before === null || price_after === null) {
+        if (price_before === null || !groupeTax.trim()) {
+          toast.error(tCreate("invalidForm"));
+          return;
+        }
+
+        const price_after =
+          price_before * (1 + resolveTaxRateDecimal(groupeTax));
+
+        if (Number.isNaN(price_after)) {
           toast.error(tCreate("invalidForm"));
           return;
         }
@@ -309,19 +304,48 @@ export function ModifierArticleForm({
         </div>
 
         <div className="flex flex-col gap-2">
-          <Label htmlFor="prix-ttc" className="font-medium text-slate-700">
+          <Label htmlFor="groupe-tax" className="font-medium text-slate-700">
+            {tCreate("fields.taxGroup")}
+            {requiredStar}
+          </Label>
+          <select
+            id="groupe-tax"
+            name="groupeTax"
+            required
+            className={selectClass}
+            value={groupeTax}
+            aria-label={tCreate("taxGroupSelectAria")}
+            onChange={(e) => onGroupeTaxChange(e.target.value)}
+          >
+            {selectableTaxGroups.map((g) => (
+              <option key={g.id} value={g.id}>
+                {formatTaxGroupOptionLabel(g, { showInactive: true })}
+              </option>
+            ))}
+          </select>
+          <p className="text-xs text-slate-500">{tEdit("taxGroupHint")}</p>
+        </div>
+
+        <div className="flex flex-col gap-2">
+          <Label
+            htmlFor="prix-ttc"
+            className="font-medium text-slate-700"
+          >
             {tCreate("fields.priceInclTax")}
             {requiredStar}
           </Label>
+          <p className="text-xs text-slate-500">
+            {tCreate("fields.priceInclTaxHint")}
+          </p>
           <Input
             id="prix-ttc"
-            name="prixTtc"
+            readOnly
+            tabIndex={-1}
+            aria-readonly="true"
             inputMode="decimal"
             required
-            className="h-12 rounded-none"
+            className="h-12 cursor-default rounded-none bg-slate-50 text-slate-800"
             value={prixTtc}
-            onChange={(e) => onPrixTtcChange(e.target.value)}
-            onBlur={onPrixTtcBlur}
           />
         </div>
 
@@ -345,29 +369,6 @@ export function ModifierArticleForm({
             <option value="cdf">CDF</option>
             <option value="eur">EUR</option>
           </select>
-        </div>
-
-        <div className="flex flex-col gap-2">
-          <Label htmlFor="groupe-tax" className="font-medium text-slate-700">
-            {tCreate("fields.taxGroup")}
-            {requiredStar}
-          </Label>
-          <select
-            id="groupe-tax"
-            name="groupeTax"
-            required
-            className={selectClass}
-            value={groupeTax}
-            aria-label={tCreate("taxGroupSelectAria")}
-            onChange={(e) => onGroupeTaxChange(e.target.value)}
-          >
-            {selectableTaxGroups.map((g) => (
-              <option key={g.id} value={g.id}>
-                {formatTaxGroupOptionLabel(g, { showInactive: true })}
-              </option>
-            ))}
-          </select>
-          <p className="text-xs text-slate-500">{tEdit("taxGroupHint")}</p>
         </div>
 
         <div className="flex flex-col gap-2">

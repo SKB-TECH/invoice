@@ -1,7 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ChangeEvent } from "react";
 import {
   formatTaxGroupOptionLabel,
   readTaxGroups,
@@ -18,7 +18,8 @@ type Props = {
   required?: boolean;
   className?: string;
   defaultValue?: string;
-  /** Pour l’édition : inclure le groupe actuel même s’il est inactif. */
+  value?: string;
+  onValueChange?: (next: string) => void;
   includeInactiveIds?: string[];
 };
 
@@ -36,10 +37,13 @@ export function ArticleTaxGroupSelect({
   required,
   className = selectClass,
   defaultValue = "",
+  value,
+  onValueChange,
   includeInactiveIds,
 }: Props) {
   const t = useTranslations("articles.create");
   const [groups, setGroups] = useState<TaxGroup[]>([]);
+  const controlled = value !== undefined;
 
   useEffect(() => {
     const refresh = () => setGroups(readTaxGroups());
@@ -55,7 +59,13 @@ export function ArticleTaxGroupSelect({
       id={id}
       name={name}
       required={required}
-      defaultValue={defaultValue}
+      {...(controlled
+        ? {
+            value,
+            onChange: (e: ChangeEvent<HTMLSelectElement>) =>
+              onValueChange?.(e.target.value),
+          }
+        : { defaultValue })}
       className={className}
       aria-label={t("taxGroupSelectAria")}
     >
