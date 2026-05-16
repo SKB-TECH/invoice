@@ -84,7 +84,10 @@ export function normalizeClientResponseInput(raw: unknown): unknown {
     const pickStr = (v: unknown): string | undefined =>
         v === null || v === undefined ? undefined : String(v).trim() || undefined;
 
-    const clientName = pickStr(r.client_name) ?? pickStr(r.legal_name);
+    const clientName =
+        pickStr(r.client_name) ??
+        pickStr(r.legal_name) ??
+        pickStr((r as { name?: unknown }).name);
     if (clientName && !pickStr(r.company_name)) {
         r.company_name = clientName;
     }

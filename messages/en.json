@@ -114,6 +114,7 @@
     "NouveauClient": "New customer",
     "Contrat": "Contract",
     "NouveauContrat": "New contract",
+    "NouveauReferentiel": "New referential entry",
     "Configuration": "Settings",
     "Aide": "Help"
   },
@@ -553,56 +554,64 @@
         "mismatch": "Passwords do not match."
       }
     },
-    "referentials": {
-      "preferencesTitle": "Preferences",
-      "theme": "Theme",
-      "language": "Language",
-      "timezone": "Time zone",
-      "themeOptions": {
-        "light": "Light mode",
-        "dark": "Dark mode",
-        "system": "System"
+    "referentialCatalog": {
+      "sectionHeadline": "Referential catalogue",
+      "axisColumn": "Axis",
+      "types": {
+        "clients": "Clients",
+        "fournitures": "Supplies",
+        "contrats": "Contracts"
       },
-      "languageOptions": {
-        "fr": "French",
-        "en": "English"
-      },
-      "timezoneOptions": {
-        "kinshasa": "Kinshasa",
-        "lubumbashi": "Lubumbashi",
-        "goma": "Goma"
-      },
-      "connectedAccounts": "Connected accounts",
-      "devices": "Devices",
-      "google": "Google",
-      "connectedWith": "Signed in with {email}",
-      "deviceIphone": "iPhone 14 Pro",
-      "deviceMacbook": "MacBook Pro",
-      "lastUsed2Days": "Last used 2 days ago",
-      "lastUsed1Week": "Last used 1 week ago",
-      "disconnect": "Disconnect",
-      "remove": "Remove",
-      "savePreferences": "Save preferences"
-    },
-    "referentialRates": {
-      "title": "Rate reference list",
-      "label": "Label",
-      "ratePercent": "Rate (%)",
-      "save": "Save",
+      "code": "Code",
+      "entityTitle": "Label",
+      "description": "Description",
+      "parentId": "Parent",
+      "parentShort": "Parent",
+      "rootParent": "Root (none)",
+      "rootParentColumn": "— Root —",
+      "openCreateForm": "New entry",
       "actions": "Actions",
-      "rateColumn": "Rate",
-      "placeholderLabel": "E.g. VAT services",
-      "placeholderRate": "16",
-      "editAria": "Edit rate",
-      "deleteAria": "Delete rate",
+      "save": "Save",
+      "cancel": "Cancel",
+      "empty": "No entries yet.",
+      "placeholderCode": "E.g. CORP",
+      "placeholderTitle": "E.g. Corporate accounts",
+      "placeholderDesc": "Optional…",
+      "editAria": "Edit row",
+      "deleteAria": "Delete row",
       "toasts": {
-        "labelRequired": "Enter a label for the rate.",
-        "rateInvalid": "Enter a valid rate between 0 and 100%.",
-        "created": "Rate created.",
-        "updated": "Rate updated.",
-        "deleted": "Rate deleted."
+        "codeTitleRequired": "Code and label are required.",
+        "duplicateCode": "This code already exists for this axis.",
+        "createFailed": "Could not create row.",
+        "saveFailed": "Could not save changes.",
+        "apiError": "The server rejected this action or could not be reached.",
+        "created": "Row created.",
+        "updated": "Row updated.",
+        "deleted": "Row deleted."
+      }
+    },
+    "referentialCreate": {
+      "breadcrumbNew": "New entry",
+      "creating": "Saving…",
+      "invalidForm": "Please fill in the required fields.",
+      "rootParentOption": "Root (none)",
+      "fields": {
+        "referential": "Catalog axis",
+        "code": "Code",
+        "entityTitle": "Label",
+        "description": "Description",
+        "parent": "Parent item"
       },
-      "cancel": "Cancel"
+      "placeholders": {
+        "referential": "E.g. clients, supplies, contracts",
+        "code": "E.g. CORP",
+        "entityTitle": "E.g. Corporate accounts",
+        "description": "Optional…"
+      },
+      "actions": {
+        "cancel": "Cancel",
+        "save": "Save"
+      }
     },
     "taxGroups": {
       "title": "Tax groups",

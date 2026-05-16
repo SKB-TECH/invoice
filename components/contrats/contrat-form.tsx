@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useRef } from "react";
 import { Calendar } from "lucide-react";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, useForm, type Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -35,10 +35,12 @@ const selectClassName = cn(
 );
 
 function clientOptionLabel(c: ClientResponse): string {
+    const ext = c as ClientResponse & { name?: string | null };
     const name =
-        c.company_name?.trim() ||
-        [c.first_name, c.last_name].filter(Boolean).join(" ").trim();
-    return name || c.reference;
+        ext.company_name?.trim() ||
+        ext.name?.trim() ||
+        [ext.first_name, ext.last_name].filter(Boolean).join(" ").trim();
+    return name || ext.reference || String(ext.id);
 }
 
 type ContratFormBase = {
@@ -70,7 +72,6 @@ function emptyContractDefaults(): CreateContractInput {
         description: "",
         billing_cycle: "monthly",
         items_template: [],
-        status: "actif",
         phone: "",
         auto_renew: false,
     };
@@ -101,7 +102,6 @@ function detailToContractInput(d: ContratDetailRecord): CreateContractInput {
         description: d.description,
         billing_cycle: d.billing_cycle as CreateContractInput["billing_cycle"],
         items_template: items,
-        status: d.statut,
         phone: d.telephone,
         auto_renew: d.autoRenew,
     };
@@ -163,12 +163,15 @@ export function ContratForm(props: ContratFormProps) {
     const updateMut = useUpdateContract();
 
     const form = useForm<CreateContractInput>({
-        resolver: zodResolver(createContractSchema),
+        resolver: zodResolver(
+            createContractSchema
+        ) as Resolver<CreateContractInput>,
         defaultValues: defaults,
         mode: "onSubmit",
     });
 
     const pending = createMut.isPending || updateMut.isPending;
+    const isCreate = props.variant === "create";
 
     function syncItemsFromTextarea(): boolean {
         const ta = itemsTextareaRef.current;
@@ -189,12 +192,15 @@ export function ContratForm(props: ContratFormProps) {
 
     const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        if (!syncItemsFromTextarea()) {
+        if (props.variant === "edit" && !syncItemsFromTextarea()) {
             toast.error("Le gabarit JSON est invalide.");
             return;
         }
 
-        const selectedFile = fileRef.current?.files?.[0] ?? null;
+        const selectedFile =
+            props.variant === "edit"
+                ? (fileRef.current?.files?.[0] ?? null)
+                : null;
 
         void form.handleSubmit((values) => {
             if (props.variant === "create") {
@@ -239,103 +245,93 @@ export function ContratForm(props: ContratFormProps) {
             noValidate
         >
             <div className="grid gap-6 sm:grid-cols-2">
-                <div className="flex flex-col gap-2 sm:col-span-2">
-                    <Label htmlFor="client-id" className="font-medium text-slate-700">
-                        Client <span className="text-red-500">*</span>
-                    </Label>
-                    <select
-                        id="client-id"
-                        className={selectClassName}
-                        disabled={pending || clientsLoading}
-                        {...form.register("client_id")}
-                    >
-                        <option value="">— Sélectionner —</option>
-                        {clients.map((c) => (
-                            <option key={c.id} value={c.id}>
-                                {clientOptionLabel(c)} ({c.reference})
-                            </option>
-                        ))}
-                    </select>
-                    {form.formState.errors.client_id?.message ? (
-                        <p className="text-sm text-destructive">
-                            {form.formState.errors.client_id.message}
-                        </p>
-                    ) : null}
-                </div>
-
-                <div className="flex flex-col gap-2">
-                    <Label htmlFor="reference" className="font-medium text-slate-700">
-                        {t("form.reference")} <span className="text-red-500">*</span>
-                    </Label>
-                    <Input
-                        id="reference"
-                        className="h-12 rounded"
-                        disabled={pending}
-                        {...form.register("reference")}
-                    />
-                    {form.formState.errors.reference?.message ? (
-                        <p className="text-sm text-destructive">
-                            {form.formState.errors.reference.message}
-                        </p>
-                    ) : null}
-                </div>
-
-                <div className="flex flex-col gap-2">
-                    <Label htmlFor="nom-contrat" className="font-medium text-slate-700">
-                        {t("form.nom")} <span className="text-red-500">*</span>
-                    </Label>
-                    <Input
-                        id="nom-contrat"
-                        className="h-12 rounded"
-                        disabled={pending}
-                        {...form.register("title")}
-                    />
-                    {form.formState.errors.title?.message ? (
-                        <p className="text-sm text-destructive">
-                            {form.formState.errors.title.message}
-                        </p>
-                    ) : null}
-                </div>
-
-                <Controller
-                    name="auto_renew"
-                    control={form.control}
-                    render={({ field }) => (
-                        <div className="flex flex-col gap-2">
-                            <Label htmlFor="auto-renew" className="font-medium text-slate-700">
-                                {t("form.auto-renew.title")}{" "}
-                                <span className="text-red-500">*</span>
-                            </Label>
-                            <select
-                                id="auto-renew"
-                                className={selectClassName}
-                                disabled={pending}
-                                value={field.value ? "oui" : "non"}
-                                onChange={(e) =>
-                                    field.onChange(e.target.value === "oui")
-                                }
-                            >
-                                <option value="oui">
-                                    {t("form.auto-renew.options.oui")}
+                <div className="flex gap-6 sm:col-span-2">
+                    <div className="flex-col flex-1 gap-2">
+                        <Label htmlFor="client-id" className="font-medium text-slate-700">
+                            Client <span className="text-red-500">*</span>
+                        </Label>
+                        <select
+                            id="client-id"
+                            className={selectClassName}
+                            disabled={pending || clientsLoading}
+                            {...form.register("client_id")}
+                        >
+                            <option value="">— Sélectionner un client —</option>
+                            {clients.map((c) => (
+                                <option key={c.id} value={c.id}>
+                                    {clientOptionLabel(c)}
                                 </option>
-                                <option value="non">
-                                    {t("form.auto-renew.options.non")}
-                                </option>
-                            </select>
-                        </div>
-                    )}
-                />
+                            ))}
+                        </select>
+                        {form.formState.errors.client_id?.message ? (
+                            <p className="text-sm text-destructive">
+                                {form.formState.errors.client_id.message}
+                            </p>
+                        ) : null}
+                    </div>
 
-                <div className="flex flex-col gap-2">
-                    <Label htmlFor="telephone" className="font-medium text-slate-700">
-                        {t("form.tel")}
-                    </Label>
-                    <Input
-                        id="telephone"
-                        type="tel"
-                        className="h-12 rounded"
-                        disabled={pending}
-                        {...form.register("phone")}
+                    <div className="flex-1 gap-2">
+                        <Label htmlFor="nom-contrat" className="font-medium text-slate-700">
+                            {t("form.nom")} <span className="text-red-500">*</span>
+                        </Label>
+                        <Input
+                            id="nom-contrat"
+                            className="h-12 rounded"
+                            disabled={pending}
+                            {...form.register("title")}
+                        />
+                        {form.formState.errors.title?.message ? (
+                            <p className="text-sm text-destructive">
+                                {form.formState.errors.title.message}
+                            </p>
+                        ) : null}
+                    </div>
+                </div>
+                <div className="flex gap-6 sm:col-span-2">
+                    <div className="flex-col flex-1 gap-2">
+                        <Label htmlFor="reference" className="font-medium text-slate-700">
+                            {t("form.reference")}{" "}
+                            <span className="text-red-500">*</span>
+                        </Label>
+                        <Input
+                            id="reference"
+                            className="h-12 rounded"
+                            disabled={pending}
+                            {...form.register("reference")}
+                        />
+                        {form.formState.errors.reference?.message ? (
+                            <p className="text-sm text-destructive">
+                                {form.formState.errors.reference.message}
+                            </p>
+                        ) : null}
+                    </div>
+                    <Controller
+                        name="auto_renew"
+                        control={form.control}
+                        render={({ field }) => (
+                            <div className="flex-col flex-1 gap-2">
+                                <Label htmlFor="auto-renew" className="font-medium text-slate-700">
+                                    {t("form.auto-renew.title")}{" "}
+                                    <span className="text-red-500">*</span>
+                                </Label>
+                                <select
+                                    id="auto-renew"
+                                    className={selectClassName}
+                                    disabled={pending}
+                                    value={field.value ? "oui" : "non"}
+                                    onChange={(e) =>
+                                        field.onChange(e.target.value === "oui")
+                                    }
+                                >
+                                    <option value="oui">
+                                        {t("form.auto-renew.options.oui")}
+                                    </option>
+                                    <option value="non">
+                                        {t("form.auto-renew.options.non")}
+                                    </option>
+                                </select>
+                            </div>
+                        )}
                     />
                 </div>
 
@@ -353,24 +349,6 @@ export function ContratForm(props: ContratFormProps) {
                     error={form.formState.errors.ending?.message}
                     {...form.register("ending")}
                 />
-
-                <div className="flex flex-col gap-2">
-                    <Label htmlFor="currency" className="font-medium text-slate-700">
-                        Devise (ISO) <span className="text-red-500">*</span>
-                    </Label>
-                    <Input
-                        id="currency"
-                        className="h-12 rounded uppercase"
-                        maxLength={3}
-                        disabled={pending}
-                        {...form.register("currency")}
-                    />
-                    {form.formState.errors.currency?.message ? (
-                        <p className="text-sm text-destructive">
-                            {form.formState.errors.currency.message}
-                        </p>
-                    ) : null}
-                </div>
 
                 <div className="flex flex-col gap-2">
                     <Label htmlFor="valeur" className="font-medium text-slate-700">
@@ -392,144 +370,169 @@ export function ContratForm(props: ContratFormProps) {
                 </div>
 
                 <div className="flex flex-col gap-2">
-                    <Label className="font-medium text-slate-700">
-                        Mensuel <span className="text-red-500">*</span>
-                    </Label>
-                    <Input
-                        inputMode="decimal"
-                        className="h-12 rounded"
-                        disabled={pending}
-                        {...form.register("monthly")}
-                    />
-                    {form.formState.errors.monthly?.message ? (
-                        <p className="text-sm text-destructive">
-                            {form.formState.errors.monthly.message}
-                        </p>
-                    ) : null}
-                </div>
-
-                <div className="flex flex-col gap-2">
-                    <Label className="font-medium text-slate-700">
-                        Payé <span className="text-red-500">*</span>
-                    </Label>
-                    <Input
-                        inputMode="decimal"
-                        className="h-12 rounded"
-                        disabled={pending}
-                        {...form.register("paid")}
-                    />
-                    {form.formState.errors.paid?.message ? (
-                        <p className="text-sm text-destructive">
-                            {form.formState.errors.paid.message}
-                        </p>
-                    ) : null}
-                </div>
-
-                <div className="flex flex-col gap-2">
-                    <Label htmlFor="billing-cycle" className="font-medium text-slate-700">
-                        Cycle de facturation <span className="text-red-500">*</span>
+                    <Label htmlFor="currency" className="font-medium text-slate-700">
+                        Devise <span className="text-red-500">*</span>
                     </Label>
                     <select
-                        id="billing-cycle"
+                        id="currency"
                         className={selectClassName}
                         disabled={pending}
-                        {...form.register("billing_cycle")}
+                        {...form.register("currency")}
                     >
-                        <option value="monthly">Mensuel</option>
-                        <option value="quarterly">Trimestriel</option>
-                        <option value="yearly">Annuel</option>
-                        <option value="one_shot">Ponctuel</option>
-                        <option value="custom">Personnalisé</option>
+                        <option value="USD">USD</option>
+                        <option value="CDF">CDF</option>
                     </select>
-                    {form.formState.errors.billing_cycle?.message ? (
+                    {form.formState.errors.currency?.message ? (
                         <p className="text-sm text-destructive">
-                            {form.formState.errors.billing_cycle.message}
+                            {form.formState.errors.currency.message}
                         </p>
                     ) : null}
                 </div>
 
-                <div className="flex flex-col gap-2">
-                    <Label htmlFor="statut" className="font-medium text-slate-700">
-                        {t("form.status.title")}
-                        <span className="text-red-500">*</span>
-                    </Label>
-                    <select
-                        id="statut"
-                        className={selectClassName}
-                        disabled={pending}
-                        {...form.register("status")}
-                    >
-                        <option value="actif">{t("form.status.options.actif")}</option>
-                        <option value="suspendu">
-                            {t("form.status.options.suspendu")}
-                        </option>
-                        <option value="complet">{t("form.status.options.complet")}</option>
-                    </select>
-                </div>
+                {!isCreate ? (
+                    <>
+                        <div className="flex flex-col gap-2">
+                            <Label htmlFor="telephone" className="font-medium text-slate-700">
+                                {t("form.tel")}
+                            </Label>
+                            <Input
+                                id="telephone"
+                                type="tel"
+                                className="h-12 rounded"
+                                disabled={pending}
+                                {...form.register("phone")}
+                            />
+                        </div>
 
-                <div className="flex flex-col gap-2 sm:col-span-2">
-                    <Label htmlFor="items-template" className="font-medium text-slate-700">
-                        Gabarit des lignes (JSON)
-                    </Label>
-                    <textarea
-                        ref={itemsTextareaRef}
-                        id="items-template"
-                        rows={6}
-                        className={cn(textareaClassName, "rounded font-mono text-xs")}
-                        disabled={pending}
-                        defaultValue={JSON.stringify(
-                            defaults.items_template ?? [],
-                            null,
-                            2
-                        )}
-                        onBlur={(e) => {
-                            try {
-                                const parsed = JSON.parse(e.target.value || "[]") as unknown;
-                                form.setValue(
-                                    "items_template",
-                                    parsed as CreateContractInput["items_template"],
-                                    { shouldValidate: true }
-                                );
-                                form.clearErrors("items_template");
-                            } catch {
-                                form.setError("items_template", {
-                                    message: "JSON invalide",
-                                });
-                            }
-                        }}
-                    />
-                    {form.formState.errors.items_template?.message ? (
-                        <p className="text-sm text-destructive">
-                            {String(form.formState.errors.items_template.message)}
-                        </p>
-                    ) : null}
-                </div>
+                        <div className="flex flex-col gap-2">
+                            <Label className="font-medium text-slate-700">
+                                Mensuel <span className="text-red-500">*</span>
+                            </Label>
+                            <Input
+                                inputMode="decimal"
+                                className="h-12 rounded"
+                                disabled={pending}
+                                {...form.register("monthly")}
+                            />
+                            {form.formState.errors.monthly?.message ? (
+                                <p className="text-sm text-destructive">
+                                    {form.formState.errors.monthly.message}
+                                </p>
+                            ) : null}
+                        </div>
 
-                <div className="flex flex-col gap-2 sm:col-span-2">
-                    <Label htmlFor="contrat-file" className="font-medium text-slate-700">
-                        Fichier contractuel (optionnel)
-                    </Label>
-                    <Input
-                        id="contrat-file"
-                        ref={fileRef}
-                        type="file"
-                        disabled={pending}
-                        className="h-12 rounded pt-2"
-                    />
-                </div>
+                        <div className="flex flex-col gap-2">
+                            <Label className="font-medium text-slate-700">
+                                Payé <span className="text-red-500">*</span>
+                            </Label>
+                            <Input
+                                inputMode="decimal"
+                                className="h-12 rounded"
+                                disabled={pending}
+                                {...form.register("paid")}
+                            />
+                            {form.formState.errors.paid?.message ? (
+                                <p className="text-sm text-destructive">
+                                    {form.formState.errors.paid.message}
+                                </p>
+                            ) : null}
+                        </div>
 
-                <div className="flex flex-col gap-2 sm:col-span-2">
-                    <Label htmlFor="description" className="font-medium text-slate-700">
-                        {t("form.description")}
-                    </Label>
-                    <textarea
-                        id="description"
-                        rows={5}
-                        className={cn(textareaClassName, "rounded")}
-                        disabled={pending}
-                        {...form.register("description")}
-                    />
-                </div>
+                        <div className="flex flex-col gap-2 sm:col-span-2">
+                            <Label htmlFor="billing-cycle" className="font-medium text-slate-700">
+                                Cycle de facturation <span className="text-red-500">*</span>
+                            </Label>
+                            <select
+                                id="billing-cycle"
+                                className={selectClassName}
+                                disabled={pending}
+                                {...form.register("billing_cycle")}
+                            >
+                                <option value="monthly">Mensuel</option>
+                                <option value="quarterly">Trimestriel</option>
+                                <option value="yearly">Annuel</option>
+                                <option value="one_shot">Ponctuel</option>
+                                <option value="custom">Personnalisé</option>
+                            </select>
+                            {form.formState.errors.billing_cycle?.message ? (
+                                <p className="text-sm text-destructive">
+                                    {form.formState.errors.billing_cycle.message}
+                                </p>
+                            ) : null}
+                        </div>
+
+                        <div className="flex flex-col gap-2 sm:col-span-2">
+                            <Label htmlFor="items-template" className="font-medium text-slate-700">
+                                Gabarit des lignes (JSON)
+                            </Label>
+                            <textarea
+                                ref={itemsTextareaRef}
+                                id="items-template"
+                                rows={6}
+                                className={cn(
+                                    textareaClassName,
+                                    "rounded font-mono text-xs"
+                                )}
+                                disabled={pending}
+                                defaultValue={JSON.stringify(
+                                    defaults.items_template ?? [],
+                                    null,
+                                    2
+                                )}
+                                onBlur={(e) => {
+                                    try {
+                                        const parsed = JSON.parse(
+                                            e.target.value || "[]"
+                                        ) as unknown;
+                                        form.setValue(
+                                            "items_template",
+                                            parsed as CreateContractInput["items_template"],
+                                            { shouldValidate: true }
+                                        );
+                                        form.clearErrors("items_template");
+                                    } catch {
+                                        form.setError("items_template", {
+                                            message: "JSON invalide",
+                                        });
+                                    }
+                                }}
+                            />
+                            {form.formState.errors.items_template?.message ? (
+                                <p className="text-sm text-destructive">
+                                    {String(
+                                        form.formState.errors.items_template.message
+                                    )}
+                                </p>
+                            ) : null}
+                        </div>
+
+                        <div className="flex flex-col gap-2 sm:col-span-2">
+                            <Label htmlFor="contrat-file" className="font-medium text-slate-700">
+                                Fichier contractuel (optionnel)
+                            </Label>
+                            <Input
+                                id="contrat-file"
+                                ref={fileRef}
+                                type="file"
+                                disabled={pending}
+                                className="h-12 rounded pt-2"
+                            />
+                        </div>
+
+                        <div className="flex flex-col gap-2 sm:col-span-2">
+                            <Label htmlFor="description" className="font-medium text-slate-700">
+                                {t("form.description")}
+                            </Label>
+                            <textarea
+                                id="description"
+                                rows={5}
+                                className={cn(textareaClassName, "rounded")}
+                                disabled={pending}
+                                {...form.register("description")}
+                            />
+                        </div>
+                    </>
+                ) : null}
             </div>
 
             <div className="mt-8 flex flex-col flex-wrap gap-3 border-t border-slate-100 pt-6 md:flex-row md:justify-end">

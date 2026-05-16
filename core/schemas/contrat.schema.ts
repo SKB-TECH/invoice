@@ -15,7 +15,56 @@ export const billingCycleEnum = z.enum([
     "custom",
 ]);
 
-export const contractStatusEnum = z.enum(["actif", "suspendu", "complet"]);
+/** Valeurs entières attendues par l’API (à ajuster si le backend documente un autre mapping). */
+const BILLING_CYCLE_TO_API: Record<
+    z.infer<typeof billingCycleEnum>,
+    number
+> = {
+    monthly: 1,
+    quarterly: 2,
+    yearly: 3,
+    one_shot: 4,
+    custom: 5,
+};
+
+const API_TO_BILLING_CYCLE = {
+    1: "monthly",
+    2: "quarterly",
+    3: "yearly",
+    4: "one_shot",
+    5: "custom",
+} as const satisfies Record<number, z.infer<typeof billingCycleEnum>>;
+
+export function billingCycleToApi(
+    cycle: z.infer<typeof billingCycleEnum>
+): number {
+    return BILLING_CYCLE_TO_API[cycle];
+}
+
+export function billingCycleFromApi(
+    raw: string | number | null | undefined
+): z.infer<typeof billingCycleEnum> {
+    if (raw === null || raw === undefined) return "monthly";
+    const n =
+        typeof raw === "number" ? raw : Number.parseInt(String(raw).trim(), 10);
+    if (
+        Number.isFinite(n) &&
+        (n === 1 || n === 2 || n === 3 || n === 4 || n === 5)
+    ) {
+        return API_TO_BILLING_CYCLE[n];
+    }
+    const s = String(raw).toLowerCase();
+    if (
+        s === "monthly" ||
+        s === "quarterly" ||
+        s === "yearly" ||
+        s === "one_shot" ||
+        s === "custom"
+    ) {
+        return s as z.infer<typeof billingCycleEnum>;
+    }
+    return "monthly";
+}
 
 /** Objet ou tableau JSON pour le template de lignes */
 export const itemsTemplateSchema = z.union([
@@ -53,8 +102,7 @@ const contractFieldsSchema = z.object({
     description: z.string().trim().optional().nullable(),
     billing_cycle: billingCycleEnum,
     items_template: itemsTemplateFromForm,
-    /** Champs UI additionnels — ignorés côté API s’ils ne sont pas supportés */
-    status: contractStatusEnum.optional().default("actif"),
+    /** Affichage local / futur champ API ; non inclus dans les payloads multipart actuels. */
     phone: z.string().trim().optional().nullable(),
     auto_renew: z.boolean().optional().default(false),
 });
@@ -104,20 +152,49 @@ export const contractResponseSchema = z
         monthly: z.union([z.number(), z.string()]).transform(Number),
         paid: z.union([z.number(), z.string()]).transform(Number),
         description: z.string().nullable().optional(),
-        billing_cycle: z.string(),
+        billing_cycle: z
+            .union([z.number(), z.string()])
+            .transform((v) => billingCycleFromApi(v)),
         items_template: z.unknown(),
         file_path: z.string().nullable().optional(),
         file_url: z.string().nullable().optional(),
-        status: z.string().optional(),
+        /** API : souvent entier (ex. 1 = actif) */
+        status: z
+            .union([z.string(), z.number()])
+            .optional()
+            .transform((v) =>
+                v === undefined ? undefined : String(v)
+            ),
         phone: z.string().nullable().optional(),
-        auto_renew: z.boolean().optional(),
+        /** API : 0 | 1 ou booléen */
+        auto_renew: z
+            .union([z.boolean(), z.number()])
+            .optional()
+            .transform((v) => {
+                if (v === undefined) return undefined;
+                if (typeof v === "boolean") return v;
+                return v !== 0;
+            }),
         client_name: z.string().nullable().optional(),
+        /** Présent sur les listes / détails enrichis */
+        client: z
+            .object({
+                id: idLike.optional(),
+                name: z.string().optional(),
+                phone: z.string().nullable().optional(),
+                email: z.string().optional(),
+            })
+            .passthrough()
+            .optional(),
     })
     .passthrough();
 
 export const paginatedContractsSchema = z
     .object({
-        data: z.array(contractResponseSchema),
+        /** Laravel / anciens payloads */
+        data: z.array(contractResponseSchema).optional(),
+        /** Réponses API actuelles */
+        items: z.array(contractResponseSchema).optional(),
         meta: z
             .object({
                 current_page: z.number().optional(),
@@ -128,7 +205,11 @@ export const paginatedContractsSchema = z
             .passthrough()
             .optional(),
     })
-    .passthrough();
+    .passthrough()
+    .transform((raw) => ({
+        data: raw.data ?? raw.items ?? [],
+        meta: raw.meta,
+    }));
 
 export type CreateContractInput = z.infer<typeof createContractSchema>;
 export type UpdateContractInput = z.infer<typeof updateContractSchema>;
