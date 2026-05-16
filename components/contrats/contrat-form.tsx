@@ -13,6 +13,7 @@ import type { ContratDetailRecord } from "@/lib/contrats/contrats-data";
 import {
     BILLING_CYCLE_FORM_OPTIONS,
     billingCycleFromApi,
+    billingCycleLabelFr,
     createContractSchema,
     updateContractSchema,
     type CreateContractInput,
@@ -221,6 +222,15 @@ export function ContratForm(props: ContratFormProps) {
     const pending = createMut.isPending || updateMut.isPending;
     const isCreate = props.variant === "create";
 
+    const billingCycleWatched = form.watch("billing_cycle");
+
+    useEffect(() => {
+        if (!isCreate) return;
+        if (billingCycleWatched === "one_shot") {
+            form.setValue("monthly", 0, { shouldValidate: true });
+        }
+    }, [billingCycleWatched, form, isCreate]);
+
     function syncItemsFromTextarea(): boolean {
         const ta = itemsTextareaRef.current;
         if (!ta) return true;
@@ -245,10 +255,7 @@ export function ContratForm(props: ContratFormProps) {
             return;
         }
 
-        const selectedFile =
-            props.variant === "edit"
-                ? (fileRef.current?.files?.[0] ?? null)
-                : null;
+        const selectedFile = fileRef.current?.files?.[0] ?? null;
 
         void form.handleSubmit((values) => {
             if (props.variant === "create") {
@@ -491,6 +498,52 @@ export function ContratForm(props: ContratFormProps) {
                                     {form.formState.errors.billing_cycle.message}
                                 </p>
                             ) : null}
+                        </div>
+
+                        {billingCycleWatched !== "one_shot" ? (
+                            <div className="flex flex-col gap-2 sm:col-span-1">
+                                <Label
+                                    htmlFor="monthly-create"
+                                    className="font-medium text-slate-700"
+                                >
+                                    Montant&nbsp;
+                                    {billingCycleLabelFr(
+                                        billingCycleWatched
+                                    )}{" "}
+                                    <span className="text-red-500">*</span>
+                                </Label>
+                                <Input
+                                    id="monthly-create"
+                                    inputMode="decimal"
+                                    className="h-12 rounded"
+                                    disabled={pending}
+                                    {...form.register("monthly")}
+                                />
+                                {form.formState.errors.monthly?.message ? (
+                                    <p className="text-sm text-destructive">
+                                        {
+                                            form.formState.errors.monthly
+                                                .message
+                                        }
+                                    </p>
+                                ) : null}
+                            </div>
+                        ) : null}
+
+                        <div className={`flex flex-col gap-2 ${billingCycleWatched == "one_shot" ? "sm:col-span-2" : "sm:col-span-1"}`}>
+                            <Label
+                                htmlFor="contrat-file-create"
+                                className="font-medium text-slate-700"
+                            >
+                                Fichier du contrat
+                            </Label>
+                            <Input
+                                id="contrat-file-create"
+                                ref={fileRef}
+                                type="file"
+                                disabled={pending}
+                                className="h-12 rounded pt-2"
+                            />
                         </div>
                     </>
                 ) : null}

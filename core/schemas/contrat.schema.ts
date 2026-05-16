@@ -190,9 +190,31 @@ function refineContractReferentiel(
     }
 }
 
+function refineContractMonthlyWhenRecurring(
+    data: {
+        billing_cycle?: z.infer<typeof billingCycleEnum>;
+        monthly?: number;
+    },
+    ctx: z.RefinementCtx
+) {
+    if (data.billing_cycle === undefined || data.billing_cycle === "one_shot") {
+        return;
+    }
+    const m = data.monthly;
+    if (m === undefined || m <= 0) {
+        ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message:
+                "Indiquez un montant correspondant au cycle de facturation sélectionné.",
+            path: ["monthly"],
+        });
+    }
+}
+
 export const createContractSchema = contractFieldsSchema
     .superRefine(refineContractDateOrder)
-    .superRefine(refineContractReferentiel);
+    .superRefine(refineContractReferentiel)
+    .superRefine(refineContractMonthlyWhenRecurring);
 
 /** `partial()` ne s’applique qu’à l’objet sans `superRefine` ; le raffinement dates est réappliqué après. */
 export const updateContractSchema = contractFieldsSchema
