@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import {
@@ -27,11 +27,19 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
+
 import { cn } from "@/lib/utils";
-import {useInvoices} from "@/core/hooks/invoices/useInvoices";
+import { useInvoices } from "@/core/hooks/invoices/useInvoices";
 
-
-type InvoiceStatus = "Brouillon" | "Émise" | "Payée" | "Annulée";
+type InvoiceStatus =
+    | "Brouillon"
+    | "Enregistrée"
+    | "Validée"
+    | "Normalisée"
+    | "Soumise"
+    | "Réceptionnée"
+    | "Payée"
+    | "Classée";
 
 type InvoiceComment = {
     id: string;
@@ -85,16 +93,34 @@ function formatAmount(amount: number, currency: string) {
         .replace(/\s/g, ".")}`;
 }
 
-function mapApiStatusToUiStatus(status: string): InvoiceStatus {
-    switch (status) {
-        case "draft":
+function mapWorkflowStatusToUiStatus(
+    workflowStatus?: string | null
+): InvoiceStatus {
+    switch (workflowStatus) {
+        case "brouillon":
             return "Brouillon";
-        case "issued":
-            return "Émise";
-        case "paid":
+
+        case "enregistrer":
+            return "Enregistrée";
+
+        case "valider":
+            return "Validée";
+
+        case "normaliser":
+            return "Normalisée";
+
+        case "soumise":
+            return "Soumise";
+
+        case "receptionner":
+            return "Réceptionnée";
+
+        case "payer":
             return "Payée";
-        case "cancelled":
-            return "Annulée";
+
+        case "classer":
+            return "Classée";
+
         default:
             return "Brouillon";
     }
@@ -104,12 +130,27 @@ function StatutBadge({ statut }: { statut: InvoiceStatus }) {
     const styles: Record<InvoiceStatus, string> = {
         Brouillon:
             "border-transparent bg-[#FCF5E5] text-[#E8BC52] hover:bg-[#FCF5E5]",
-        Émise:
+
+        Enregistrée:
             "border-transparent bg-[#E8EFFB] text-[#6691E7] hover:bg-[#E8EFFB]",
+
+        Validée:
+            "border-transparent bg-[#E8F7EE] text-[#16A34A] hover:bg-[#E8F7EE]",
+
+        Normalisée:
+            "border-transparent bg-[#EDE9FE] text-[#7C3AED] hover:bg-[#EDE9FE]",
+
+        Soumise:
+            "border-transparent bg-[#E0F2FE] text-[#0284C7] hover:bg-[#E0F2FE]",
+
+        Réceptionnée:
+            "border-transparent bg-[#FFF7ED] text-[#EA580C] hover:bg-[#FFF7ED]",
+
         Payée:
             "border-transparent bg-[#DCF6E9] text-[#13C56B] hover:bg-[#DCF6E9]",
-        Annulée:
-            "border-transparent bg-red-50 text-red-500 hover:bg-red-50",
+
+        Classée:
+            "border-transparent bg-slate-100 text-slate-600 hover:bg-slate-100",
     };
 
     return (
@@ -121,7 +162,6 @@ function StatutBadge({ statut }: { statut: InvoiceStatus }) {
         </Badge>
     );
 }
-
 function AvatarStack({ reviewers }: { reviewers: Reviewer[] }) {
     const visibleReviewers = reviewers.slice(0, 3);
     const remaining = reviewers.length - visibleReviewers.length;
@@ -158,9 +198,8 @@ export default function InvoicesPage() {
     const t = useTranslations("invoicesPage");
 
     const [page, setPage] = useState(1);
-    const [selectedInvoice, setSelectedInvoice] = useState<Invoice | null>(
-        null
-    );
+    const [selectedInvoice, setSelectedInvoice] =
+        useState<Invoice | null>(null);
     const [comment, setComment] = useState("");
     const [invoiceOverrides, setInvoiceOverrides] =
         useState<InvoiceOverrides>({});
@@ -177,22 +216,35 @@ export default function InvoicesPage() {
         return (data?.items ?? []).map((item) => {
             const override = invoiceOverrides[item.id.toString()];
 
+            const clientName =
+                item.receiver_info?.legal_name ||
+                item.receiver_info?.name ||
+                item.client_info?.legal_name ||
+                item.client_info?.name ||
+                item.client?.name ||
+                "—";
+
+            const phone =
+                item.receiver_info?.phone ||
+                item.client_info?.phone ||
+                item.client?.phone ||
+                "—";
+
+            const articles =
+                item.items
+                    ?.map((line) => line.description)
+                    .filter(Boolean)
+                    .join(", ") || "—";
+
             const baseInvoice: Invoice = {
                 id: item.id.toString(),
-                invoice: item.invoice_number,
-                client:
-                    item.client?.legal_name ||
-                    item.client?.client_name ||
-                    "—",
-                article:
-                    item.line_items
-                        ?.map((line) => line.service_name)
-                        .filter(Boolean)
-                        .join(", ") || "—",
-                amount: Number(item.total ?? 0),
-                currency: item.currency || "USD",
-                statut: mapApiStatusToUiStatus(item.status),
-                telephone: "—",
+                invoice: item.invoice_ref || item.number || `#${item.id}`,
+                client: clientName,
+                article: articles,
+                amount: Number(item.total_amount ?? 0),
+                currency: item.currency || "CDF",
+                statut: mapWorkflowStatusToUiStatus(item.workflow_status),
+                telephone: phone,
                 reviewers: [],
                 comments: [],
             };
@@ -205,7 +257,6 @@ export default function InvoicesPage() {
             };
         });
     }, [data?.items, invoiceOverrides]);
-
 
     const handleChangeStatus = (statut: InvoiceStatus) => {
         if (!selectedInvoice) return;
@@ -291,6 +342,7 @@ export default function InvoicesPage() {
                 setSelectedInvoice(null);
                 setComment("");
             }
+
             return nextPage;
         });
     };
@@ -321,7 +373,9 @@ export default function InvoicesPage() {
 
                 <ChevronRight className="size-4 shrink-0" />
 
-                <span className="text-slate-800">{t("breadcrumb.view")}</span>
+                <span className="text-slate-800">
+                    {t("breadcrumb.view")}
+                </span>
             </span>
 
             <div className="mb-6 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
@@ -350,10 +404,6 @@ export default function InvoicesPage() {
 
                             <TableHead className="h-11 bg-slate-100 px-4 text-left text-sm font-semibold text-slate-700">
                                 {t("table.client")}
-                            </TableHead>
-
-                            <TableHead className="h-11 bg-slate-100 px-4 text-left text-sm font-semibold text-slate-700">
-                                {t("table.article")}
                             </TableHead>
 
                             <TableHead className="h-11 bg-slate-100 px-4 text-left text-sm font-semibold text-slate-700">
@@ -422,18 +472,13 @@ export default function InvoicesPage() {
                                     key={row.id}
                                     className="border-slate-200 hover:bg-slate-50/80"
                                 >
-                                    <TableCell className="px-4 py-3 text-sm text-slate-800">
+                                    <TableCell className="px-4 py-3 text-sm font-semibold text-slate-800">
                                         {row.invoice}
                                     </TableCell>
 
                                     <TableCell className="px-4 py-3 text-sm text-slate-800">
                                         {row.client}
                                     </TableCell>
-
-                                    <TableCell className="px-4 py-3 text-sm text-slate-800">
-                                        {row.article}
-                                    </TableCell>
-
                                     <TableCell className="px-4 py-3 text-sm font-semibold text-slate-800">
                                         {formatAmount(
                                             row.amount,
@@ -488,7 +533,7 @@ export default function InvoicesPage() {
                                         >
                                             <Link
                                                 href={`/home/factures/${encodeURIComponent(
-                                                    row.id
+                                                    row?.id
                                                 )}`}
                                                 aria-label={t(
                                                     "table.viewInvoice"

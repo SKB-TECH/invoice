@@ -3,12 +3,15 @@ import {
     useQuery,
     useQueryClient,
 } from "@tanstack/react-query";
+
 import { invoiceService } from "@/core/services/invoice.service";
+
 import type {
-    CreateInvoiceResponse,
-    GetInvoiceContractsParams, GetInvoiceFournituresParams,
+    CreateInvoiceResponse, CreateInvoiceSubmission,
+    GetInvoiceContractsParams,
+    GetInvoiceFournituresParams,
     GetInvoicesParams,
-    InvoiceCreateRequest,
+    InvoiceCreateRequest, InvoiceDetailResponse, NormalizeInvoicePayload, NormalizeInvoiceResponse,
 } from "@/core/types/invoice";
 
 export function useInvoices(params?: GetInvoicesParams) {
@@ -29,10 +32,29 @@ export function useInvoiceContracts(
     });
 }
 
+export function useInvoiceFournitures(
+    params?: GetInvoiceFournituresParams
+) {
+    return useQuery({
+        queryKey: ["invoice-fournitures", params],
+        queryFn: () => invoiceService.getInvoiceFournitures(params),
+        retry: false,
+    });
+}
+
+export function useInvoiceTypes() {
+    return useQuery({
+        queryKey: ["invoice-types"],
+        queryFn: () => invoiceService.getInvoiceTypes(),
+        retry: false,
+    });
+}
+
+
 type UseCreateInvoiceOptions = {
     onSuccess?: (
         data: CreateInvoiceResponse,
-        variables: InvoiceCreateRequest
+        variables: CreateInvoiceSubmission
     ) => void;
     onError?: (error: unknown) => void;
 };
@@ -43,7 +65,7 @@ export function useCreateInvoice(options?: UseCreateInvoiceOptions) {
     return useMutation<
         CreateInvoiceResponse,
         unknown,
-        InvoiceCreateRequest
+        CreateInvoiceSubmission
     >({
         mutationFn: invoiceService.createInvoice,
 
@@ -59,12 +81,47 @@ export function useCreateInvoice(options?: UseCreateInvoiceOptions) {
     });
 }
 
-export function useInvoiceFournitures(
-    params?: GetInvoiceFournituresParams
-) {
-    return useQuery({
-        queryKey: ["invoice-fournitures", params],
-        queryFn: () => invoiceService.getInvoiceFournitures(params),
+export function useInvoiceById(id?: number | string) {
+    return useQuery<InvoiceDetailResponse>({
+        queryKey: ["invoice", id],
+        queryFn: () => invoiceService.getInvoiceById(id as number | string),
+        enabled: Boolean(id),
         retry: false,
+    });
+}
+
+type UseNormalizeInvoiceOptions = {
+    onSuccess?: (
+        data: NormalizeInvoiceResponse,
+        variables: NormalizeInvoicePayload
+    ) => void;
+    onError?: (error: unknown) => void;
+};
+
+export function useNormalizeInvoice(
+    options?: UseNormalizeInvoiceOptions
+) {
+    const queryClient = useQueryClient();
+
+    return useMutation<
+        NormalizeInvoiceResponse,
+        unknown,
+        NormalizeInvoicePayload
+    >({
+        mutationFn: invoiceService.normalizeInvoice,
+
+        onSuccess: (data, variables) => {
+            queryClient.invalidateQueries({
+                queryKey: ["invoices"],
+            });
+
+            queryClient.invalidateQueries({
+                queryKey: ["invoice", variables.id],
+            });
+
+            options?.onSuccess?.(data, variables);
+        },
+
+        onError: options?.onError,
     });
 }

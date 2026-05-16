@@ -1,20 +1,52 @@
-"use client";
-
-import { useQuery } from "@tanstack/react-query";
 import {
-    rbacConfigurationService,
-    type ListPermissionsParams,
-} from "@/core/services/rbac-configuration.service";
+    useMutation,
+    useQuery,
+    useQueryClient,
+} from "@tanstack/react-query";
 
-export const permissionsQueryKeys = {
-    all: ["permissions"] as const,
-    list: (params: ListPermissionsParams) =>
-        [...permissionsQueryKeys.all, "list", params] as const,
+import { permissionService } from "@/core/services/permission.service";
+import type {
+    CreatePermissionPayload,
+    CreatePermissionResponse,
+    GetPermissionsParams,
+} from "@/core/types/permission";
+
+export function usePermissions(params?: GetPermissionsParams) {
+    return useQuery({
+        queryKey: ["permissions", params],
+        queryFn: () => permissionService.getPermissions(params),
+        retry: false,
+    });
+}
+
+type UseCreatePermissionOptions = {
+    onSuccess?: (
+        data: CreatePermissionResponse,
+        variables: CreatePermissionPayload
+    ) => void;
+    onError?: (error: unknown) => void;
 };
 
-export function usePermissions(params: ListPermissionsParams = {}) {
-    return useQuery({
-        queryKey: permissionsQueryKeys.list(params),
-        queryFn: () => rbacConfigurationService.fetchPermissions(params),
+export function useCreatePermission(
+    options?: UseCreatePermissionOptions
+) {
+    const queryClient = useQueryClient();
+
+    return useMutation<
+        CreatePermissionResponse,
+        unknown,
+        CreatePermissionPayload
+    >({
+        mutationFn: permissionService.createPermission,
+
+        onSuccess: (data, variables) => {
+            queryClient.invalidateQueries({
+                queryKey: ["permissions"],
+            });
+
+            options?.onSuccess?.(data, variables);
+        },
+
+        onError: options?.onError,
     });
 }

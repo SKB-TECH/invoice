@@ -2,8 +2,12 @@
 
 import { useMemo } from "react";
 import { useTranslations } from "next-intl";
-import { useInvoiceContracts } from "@/core/hooks/invoices/useInvoices";
 
+import {
+    useInvoiceContracts,
+    useInvoiceTypes,
+} from "@/core/hooks/invoices/useInvoices";
+import { useClients } from "@/core/hooks/client/useClient";
 
 import { ClientSearchSelect } from "./ClientSearchSelect";
 import { FieldLabel, InputField, SelectField } from "./Fields";
@@ -16,7 +20,6 @@ import type {
     SetInvoiceForm,
     SetInvoiceItems,
 } from "./types";
-import {useClients} from "@/core/hooks/client/useClient";
 
 export function StepClient({
                                form,
@@ -48,11 +51,26 @@ export function StepClient({
     } = useClients(clientListParams);
 
     const {
+        data: invoiceTypesData,
+        isPending: isLoadingInvoiceTypes,
+        isError: isInvoiceTypesError,
+    } = useInvoiceTypes();
+
+    const invoiceTypes = invoiceTypesData?.items ?? [];
+
+    /**
+     * Les contrats sont récupérés directement par ID du client.
+     * Exemple :
+     * GET /invoices/contracts?page=1&perPage=100&client_id=2
+     */
+    const {
         data: contractsData,
         isLoading: isLoadingContracts,
+        isError: isContractsError,
     } = useInvoiceContracts({
         page: 1,
         perPage: 100,
+        client_id: form.clientId ?? undefined,
     });
 
     const clients: Client[] = useMemo(() => {
@@ -69,13 +87,11 @@ export function StepClient({
     }, [clientsData?.items]);
 
     const contracts = useMemo(() => {
-        const allContracts = contractsData?.items ?? [];
+        if (!form.clientId) {
+            return [];
+        }
 
-        if (!form.clientId) return [];
-
-        return allContracts.filter(
-            (contract) => contract.client_id === form.clientId
-        );
+        return contractsData?.items ?? [];
     }, [contractsData?.items, form.clientId]);
 
     const handleSelectClient = (client: Client) => {
@@ -89,6 +105,11 @@ export function StepClient({
             address: client.address,
             phone: client.phone,
             email: client.email,
+
+            /**
+             * Lorsqu’on change de client,
+             * on vide le contrat sélectionné.
+             */
             contractId: null,
             contractReference: "",
         }));
@@ -190,17 +211,14 @@ export function StepClient({
                         }
                         error={errors.contractId}
                     />
+
+                    {isContractsError && form.clientId && (
+                        <p className="mt-2 text-sm font-medium text-red-500">
+                            Impossible de charger les contrats du client.
+                        </p>
+                    )}
                 </div>
 
-                <div>
-                    <FieldLabel>{t("client.clientName")}</FieldLabel>
-                    <InputField value={form.clientName} readOnly />
-                </div>
-
-                <div>
-                    <FieldLabel>Référence du contrat</FieldLabel>
-                    <InputField value={form.contractReference} readOnly />
-                </div>
 
                 <div>
                     <FieldLabel>{t("client.nif")}</FieldLabel>
@@ -214,7 +232,7 @@ export function StepClient({
 
                 <div>
                     <FieldLabel>{t("client.idNat")}</FieldLabel>
-                    <InputField value={form.idNat} readOnly />
+                    <InputField value={form.idNat} />
                 </div>
 
                 <div>
@@ -236,22 +254,18 @@ export function StepClient({
                     <FieldLabel>{t("client.invoiceType")}</FieldLabel>
 
                     <SelectField
-                        placeholder={t("client.invoiceTypePlaceholder")}
+                        placeholder={
+                            isLoadingInvoiceTypes
+                                ? "Chargement des types de facture..."
+                                : invoiceTypes.length === 0
+                                    ? "Aucun type de facture disponible"
+                                    : "Sélectionnez un type de facture"
+                        }
                         value={form.invoiceType}
-                        options={[
-                            {
-                                label: t("invoiceTypes.sale"),
-                                value: "Vente",
-                            },
-                            {
-                                label: t("invoiceTypes.creditNote"),
-                                value: "Avoir",
-                            },
-                            {
-                                label: t("invoiceTypes.proforma"),
-                                value: "Proforma",
-                            },
-                        ]}
+                        options={invoiceTypes.map((type) => ({
+                            label: type.title,
+                            value: String(type.id),
+                        }))}
                         onChange={(value) => {
                             setForm((prev) => ({
                                 ...prev,
@@ -263,8 +277,18 @@ export function StepClient({
                                 invoiceType: undefined,
                             }));
                         }}
+                        disabled={
+                            isLoadingInvoiceTypes ||
+                            invoiceTypes.length === 0
+                        }
                         error={errors.invoiceType}
                     />
+
+                    {isInvoiceTypesError && (
+                        <p className="mt-2 text-sm font-medium text-red-500">
+                            Impossible de charger les types de facture.
+                        </p>
+                    )}
                 </div>
 
                 <div>
@@ -313,7 +337,7 @@ export function StepClient({
                     />
                 </div>
 
-                <div>
+                <div className={"w-full"}>
                     <FieldLabel>Date d’échéance</FieldLabel>
 
                     <InputField

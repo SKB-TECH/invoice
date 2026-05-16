@@ -72,80 +72,6 @@ export type InvoiceLineItemInput = {
     tax_rate: number;
 };
 
-export type InvoiceCreateRequest = {
-    number: string;
-    currency: string;
-    client_id: number;
-    payment_info: Record<string, unknown>;
-    items: InvoiceLineItemInput[];
-
-    paid_amount?: number;
-    due_date?: string;
-    normalization?: Record<string, unknown>;
-    validation_info?: Record<string, unknown>;
-    validator_id?: number;
-    discount_info?: Record<string, unknown>;
-    contract_id?: number;
-    pdf_file?: string;
-    comment?: string;
-    type?: number;
-    reminder_count?: number;
-    last_reminder?: string;
-    template_id?: number;
-    external_id?: string;
-    notes?: string;
-};
-
-export type CreateInvoiceResponse = {
-    message?: string;
-    data?: InvoiceItem;
-    invoice?: InvoiceItem;
-};
-
-/* ================================
-   Contrats disponibles pour facture
-================================ */
-
-export interface InvoiceContract {
-    id: number;
-    status: number;
-    account_id: number;
-    client_id: number;
-    title: string;
-    reference: string;
-    ikwook_id: number;
-    starting: string;
-    ending: string;
-    auto_renew: number;
-    renew_count: number;
-    contract_id: number;
-    total: number;
-    monthly: number;
-    currency: string;
-    paid: number;
-    payable: number;
-    file: string;
-    notice: string;
-    description: string;
-    type: number;
-    billing_cycle: number;
-    next_invoice: string;
-    items_template: Array<Record<string, unknown>>;
-    notes: string;
-    external_id: string;
-    created_at: string;
-    updated_at: string;
-}
-
-export interface GetInvoiceContractsParams {
-    page?: number;
-    perPage?: number;
-}
-
-export interface GetInvoiceContractsResponse {
-    items: InvoiceContract[];
-    meta: InvoiceMeta;
-}
 
 export type InvoiceFourniture = {
     id: number;
@@ -186,4 +112,247 @@ export type GetInvoiceFournituresResponse = {
         perPage: number;
         total: number;
     };
+};
+
+export type InvoiceContractClient = {
+    id: number;
+    name: string;
+    email: string;
+    phone: string;
+    nif: string;
+    rccm: string;
+    reference: string;
+    category: number;
+};
+
+export type InvoiceContract = {
+    id: number;
+    status: number;
+    account_id: number;
+    client_id: number;
+
+    client: InvoiceContractClient;
+
+    title: string;
+    reference: string;
+    ikwook_id: number;
+
+    starting: string;
+    ending: string;
+
+    auto_renew: number;
+    renew_count: number;
+
+    contract_id: number;
+    parent_contract: InvoiceContract | null;
+
+    total: number;
+    monthly: number;
+    currency: string;
+    paid: number;
+    payable: number;
+
+    file: string;
+    notice: string | null;
+    description: string;
+
+    type: number;
+    type_info: unknown | null;
+
+    billing_cycle: number;
+    billing_cycle_info: unknown | null;
+
+    next_invoice: string | null;
+
+    items_template: unknown[];
+
+    notes: string;
+    external_id: string;
+
+    created_at: string;
+    updated_at: string;
+};
+
+export type GetInvoiceContractsResponse = {
+    items: InvoiceContract[];
+    meta: {
+        account_id: number;
+        page: number;
+        perPage: number;
+        total: number;
+    };
+};
+
+export type InvoiceTypeItem = {
+    account_id: number;
+    id: number;
+    code: string;
+    title: string;
+    description: string;
+    mention: string;
+    value: string;
+    sort: number;
+    is_default: boolean;
+    family: string;
+};
+
+export type GetInvoiceTypesResponse = {
+    items: InvoiceTypeItem[];
+};
+
+export type GetInvoiceContractsParams = {
+    page?: number;
+    perPage?: number;
+    status?: number;
+    client_id?: number;
+    contract_id?: number;
+    type?: number;
+    billing_cycle?: number;
+};
+
+export type InvoiceCreateItemInput = {
+    description: string;
+    quantity: number;
+    unit_price: number;
+    tax_rate: number;
+    discount_rate: number;
+};
+
+export type InvoicePaymentInfo = {
+    method: string;
+    bank_name?: string;
+    account_number?: string;
+    reference?: string;
+    due_days?: number;
+};
+
+export type InvoiceNormalizationInfo = {
+    mode: string;
+};
+
+export type InvoiceCreateRequest = {
+    currency: "CDF" | "USD";
+    client_id: number;
+    payment_info: InvoicePaymentInfo;
+    due_date?: string;
+    items: InvoiceCreateItemInput[];
+
+    contract_id?: number;
+    type?: number;
+    template_id?: number;
+
+    normalization?: InvoiceNormalizationInfo;
+    workflow_status?: string;
+};
+
+export type CreateInvoiceSubmission = {
+    payload: InvoiceCreateRequest;
+    pdfFile: File;
+};
+
+export type CreateInvoiceResponse = {
+    status?: string;
+    message?: string;
+    data?: unknown;
+};
+
+export type InvoiceDetailLineItem = {
+    description: string;
+    quantity: number;
+    unit_price: number;
+    tax_rate: number;
+    discount_rate: number;
+    discount_amount: number;
+    subtotal: number;
+    tax_amount: number;
+    line_total: number;
+};
+
+export type InvoiceDetailResponse = {
+    account_id: number;
+    id: number;
+    number: string;
+    status: number;
+
+    client_id: number;
+    client_info: Record<string, unknown>;
+    payment_info: Record<string, unknown>;
+
+    items: InvoiceDetailLineItem[];
+
+    invoice_amount: number;
+    tax_amount: number;
+    total_amount: number;
+    paid_amount: number;
+    balance: number;
+
+    currency: string;
+
+    sender_info: Record<string, unknown>;
+    receiver_info: Record<string, unknown>;
+
+    due_date: string;
+    comment: string;
+    notes: string;
+
+    created_at: string;
+    updated_at: string;
+
+    workflow_status?: string;
+    invoice_ref?: string;
+    contract_id?: number;
+    template_id?: number;
+    type?: number;
+};
+
+export type NormalizeInvoicePayload = {
+    id: number | string;
+    invoice_sub_category?: string;
+};
+
+export type NormalizeInvoiceResponse = {
+    account_id: number;
+    id: number;
+    number: string;
+    status: number;
+
+    client_id: number;
+    client_info: Record<string, unknown>;
+    payment_info: Record<string, unknown>;
+
+    items: {
+        description: string;
+        quantity: number;
+        unit_price: number;
+        tax_rate: number;
+        discount_rate: number;
+        discount_amount: number;
+        subtotal: number;
+        tax_amount: number;
+        line_total: number;
+    }[];
+
+    invoice_amount: number;
+    tax_amount: number;
+    total_amount: number;
+    paid_amount: number;
+    balance: number;
+
+    currency: string;
+
+    sender_info: Record<string, unknown>;
+    receiver_info: Record<string, unknown>;
+
+    due_date: string;
+    comment: string;
+    notes: string;
+
+    created_at: string;
+    updated_at: string;
+
+    workflow_status?: string;
+    invoice_ref?: string;
+    contract_id?: number;
+    template_id?: number;
+    type?: number;
 };
