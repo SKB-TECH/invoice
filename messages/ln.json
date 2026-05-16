@@ -492,6 +492,7 @@
       "creating": "Kozala na kobakala article…",
       "invalidForm": "Talá ba champs oyo esengeli mpe ntalo.",
       "referentialPlaceholder": "Pona référentiel",
+      "referentialLoading": "Kotia ba référentiels…",
       "retryReferentialsFetch": "Komeka lisusu",
       "referentialLoadError": "Référentiels ekokaki te kótia.",
       "referentialNoneForAxis": "Référentiel moko te. Bakisa na bobongisi.",
@@ -519,6 +520,7 @@
       "referencePrefix": "Ref. : ",
       "unknownTaxGroupName": "Etuluku (ebumi to epesami)",
       "taxGroupHint": "Ntalo na TVA elandi ntalo avant TVA (pe liboso) selon groupe fiscal oyo.",
+      "referentialFallback": "Référentiel n° {id} ezali té na liste",
       "fields": {
         "description": "Ndimbola",
         "status": "Etaleli",
