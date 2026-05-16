@@ -179,7 +179,7 @@ export function ClientForm(props: ClientFormProps) {
             noValidate
         >
             <div className="grid gap-6 sm:grid-cols-2">
-                <div className="flex flex-col gap-2 sm:col-span-2">
+                <div className="flex flex-col gap-2 sm:col-span-1">
                     <Label htmlFor="client-type" className="font-medium text-slate-700">
                         Type de client <span className="text-red-500">*</span>
                     </Label>
