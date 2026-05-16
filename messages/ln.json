@@ -463,7 +463,8 @@
         "specialPrice": "Loposo ya ntina / Promotion",
         "pieceUnit": "Mokapo / Moto",
         "unit": "Moto",
-        "articleGroup": "Etuluku"
+        "articleGroup": "Etuluku",
+        "referential": "Référentiel"
       },
       "placeholders": {
         "priceExclTaxExample": "Ex: 10 000",
@@ -488,7 +489,12 @@
         "save": "Bomba"
       },
       "creating": "Kozala na kobakala article…",
-      "invalidForm": "Talá ba champs oyo esengeli mpe ntalo."
+      "invalidForm": "Talá ba champs oyo esengeli mpe ntalo.",
+      "referentialPlaceholder": "Pona référentiel",
+      "retryReferentialsFetch": "Komeka lisusu",
+      "referentialLoadError": "Référentiels ekokaki te kótia.",
+      "referentialNoneForAxis": "Référentiel moko te. Bakisa na bobongisi.",
+      "invalidReferential": "Pona référentiel ya malamu."
     },
     "view": {
       "title": "Makambo matali eloko",

@@ -21,6 +21,8 @@ import {
     taxGroupSlugToNumericId,
 } from "@/lib/fournitures/articles/fournitures-mappers";
 import { resolveTaxRateDecimal } from "@/lib/fournitures/articles/tax-rates";
+import { useReferentielsCatalog } from "@/core/hooks/referentiels/useReferentielsCatalog";
+import { formatReferentielOptionLabel } from "@/lib/referentials/referential-option-label";
 
 const selectClass =
     "h-12 w-full rounded border border-input bg-transparent py-2 pr-2 pl-2.5 text-sm whitespace-nowrap transition-colors outline-none select-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 data-placeholder:text-muted-foreground dark:bg-input/30 dark:hover:bg-input/50 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4";
@@ -53,6 +55,13 @@ export default function NouvelArticlePage() {
     const tList = useTranslations("articles.list");
     const tNavbar = useTranslations("navbar");
 
+    const {
+        items: referentialRows,
+        isPending: referentialsPending,
+        isError: referentialsError,
+        refetch: refetchReferentials,
+    } = useReferentielsCatalog(null);
+
     const createMutation = useCreateFourniture({
         onSuccess: (data) => {
             router.push(
@@ -71,6 +80,7 @@ export default function NouvelArticlePage() {
 
     const [prixHt, setPrixHt] = useState("");
     const [groupeTax, setGroupeTax] = useState("");
+    const [referentialId, setReferentialId] = useState("");
 
     const prixTtcAffiche = useMemo(() => {
         const ht = parseDecimalInput(prixHt);
@@ -162,6 +172,16 @@ export default function NouvelArticlePage() {
                     const special_price =
                         specialParsed !== null ? specialParsed : 0;
 
+                    const referentialIdRaw = referentialId.trim();
+                    const category_id = Number.parseInt(referentialIdRaw, 10);
+                    if (
+                        !Number.isFinite(category_id) ||
+                        category_id < 1
+                    ) {
+                        toast.error(tCreate("invalidReferential"));
+                        return;
+                    }
+
                     const pieceKey = formPieceToDetailKey(pieceRaw);
                     const unit_id = detailPieceUniteToUnitId(pieceKey);
 
@@ -174,7 +194,7 @@ export default function NouvelArticlePage() {
                         currency: devise,
                         tax_group: taxGroupSlugToNumericId(groupeTaxTrim),
                         special_price,
-                        category_id: 0,
+                        category_id,
                         group_id: articleUiGroupToGroupId(groupe),
                         unit_id,
                         supplier_id: 0,
@@ -228,6 +248,67 @@ export default function NouvelArticlePage() {
                             className="rounded-none border border-input bg-transparent px-3 py-2 text-sm outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/40"
                             placeholder={tCreate("placeholders.optional")}
                         />
+                    </div>
+
+                    <div className="flex flex-col gap-2 sm:col-span-2">
+                        <Label
+                            htmlFor="referentialId"
+                            className="font-medium text-slate-700"
+                        >
+                            {tCreate("fields.referential")}
+                            {requiredStar}
+                        </Label>
+                        <select
+                            id="referentialId"
+                            name="referentialId"
+                            required
+                            value={referentialId}
+                            onChange={(e) => setReferentialId(e.target.value)}
+                            disabled={
+                                referentialsPending ||
+                                referentialsError ||
+                                referentialRows.length === 0
+                            }
+                            className={selectClass}
+                            aria-label={tCreate("fields.referential")}
+                        >
+                            <option value="">
+                                {referentialsPending
+                                    ? tCreate("referentialLoading")
+                                    : tCreate("referentialPlaceholder")}
+                            </option>
+                            {!referentialsPending &&
+                                referentialRows.map((row) => (
+                                    <option
+                                        key={row.id}
+                                        value={String(row.id)}
+                                        title={formatReferentielOptionLabel(row)}
+                                    >
+                                        {formatReferentielOptionLabel(row)}
+                                    </option>
+                                ))}
+                        </select>
+                        {referentialsError ? (
+                            <div className="flex flex-wrap items-center gap-2 text-[13px] text-red-600">
+                                <span>{tCreate("referentialLoadError")}</span>
+                                <button
+                                    type="button"
+                                    className="underline underline-offset-2 hover:text-red-700"
+                                    onClick={() =>
+                                        void refetchReferentials()
+                                    }
+                                >
+                                    {tCreate("retryReferentialsFetch")}
+                                </button>
+                            </div>
+                        ) : null}
+                        {!referentialsPending &&
+                        !referentialsError &&
+                        referentialRows.length === 0 ? (
+                            <p className="text-[13px] text-amber-700">
+                                {tCreate("referentialNoneForAxis")}
+                            </p>
+                        ) : null}
                     </div>
 
                     <div className="flex flex-col gap-2">
@@ -360,28 +441,6 @@ export default function NouvelArticlePage() {
                             <Input id="unite" name="unite" className="h-12 rounded-none" />
                         </div>
                     </div>
-
-                    {/* <div className="flex flex-col gap-2 sm:col-span-2">
-                        <Label htmlFor="groupe" className="font-medium text-slate-700">
-                            {tCreate("fields.articleGroup")}
-                            {requiredStar}
-                        </Label>
-                        <select
-                            id="groupe"
-                            name="groupe"
-                            defaultValue=""
-                            required
-                            className={selectClass}
-                            aria-label={tCreate("fields.articleGroup")}
-                        >
-                            <option value="" disabled>
-                                {tCreate("selectPlaceholder")}
-                            </option>
-                            <option value="a">{tCreate("articleGroups.a")}</option>
-                            <option value="b">{tCreate("articleGroups.b")}</option>
-                            <option value="c">{tCreate("articleGroups.c")}</option>
-                        </select>
-                    </div> */}
                 </div>
 
                 <div className="mt-8 flex flex-col gap-3 border-t border-slate-100 pt-6 md:flex-row md:flex-wrap md:justify-end">
@@ -395,7 +454,12 @@ export default function NouvelArticlePage() {
                     </Button>
                     <Button
                         type="submit"
-                        disabled={createMutation.isPending}
+                        disabled={
+                            createMutation.isPending ||
+                            referentialsPending ||
+                            referentialsError ||
+                            referentialRows.length === 0
+                        }
                         className="h-12 w-52 cursor-pointer rounded-none bg-[#0879bd] px-5 text-white shadow-none hover:bg-[#066aa8]"
                     >
                         {tCreate("actions.save")}

@@ -462,7 +462,8 @@
         "specialPrice": "Prix spécial / Promotion",
         "pieceUnit": "Pièce / Unité",
         "unit": "Unité",
-        "articleGroup": "Groupe"
+        "articleGroup": "Groupe",
+        "referential": "Référentiel"
       },
       "placeholders": {
         "priceExclTaxExample": "Ex: 10 000",
@@ -487,7 +488,12 @@
         "save": "Enregistrer"
       },
       "creating": "Création de l’article…",
-      "invalidForm": "Vérifiez les champs obligatoires et les montants."
+      "invalidForm": "Vérifiez les champs obligatoires et les montants.",
+      "referentialPlaceholder": "Sélectionner un référentiel",
+      "retryReferentialsFetch": "Réessayer",
+      "referentialLoadError": "Impossible de charger les référentiels.",
+      "referentialNoneForAxis": "Aucun référentiel disponible dans le catalogue. Ajoutez-en dans la configuration.",
+      "invalidReferential": "Choisissez un référentiel valide."
     },
     "view": {
       "title": "Détail de l'article",
