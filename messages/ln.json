@@ -426,7 +426,7 @@
   "articles": {
     "list": {
       "title": "Biloko",
-      "searchPlaceholder": "Luka na ID, titre, groupe, prix TTC, statut, période...",
+      "searchPlaceholder": "Luka na ID, titre, référentiel, groupe ya taxe, prix TTC, statut, période...",
       "searchAriaLabel": "Luka eloko",
       "loading": "Tozali kotia ba articles…",
       "refreshing": "Kobongisa…",
@@ -437,7 +437,8 @@
       "columns": {
         "code": "Code",
         "title": "Motó ya likambo",
-        "group": "Etuluku",
+        "referential": "Référentiel",
+        "taxGroup": "Etuluku ya taxe",
         "priceTtc": "Ntalo na TVA",
         "status": "Etaleli",
         "period": "Eleko"
@@ -463,7 +464,8 @@
         "specialPrice": "Loposo ya ntina / Promotion",
         "pieceUnit": "Mokapo / Moto",
         "unit": "Moto",
-        "articleGroup": "Etuluku"
+        "articleGroup": "Etuluku",
+        "referential": "Référentiel"
       },
       "placeholders": {
         "priceExclTaxExample": "Ex: 10 000",
@@ -488,7 +490,12 @@
         "save": "Bomba"
       },
       "creating": "Kozala na kobakala article…",
-      "invalidForm": "Talá ba champs oyo esengeli mpe ntalo."
+      "invalidForm": "Talá ba champs oyo esengeli mpe ntalo.",
+      "referentialPlaceholder": "Pona référentiel",
+      "retryReferentialsFetch": "Komeka lisusu",
+      "referentialLoadError": "Référentiels ekokaki te kótia.",
+      "referentialNoneForAxis": "Référentiel moko te. Bakisa na bobongisi.",
+      "invalidReferential": "Pona référentiel ya malamu."
     },
     "view": {
       "title": "Makambo matali eloko",
