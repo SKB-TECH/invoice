@@ -7,7 +7,6 @@ import { BasicInfoSection } from "@/components/configuration/basic-info-section"
 import { LogoSection } from "@/components/configuration/logo-section";
 import { ChangePasswordSection } from "@/components/configuration/change-password-section";
 import { ReferentialsSection } from "@/components/configuration/referentials-section";
-import { TaxGroupsSection } from "@/components/configuration/tax-groups-section";
 import { BankInformationSection } from "@/components/configuration/bank-information-section";
 import { MembersSection } from "@/components/configuration/members-section";
 import { RolesSection } from "@/components/configuration/roles-section";
@@ -20,7 +19,6 @@ type ConfigMenuId =
     | "logo"
     | "changePassword"
     | "referentials"
-    | "taxGroups"
     | "bank"
     | "members"
     | "roles"
@@ -33,7 +31,6 @@ const MENU_IDS: ConfigMenuId[] = [
     "logo",
     "changePassword",
     "referentials",
-    "taxGroups",
     "bank",
     "members",
     "roles",
