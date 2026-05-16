@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 const COLUMN_KEYS = [
   "code",
   "title",
+  "referential",
   "group",
   "priceTtc",
   "status",
@@ -13,32 +14,30 @@ const COLUMN_KEYS = [
 ] as const;
 
 type Props = {
-  rowCount?: number;
-  className?: string;
+    rowCount?: number;
+    className?: string;
 };
 
 function cellWidths(row: number, col: number): string {
-  const offsets = (
-    row * 2 +
-    col * 5 +
-    (row % 3) * 7
-  ) % 24;
-  switch (col) {
-    case 0:
-      return cn("h-3.5", offsets % 2 ? "w-[4.5rem]" : "w-20");
-    case 1:
-      return cn("h-3.5", offsets % 3 === 0 ? "w-[88%]" : "w-[72%]");
-    case 2:
-      return "h-3.5 w-6";
-    case 3:
-      return cn("h-3.5", offsets % 2 ? "w-24" : "w-28");
-    case 4:
-      return "h-6 w-20 rounded-sm";
-    case 5:
-      return cn("h-3.5", offsets % 2 ? "w-[4.25rem]" : "w-24");
-    default:
-      return "h-3.5 w-16";
-  }
+    const offsets = (row * 2 + col * 5 + (row % 3) * 7) % 24;
+    switch (col) {
+        case 0:
+            return cn("h-3.5", offsets % 2 ? "w-[4.5rem]" : "w-20");
+        case 1:
+            return cn("h-3.5", offsets % 3 === 0 ? "w-[88%]" : "w-[72%]");
+        case 2:
+            return cn("h-3.5", offsets % 2 ? "w-[70%]" : "w-[80%]");
+        case 3:
+            return "h-3.5 w-6";
+        case 4:
+            return cn("h-3.5", offsets % 2 ? "w-24" : "w-28");
+        case 5:
+            return "h-6 w-20 rounded-sm";
+        case 6:
+            return cn("h-3.5", offsets % 2 ? "w-[4.25rem]" : "w-24");
+        default:
+            return "h-3.5 w-16";
+    }
 }
 
 export function ArticlesTableSkeleton({

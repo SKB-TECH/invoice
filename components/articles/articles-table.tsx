@@ -11,6 +11,7 @@ import type { ArticleTableRow } from "./types";
 const COLUMN_ORDER = [
   "code",
   "title",
+  "referential",
   "group",
   "priceTtc",
   "status",

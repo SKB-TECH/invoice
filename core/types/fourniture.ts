@@ -2,6 +2,23 @@ export type FournitureImage = {
     path: string;
 };
 
+export type FournitureLinkedReferentialInfo = {
+    id?: number;
+    referentiel?: string;
+    title?: string;
+    code?: string;
+    value?: string;
+    parent_id?: number;
+};
+
+export type FournitureTaxGroupInfo = {
+    id: number;
+    code?: string;
+    title?: string;
+    rate?: number;
+    mention?: string;
+};
+
 export type FournitureArticle = {
     id: number;
     account_id: number;
@@ -13,11 +30,16 @@ export type FournitureArticle = {
     price_after: number;
     currency: string;
     tax_group: number;
+    tax_group_info?: FournitureTaxGroupInfo | null;
     special_price: number;
     category_id: number;
+    category_info?: FournitureLinkedReferentialInfo | null;
     group_id: number;
+    group_info?: FournitureLinkedReferentialInfo | null;
     unit_id: number;
+    unit_info?: FournitureLinkedReferentialInfo | null;
     supplier_id: number;
+    supplier?: unknown | null;
     barcode: string;
     stock_min: number;
     stock_current: number;

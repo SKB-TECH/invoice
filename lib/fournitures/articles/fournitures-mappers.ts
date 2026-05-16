@@ -89,7 +89,26 @@ export function normalizeCurrency(code: string): ArticleDetailRecord["devise"] {
     return "usd";
 }
 
-export function formatApiTimestampToDdMmYyyy(ts: string): string {
+function resolveReferentialTitleForTable(
+    item: FournitureArticle,
+    referentialTitleByCategoryId?: ReadonlyMap<number, string>,
+): string {
+    const fromCategoryInfo = item.category_info?.title?.trim();
+    if (fromCategoryInfo) return fromCategoryInfo;
+
+    const cid = item.category_id;
+    if (typeof cid === "number" && Number.isFinite(cid) && cid > 0) {
+        const mapped = referentialTitleByCategoryId?.get(cid)?.trim();
+        if (mapped) return mapped;
+    }
+
+    const fromGroupInfo = item.group_info?.title?.trim();
+    if (fromGroupInfo) return fromGroupInfo;
+
+    return "—";
+}
+
+function formatApiTimestampToDdMmYyyy(ts: string): string {
     const day = ts.slice(8, 10);
     const month = ts.slice(5, 7);
     const year = ts.slice(0, 4);
@@ -103,7 +122,10 @@ export function formatApiTimestampToDdMmYyyy(ts: string): string {
     return ts.slice(0, 10).split("-").reverse().join("-") || ts;
 }
 
-export function mapFournitureToTableRow(item: FournitureArticle): ArticleTableRow {
+export function mapFournitureToTableRow(
+    item: FournitureArticle,
+    referentialTitleByCategoryId?: ReadonlyMap<number, string>,
+): ArticleTableRow {
     const currencyLabel = item.currency?.trim()?.toUpperCase() ?? "";
     const priceFmt = Number.isFinite(item.price_after)
         ? item.price_after.toLocaleString("fr-FR", {
@@ -112,10 +134,16 @@ export function mapFournitureToTableRow(item: FournitureArticle): ArticleTableRo
           })
         : String(item.price_after);
 
+    const referential = resolveReferentialTitleForTable(
+        item,
+        referentialTitleByCategoryId,
+    );
+
     return {
         navigationId: String(item.id),
         code: item.code,
         title: item.name,
+        referential,
         group: apiGroupIdToDisplayLetter(item.group_id),
         priceTtc: `${priceFmt} ${currencyLabel}`.trim(),
         status: mapApiArticleStatus(item.status),
