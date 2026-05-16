@@ -2,12 +2,12 @@
 
 import { useMemo } from "react";
 import { useTranslations } from "next-intl";
-
 import { useInvoiceContracts } from "@/core/hooks/invoices/useInvoices";
 
-import { clients } from "./constants";
+
 import { ClientSearchSelect } from "./ClientSearchSelect";
 import { FieldLabel, InputField, SelectField } from "./Fields";
+
 import type {
     Client,
     InvoiceForm,
@@ -16,6 +16,7 @@ import type {
     SetInvoiceForm,
     SetInvoiceItems,
 } from "./types";
+import {useClients} from "@/core/hooks/client/useClient";
 
 export function StepClient({
                                form,
@@ -32,11 +33,40 @@ export function StepClient({
 }) {
     const t = useTranslations("createInvoice");
 
-    const { data: contractsData, isLoading: isLoadingContracts } =
-        useInvoiceContracts({
+    const clientListParams = useMemo(
+        () => ({
             page: 1,
             perPage: 100,
-        });
+        }),
+        []
+    );
+
+    const {
+        data: clientsData,
+        isPending: isLoadingClients,
+        isError: isClientsError,
+    } = useClients(clientListParams);
+
+    const {
+        data: contractsData,
+        isLoading: isLoadingContracts,
+    } = useInvoiceContracts({
+        page: 1,
+        perPage: 100,
+    });
+
+    const clients: Client[] = useMemo(() => {
+        return (clientsData?.items ?? []).map((client) => ({
+            id: client.id,
+            name: client.legal_name || client.name || "",
+            nif: client.nif || client.vat_num || "",
+            rccm: client.rccm || client.registration_id || "",
+            idNat: client.idnat || "",
+            address: client.address || "",
+            phone: client.phone || "",
+            email: client.email || "",
+        }));
+    }, [clientsData?.items]);
 
     const contracts = useMemo(() => {
         const allContracts = contractsData?.items ?? [];
@@ -116,6 +146,18 @@ export function StepClient({
                         error={errors.clientId}
                         onSelect={handleSelectClient}
                     />
+
+                    {isLoadingClients && (
+                        <p className="mt-2 text-sm font-medium text-slate-400">
+                            Chargement des clients...
+                        </p>
+                    )}
+
+                    {isClientsError && (
+                        <p className="mt-2 text-sm font-medium text-red-500">
+                            Impossible de charger les clients.
+                        </p>
+                    )}
                 </div>
 
                 <div>
@@ -141,11 +183,11 @@ export function StepClient({
                             value: String(contract.id),
                         }))}
                         onChange={handleChangeContract}
-                        // disabled={
-                        //     !form.clientId ||
-                        //     isLoadingContracts ||
-                        //     contracts.length === 0
-                        // }
+                        disabled={
+                            !form.clientId ||
+                            isLoadingContracts ||
+                            contracts.length === 0
+                        }
                         error={errors.contractId}
                     />
                 </div>
@@ -197,7 +239,10 @@ export function StepClient({
                         placeholder={t("client.invoiceTypePlaceholder")}
                         value={form.invoiceType}
                         options={[
-                            { label: t("invoiceTypes.sale"), value: "Vente" },
+                            {
+                                label: t("invoiceTypes.sale"),
+                                value: "Vente",
+                            },
                             {
                                 label: t("invoiceTypes.creditNote"),
                                 value: "Avoir",
@@ -229,8 +274,14 @@ export function StepClient({
                         placeholder={t("common.select")}
                         value={form.itemKind}
                         options={[
-                            { label: t("kind.article"), value: "Article" },
-                            { label: t("kind.service"), value: "Service" },
+                            {
+                                label: t("kind.article"),
+                                value: "Article",
+                            },
+                            {
+                                label: t("kind.service"),
+                                value: "Service",
+                            },
                         ]}
                         onChange={handleChangeItemKind}
                         error={errors.itemKind}

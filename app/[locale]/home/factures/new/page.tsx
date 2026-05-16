@@ -22,7 +22,7 @@ import type {
 export default function CreateInvoicePage() {
     const t = useTranslations("createInvoice");
 
-    const [currentStep, setCurrentStep] = useState<Step>(2);
+    const [currentStep, setCurrentStep] = useState<Step>(1);
     const [items, setItems] = useState<InvoiceItem[]>(initialItems);
     const [form, setForm] = useState(initialForm);
     const [errors, setErrors] = useState<InvoiceFormErrors>({});
