@@ -57,13 +57,13 @@ export function StepCatalog({
             description: item.description,
             code: item.code,
             type: itemKind,
-
-            tax: 0,
+            tax: Number(item.tax_group_info?.rate ?? 0),
             taxGroupId: item.tax_group,
-
+            taxGroupCode: item.tax_group_info?.code ?? "",
+            taxGroupTitle: item.tax_group_info?.title ?? "",
+            taxGroupMention: item.tax_group_info?.mention ?? "",
             priceHT: Number(item.price_before ?? 0),
             priceTTC: Number(item.price_after ?? 0),
-
             currency: item.currency === "USD" ? "USD" : "CDF",
         }));
     }, [fournituresData?.items, itemKind]);
@@ -100,6 +100,9 @@ export function StepCatalog({
 
             tax: selectedItem.tax,
             taxGroupId: selectedItem.taxGroupId,
+            taxGroupCode: selectedItem.taxGroupCode,
+            taxGroupTitle: selectedItem.taxGroupTitle,
+            taxGroupMention: selectedItem.taxGroupMention,
 
             priceHT: selectedItem.priceHT,
             priceTTC: selectedItem.priceTTC,
@@ -235,12 +238,12 @@ export function StepCatalog({
                                                 HT {item.currency}{" "}
                                                 {formatMoney(item.priceHT)}
                                                 {" / "}
-                                                Groupe taxe {item.taxGroupId}
+                                                TVA {item.tax}%
                                             </span>
                                         </span>
 
                                         <span className="ml-4 shrink-0 text-xs font-semibold text-slate-400">
-                                            {item.currency}
+                                            {item.taxGroupMention || `TVA ${item.tax}%`}
                                         </span>
                                     </button>
                                 ))
@@ -268,7 +271,7 @@ export function StepCatalog({
                             <div>{t("table.number")}</div>
                             <div>{t("kind.article")}</div>
                             <div>{t("table.quantity")}</div>
-                            <div>Groupe taxe</div>
+                            <div>{t("table.tax")}</div>
                             <div>{t("table.priceHT")}</div>
                             <div>Devise</div>
                             <div>Total TTC</div>
@@ -304,11 +307,9 @@ export function StepCatalog({
                                         />
                                     </div>
 
-                                    <div>{item.taxGroupId}</div>
+                                    <div>{item.tax}%</div>
 
-                                    <div>
-                                        {formatMoney(item.priceHT)}
-                                    </div>
+                                    <div>{formatMoney(item.priceHT)}</div>
 
                                     <div>{item.currency}</div>
 
@@ -335,7 +336,7 @@ export function StepCatalog({
                             <div>{t("table.men")}</div>
                             <div>{t("table.days")}</div>
                             <div>{t("table.dailyPrice")}</div>
-                            <div>Groupe taxe</div>
+                            <div>{t("table.tax")}</div>
                             <div>{t("table.totalHT")}</div>
                             <div>Devise</div>
                             <div>Total TTC</div>
@@ -404,7 +405,7 @@ export function StepCatalog({
                                         />
                                     </div>
 
-                                    <div>{item.taxGroupId}</div>
+                                    <div>{item.tax}%</div>
 
                                     <div>
                                         {formatMoney(getLineSubtotal(item))}
