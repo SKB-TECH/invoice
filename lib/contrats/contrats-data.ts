@@ -17,6 +17,8 @@ export type ContratDetailRecord = {
     paid: number;
     currency: string;
     billing_cycle: string;
+    /** Identifiant référentiel (champ API `type`). */
+    type?: number;
     items_template_json: string;
     statut: ContratStatutForm;
     description: string;
@@ -135,7 +137,7 @@ export type ContratListRow = {
     periode: string;
 };
 
-export function contratStatutToUi(statut: ContratStatForm): ContratStatutUi {
+export function contratStatutToUi(statut: ContratStatutForm): ContratStatutUi {
     if (statut === "suspendu") return "Suspendu";
     if (statut === "complet") return "Complet";
     return "Actif";
