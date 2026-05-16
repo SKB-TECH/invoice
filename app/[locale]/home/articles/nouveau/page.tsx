@@ -1,5 +1,7 @@
 "use client";
 
+import { useMemo, useState } from "react";
+
 import { ChevronRight, House } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Link, useRouter } from "@/i18n/routing";
@@ -18,6 +20,7 @@ import {
     detailPieceUniteToUnitId,
     taxGroupSlugToNumericId,
 } from "@/lib/fournitures/articles/fournitures-mappers";
+import { resolveTaxRateDecimal } from "@/lib/fournitures/articles/tax-rates";
 
 const selectClass =
     "h-12 w-full rounded border border-input bg-transparent py-2 pr-2 pl-2.5 text-sm whitespace-nowrap transition-colors outline-none select-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 data-placeholder:text-muted-foreground dark:bg-input/30 dark:hover:bg-input/50 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4";
@@ -27,6 +30,13 @@ function parseDecimalInput(raw: string): number | null {
     if (!t) return null;
     const n = Number(t);
     return Number.isFinite(n) ? n : null;
+}
+
+function formatMoneyFr(n: number): string {
+    return new Intl.NumberFormat("fr-FR", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+    }).format(n);
 }
 
 function formPieceToDetailKey(
@@ -58,6 +68,15 @@ export default function NouvelArticlePage() {
             );
         },
     });
+
+    const [prixHt, setPrixHt] = useState("");
+    const [groupeTax, setGroupeTax] = useState("");
+
+    const prixTtcAffiche = useMemo(() => {
+        const ht = parseDecimalInput(prixHt);
+        if (ht === null || !groupeTax.trim()) return "";
+        return formatMoneyFr(ht * (1 + resolveTaxRateDecimal(groupeTax)));
+    }, [prixHt, groupeTax]);
 
     const requiredStar = (
         <>
@@ -104,27 +123,37 @@ export default function NouvelArticlePage() {
                     const devise = String(fd.get("devise") ?? "")
                         .trim()
                         .toUpperCase();
-                    const groupeTax = String(fd.get("groupeTax") ?? "").trim();
-                    const groupe = String(fd.get("groupe") ?? "").trim();
+                    const groupeTaxTrim = groupeTax.trim();
+                    const groupe =
+                        String(fd.get("groupe") ?? "a").trim() || "a";
                     const pieceRaw = String(fd.get("pieceUnite") ?? "piece");
                     const unite = String(fd.get("unite") ?? "").trim();
                     const prixSpecialRaw = String(
                         fd.get("prixSpecial") ?? ""
                     ).trim();
 
-                    const price_before = parseDecimalInput(
-                        String(fd.get("prixHt") ?? "")
-                    );
-                    const price_after = parseDecimalInput(
-                        String(fd.get("prixTtc") ?? "")
-                    );
+                    const price_before = parseDecimalInput(prixHt);
 
-                    if (!name || !code || !devise || !groupeTax || !groupe) {
+                    if (
+                        !name ||
+                        !code ||
+                        !devise ||
+                        !groupeTaxTrim
+                    ) {
                         toast.error(tCreate("invalidForm"));
                         return;
                     }
 
-                    if (price_before === null || price_after === null) {
+                    if (price_before === null) {
+                        toast.error(tCreate("invalidForm"));
+                        return;
+                    }
+
+                    const price_after =
+                        price_before *
+                        (1 + resolveTaxRateDecimal(groupeTaxTrim));
+
+                    if (!Number.isFinite(price_after)) {
                         toast.error(tCreate("invalidForm"));
                         return;
                     }
@@ -143,7 +172,7 @@ export default function NouvelArticlePage() {
                         price_before,
                         price_after,
                         currency: devise,
-                        tax_group: taxGroupSlugToNumericId(groupeTax),
+                        tax_group: taxGroupSlugToNumericId(groupeTaxTrim),
                         special_price,
                         category_id: 0,
                         group_id: articleUiGroupToGroupId(groupe),
@@ -202,40 +231,6 @@ export default function NouvelArticlePage() {
                     </div>
 
                     <div className="flex flex-col gap-2">
-                        <Label htmlFor="prix-ht" className="font-medium text-slate-700">
-                            {tCreate("fields.priceExclTax")}
-                            {requiredStar}
-                        </Label>
-                        <Input
-                            id="prix-ht"
-                            name="prixHt"
-                            inputMode="decimal"
-                            required
-                            placeholder={tCreate(
-                                "placeholders.priceExclTaxExample"
-                            )}
-                            className="h-12 rounded-none"
-                        />
-                    </div>
-
-                    <div className="flex flex-col gap-2">
-                        <Label htmlFor="prix-ttc" className="font-medium text-slate-700">
-                            {tCreate("fields.priceInclTax")}
-                            {requiredStar}
-                        </Label>
-                        <Input
-                            id="prix-ttc"
-                            name="prixTtc"
-                            inputMode="decimal"
-                            required
-                            placeholder={tCreate(
-                                "placeholders.priceInclTaxExample"
-                            )}
-                            className="h-12 rounded-none"
-                        />
-                    </div>
-
-                    <div className="flex flex-col gap-2">
                         <Label htmlFor="devise" className="font-medium text-slate-700">
                             {tCreate("fields.currency")}
                             {requiredStar}
@@ -258,7 +253,33 @@ export default function NouvelArticlePage() {
                     </div>
 
                     <div className="flex flex-col gap-2">
-                        <Label htmlFor="groupe-tax" className="font-medium text-slate-700">
+                        <Label htmlFor="prix-ht" className="font-medium text-slate-700">
+                            {tCreate("fields.priceExclTax")}
+                            {requiredStar}
+                        </Label>
+                        <Input
+                            id="prix-ht"
+                            name="prixHt"
+                            inputMode="decimal"
+                            required
+                            value={prixHt}
+                            onChange={(e) => setPrixHt(e.target.value)}
+                            onBlur={() => {
+                                const ht = parseDecimalInput(prixHt);
+                                if (ht !== null) setPrixHt(formatMoneyFr(ht));
+                            }}
+                            placeholder={tCreate(
+                                "placeholders.priceExclTaxExample"
+                            )}
+                            className="h-12 rounded-none"
+                        />
+                    </div>
+
+                    <div className="flex flex-col gap-2">
+                        <Label
+                            htmlFor="groupe-tax"
+                            className="font-medium text-slate-700"
+                        >
                             {tCreate("fields.taxGroup")}
                             {requiredStar}
                         </Label>
@@ -266,8 +287,32 @@ export default function NouvelArticlePage() {
                             id="groupe-tax"
                             name="groupeTax"
                             required
-                            defaultValue=""
                             className={selectClass}
+                            value={groupeTax}
+                            onValueChange={setGroupeTax}
+                        />
+                    </div>
+
+                    <div className="flex flex-col gap-2">
+                        <Label
+                            htmlFor="prix-ttc"
+                            className="font-medium text-slate-700"
+                        >
+                            {tCreate("fields.priceInclTax")}
+                            {requiredStar}
+                        </Label>
+                        <Input
+                            id="prix-ttc"
+                            readOnly
+                            tabIndex={-1}
+                            aria-readonly="true"
+                            inputMode="decimal"
+                            required
+                            value={prixTtcAffiche}
+                            placeholder={
+                                groupeTax && prixHt ? undefined : "—"
+                            }
+                            className="h-12 cursor-default rounded-none bg-slate-50 text-slate-800"
                         />
                     </div>
 
@@ -316,7 +361,7 @@ export default function NouvelArticlePage() {
                         </div>
                     </div>
 
-                    <div className="flex flex-col gap-2 sm:col-span-2">
+                    {/* <div className="flex flex-col gap-2 sm:col-span-2">
                         <Label htmlFor="groupe" className="font-medium text-slate-700">
                             {tCreate("fields.articleGroup")}
                             {requiredStar}
@@ -336,7 +381,7 @@ export default function NouvelArticlePage() {
                             <option value="b">{tCreate("articleGroups.b")}</option>
                             <option value="c">{tCreate("articleGroups.c")}</option>
                         </select>
-                    </div>
+                    </div> */}
                 </div>
 
                 <div className="mt-8 flex flex-col gap-3 border-t border-slate-100 pt-6 md:flex-row md:flex-wrap md:justify-end">

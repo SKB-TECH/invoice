@@ -126,8 +126,8 @@ export function formatTaxGroupOptionLabel(
   opts?: { showInactive?: boolean }
 ): string {
   const showInactive = opts?.showInactive ?? false;
-  const suffix = !g.active && showInactive ? " (inactif)" : "";
-  return `${g.code} — ${g.name} (${g.ratePercent}\u202f%)${suffix}`;
+  const suffix = !g.active && showInactive ? " — inactif" : "";
+  return `${g.name} - ${g.ratePercent}%${suffix}`;
 }
 
 export function generateNewTaxGroupId(name: string): string {

@@ -36,44 +36,58 @@ const itemsTemplateFromForm = z.preprocess((val) => {
     return val;
 }, itemsTemplateSchema);
 
-export const createContractSchema = z
-    .object({
-        client_id: z.string().min(1, "Le client est requis"),
-        title: z.string().trim().min(1, "Le titre est requis"),
-        reference: z.string().trim().min(1, "La référence est requise"),
-        starting: isoDateString,
-        ending: isoDateString,
-        currency: z
-            .string()
-            .trim()
-            .length(3, "La devise doit faire 3 lettres (ex. USD)")
-            .transform((c) => c.toUpperCase()),
-        total: amount,
-        monthly: amount,
-        paid: amount,
-        description: z.string().trim().optional().nullable(),
-        billing_cycle: billingCycleEnum,
-        items_template: itemsTemplateFromForm,
-        /** Champs UI additionnels — ignorés côté API s’ils ne sont pas supportés */
-        status: contractStatusEnum.optional().default("actif"),
-        phone: z.string().trim().optional().nullable(),
-        auto_renew: z.boolean().optional().default(false),
-    })
-    .superRefine((data, ctx) => {
-        const start = Date.parse(data.starting);
-        const end = Date.parse(data.ending);
-        if (start >= end) {
-            ctx.addIssue({
-                code: z.ZodIssueCode.custom,
-                message: "La date de fin doit être postérieure à la date de début",
-                path: ["ending"],
-            });
-        }
-    });
-
-export const updateContractSchema = createContractSchema.partial().extend({
-    client_id: z.string().min(1).optional(),
+const contractFieldsSchema = z.object({
+    client_id: z.string().min(1, "Le client est requis"),
+    title: z.string().trim().min(1, "Le titre est requis"),
+    reference: z.string().trim().min(1, "La référence est requise"),
+    starting: isoDateString,
+    ending: isoDateString,
+    currency: z
+        .string()
+        .trim()
+        .length(3, "La devise doit faire 3 lettres (ex. USD)")
+        .transform((c) => c.toUpperCase()),
+    total: amount,
+    monthly: amount,
+    paid: amount,
+    description: z.string().trim().optional().nullable(),
+    billing_cycle: billingCycleEnum,
+    items_template: itemsTemplateFromForm,
+    /** Champs UI additionnels — ignorés côté API s’ils ne sont pas supportés */
+    status: contractStatusEnum.optional().default("actif"),
+    phone: z.string().trim().optional().nullable(),
+    auto_renew: z.boolean().optional().default(false),
 });
+
+function refineContractDateOrder(
+    data: { starting?: string; ending?: string },
+    ctx: z.RefinementCtx
+) {
+    if (data.starting === undefined || data.ending === undefined) {
+        return;
+    }
+    const start = Date.parse(data.starting);
+    const end = Date.parse(data.ending);
+    if (start >= end) {
+        ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: "La date de fin doit être postérieure à la date de début",
+            path: ["ending"],
+        });
+    }
+}
+
+export const createContractSchema = contractFieldsSchema.superRefine(
+    refineContractDateOrder
+);
+
+/** `partial()` ne s’applique qu’à l’objet sans `superRefine` ; le raffinement dates est réappliqué après. */
+export const updateContractSchema = contractFieldsSchema
+    .partial()
+    .extend({
+        client_id: z.string().min(1).optional(),
+    })
+    .superRefine(refineContractDateOrder);
 
 const idLike = z.union([z.string(), z.number()]).transform(String);
 
