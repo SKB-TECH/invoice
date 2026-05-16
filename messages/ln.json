@@ -114,6 +114,7 @@
     "NouveauClient": "Kiliya ya sika",
     "Contrat": "Kontra",
     "NouveauContrat": "Kontra ya sika",
+    "NouveauReferentiel": "Entrée ya référentiel ya sika",
     "Configuration": "Bobongisi",
     "Aide": "Lisalisi"
   },
@@ -554,56 +555,64 @@
         "mismatch": "Ba mots de passe bazali te lokola moko."
       }
     },
-    "referentials": {
-      "preferencesTitle": "Ba préférences",
-      "theme": "Thème",
-      "language": "Lokota",
-      "timezone": "Eleko ya ntango",
-      "themeOptions": {
-        "light": "Mokolo ya pole",
-        "dark": "Mokolo ya molili",
-        "system": "Système"
+    "referentialCatalog": {
+      "sectionHeadline": "Catalogue ya référentiel",
+      "axisColumn": "Axe",
+      "types": {
+        "clients": "Ba clients",
+        "fournitures": "Ba fournitures",
+        "contrats": "Ba contrats"
       },
-      "languageOptions": {
-        "fr": "Falansi",
-        "en": "Anglɛ"
-      },
-      "timezoneOptions": {
-        "kinshasa": "Kinshasa",
-        "lubumbashi": "Lubumbashi",
-        "goma": "Goma"
-      },
-      "connectedAccounts": "Ba comptes okangi",
-      "devices": "Ba appareils",
-      "google": "Google",
-      "connectedWith": "Okangi na {email}",
-      "deviceIphone": "iPhone 14 Pro",
-      "deviceMacbook": "MacBook Pro",
-      "lastUsed2Days": "Bolingo ya liboso mibale ya mikolo eleka",
-      "lastUsed1Week": "Bolingo ya liboso poso moko eleka",
-      "disconnect": "Kolongola",
-      "remove": "Kolongola",
-      "savePreferences": "Kobomba ba préférences"
-    },
-    "referentialRates": {
-      "title": "Liste ya ba taux ya référence",
-      "label": "Libellé",
-      "ratePercent": "Taux (%)",
-      "save": "Kobomba",
+      "code": "Code",
+      "entityTitle": "Libellé",
+      "description": "Ndimbola",
+      "parentId": "Parent",
+      "parentShort": "Parent",
+      "rootParent": "Mitano (azo te)",
+      "rootParentColumn": "— Mitano —",
+      "openCreateForm": "Entrée ya sika",
       "actions": "Actions",
-      "rateColumn": "Taux",
-      "placeholderLabel": "Ex. TVA ba services",
-      "placeholderRate": "16",
-      "editAria": "Kobongisa taux",
-      "deleteAria": "Kolongola taux",
+      "save": "Kobomba",
+      "cancel": "Kanga",
+      "empty": "Ba entrées te.",
+      "placeholderCode": "Ex. CORP",
+      "placeholderTitle": "Ex. Ba clients ya entreprise",
+      "placeholderDesc": "Ezali lisusu…",
+      "editAria": "Kobongisa entrée",
+      "deleteAria": "Kolongola entrée",
       "toasts": {
-        "labelRequired": "Tondisa libellé ya taux.",
-        "rateInvalid": "Taux esengeli kozala entre 0 na 100 %.",
-        "created": "Taux ebakisami.",
-        "updated": "Taux ebongisami.",
-        "deleted": "Taux elongolami."
+        "codeTitleRequired": "Code pe libellé esengeli kozala.",
+        "duplicateCode": "Code oyo ezali déjà po na axe oyo.",
+        "createFailed": "Kokonga entrée elongwami.",
+        "saveFailed": "Kobongisa elongwami.",
+        "apiError": "Serveur elongoli te lisusu elongola action.",
+        "created": "Entrée ebakisami.",
+        "updated": "Entrée ebongisami.",
+        "deleted": "Entrée elongolami."
+      }
+    },
+    "referentialCreate": {
+      "breadcrumbNew": "Entrée ya sika",
+      "creating": "Tozali kobomba…",
+      "invalidForm": "Kotá makambo esengeli.",
+      "rootParentOption": "Mitano (azo te)",
+      "fields": {
+        "referential": "Axe ya référentiel",
+        "code": "Code",
+        "entityTitle": "Libellé",
+        "description": "Ndimbola",
+        "parent": "Élément parent"
       },
-      "cancel": "Kanga"
+      "placeholders": {
+        "referential": "Ex. clients, fournitures, contrats",
+        "code": "Ex. CORP",
+        "entityTitle": "Ex. Ba clients ya entreprise",
+        "description": "Ezali lisusu…"
+      },
+      "actions": {
+        "cancel": "Kanga",
+        "save": "Kobomba"
+      }
     },
     "taxGroups": {
       "title": "Ba groupes ya taxation",

@@ -114,6 +114,7 @@
     "NouveauClient": "Nouveau client",
     "Contrat": "Contrat",
     "NouveauContrat": "Nouveau contrat",
+    "NouveauReferentiel": "Nouvelle entrée référentielle",
     "Configuration": "Configuration",
     "Aide": "Aide"
   },
@@ -553,56 +554,64 @@
         "mismatch": "Les mots de passe ne correspondent pas."
       }
     },
-    "referentials": {
-      "preferencesTitle": "Préférences",
-      "theme": "Thème",
-      "language": "Langue",
-      "timezone": "Fuseau horaire",
-      "themeOptions": {
-        "light": "Mode clair",
-        "dark": "Mode sombre",
-        "system": "Système"
+    "referentialCatalog": {
+      "sectionHeadline": "Catalogue référentiel",
+      "axisColumn": "Axe",
+      "types": {
+        "clients": "Clients",
+        "fournitures": "Fournitures",
+        "contrats": "Contrats"
       },
-      "languageOptions": {
-        "fr": "Français",
-        "en": "English"
-      },
-      "timezoneOptions": {
-        "kinshasa": "Kinshasa",
-        "lubumbashi": "Lubumbashi",
-        "goma": "Goma"
-      },
-      "connectedAccounts": "Comptes connectés",
-      "devices": "Appareils",
-      "google": "Google",
-      "connectedWith": "Connecté avec {email}",
-      "deviceIphone": "iPhone 14 Pro",
-      "deviceMacbook": "MacBook Pro",
-      "lastUsed2Days": "Dernière utilisation il y a 2 jours",
-      "lastUsed1Week": "Dernière utilisation il y a 1 semaine",
-      "disconnect": "Déconnecter",
-      "remove": "Retirer",
-      "savePreferences": "Enregistrer les préférences"
-    },
-    "referentialRates": {
-      "title": "Référentiel des taux",
-      "label": "Libellé",
-      "ratePercent": "Taux (%)",
-      "save": "Enregistrer",
+      "code": "Code",
+      "entityTitle": "Libellé",
+      "description": "Description",
+      "parentId": "Parent",
+      "parentShort": "Parent",
+      "rootParent": "Racine (aucun)",
+      "rootParentColumn": "— Racine —",
+      "openCreateForm": "Nouvelle entrée",
       "actions": "Actions",
-      "rateColumn": "Taux",
-      "placeholderLabel": "Ex. TVA services",
-      "placeholderRate": "16",
-      "editAria": "Modifier le taux",
-      "deleteAria": "Supprimer le taux",
+      "save": "Enregistrer",
+      "cancel": "Annuler",
+      "empty": "Aucune entrée.",
+      "placeholderCode": "Ex. CORP",
+      "placeholderTitle": "Ex. Clients entreprise",
+      "placeholderDesc": "Optionnel…",
+      "editAria": "Modifier l’entrée",
+      "deleteAria": "Supprimer l’entrée",
       "toasts": {
-        "labelRequired": "Indiquez un libellé pour le taux.",
-        "rateInvalid": "Indiquez un taux valide entre 0 et 100 %.",
-        "created": "Taux créé.",
-        "updated": "Taux modifié.",
-        "deleted": "Taux supprimé."
+        "codeTitleRequired": "Code et libellé sont obligatoires.",
+        "duplicateCode": "Ce code existe déjà pour cet axe.",
+        "createFailed": "Création impossible.",
+        "saveFailed": "Mise à jour impossible.",
+        "apiError": "Le serveur a refusé l’action ou est injoignable.",
+        "created": "Entrée créée.",
+        "updated": "Entrée mise à jour.",
+        "deleted": "Entrée supprimée."
+      }
+    },
+    "referentialCreate": {
+      "breadcrumbNew": "Nouvelle entrée",
+      "creating": "Enregistrement en cours…",
+      "invalidForm": "Complétez les champs obligatoires.",
+      "rootParentOption": "Racine (aucun)",
+      "fields": {
+        "referential": "Axe référentiel",
+        "code": "Code",
+        "entityTitle": "Libellé",
+        "description": "Description",
+        "parent": "Élément parent"
       },
-      "cancel": "Annuler"
+      "placeholders": {
+        "referential": "Ex. clients, fournitures, contrats",
+        "code": "Ex. CORP",
+        "entityTitle": "Ex. Clients entreprise",
+        "description": "Optionnel…"
+      },
+      "actions": {
+        "cancel": "Annuler",
+        "save": "Enregistrer"
+      }
     },
     "taxGroups": {
       "title": "Groupes de taxation",
