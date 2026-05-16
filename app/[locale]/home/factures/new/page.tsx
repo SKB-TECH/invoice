@@ -68,6 +68,8 @@ export default function CreateInvoicePage() {
         setCurrentStep((prev) => Math.max(prev - 1, 1) as Step);
     };
 
+    console.log(form,"data")
+
     return (
         <main className="w-full text-slate-700">
             <div className="mb-3 text-[13px] font-medium text-slate-400">

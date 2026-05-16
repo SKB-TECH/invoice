@@ -1,8 +1,10 @@
 "use client";
 
+import { useState } from "react";
 import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
+import { toast } from "sonner";
 
 import { useCreateInvoice } from "@/core/hooks/invoices/useInvoices";
 
@@ -16,6 +18,8 @@ import {
     getLineTax,
     getTaxGroups,
 } from "./utils";
+import { generateInvoicePdf } from "./pdf/generateInvoicePdf";
+
 import type {
     InvoiceForm,
     InvoiceFormErrors,
@@ -24,7 +28,10 @@ import type {
     SetInvoiceForm,
     Step,
 } from "./types";
+import type { InvoiceCreateRequest } from "@/core/types/invoice";
 import type { Dispatch, SetStateAction } from "react";
+
+type ActionMode = "submit" | "save" | "draft" | "normalize";
 
 export function StepPreview({
                                 form,
@@ -44,9 +51,28 @@ export function StepPreview({
     const t = useTranslations("createInvoice");
     const router = useRouter();
 
+    const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
+
     const createInvoice = useCreateInvoice({
-        onSuccess: () => {
+        onSuccess: (_data, variables) => {
+            const workflowStatus = variables.payload.workflow_status;
+
+            if (workflowStatus === "brouillon") {
+                toast.success("Facture enregistrée en brouillon.");
+            } else {
+                toast.success("Facture enregistrée avec succès.");
+            }
+
             router.push("/home/factures");
+        },
+
+        onError: () => {
+            toast.error("La création de la facture a échoué.");
+
+            setErrors((prev) => ({
+                ...prev,
+                submit: "La création de la facture a échoué.",
+            }));
         },
     });
 
@@ -60,31 +86,25 @@ export function StepPreview({
     const taxGroups = getTaxGroups(items);
 
     const isArticle = form.itemKind === "Article";
+    const isProcessing = createInvoice.isPending || isGeneratingPdf;
 
     const buildInvoicePayload = (
-        mode: "submit" | "draft" | "normalize"
-    ) => {
-        return {
-            number: `INV-${new Date().getFullYear()}-${Date.now()}`,
+        mode: ActionMode
+    ): InvoiceCreateRequest => {
+        const payload: InvoiceCreateRequest = {
             currency: form.currency,
             client_id: form.clientId as number,
-            contract_id: form.contractId as number,
-            template_id: form.templateId as 1 | 2,
-            payment_info: {},
+
+            payment_info: {
+                method: "bank_transfer",
+                bank_name: "Rawbank",
+                account_number: "1234567890",
+            },
+
             due_date: form.dueDate,
-            comment:
-                mode === "draft"
-                    ? "Facture enregistrée en brouillon"
-                    : undefined,
-            normalization:
-                mode === "normalize"
-                    ? {
-                        requested: true,
-                        template_id: form.templateId,
-                    }
-                    : undefined,
+
             items: items.map((item) => ({
-                service_id: item.catalogId,
+                description: item.name,
                 quantity:
                     item.type === "Article"
                         ? item.quantity
@@ -94,11 +114,26 @@ export function StepPreview({
                         ? item.priceHT
                         : item.dailyPrice ?? 0,
                 tax_rate: item.tax,
+                discount_rate: 0,
             })),
+
+            contract_id: form.contractId ?? undefined,
+            type: form.invoiceType ? Number(form.invoiceType) : undefined,
+            template_id: form.templateId ?? undefined,
+            workflow_status:
+                mode === "draft" ? "brouillon" : "enregistrer",
         };
+
+        if (mode === "normalize") {
+            payload.normalization = {
+                mode: "mcf",
+            };
+        }
+
+        return payload;
     };
 
-    const runAction = (mode: "submit" | "draft" | "normalize") => {
+    const runAction = async (mode: ActionMode) => {
         const templateErrors = validateTemplate(form);
 
         if (hasErrors(templateErrors)) {
@@ -106,10 +141,53 @@ export function StepPreview({
                 ...prev,
                 ...templateErrors,
             }));
+
+            toast.error("Veuillez choisir un modèle PDF.");
             return;
         }
 
-        createInvoice.mutate(buildInvoicePayload(mode));
+        const loadingToastId = toast.loading(
+            "Génération du PDF et enregistrement de la facture..."
+        );
+
+        try {
+            setErrors((prev) => ({
+                ...prev,
+                submit: undefined,
+            }));
+
+            setIsGeneratingPdf(true);
+
+            const pdfFile = await generateInvoicePdf({
+                form,
+                items,
+                subtotal,
+                tax,
+                total,
+                taxGroups,
+            });
+
+            const payload = buildInvoicePayload(mode);
+
+            toast.dismiss(loadingToastId);
+
+            createInvoice.mutate({
+                payload,
+                pdfFile,
+            });
+        } catch (error) {
+            console.error("Erreur génération PDF :", error);
+
+            toast.dismiss(loadingToastId);
+            toast.error("Impossible de générer le PDF de la facture.");
+
+            setErrors((prev) => ({
+                ...prev,
+                submit: "Impossible de générer le PDF de la facture.",
+            }));
+        } finally {
+            setIsGeneratingPdf(false);
+        }
     };
 
     return (
@@ -129,7 +207,8 @@ export function StepPreview({
                     <button
                         type="button"
                         onClick={() => setCurrentStep(1)}
-                        className="h-12 rounded border border-slate-300 bg-white px-5 text-sm font-semibold text-slate-700 hover:bg-slate-50"
+                        disabled={isProcessing}
+                        className="h-12 rounded border border-slate-300 bg-white px-5 text-sm font-semibold text-slate-700 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60"
                     >
                         {t("preview.editClient")}
                     </button>
@@ -137,7 +216,8 @@ export function StepPreview({
                     <button
                         type="button"
                         onClick={() => setCurrentStep(2)}
-                        className="h-12 rounded border border-slate-300 bg-white px-5 text-sm font-semibold text-slate-700 hover:bg-slate-50"
+                        disabled={isProcessing}
+                        className="h-12 rounded border border-slate-300 bg-white px-5 text-sm font-semibold text-slate-700 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60"
                     >
                         {isArticle
                             ? t("preview.editArticles")
@@ -187,10 +267,10 @@ export function StepPreview({
                     <button
                         type="button"
                         onClick={() => runAction("submit")}
-                        disabled={createInvoice.isPending}
+                        disabled={isProcessing}
                         className="h-12 w-52 rounded bg-[#0879bd] text-sm font-semibold text-white hover:bg-[#076ca8] disabled:cursor-not-allowed disabled:bg-slate-300"
                     >
-                        {createInvoice.isPending ? (
+                        {isProcessing ? (
                             <span className="inline-flex items-center gap-2">
                                 <Loader2 className="size-4 animate-spin" />
                                 Traitement...
@@ -202,8 +282,8 @@ export function StepPreview({
 
                     <button
                         type="button"
-                        onClick={() => runAction("draft")}
-                        disabled={createInvoice.isPending}
+                        onClick={() => runAction("save")}
+                        disabled={isProcessing}
                         className="h-12 w-52 rounded bg-slate-700 text-sm font-semibold text-white hover:bg-slate-800 disabled:cursor-not-allowed disabled:bg-slate-300"
                     >
                         Enregistrer
@@ -211,17 +291,27 @@ export function StepPreview({
 
                     <button
                         type="button"
-                        onClick={() => runAction("normalize")}
-                        disabled={createInvoice.isPending}
-                        className="h-12 w-52 rounded bg-white text-sm font-semibold text-slate-700 ring-1 ring-slate-300 hover:bg-slate-50 disabled:cursor-not-allowed disabled:bg-slate-100"
+                        onClick={() => runAction("draft")}
+                        disabled={isProcessing}
+                        className="h-12 w-52 rounded bg-amber-500 text-sm font-semibold text-white hover:bg-amber-600 disabled:cursor-not-allowed disabled:bg-slate-300"
                     >
-                        Normaliser
+                        Brouillon
                     </button>
+
+                    {/*<button*/}
+                    {/*    type="button"*/}
+                    {/*    onClick={() => runAction("normalize")}*/}
+                    {/*    disabled={isProcessing}*/}
+                    {/*    className="h-12 w-52 rounded bg-white text-sm font-semibold text-slate-700 ring-1 ring-slate-300 hover:bg-slate-50 disabled:cursor-not-allowed disabled:bg-slate-100"*/}
+                    {/*>*/}
+                    {/*    Normaliser*/}
+                    {/*</button>*/}
 
                     <button
                         type="button"
                         onClick={() => setCurrentStep(1)}
-                        className="h-12 w-52 rounded bg-slate-400 text-sm font-semibold text-white hover:bg-slate-500"
+                        disabled={isProcessing}
+                        className="h-12 w-52 rounded bg-red-600 text-sm font-semibold text-white hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-60"
                     >
                         Annuler
                     </button>
