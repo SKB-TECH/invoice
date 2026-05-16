@@ -10,7 +10,7 @@ import {
 import { unwrapApiData } from "@/core/utils/apiResponse";
 import type { ReferentialCatalogRow } from "@/lib/referentials/referential-catalog-storage";
 
-const REFERENTIELS_PATH = "/invoices/referentials";
+const REFERENTIELS_PATH = "/invoices/referentiels";
 
 const MAX_PAGES = 500;
 
