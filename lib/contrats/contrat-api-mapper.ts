@@ -36,14 +36,24 @@ export function contractResponseToDetail(
         itemsJson = String(row.items_template ?? "");
     }
 
+    const nestedClient =
+        "client" in row &&
+        row.client !== null &&
+        typeof row.client === "object"
+            ? (row.client as { name?: string; phone?: string | null })
+            : undefined;
+
     return {
         id: row.id,
         reference: row.reference,
         nomContrat: row.title,
-        clientNom: row.client_name ?? "—",
+        clientNom:
+            (row.client_name && row.client_name.trim()) ||
+            nestedClient?.name?.trim() ||
+            "—",
         client_id: row.client_id,
         autoRenew: Boolean(row.auto_renew),
-        telephone: row.phone ?? "",
+        telephone: row.phone ?? nestedClient?.phone ?? "",
         dateDebut: isoDateOnly(row.starting),
         dateFin: isoDateOnly(row.ending),
         valeur: Number(row.total),
