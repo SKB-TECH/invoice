@@ -87,7 +87,6 @@ export default function ConfigurationPage() {
                         {activeMenu === "referentials" && (
                             <ReferentialsSection />
                         )}
-                        {activeMenu === "taxGroups" && <TaxGroupsSection />}
                         {activeMenu === "bank" && (
                             <BankInformationSection />
                         )}
