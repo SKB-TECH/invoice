@@ -20,6 +20,7 @@ type ConfigMenuId =
     | "logo"
     | "changePassword"
     | "referentials"
+    | "taxGroups"
     | "bank"
     | "members"
     | "roles"
@@ -32,6 +33,7 @@ const MENU_IDS: ConfigMenuId[] = [
     "logo",
     "changePassword",
     "referentials",
+    "taxGroups",
     "bank",
     "members",
     "roles",
