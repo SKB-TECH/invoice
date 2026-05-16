@@ -9,12 +9,12 @@ export const currencyQueryKeys = {
     contractList: () => [...currencyQueryKeys.all, "contracts"] as const,
 };
 
-/** Liste des devises pour formulaires contrat / filtres métier (GET JSON). */
+/** Devises du fichier `core/utils/currencies.json` (mise en cache React Query locale). */
 export function useContractCurrencies() {
     return useQuery({
         queryKey: currencyQueryKeys.contractList(),
-        queryFn: () => currencyService.list(),
-        staleTime: 1000 * 60 * 30,
-        retry: 1,
+        queryFn: async () => currencyService.list(),
+        staleTime: Infinity,
+        gcTime: Infinity,
     });
 }

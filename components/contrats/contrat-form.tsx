@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useRef } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { Calendar } from "lucide-react";
 import { Controller, useForm, type Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -10,9 +11,13 @@ import { toast } from "sonner";
 
 import type { ContratDetailRecord } from "@/lib/contrats/contrats-data";
 import {
+    BILLING_CYCLE_FORM_OPTIONS,
+    billingCycleFromApi,
     createContractSchema,
+    updateContractSchema,
     type CreateContractInput,
 } from "@/core/schemas/contrat.schema";
+import { fetchReferentielsPage } from "@/core/services/referentiels.service";
 import type { ClientResponse } from "@/core/schemas/client.schema";
 import {
     contratMutationErrorMessage,
@@ -20,7 +25,6 @@ import {
     useUpdateContract,
 } from "@/core/hooks/contrat/useContrat";
 import { useClients } from "@/core/hooks/client/useClient";
-import { useContractCurrencies } from "@/core/hooks/currency/useCurrencies";
 import { currencyService } from "@/core/services/currency.service";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -73,6 +77,7 @@ function emptyContractDefaults(): CreateContractInput {
         paid: 0,
         description: "",
         billing_cycle: "monthly",
+        type: 0,
         items_template: [],
         phone: "",
         auto_renew: false,
@@ -102,7 +107,8 @@ function detailToContractInput(d: ContratDetailRecord): CreateContractInput {
         monthly: d.monthly,
         paid: d.paid,
         description: d.description,
-        billing_cycle: d.billing_cycle as CreateContractInput["billing_cycle"],
+        billing_cycle: billingCycleFromApi(d.billing_cycle),
+        type: d.type ?? 0,
         items_template: items,
         phone: d.telephone,
         auto_renew: d.autoRenew,
@@ -156,13 +162,21 @@ export function ContratForm(props: ContratFormProps) {
     });
     const clients = clientsResult?.items ?? [];
 
-    const { data: currenciesFromApi } = useContractCurrencies();
-    const currencyOptions = useMemo(() => {
-        if (currenciesFromApi && currenciesFromApi.length > 0) {
-            return currenciesFromApi;
-        }
-        return currencyService.defaultContractCurrencies();
-    }, [currenciesFromApi]);
+    const currencyOptions = useMemo(() => currencyService.list(), []);
+
+    const { data: referentielsPage, isLoading: referentielsLoading } =
+        useQuery({
+            queryKey: ["referentiels", "page", { axe: "Contrat", page: 1 }],
+            queryFn: () =>
+                fetchReferentielsPage({
+                    page: 1,
+                    perPage: 200,
+                    axe: "Contrat",
+                }),
+            enabled: props.variant === "create",
+        });
+
+    const referentielOptions = referentielsPage?.items ?? [];
 
     const currencyCodesKey = useMemo(
         () =>
@@ -181,10 +195,11 @@ export function ContratForm(props: ContratFormProps) {
     const createMut = useCreateContract();
     const updateMut = useUpdateContract();
 
+    const resolverSchema =
+        props.variant === "create" ? createContractSchema : updateContractSchema;
+
     const form = useForm<CreateContractInput>({
-        resolver: zodResolver(
-            createContractSchema
-        ) as Resolver<CreateContractInput>,
+        resolver: zodResolver(resolverSchema) as Resolver<CreateContractInput>,
         defaultValues: defaults,
         mode: "onSubmit",
     });
@@ -197,7 +212,7 @@ export function ContratForm(props: ContratFormProps) {
         if (current && !valid.has(current)) {
             form.setValue(
                 "currency",
-                opts[0]?.code ?? "USD",
+                currencyService.preferredFallbackCode(opts),
                 { shouldValidate: true }
             );
         }
@@ -278,32 +293,26 @@ export function ContratForm(props: ContratFormProps) {
             noValidate
         >
             <div className="grid gap-6 sm:grid-cols-2">
-                <div className="flex gap-6 sm:col-span-2">
-                    <div className="flex-col flex-1 gap-2">
-                        <Label htmlFor="client-id" className="font-medium text-slate-700">
-                            Client <span className="text-red-500">*</span>
-                        </Label>
-                        <select
-                            id="client-id"
-                            className={selectClassName}
-                            disabled={pending || clientsLoading}
-                            {...form.register("client_id")}
-                        >
-                            <option value="">— Sélectionner un client —</option>
+                <div className="flex flex-col gap-2 sm:col-span-1">
+                    <Label htmlFor="client-id" className="font-medium text-slate-700">
+                        Client <span className="text-red-500">*</span>
+                    </Label>
+                    <select
+                        id="client-id"
+                        className={selectClassName}
+                        disabled={pending || clientsLoading}
+                        {...form.register("client_id")}
+                    >
+                        <option value="">Sélectionner un client</option>
                             {clients.map((c) => (
                                 <option key={c.id} value={c.id}>
                                     {clientOptionLabel(c)}
                                 </option>
                             ))}
-                        </select>
-                        {form.formState.errors.client_id?.message ? (
-                            <p className="text-sm text-destructive">
-                                {form.formState.errors.client_id.message}
-                            </p>
-                        ) : null}
-                    </div>
+                    </select>
+                </div>
 
-                    <div className="flex-1 gap-2">
+                    <div className="flex flex-col gap-2 sm:col-span-1">
                         <Label htmlFor="nom-contrat" className="font-medium text-slate-700">
                             {t("form.nom")} <span className="text-red-500">*</span>
                         </Label>
@@ -319,9 +328,7 @@ export function ContratForm(props: ContratFormProps) {
                             </p>
                         ) : null}
                     </div>
-                </div>
-                <div className="flex gap-6 sm:col-span-2">
-                    <div className="flex-col flex-1 gap-2">
+                    <div className="flex flex-col gap-2 sm:col-span-1">
                         <Label htmlFor="reference" className="font-medium text-slate-700">
                             {t("form.reference")}{" "}
                             <span className="text-red-500">*</span>
@@ -342,7 +349,7 @@ export function ContratForm(props: ContratFormProps) {
                         name="auto_renew"
                         control={form.control}
                         render={({ field }) => (
-                            <div className="flex-col flex-1 gap-2">
+                            <div className="flex flex-col gap-2 sm:col-span-1">
                                 <Label htmlFor="auto-renew" className="font-medium text-slate-700">
                                     {t("form.auto-renew.title")}{" "}
                                     <span className="text-red-500">*</span>
@@ -366,7 +373,6 @@ export function ContratForm(props: ContratFormProps) {
                             </div>
                         )}
                     />
-                </div>
 
                 <DateField
                     id="date-debut"
@@ -424,6 +430,70 @@ export function ContratForm(props: ContratFormProps) {
                         </p>
                     ) : null}
                 </div>
+
+                {isCreate ? (
+                    <>
+                        <div className="flex flex-col gap-2 sm:col-span-1">
+                            <Label
+                                htmlFor="type-contrat"
+                                className="font-medium text-slate-700"
+                            >
+                                Type de contrat <span className="text-red-500">*</span>
+                            </Label>
+                            <select
+                                id="type-contrat"
+                                className={selectClassName}
+                                disabled={pending || referentielsLoading}
+                                {...form.register("type", {
+                                    valueAsNumber: true,
+                                })}
+                            >
+                                <option value={0}>
+                                    {referentielsLoading
+                                        ? "Chargement des référentiels…"
+                                        : "Sélectionner un type de contrat"}
+                                </option>
+                                {referentielOptions.map((r) => (
+                                    <option key={r.id} value={r.id}>
+                                        {r.title.trim() || r.code.trim()}
+                                    </option>
+                                ))}
+                            </select>
+                            {form.formState.errors.type?.message ? (
+                                <p className="text-sm text-destructive">
+                                    {form.formState.errors.type.message}
+                                </p>
+                            ) : null}
+                        </div>
+
+                        <div className="flex flex-col gap-2 sm:col-span-1">
+                            <Label
+                                htmlFor="billing-cycle-create"
+                                className="font-medium text-slate-700"
+                            >
+                                Cycle de facturation{" "}
+                                <span className="text-red-500">*</span>
+                            </Label>
+                            <select
+                                id="billing-cycle-create"
+                                className={selectClassName}
+                                disabled={pending}
+                                {...form.register("billing_cycle")}
+                            >
+                                {BILLING_CYCLE_FORM_OPTIONS.map((opt) => (
+                                    <option key={opt.value} value={opt.value}>
+                                        {opt.label}
+                                    </option>
+                                ))}
+                            </select>
+                            {form.formState.errors.billing_cycle?.message ? (
+                                <p className="text-sm text-destructive">
+                                    {form.formState.errors.billing_cycle.message}
+                                </p>
+                            ) : null}
+                        </div>
+                    </>
+                ) : null}
 
                 {!isCreate ? (
                     <>
@@ -484,11 +554,11 @@ export function ContratForm(props: ContratFormProps) {
                                 disabled={pending}
                                 {...form.register("billing_cycle")}
                             >
-                                <option value="monthly">Mensuel</option>
-                                <option value="quarterly">Trimestriel</option>
-                                <option value="yearly">Annuel</option>
-                                <option value="one_shot">Ponctuel</option>
-                                <option value="custom">Personnalisé</option>
+                                {BILLING_CYCLE_FORM_OPTIONS.map((opt) => (
+                                    <option key={opt.value} value={opt.value}>
+                                        {opt.label}
+                                    </option>
+                                ))}
                             </select>
                             {form.formState.errors.billing_cycle?.message ? (
                                 <p className="text-sm text-destructive">

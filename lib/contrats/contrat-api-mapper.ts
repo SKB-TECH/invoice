@@ -65,5 +65,6 @@ export function contractResponseToDetail(
         statut: apiStatusToContratStatut(row.status),
         description: row.description ?? "",
         file_url: row.file_url ?? row.file_path ?? undefined,
+        type: row.type,
     };
 }

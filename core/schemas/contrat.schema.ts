@@ -8,37 +8,67 @@ const isoDateString = z.string().refine(
 const amount = z.coerce.number().finite().nonnegative();
 
 export const billingCycleEnum = z.enum([
+    "one_shot",
     "monthly",
     "quarterly",
+    "half_yearly",
     "yearly",
-    "one_shot",
-    "custom",
 ]);
 
-/** Valeurs entières attendues par l’API (à ajuster si le backend documente un autre mapping). */
+/** Libellés UI (formulaire / fiche). */
+export const BILLING_CYCLE_LABEL_FR: Record<
+    z.infer<typeof billingCycleEnum>,
+    string
+> = {
+    one_shot: "Unique",
+    monthly: "Mensuel",
+    quarterly: "Trimestriel",
+    half_yearly: "Semestriel",
+    yearly: "Annuel",
+};
+
+export const BILLING_CYCLE_FORM_OPTIONS: {
+    value: z.infer<typeof billingCycleEnum>;
+    label: string;
+}[] = (
+    Object.entries(BILLING_CYCLE_LABEL_FR) as [
+        z.infer<typeof billingCycleEnum>,
+        string,
+    ][]
+).map(([value, label]) => ({ value, label }));
+
+/**
+ * Mapping envoyé à l’API (entiers) — aligné sur Unique, Mensuel, Trimestriel, Semestriel, Annuel.
+ */
 const BILLING_CYCLE_TO_API: Record<
     z.infer<typeof billingCycleEnum>,
     number
 > = {
-    monthly: 1,
-    quarterly: 2,
-    yearly: 3,
-    one_shot: 4,
-    custom: 5,
+    one_shot: 1,
+    monthly: 2,
+    quarterly: 3,
+    half_yearly: 4,
+    yearly: 5,
 };
 
 const API_TO_BILLING_CYCLE = {
-    1: "monthly",
-    2: "quarterly",
-    3: "yearly",
-    4: "one_shot",
-    5: "custom",
+    1: "one_shot",
+    2: "monthly",
+    3: "quarterly",
+    4: "half_yearly",
+    5: "yearly",
 } as const satisfies Record<number, z.infer<typeof billingCycleEnum>>;
 
 export function billingCycleToApi(
     cycle: z.infer<typeof billingCycleEnum>
 ): number {
     return BILLING_CYCLE_TO_API[cycle];
+}
+
+export function billingCycleLabelFr(
+    cycle: z.infer<typeof billingCycleEnum>
+): string {
+    return BILLING_CYCLE_LABEL_FR[cycle];
 }
 
 export function billingCycleFromApi(
@@ -53,16 +83,32 @@ export function billingCycleFromApi(
     ) {
         return API_TO_BILLING_CYCLE[n];
     }
-    const s = String(raw).toLowerCase();
+    const s = String(raw).toLowerCase().trim();
+    const normalized = s.normalize("NFD").replace(/\p{M}/gu, "");
+
+    const french: Record<string, z.infer<typeof billingCycleEnum>> = {
+        unique: "one_shot",
+        ponctuel: "one_shot",
+        mensuel: "monthly",
+        trimestriel: "quarterly",
+        semestriel: "half_yearly",
+        annuel: "yearly",
+    };
+    if (french[s] || french[normalized]) {
+        return french[s] ?? french[normalized];
+    }
+
     if (
         s === "monthly" ||
         s === "quarterly" ||
         s === "yearly" ||
         s === "one_shot" ||
-        s === "custom"
+        s === "half_yearly"
     ) {
         return s as z.infer<typeof billingCycleEnum>;
     }
+    /** Ancien cycle « custom » : repli sur mensuel. */
+    if (s === "custom") return "monthly";
     return "monthly";
 }
 
@@ -101,6 +147,12 @@ const contractFieldsSchema = z.object({
     paid: amount,
     description: z.string().trim().optional().nullable(),
     billing_cycle: billingCycleEnum,
+    /** Identifiant référentiel (payload API `type`). */
+    type: z.preprocess(
+        (val) =>
+            val === "" || val === null || val === undefined ? 0 : val,
+        z.coerce.number().int().nonnegative()
+    ),
     items_template: itemsTemplateFromForm,
     /** Affichage local / futur champ API ; non inclus dans les payloads multipart actuels. */
     phone: z.string().trim().optional().nullable(),
@@ -125,9 +177,22 @@ function refineContractDateOrder(
     }
 }
 
-export const createContractSchema = contractFieldsSchema.superRefine(
-    refineContractDateOrder
-);
+function refineContractReferentiel(
+    data: { type?: number },
+    ctx: z.RefinementCtx
+) {
+    if (data.type === undefined || data.type < 1) {
+        ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: "Sélectionnez un référentiel",
+            path: ["type"],
+        });
+    }
+}
+
+export const createContractSchema = contractFieldsSchema
+    .superRefine(refineContractDateOrder)
+    .superRefine(refineContractReferentiel);
 
 /** `partial()` ne s’applique qu’à l’objet sans `superRefine` ; le raffinement dates est réappliqué après. */
 export const updateContractSchema = contractFieldsSchema
@@ -186,6 +251,14 @@ export const contractResponseSchema = z
             })
             .passthrough()
             .optional(),
+        type: z
+            .union([z.number(), z.string()])
+            .optional()
+            .transform((v) => {
+                if (v === undefined || v === null || v === "") return undefined;
+                const n = typeof v === "number" ? v : Number(String(v).trim());
+                return Number.isFinite(n) ? n : undefined;
+            }),
     })
     .passthrough();
 
