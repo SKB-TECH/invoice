@@ -231,6 +231,28 @@ export default function NouvelArticlePage() {
                     </div>
 
                     <div className="flex flex-col gap-2">
+                        <Label htmlFor="devise" className="font-medium text-slate-700">
+                            {tCreate("fields.currency")}
+                            {requiredStar}
+                        </Label>
+                        <select
+                            id="devise"
+                            name="devise"
+                            defaultValue=""
+                            required
+                            className={selectClass}
+                            aria-label={tCreate("fields.currency")}
+                        >
+                            <option value="" disabled>
+                                {tCreate("selectPlaceholder")}
+                            </option>
+                            <option value="usd">USD</option>
+                            <option value="cdf">CDF</option>
+                            <option value="eur">EUR</option>
+                        </select>
+                    </div>
+
+                    <div className="flex flex-col gap-2">
                         <Label htmlFor="prix-ht" className="font-medium text-slate-700">
                             {tCreate("fields.priceExclTax")}
                             {requiredStar}
@@ -288,34 +310,10 @@ export default function NouvelArticlePage() {
                             required
                             value={prixTtcAffiche}
                             placeholder={
-                                groupeTax && prixHt
-                                    ? undefined
-                                    : "—"
+                                groupeTax && prixHt ? undefined : "—"
                             }
                             className="h-12 cursor-default rounded-none bg-slate-50 text-slate-800"
                         />
-                    </div>
-
-                    <div className="flex flex-col gap-2">
-                        <Label htmlFor="devise" className="font-medium text-slate-700">
-                            {tCreate("fields.currency")}
-                            {requiredStar}
-                        </Label>
-                        <select
-                            id="devise"
-                            name="devise"
-                            defaultValue=""
-                            required
-                            className={selectClass}
-                            aria-label={tCreate("fields.currency")}
-                        >
-                            <option value="" disabled>
-                                {tCreate("selectPlaceholder")}
-                            </option>
-                            <option value="usd">USD</option>
-                            <option value="cdf">CDF</option>
-                            <option value="eur">EUR</option>
-                        </select>
                     </div>
 
                     <div className="flex flex-col gap-2">

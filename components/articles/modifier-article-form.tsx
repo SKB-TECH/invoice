@@ -287,6 +287,28 @@ export function ModifierArticleForm({
         </div>
 
         <div className="flex flex-col gap-2">
+          <Label htmlFor="devise" className="font-medium text-slate-700">
+            {tCreate("fields.currency")}
+            {requiredStar}
+          </Label>
+          <select
+            id="devise"
+            name="devise"
+            required
+            className={selectClass}
+            value={devise}
+            aria-label={tCreate("fields.currency")}
+            onChange={(e) =>
+              setDevise(e.target.value as ArticleDetailRecord["devise"])
+            }
+          >
+            <option value="usd">USD</option>
+            <option value="cdf">CDF</option>
+            <option value="eur">EUR</option>
+          </select>
+        </div>
+
+        <div className="flex flex-col gap-2">
           <Label htmlFor="prix-ht" className="font-medium text-slate-700">
             {tCreate("fields.priceExclTax")}
             {requiredStar}
@@ -327,16 +349,10 @@ export function ModifierArticleForm({
         </div>
 
         <div className="flex flex-col gap-2">
-          <Label
-            htmlFor="prix-ttc"
-            className="font-medium text-slate-700"
-          >
+          <Label htmlFor="prix-ttc" className="font-medium text-slate-700">
             {tCreate("fields.priceInclTax")}
             {requiredStar}
           </Label>
-          <p className="text-xs text-slate-500">
-            {tCreate("fields.priceInclTaxHint")}
-          </p>
           <Input
             id="prix-ttc"
             readOnly
@@ -347,28 +363,6 @@ export function ModifierArticleForm({
             className="h-12 cursor-default rounded-none bg-slate-50 text-slate-800"
             value={prixTtc}
           />
-        </div>
-
-        <div className="flex flex-col gap-2">
-          <Label htmlFor="devise" className="font-medium text-slate-700">
-            {tCreate("fields.currency")}
-            {requiredStar}
-          </Label>
-          <select
-            id="devise"
-            name="devise"
-            required
-            className={selectClass}
-            value={devise}
-            aria-label={tCreate("fields.currency")}
-            onChange={(e) =>
-              setDevise(e.target.value as ArticleDetailRecord["devise"])
-            }
-          >
-            <option value="usd">USD</option>
-            <option value="cdf">CDF</option>
-            <option value="eur">EUR</option>
-          </select>
         </div>
 
         <div className="flex flex-col gap-2">
