@@ -9,7 +9,6 @@ import {
     Square,
     ChevronDown,
     ChevronRight,
-    Filter,
     X,
 } from "lucide-react";
 
@@ -80,9 +79,8 @@ export function PermissionsSection() {
         }));
     }, [rolesData?.data]);
 
-    const permissions = permissionsData?.data ?? [];
-
     const filteredPermissions = useMemo(() => {
+        const permissions = permissionsData?.data ?? [];
         const query = search.trim().toLowerCase();
 
         if (!query) {
@@ -97,36 +95,29 @@ export function PermissionsSection() {
                 permission.LongCode_10.toLowerCase().includes(query)
             );
         });
-    }, [permissions, search]);
+    }, [permissionsData?.data, search]);
 
     const permissionGroups: PermissionGroup[] = useMemo(() => {
         const groups = new Map<string, PermissionItem[]>();
 
         filteredPermissions.forEach((permission) => {
-            const module = permission.Module_7 || "Autres";
+            const moduleName = permission.Module_7 || "Autres";
 
-            const current = groups.get(module) ?? [];
+            const current = groups.get(moduleName) ?? [];
             current.push(permission);
 
-            groups.set(module, current);
+            groups.set(moduleName, current);
         });
 
         return Array.from(groups.entries())
-            .map(([module, modulePermissions]) => ({
-                module,
+            .map(([moduleName, modulePermissions]) => ({
+                module: moduleName,
                 permissions: modulePermissions.sort((a, b) =>
                     a.LongCode_10.localeCompare(b.LongCode_10)
                 ),
             }))
             .sort((a, b) => a.module.localeCompare(b.module));
     }, [filteredPermissions]);
-
-    const selectedRoleLabel = useMemo(() => {
-        return (
-            roleOptions.find((role) => role.value === selectedRoleId)?.label ??
-            ""
-        );
-    }, [roleOptions, selectedRoleId]);
 
     const isPermissionSelected = (permissionId: number) => {
         return selectedPermissionIds.includes(permissionId);

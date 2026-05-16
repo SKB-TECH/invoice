@@ -425,7 +425,7 @@
   "articles": {
     "list": {
       "title": "Articles",
-      "searchPlaceholder": "Search by ID, title, group, price incl. tax, status, period...",
+      "searchPlaceholder": "Search by ID, title, referential, tax group, price incl. tax, status, period...",
       "searchAriaLabel": "Search for an article",
       "loading": "Loading articles…",
       "refreshing": "Updating…",
@@ -436,7 +436,8 @@
       "columns": {
         "code": "Code",
         "title": "Title",
-        "group": "Group",
+        "referential": "Referential",
+        "taxGroup": "Tax group",
         "priceTtc": "Price (incl. tax)",
         "status": "Status",
         "period": "Period"
@@ -462,7 +463,8 @@
         "specialPrice": "Special price / Promotion",
         "pieceUnit": "Piece / Unit",
         "unit": "Unit",
-        "articleGroup": "Group"
+        "articleGroup": "Group",
+        "referential": "Referential"
       },
       "placeholders": {
         "priceExclTaxExample": "E.g.: 10,000",
@@ -487,7 +489,12 @@
         "save": "Save"
       },
       "creating": "Creating article…",
-      "invalidForm": "Please check required fields and amounts."
+      "invalidForm": "Please check required fields and amounts.",
+      "referentialPlaceholder": "Select a referential",
+      "retryReferentialsFetch": "Try again",
+      "referentialLoadError": "Could not load referentials.",
+      "referentialNoneForAxis": "No referential rows in the catalogue. Add some in settings.",
+      "invalidReferential": "Please choose a valid referential."
     },
     "view": {
       "title": "Article details",

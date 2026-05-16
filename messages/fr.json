@@ -425,7 +425,7 @@
   "articles": {
     "list": {
       "title": "Articles",
-      "searchPlaceholder": "Recherche par ID, titre, groupe, prix TTC, statut, période...",
+      "searchPlaceholder": "Recherche par ID, titre, référentiel, groupe de taxe, prix TTC, statut, période…",
       "searchAriaLabel": "Rechercher un article",
       "loading": "Chargement des articles…",
       "refreshing": "Mise à jour…",
@@ -436,7 +436,8 @@
       "columns": {
         "code": "Code",
         "title": "Titre",
-        "group": "Groupe",
+        "referential": "Référentiel",
+        "taxGroup": "Groupe de taxe",
         "priceTtc": "Prix TTC",
         "status": "Statut",
         "period": "Période"
@@ -462,7 +463,8 @@
         "specialPrice": "Prix spécial / Promotion",
         "pieceUnit": "Pièce / Unité",
         "unit": "Unité",
-        "articleGroup": "Groupe"
+        "articleGroup": "Groupe",
+        "referential": "Référentiel"
       },
       "placeholders": {
         "priceExclTaxExample": "Ex: 10 000",
@@ -487,7 +489,12 @@
         "save": "Enregistrer"
       },
       "creating": "Création de l’article…",
-      "invalidForm": "Vérifiez les champs obligatoires et les montants."
+      "invalidForm": "Vérifiez les champs obligatoires et les montants.",
+      "referentialPlaceholder": "Sélectionner un référentiel",
+      "retryReferentialsFetch": "Réessayer",
+      "referentialLoadError": "Impossible de charger les référentiels.",
+      "referentialNoneForAxis": "Aucun référentiel disponible dans le catalogue. Ajoutez-en dans la configuration.",
+      "invalidReferential": "Choisissez un référentiel valide."
     },
     "view": {
       "title": "Détail de l'article",

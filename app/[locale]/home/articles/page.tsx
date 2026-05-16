@@ -13,6 +13,7 @@ import type {
     ArticleTableRow,
 } from "@/components/articles/types";
 import { useFournituresList } from "@/core/hooks/fournitures/useFournituresList";
+import { useReferentielsCatalog } from "@/core/hooks/referentiels/useReferentielsCatalog";
 import { mapFournitureToTableRow } from "@/lib/fournitures/articles/fournitures-mappers";
 
 function matchesArticleSearch(
@@ -26,7 +27,8 @@ function matchesArticleSearch(
         row.navigationId,
         row.code,
         row.title,
-        row.group,
+        row.referential,
+        row.taxGroup,
         row.priceTtc,
         statusLabels[row.status],
         row.status,
@@ -46,14 +48,27 @@ export default function HomeFournituresArticlesPage() {
     const { data, isLoading, isError, error, refetch, isFetching } =
         useFournituresList(1);
 
+    const { items: referentialRows } = useReferentielsCatalog(null);
+
+    const referentialTitleByCategoryId = useMemo(() => {
+        const m = new Map<number, string>();
+        for (const r of referentialRows) {
+            m.set(r.id, r.title.trim());
+        }
+        return m;
+    }, [referentialRows]);
+
     const suspenduLabel = t("status.suspendu");
     const actifLabel = t("status.actif");
     const completLabel = t("status.complet");
 
     const tableRows = useMemo(() => {
-        if (!data?.items?.length) return [];
-        return data.items.map(mapFournitureToTableRow);
-    }, [data?.items]);
+        const items = data?.items;
+        if (!items?.length) return [];
+        return items.map((item) =>
+            mapFournitureToTableRow(item, referentialTitleByCategoryId),
+        );
+    }, [data, referentialTitleByCategoryId]);
 
     const filteredArticles = useMemo(
         () =>

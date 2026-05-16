@@ -89,7 +89,69 @@ export function normalizeCurrency(code: string): ArticleDetailRecord["devise"] {
     return "usd";
 }
 
-export function formatApiTimestampToDdMmYyyy(ts: string): string {
+function resolveReferentialTitleForTable(
+    item: FournitureArticle,
+    referentialTitleByCategoryId?: ReadonlyMap<number, string>,
+): string {
+    const fromCategoryInfo = item.category_info?.title?.trim();
+    if (fromCategoryInfo) return fromCategoryInfo;
+
+    const cid = item.category_id;
+    if (typeof cid === "number" && Number.isFinite(cid) && cid > 0) {
+        const mapped = referentialTitleByCategoryId?.get(cid)?.trim();
+        if (mapped) return mapped;
+    }
+
+    const fromGroupInfo = item.group_info?.title?.trim();
+    if (fromGroupInfo) return fromGroupInfo;
+
+    return "—";
+}
+
+const FR_PERCENT_SUFFIX = `\u202f%`;
+
+function formatTaxRateForTable(rate: number): string {
+    if (!Number.isFinite(rate)) return "";
+    const roundedInt = Math.round(rate);
+    if (Math.abs(rate - roundedInt) < 1e-9)
+        return String(roundedInt);
+    return rate.toLocaleString("fr-FR", {
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 4,
+    });
+}
+
+function resolveTaxGroupTableLabel(item: FournitureArticle): string {
+    const n = item.tax_group;
+    const idx =
+        typeof n === "number" && Number.isFinite(n) && n >= 1
+            ? Math.floor(n) - 1
+            : -1;
+    const snap = item.tax_group_info;
+    const ref = idx >= 0 ? REFERENCE_TAX_GROUPS[idx] : undefined;
+
+    const title =
+        snap?.title?.trim() ||
+        ref?.name?.trim() ||
+        (snap?.code?.trim() ? `Groupe ${snap.code.trim()}` : "") ||
+        (ref?.code?.trim() ? `Groupe ${ref.code.trim()}` : "");
+
+    let rateRaw: number | undefined;
+    if (typeof snap?.rate === "number" && Number.isFinite(snap.rate)) {
+        rateRaw = snap.rate;
+    } else if (typeof ref?.ratePercent === "number") {
+        rateRaw = ref.ratePercent;
+    }
+
+    if (!title.trim()) return "—";
+
+    const pctStr = rateRaw !== undefined ? formatTaxRateForTable(rateRaw) : "";
+    if (pctStr)
+        return `${title} (${pctStr}${FR_PERCENT_SUFFIX})`;
+    return title;
+}
+
+function formatApiTimestampToDdMmYyyy(ts: string): string {
     const day = ts.slice(8, 10);
     const month = ts.slice(5, 7);
     const year = ts.slice(0, 4);
@@ -103,7 +165,10 @@ export function formatApiTimestampToDdMmYyyy(ts: string): string {
     return ts.slice(0, 10).split("-").reverse().join("-") || ts;
 }
 
-export function mapFournitureToTableRow(item: FournitureArticle): ArticleTableRow {
+export function mapFournitureToTableRow(
+    item: FournitureArticle,
+    referentialTitleByCategoryId?: ReadonlyMap<number, string>,
+): ArticleTableRow {
     const currencyLabel = item.currency?.trim()?.toUpperCase() ?? "";
     const priceFmt = Number.isFinite(item.price_after)
         ? item.price_after.toLocaleString("fr-FR", {
@@ -112,11 +177,17 @@ export function mapFournitureToTableRow(item: FournitureArticle): ArticleTableRo
           })
         : String(item.price_after);
 
+    const referential = resolveReferentialTitleForTable(
+        item,
+        referentialTitleByCategoryId,
+    );
+
     return {
         navigationId: String(item.id),
         code: item.code,
         title: item.name,
-        group: apiGroupIdToDisplayLetter(item.group_id),
+        referential,
+        taxGroup: resolveTaxGroupTableLabel(item),
         priceTtc: `${priceFmt} ${currencyLabel}`.trim(),
         status: mapApiArticleStatus(item.status),
         period: formatApiTimestampToDdMmYyyy(item.created_at ?? ""),
