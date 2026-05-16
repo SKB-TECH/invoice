@@ -64,11 +64,12 @@ export default function HomeFournituresArticlesPage() {
     const completLabel = t("status.complet");
 
     const tableRows = useMemo(() => {
-        if (!data?.items?.length) return [];
-        return data.items.map((item) =>
+        const items = data?.items;
+        if (!items?.length) return [];
+        return items.map((item) =>
             mapFournitureToTableRow(item, referentialTitleByCategoryId),
         );
-    }, [data?.items, referentialTitleByCategoryId]);
+    }, [data, referentialTitleByCategoryId]);
 
     const filteredArticles = useMemo(
         () =>
