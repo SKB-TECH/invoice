@@ -29,6 +29,7 @@ function matchesArticleSearch(
         row.title,
         row.referential,
         row.group,
+        row.taxGroup,
         row.priceTtc,
         statusLabels[row.status],
         row.status,

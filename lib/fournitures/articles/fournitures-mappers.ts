@@ -108,6 +108,23 @@ function resolveReferentialTitleForTable(
     return "—";
 }
 
+function resolveTaxGroupTableLabel(item: FournitureArticle): string {
+    const fromSnapshot = item.tax_group_info?.title?.trim();
+    if (fromSnapshot) return fromSnapshot;
+
+    const n = item.tax_group;
+    const idx =
+        typeof n === "number" && Number.isFinite(n) && n >= 1
+            ? Math.floor(n) - 1
+            : -1;
+    const ref = idx >= 0 ? REFERENCE_TAX_GROUPS[idx] : undefined;
+    const name = ref?.name?.trim();
+    if (name) return name;
+    const code = ref?.code?.trim();
+    if (code) return `[${code}]`;
+    return "—";
+}
+
 function formatApiTimestampToDdMmYyyy(ts: string): string {
     const day = ts.slice(8, 10);
     const month = ts.slice(5, 7);
@@ -145,6 +162,7 @@ export function mapFournitureToTableRow(
         title: item.name,
         referential,
         group: apiGroupIdToDisplayLetter(item.group_id),
+        taxGroup: resolveTaxGroupTableLabel(item),
         priceTtc: `${priceFmt} ${currencyLabel}`.trim(),
         status: mapApiArticleStatus(item.status),
         period: formatApiTimestampToDdMmYyyy(item.created_at ?? ""),

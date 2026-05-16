@@ -425,7 +425,7 @@
   "articles": {
     "list": {
       "title": "Articles",
-      "searchPlaceholder": "Search by ID, title, referential, group, price incl. tax, status, period...",
+      "searchPlaceholder": "Search by ID, title, referential, group, tax group, price incl. tax, status, period...",
       "searchAriaLabel": "Search for an article",
       "loading": "Loading articles…",
       "refreshing": "Updating…",
@@ -438,6 +438,7 @@
         "title": "Title",
         "referential": "Referential",
         "group": "Group",
+        "taxGroup": "Tax group",
         "priceTtc": "Price (incl. tax)",
         "status": "Status",
         "period": "Period"

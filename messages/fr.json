@@ -425,7 +425,7 @@
   "articles": {
     "list": {
       "title": "Articles",
-      "searchPlaceholder": "Recherche par ID, titre, référentiel, groupe, prix TTC, statut, période…",
+      "searchPlaceholder": "Recherche par ID, titre, référentiel, groupe, groupe de taxe, prix TTC, statut, période…",
       "searchAriaLabel": "Rechercher un article",
       "loading": "Chargement des articles…",
       "refreshing": "Mise à jour…",
@@ -438,6 +438,7 @@
         "title": "Titre",
         "referential": "Référentiel",
         "group": "Groupe",
+        "taxGroup": "Groupe de taxe",
         "priceTtc": "Prix TTC",
         "status": "Statut",
         "period": "Période"

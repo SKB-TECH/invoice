@@ -13,6 +13,7 @@ const COLUMN_ORDER = [
   "title",
   "referential",
   "group",
+  "taxGroup",
   "priceTtc",
   "status",
   "period",
