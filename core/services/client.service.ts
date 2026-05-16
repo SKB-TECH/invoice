@@ -69,7 +69,66 @@ export function clientPayloadForApi(input: CreateClientInput): Record<string, un
     };
 }
 
+function extractListItemsAndMeta(
+    raw: unknown
+): { items: unknown[]; meta: unknown } | null {
+    if (Array.isArray(raw)) {
+        return { items: raw, meta: undefined };
+    }
+    if (!raw || typeof raw !== "object") {
+        return null;
+    }
+
+    const o = raw as Record<string, unknown>;
+
+    if (Array.isArray(o.data)) {
+        return { items: o.data, meta: o.meta };
+    }
+    if (Array.isArray(o.items)) {
+        return { items: o.items, meta: o.meta };
+    }
+    if (Array.isArray(o.clients)) {
+        return { items: o.clients, meta: o.meta };
+    }
+
+    const inner = o.data;
+    if (inner && typeof inner === "object" && !Array.isArray(inner)) {
+        const d = inner as Record<string, unknown>;
+        if (Array.isArray(d.data)) {
+            return {
+                items: d.data,
+                meta: d.meta ?? {
+                    current_page: d.current_page,
+                    last_page: d.last_page,
+                    per_page: d.per_page,
+                    total: d.total,
+                },
+            };
+        }
+    }
+
+    return null;
+}
+
 function parseClientsListPayload(raw: unknown): ClientsListResult {
+    const direct = extractListItemsAndMeta(raw);
+    if (direct) {
+        const items = direct.items.map((row) => clientResponseSchema.parse(row));
+        const metaParsed = z
+            .object({
+                current_page: z.number().optional(),
+                last_page: z.number().optional(),
+                per_page: z.number().optional(),
+                total: z.number().optional(),
+            })
+            .passthrough()
+            .safeParse(direct.meta);
+        return {
+            items,
+            meta: metaParsed.success ? metaParsed.data : undefined,
+        };
+    }
+
     const pageParsed = paginatedClientsSchema.safeParse(raw);
     if (pageParsed.success) {
         return {
@@ -78,20 +137,16 @@ function parseClientsListPayload(raw: unknown): ClientsListResult {
         };
     }
 
-    const arr = z.array(clientResponseSchema).safeParse(raw);
+    const arr = z.array(z.unknown()).safeParse(raw);
     if (arr.success) {
-        return { items: arr.data };
+        return {
+            items: arr.data.map((row) => clientResponseSchema.parse(row)),
+        };
     }
 
     const inner = unwrapApiData<unknown>(raw);
-    const retryPage = paginatedClientsSchema.safeParse(inner);
-    if (retryPage.success) {
-        return { items: retryPage.data.data, meta: retryPage.data.meta };
-    }
-
-    const retryArr = z.array(clientResponseSchema).safeParse(inner);
-    if (retryArr.success) {
-        return { items: retryArr.data };
+    if (inner !== raw) {
+        return parseClientsListPayload(inner);
     }
 
     throw new Error("Format de liste clients inconnu.");
