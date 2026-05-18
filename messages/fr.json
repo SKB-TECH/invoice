@@ -810,7 +810,8 @@
       "reference": "Ref",
       "amount": "Montant",
       "status": "Statut",
-      "creation": "Création"
+      "creation": "Création",
+      "editInvoice": "Modifier la facture"
     },
     "status": {
       "paid": "Payée",
@@ -837,6 +838,5 @@
   },
   "errors": {
     "loadingDashboard": "Impossible de charger les données du tableau de bord."
-  },
-  "editInvoice": "Modifier la facture"
+  }
 }
