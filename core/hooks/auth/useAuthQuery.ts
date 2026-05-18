@@ -1,9 +1,10 @@
 "use client";
 
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { authService } from "@/core/services/auth.service";
 import type {
     AuthChangePasswordPayload,
+    AuthUpdateProfilePayload,
     LoginPayload,
 } from "@/core/types/auth";
 
@@ -26,6 +27,28 @@ export function useLogin() {
 export function useLogout() {
     return useMutation({
         mutationFn: () => authService.logout(),
+    });
+}
+
+export function useAuthProfile() {
+    return useQuery({
+        queryKey: ["auth", "profile"],
+        queryFn: () => authService.getProfile(),
+        staleTime: 60 * 1000,
+    });
+}
+
+export function useUpdateProfile() {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: (payload: AuthUpdateProfilePayload) =>
+            authService.updateProfile(payload),
+        onSuccess: () => {
+            void queryClient.invalidateQueries({
+                queryKey: ["auth", "profile"],
+            });
+        },
     });
 }
 

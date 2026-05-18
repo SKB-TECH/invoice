@@ -706,10 +706,28 @@
     },
     "basicInfo": {
       "sectionTitle": "Bansango ya moboko",
-      "changePhoto": "Kobongola",
-      "name": "Kombo",
+      "edit": "Kobongola",
+      "cancel": "Kozonga",
+      "firstname": "Kombo ya liboso",
+      "lastname": "Kombo ya nsuka",
       "email": "Email",
-      "saveChanges": "Bomba mbongwana"
+      "phone": "Telefone",
+      "userType": "Mokapo ya compte",
+      "userTypes": {
+        "personal": "Motuni",
+        "pme": "PME",
+        "corporate": "Entreprise"
+      },
+      "loading": "Kozwa profil…",
+      "loadError": "Profil elongwaki te.",
+      "retry": "Meke lisusu",
+      "submitting": "Tozali kobomba…",
+      "saveSuccess": "Profil ebongisami.",
+      "saveError": "Kobomba profil elongwaki.",
+      "saveChanges": "Bomba mbongwana",
+      "errors": {
+        "required": "Kombo ya liboso, ya nsuka mpe telefone bazali obligatoire."
+      }
     },
     "logo": {
       "sectionTitle": "Logo ya entreprise",

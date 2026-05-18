@@ -31,6 +31,10 @@ export function useUploadAvatar() {
                 user: nextUser,
                 profile: nextProfile,
             });
+
+            void queryClient.invalidateQueries({
+                queryKey: ["auth", "profile"],
+            });
         },
     });
 }

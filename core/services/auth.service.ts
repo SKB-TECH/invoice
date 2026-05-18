@@ -6,9 +6,12 @@ import type {
     RolePermission,
 } from "@/core/types/rbac";
 import { api } from "@/core/services/api";
+import { unwrapApiData } from "@/core/utils/apiResponse";
 import { mfaStore } from "@/core/utils/mfaStore";
 import type {
     AuthChangePasswordPayload,
+    AuthProfileData,
+    AuthUpdateProfilePayload,
     RegisterPayload,
     RegisterResponse,
 } from "@/core/types/auth";
@@ -244,6 +247,52 @@ export function mapApiUser(data: ApiUserData): AuthUser {
     } as AuthUser;
 }
 
+function parseAuthProfileResponse(inner: unknown): AuthProfileData {
+    if (
+        inner === null ||
+        typeof inner !== "object" ||
+        Array.isArray(inner)
+    ) {
+        throw new Error("Réponse profil invalide.");
+    }
+
+    const r = inner as Record<string, unknown>;
+
+    const str = (v: unknown): string | undefined =>
+        typeof v === "string" ? v : undefined;
+
+    const phone =
+        r.phone === null
+            ? null
+            : typeof r.phone === "string"
+              ? r.phone
+              : undefined;
+
+    const avatar =
+        r.avatar === null
+            ? null
+            : typeof r.avatar === "string"
+              ? r.avatar
+              : undefined;
+
+    return {
+        id: r.id !== undefined ? String(r.id) : undefined,
+        email: str(r.email),
+        phone,
+        firstname: str(r.firstname),
+        lastname: str(r.lastname),
+        userType: str(r.userType),
+        avatar,
+        permissions: Array.isArray(r.permissions)
+            ? r.permissions
+            : undefined,
+        modules: Array.isArray(r.modules) ? r.modules : undefined,
+        createdAt: str(r.createdAt),
+        updatedAt: str(r.updatedAt),
+        language: str(r.language),
+    };
+}
+
 export const authService = {
     async register(payload: RegisterPayload): Promise<RegisterResponse> {
         const formData = new FormData();
@@ -284,6 +333,28 @@ export const authService = {
 
         return data;
     },
+
+    async getProfile(): Promise<AuthProfileData> {
+        const { data } = await api.get<unknown>("/auth/profile");
+        const inner = unwrapApiData<unknown>(data);
+        return parseAuthProfileResponse(inner);
+    },
+
+    async updateProfile(
+        payload: AuthUpdateProfilePayload,
+    ): Promise<AuthProfileData | null> {
+        const { data } = await api.put<unknown>("/auth/profile", payload);
+        if (data === null || data === undefined || data === "") {
+            return null;
+        }
+        const inner = unwrapApiData<unknown>(data);
+        try {
+            return parseAuthProfileResponse(inner);
+        } catch {
+            return null;
+        }
+    },
+
     async login(identifier: string, password: string) {
         const { data } = await api.post<ApiUserData>("/auth/login", {
             identifier,

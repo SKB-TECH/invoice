@@ -705,10 +705,28 @@
     },
     "basicInfo": {
       "sectionTitle": "Basic information",
-      "changePhoto": "Change",
-      "name": "Name",
+      "edit": "Change",
+      "cancel": "Cancel",
+      "firstname": "First name",
+      "lastname": "Last name",
       "email": "Email",
-      "saveChanges": "Save changes"
+      "phone": "Phone",
+      "userType": "Account type",
+      "userTypes": {
+        "personal": "Personal",
+        "pme": "SME",
+        "corporate": "Corporate"
+      },
+      "loading": "Loading profile…",
+      "loadError": "Could not load profile.",
+      "retry": "Retry",
+      "submitting": "Saving…",
+      "saveSuccess": "Profile updated.",
+      "saveError": "Could not save profile.",
+      "saveChanges": "Save changes",
+      "errors": {
+        "required": "First name, last name and phone are required."
+      }
     },
     "logo": {
       "sectionTitle": "Company logo",
