@@ -214,6 +214,10 @@
     "form": {
       "invoice": "Faktire",
       "invoicePlaceholder": "Pona faktire",
+      "invoiceSearchPlaceholder": "Luka faktire (référence, kiliya…)",
+      "invoiceSearchEmpty": "Ezali te na ba résultats.",
+      "loadingInvoices": "Kotanga ba faktire…",
+      "invoicesLoadError": "Ekoki te kotanga ba faktire.",
       "client": "Kiliya",
       "contract": "Kotrati",
       "contractPlaceholder": "Pona kotrati",

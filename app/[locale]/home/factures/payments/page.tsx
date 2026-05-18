@@ -28,6 +28,7 @@ import {
     InputField,
     SelectField,
 } from "@/components/invoices/create/Fields";
+import { InvoiceSearchSelect } from "@/components/invoices/create/InvoiceSearchSelect";
 import {
     useInvoiceContracts,
     useInvoices,
@@ -253,7 +254,11 @@ export default function PaymentsPage() {
         perPage: PER_PAGE,
     });
 
-    const { data: invoicesData } = useInvoices({
+    const {
+        data: invoicesData,
+        isPending: invoicesPending,
+        isError: invoicesError,
+    } = useInvoices({
         page: 1,
         perPage: 100,
     });
@@ -277,6 +282,15 @@ export default function PaymentsPage() {
             (invoicesData?.items ?? []).find((inv) => inv.id === id) ?? null
         );
     }, [invoiceIdStr, invoicesData?.items]);
+
+    const selectedInvoiceDisplayLabel = useMemo(() => {
+        if (!selectedInvoice) return "";
+        const ext = selectedInvoice as { invoice_ref?: string };
+        return (
+            pickTruthyString(ext.invoice_ref, selectedInvoice.invoice_number) ??
+            `#${selectedInvoice.id}`
+        );
+    }, [selectedInvoice]);
 
     const resolvedClientId = selectedInvoice?.client_id;
 
@@ -471,13 +485,30 @@ export default function PaymentsPage() {
         return [];
     }, [contractsData?.items, invoiceContractId, selectedInvoice]);
 
-    const invoiceOptions = (invoicesData?.items ?? []).map((inv) => ({
-        value: String(inv.id),
-        label:
-            (inv as { invoice_ref?: string }).invoice_ref ??
-            inv.invoice_number ??
-            `#${inv.id}`,
-    }));
+    const invoiceSearchOptions = useMemo(() => {
+        return (invoicesData?.items ?? []).map((inv) => {
+            const ext = inv as { invoice_ref?: string };
+            const primary =
+                pickTruthyString(ext.invoice_ref, inv.invoice_number) ??
+                `#${inv.id}`;
+            const clientName = invoiceListClientDisplayName(inv);
+            const secondaryParts: string[] = [];
+            if (clientName) secondaryParts.push(clientName);
+            if (
+                typeof inv.total === "number" &&
+                !Number.isNaN(inv.total)
+            ) {
+                secondaryParts.push(formatAmount(inv.total, inv.currency));
+            }
+            const secondary = secondaryParts.join(" · ");
+
+            return {
+                id: inv.id,
+                primary,
+                secondary,
+            };
+        });
+    }, [invoicesData?.items]);
 
     const contractOptions = contracts.map((c) => ({
         value: String(c.id),
@@ -551,18 +582,29 @@ export default function PaymentsPage() {
                         <div className="mt-6 grid grid-cols-1 gap-x-14 gap-y-6 lg:grid-cols-2">
                             <div>
                                 <FieldLabel>{t("form.invoice")}</FieldLabel>
-                                <SelectField
-                                    placeholder={t("form.invoicePlaceholder")}
-                                    value={invoiceIdStr}
-                                    options={invoiceOptions}
-                                    onChange={(v) => {
-                                        setInvoiceIdStr(v);
+                                <InvoiceSearchSelect
+                                    key={
+                                        invoiceIdStr.trim() === "" ||
+                                        Number.isNaN(Number(invoiceIdStr))
+                                            ? "invoice-none"
+                                            : `invoice-${invoiceIdStr}`
+                                    }
+                                    options={invoiceSearchOptions}
+                                    value={selectedInvoiceDisplayLabel}
+                                    placeholder={
+                                        invoicesPending
+                                            ? t("form.loadingInvoices")
+                                            : t(
+                                                  "form.invoiceSearchPlaceholder"
+                                              )
+                                    }
+                                    emptyLabel={t("form.invoiceSearchEmpty")}
+                                    disabled={
+                                        invoicesPending || invoicesError
+                                    }
+                                    onSelect={(id) => {
+                                        setInvoiceIdStr(String(id));
                                         setFormError("");
-                                        const id = Number(v);
-                                        if (!v.trim() || Number.isNaN(id)) {
-                                            setContractIdStr("");
-                                            return;
-                                        }
                                         const inv = (
                                             invoicesData?.items ?? []
                                         ).find((invItem) => invItem.id === id);
@@ -583,6 +625,12 @@ export default function PaymentsPage() {
                                         }
                                     }}
                                 />
+
+                                {invoicesError ? (
+                                    <p className="mt-2 text-sm font-medium text-red-500">
+                                        {t("form.invoicesLoadError")}
+                                    </p>
+                                ) : null}
                             </div>
 
                             <div>
@@ -793,17 +841,6 @@ export default function PaymentsPage() {
 
             <div className="mb-6 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
                 <div className="flex flex-col gap-2">
-                    <Button
-                        variant="ghost"
-                        size="sm"
-                        className="-ml-2 w-fit"
-                        asChild
-                    >
-                        <Link href="/home/factures" className="gap-1">
-                            <ChevronLeft className="size-4" />
-                            {t("backToInvoices")}
-                        </Link>
-                    </Button>
 
                     <h1 className="text-2xl font-bold tracking-tight text-slate-800 sm:text-3xl">
                         {t("title")}
