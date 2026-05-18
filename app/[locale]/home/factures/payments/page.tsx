@@ -76,6 +76,34 @@ function pickTruthyString(...vals: unknown[]): string | undefined {
     return undefined;
 }
 
+/** Nom affichable du client sur une ligne GET /invoices (payload réel : client.name, etc.). */
+function invoiceListClientDisplayName(inv: unknown): string | undefined {
+    if (!inv || typeof inv !== "object") return undefined;
+    const item = inv as Record<string, unknown>;
+    const receiver =
+        item.receiver_info && typeof item.receiver_info === "object"
+            ? (item.receiver_info as Record<string, unknown>)
+            : undefined;
+    const clientInfo =
+        item.client_info && typeof item.client_info === "object"
+            ? (item.client_info as Record<string, unknown>)
+            : undefined;
+    const client =
+        item.client && typeof item.client === "object"
+            ? (item.client as Record<string, unknown>)
+            : undefined;
+
+    return pickTruthyString(
+        receiver?.legal_name,
+        receiver?.name,
+        clientInfo?.legal_name,
+        clientInfo?.name,
+        client?.legal_name,
+        client?.client_name,
+        client?.name
+    );
+}
+
 function paymentInvoiceDisplayName(
     row: PaymentRecord,
     invoiceLabelById: Map<number, string>
@@ -252,11 +280,25 @@ export default function PaymentsPage() {
 
     const resolvedClientId = selectedInvoice?.client_id;
 
+    const invoiceContractId = useMemo(() => {
+        if (!selectedInvoice) return undefined;
+        const cid = (selectedInvoice as { contract_id?: number }).contract_id;
+        return typeof cid === "number" && cid > 0 ? cid : undefined;
+    }, [selectedInvoice]);
+
+    const resolvedContractIdStr = useMemo(() => {
+        if (invoiceContractId !== undefined) {
+            return String(invoiceContractId);
+        }
+        return contractIdStr;
+    }, [contractIdStr, invoiceContractId]);
+
     const { data: contractsData } = useInvoiceContracts({
         client_id:
             typeof resolvedClientId === "number" && resolvedClientId > 0
                 ? resolvedClientId
                 : undefined,
+        contract_id: invoiceContractId,
         page: 1,
         perPage: 100,
     });
@@ -324,7 +366,7 @@ export default function PaymentsPage() {
             setFormError(t("validation.invoiceRequired"));
             return false;
         }
-        if (!contractIdStr.trim()) {
+        if (!resolvedContractIdStr.trim()) {
             setFormError(t("validation.contractRequired"));
             return false;
         }
@@ -353,7 +395,7 @@ export default function PaymentsPage() {
 
         const channelId = Number(channelIdStr);
         const methodId = Number(methodIdStr);
-        const contractId = Number(contractIdStr);
+        const contractId = Number(resolvedContractIdStr);
         const exchangeRate = Number(exchangeRateStr.replace(",", "."));
 
         if (!channelIdStr.trim() || Number.isNaN(channelId) || channelId <= 0) {
@@ -395,11 +437,39 @@ export default function PaymentsPage() {
     };
 
     const clientDisplay =
-        selectedInvoice?.client?.legal_name ||
-        selectedInvoice?.client?.client_name ||
+        invoiceListClientDisplayName(selectedInvoice) ??
         (resolvedClientId !== undefined ? `#${resolvedClientId}` : "—");
 
-    const contracts = contractsData?.items ?? [];
+    const contracts = useMemo(() => {
+        const items = contractsData?.items ?? [];
+        if (items.length > 0) return items;
+
+        if (!selectedInvoice || invoiceContractId === undefined) return [];
+
+        const inv = selectedInvoice as {
+            contract?: {
+                id?: number;
+                title?: string;
+                reference?: string;
+            };
+        };
+        const c = inv.contract;
+        if (
+            c &&
+            typeof c.id === "number" &&
+            c.id === invoiceContractId
+        ) {
+            return [
+                {
+                    id: c.id,
+                    title: c.title ?? "",
+                    reference: c.reference ?? "",
+                },
+            ];
+        }
+
+        return [];
+    }, [contractsData?.items, invoiceContractId, selectedInvoice]);
 
     const invoiceOptions = (invoicesData?.items ?? []).map((inv) => ({
         value: String(inv.id),
@@ -487,8 +557,30 @@ export default function PaymentsPage() {
                                     options={invoiceOptions}
                                     onChange={(v) => {
                                         setInvoiceIdStr(v);
-                                        setContractIdStr("");
                                         setFormError("");
+                                        const id = Number(v);
+                                        if (!v.trim() || Number.isNaN(id)) {
+                                            setContractIdStr("");
+                                            return;
+                                        }
+                                        const inv = (
+                                            invoicesData?.items ?? []
+                                        ).find((invItem) => invItem.id === id);
+                                        const cid = inv
+                                            ? (
+                                                  inv as {
+                                                      contract_id?: number;
+                                                  }
+                                              ).contract_id
+                                            : undefined;
+                                        if (
+                                            !(
+                                                typeof cid === "number" &&
+                                                cid > 0
+                                            )
+                                        ) {
+                                            setContractIdStr("");
+                                        }
                                     }}
                                 />
                             </div>
@@ -513,12 +605,14 @@ export default function PaymentsPage() {
                                               ? t("form.noContracts")
                                               : t("form.contractPlaceholder")
                                     }
-                                    value={contractIdStr}
+                                    value={resolvedContractIdStr}
                                     options={contractOptions}
                                     disabled={
                                         !resolvedClientId ||
                                         resolvedClientId <= 0 ||
-                                        contracts.length === 0
+                                        contracts.length === 0 ||
+                                        (invoiceContractId !== undefined &&
+                                            contracts.length === 1)
                                     }
                                     onChange={(v) => {
                                         setContractIdStr(v);
@@ -553,35 +647,44 @@ export default function PaymentsPage() {
                     </div>
                 ) : (
                     <div className="mt-4 bg-white p-8">
-                        <div className="mb-8">
-                            <p className="text-[17px] font-semibold text-slate-700">
-                                {t("step2.title")}
-                            </p>
-                            <p className="mt-1 text-sm font-medium text-slate-400">
-                                {t("step2.subtitle")}
-                            </p>
-                        </div>
 
                         <FieldError message={formError} />
 
                         <div className="mt-6 grid grid-cols-1 gap-x-14 gap-y-6 lg:grid-cols-2">
-                            <div>
+                            <div className="min-w-0">
                                 <FieldLabel>{t("form.amount")}</FieldLabel>
-                                <InputField
-                                    type="text"
-                                    placeholder={t("form.amountPlaceholder")}
-                                    value={amountStr}
-                                    onChange={(v) => setAmountStr(v)}
-                                />
-                            </div>
-                            <div>
-                                <FieldLabel>{t("form.currency")}</FieldLabel>
-                                <InputField
-                                    value={currencyStr}
-                                    onChange={(v) =>
-                                        setCurrencyStr(v.toUpperCase())
-                                    }
-                                />
+                                <div className="flex h-[50px] w-full overflow-hidden rounded border border-slate-300 bg-white transition-colors focus-within:border-[#0879bd]">
+                                    <div className="flex shrink-0 items-stretch border-r border-slate-200 bg-slate-50">
+                                        <input
+                                            type="text"
+                                            value={currencyStr}
+                                            onChange={(e) =>
+                                                setCurrencyStr(
+                                                    e.target.value.toUpperCase()
+                                                )
+                                            }
+                                            maxLength={16}
+                                            spellCheck={false}
+                                            autoCapitalize="characters"
+                                            aria-label={t("form.currency")}
+                                            className="w-[5rem] bg-transparent px-3 text-center text-[17px] font-semibold uppercase tracking-wide text-slate-700 outline-none placeholder:text-slate-400"
+                                            placeholder="USD"
+                                        />
+                                    </div>
+                                    <input
+                                        type="text"
+                                        inputMode="decimal"
+                                        dir="rtl"
+                                        placeholder={t(
+                                            "form.amountPlaceholder"
+                                        )}
+                                        value={amountStr}
+                                        onChange={(e) =>
+                                            setAmountStr(e.target.value)
+                                        }
+                                        className="min-w-0 flex-1 border-0 bg-transparent px-4 text-[17px] font-medium text-slate-700 outline-none placeholder:text-slate-400"
+                                    />
+                                </div>
                             </div>
 
                             <div>
@@ -617,7 +720,7 @@ export default function PaymentsPage() {
                                 />
                             </div>
 
-                            <div className="sm:col-span-2">
+                            <div className="min-w-0">
                                 <FieldLabel>{t("form.exchangeRate")}</FieldLabel>
                                 <InputField
                                     value={exchangeRateStr}
