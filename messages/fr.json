@@ -171,6 +171,86 @@
       "now": "Maintenant"
     }
   },
+  "paymentsPage": {
+    "title": "Paiements",
+    "createTitle": "Nouveau paiement",
+    "backToList": "Retour à la liste",
+    "backToInvoices": "Retour aux factures",
+    "recordPayment": "Enregistrer un paiement",
+    "loading": "Chargement des paiements…",
+    "loadError": "Impossible de charger les paiements.",
+    "empty": "Aucun paiement pour le moment.",
+    "breadcrumb": {
+      "invoices": "Factures",
+      "payments": "Paiements"
+    },
+    "table": {
+      "paymentReference": "Référence du paiement",
+      "invoiceName": "Référence de la facture",
+      "amountWithCurrency": "Montant",
+      "date": "Date"
+    },
+    "pagination": {
+      "summary": "Page {page} / {totalPages} — {total} paiement(s)",
+      "prev": "Précédent",
+      "next": "Suivant"
+    },
+    "sheet": {
+      "title": "Nouveau paiement",
+      "description": "Renseignez les informations puis validez pour enregistrer le paiement côté serveur."
+    },
+    "stepper": {
+      "step1": "Facture et contrat",
+      "step2": "Détails du paiement"
+    },
+    "step1": {
+      "title": "Effectuer un paiement"
+    },
+    "step2": {
+      "title": "Montant et moyen de paiement",
+      "subtitle": "Indiquez le montant, la devise et les informations de règlement."
+    },
+    "form": {
+      "invoice": "Facture",
+      "invoicePlaceholder": "Sélectionnez une facture",
+      "client": "Client",
+      "contract": "Contrat",
+      "contractPlaceholder": "Sélectionnez un contrat",
+      "amount": "Montant",
+      "amountPlaceholder": "Ex. 250",
+      "currency": "Devise",
+      "channel": "Canal",
+      "channelPlaceholder": "Canal de paiement",
+      "method": "Méthode",
+      "methodPlaceholder": "Méthode de paiement",
+      "exchangeRate": "Taux de change",
+      "cashInfo": "Informations caisse",
+      "collector": "Collecteur",
+      "drawer": "Tiroir-caisse",
+      "cancel": "Annuler",
+      "next": "Suivant",
+      "back": "Précédent",
+      "loadingChannels": "Chargement des canaux…",
+      "loadingMethods": "Chargement des méthodes…",
+      "noChannels": "Aucun canal disponible",
+      "noMethods": "Aucune méthode disponible",
+      "noContracts": "Aucun contrat disponible",
+      "contractNeedsInvoice": "Choisissez d’abord une facture",
+      "success": "Paiement enregistré avec succès.",
+      "submit": "Valider le paiement",
+      "submitting": "Envoi…",
+      "submitErrorFallback": "Échec de l’enregistrement du paiement."
+    },
+    "validation": {
+      "invoiceRequired": "Veuillez sélectionner une facture.",
+      "contractRequired": "Veuillez sélectionner un contrat.",
+      "amountInvalid": "Montant invalide.",
+      "currencyRequired": "La devise est requise.",
+      "channelRequired": "Veuillez sélectionner un canal.",
+      "methodRequired": "Veuillez sélectionner une méthode.",
+      "exchangeRateInvalid": "Taux de change invalide."
+    }
+  },
   "invoiceViewer": {
     "breadcrumbInvoices": "Factures",
     "breadcrumbView": "Visualisation",
