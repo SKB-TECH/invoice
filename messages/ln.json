@@ -772,5 +772,72 @@
       "verify": "Tozali kotala code...",
       "resend": "Tozali kotinda code ya sika..."
     }
+  },
+  "invoiceDashboard": {
+    "alert": {
+      "message": "Kobosana te kozongisa TVA ya sanza eleki. Motango mobimba oyo esengeli kozongisa ezali"
+    },
+    "cards": {
+      "previousYear": "Mbula eleki",
+      "currentMonth": "Sanza oyo",
+      "totalVatCollected": "TVA nyonso ezwamaki",
+      "totalVatReversed": "TVA nyonso ezongisamaki",
+      "invoiceNormalization": "Bobongisi facture",
+      "totalNormalizedInvoice": "Facture nyonso ebongisami",
+      "pendingNormalization": "Ezali kozela bobongisi",
+      "invoiceStatistics": "Statistique ya facture",
+      "paidInvoices": "Facture efutami",
+      "unpaidInvoices": "Facture efutami te"
+    },
+    "sections": {
+      "cashFlowTracking": "Bolandeli ya mosolo",
+      "currentMonth": "Sanza oyo",
+      "invoiceTracking": "Bolandeli ya facture",
+      "invoiceNormalization": "Bobongisi ya facture"
+    },
+    "charts": {
+      "issuedInvoices": "Facture nyonso ebimaki",
+      "totalRevenue": "Mosolo nyonso ezwami",
+      "totalDebt": "Nyongo nyonso"
+    },
+    "monthlyStats": {
+      "issued": "Ebimaki",
+      "paid": "Efutami",
+      "pending": "Ezali kozela",
+      "cancelled": "Ebolami"
+    },
+    "table": {
+      "date": "Mokolo",
+      "client": "Client",
+      "reference": "Ref",
+      "amount": "Motango",
+      "status": "Ezaleli",
+      "creation": "Esalemi na"
+    },
+    "status": {
+      "paid": "Efutami",
+      "unpaid": "Efutami te",
+      "paidMasculine": "Efutami"
+    },
+    "actions": {
+      "viewMore": "Tala mingi"
+    },
+    "months": {
+      "jan": "Ya",
+      "feb": "Fe",
+      "mar": "Ma",
+      "apr": "Ap",
+      "may": "Me",
+      "jun": "Yu",
+      "jul": "Yu",
+      "aug": "Ao",
+      "sep": "Se",
+      "oct": "Ok",
+      "nov": "No",
+      "dec": "De"
+    }
+  },
+  "errors": {
+    "loadingDashboard": "Impossible de charger les données du tableau de bord."
   }
 }

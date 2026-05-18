@@ -770,5 +770,72 @@
       "verify": "Vérification du code en cours...",
       "resend": "Envoi d’un nouveau code..."
     }
+  },
+  "invoiceDashboard": {
+    "alert": {
+      "message": "Rappelez-vous de faire le reversement de la TVA du mois passé. Total à reverser est à"
+    },
+    "cards": {
+      "previousYear": "Année passée",
+      "currentMonth": "Mois en cours",
+      "totalVatCollected": "Total TVA collectées",
+      "totalVatReversed": "Total TVA reversées",
+      "invoiceNormalization": "Normalisation facture",
+      "totalNormalizedInvoice": "Total facture normalisée",
+      "pendingNormalization": "En attente de normalisation",
+      "invoiceStatistics": "Statistique facture",
+      "paidInvoices": "Facture payée",
+      "unpaidInvoices": "Facture non payée"
+    },
+    "sections": {
+      "cashFlowTracking": "Suivi de trésorerie",
+      "currentMonth": "Mois en cours",
+      "invoiceTracking": "Suivi de facture",
+      "invoiceNormalization": "Normalisation de facture"
+    },
+    "charts": {
+      "issuedInvoices": "Total facture émise",
+      "totalRevenue": "Total revenu",
+      "totalDebt": "Total dette"
+    },
+    "monthlyStats": {
+      "issued": "Émises",
+      "paid": "Payées",
+      "pending": "En attentes",
+      "cancelled": "Annulées"
+    },
+    "table": {
+      "date": "Date",
+      "client": "Client",
+      "reference": "Ref",
+      "amount": "Montant",
+      "status": "Statut",
+      "creation": "Création"
+    },
+    "status": {
+      "paid": "Payée",
+      "unpaid": "Non payée",
+      "paidMasculine": "Payé"
+    },
+    "actions": {
+      "viewMore": "Voir plus"
+    },
+    "months": {
+      "jan": "Ja",
+      "feb": "Fe",
+      "mar": "Ma",
+      "apr": "Av",
+      "may": "Ma",
+      "jun": "Jn",
+      "jul": "Ju",
+      "aug": "Ao",
+      "sep": "Sep",
+      "oct": "Oct",
+      "nov": "Nov",
+      "dec": "Dec"
+    }
+  },
+  "errors": {
+    "loadingDashboard": "Impossible de charger les données du tableau de bord."
   }
 }
