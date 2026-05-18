@@ -204,7 +204,8 @@
       "step2": "Payment details"
     },
     "step1": {
-      "title": "Perform a payment"
+      "title": "Perform a payment",
+      "subtitle": "Pick the invoice and confirm the linked contract."
     },
     "step2": {
       "title": "Amount and payment method",
@@ -213,6 +214,10 @@
     "form": {
       "invoice": "Invoice",
       "invoicePlaceholder": "Select an invoice",
+      "invoiceSearchPlaceholder": "Search invoices (reference, client…)",
+      "invoiceSearchEmpty": "No matching invoices.",
+      "loadingInvoices": "Loading invoices…",
+      "invoicesLoadError": "Could not load invoices.",
       "client": "Client",
       "contract": "Contract",
       "contractPlaceholder": "Select a contract",

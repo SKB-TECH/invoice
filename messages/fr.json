@@ -204,7 +204,8 @@
       "step2": "Détails du paiement"
     },
     "step1": {
-      "title": "Effectuer un paiement"
+      "title": "Effectuer un paiement",
+      "subtitle": "Choisissez la facture concernée et vérifiez le contrat associé."
     },
     "step2": {
       "title": "Montant et moyen de paiement",
@@ -213,6 +214,10 @@
     "form": {
       "invoice": "Facture",
       "invoicePlaceholder": "Sélectionnez une facture",
+      "invoiceSearchPlaceholder": "Rechercher une facture (référence, client…)",
+      "invoiceSearchEmpty": "Aucune facture ne correspond.",
+      "loadingInvoices": "Chargement des factures…",
+      "invoicesLoadError": "Impossible de charger les factures.",
       "client": "Client",
       "contract": "Contrat",
       "contractPlaceholder": "Sélectionnez un contrat",
