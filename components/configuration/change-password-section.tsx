@@ -28,9 +28,15 @@ export function ChangePasswordSection() {
     if (form.newPassword || form.confirmPassword) {
         if (!form.oldPassword.trim()) {
             passwordError = t("password.errors.oldRequired");
-        } else if (form.newPassword.length < 6) {
+        } else if (
+            form.newPassword.length > 0 &&
+            form.newPassword.length < 6
+        ) {
             passwordError = t("password.errors.minLength");
-        } else if (form.newPassword !== form.confirmPassword) {
+        } else if (
+            form.confirmPassword.length > 0 &&
+            form.newPassword !== form.confirmPassword
+        ) {
             passwordError = t("password.errors.mismatch");
         }
     }
