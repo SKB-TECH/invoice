@@ -454,6 +454,11 @@
       },
       "title": "New contract",
       "form": {
+        "client": "Customer",
+        "clientSearchPlaceholder": "Search by name, tax ID, phone…",
+        "clientSearchEmpty": "No matching clients.",
+        "loadingClients": "Loading clients…",
+        "clientsLoadError": "Could not load clients.",
         "reference": "Reference number",
         "nom": "Contract name",
         "auto-renew": {

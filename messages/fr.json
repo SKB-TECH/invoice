@@ -454,6 +454,11 @@
       },
       "title": "Nouveau contrat",
       "form": {
+        "client": "Client",
+        "clientSearchPlaceholder": "Rechercher un client (nom, NIF, téléphone…)",
+        "clientSearchEmpty": "Aucun client ne correspond.",
+        "loadingClients": "Chargement des clients…",
+        "clientsLoadError": "Impossible de charger les clients.",
         "reference": "N° Référence",
         "nom": "Nom contrat",
         "auto-renew": {

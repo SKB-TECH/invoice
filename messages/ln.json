@@ -454,6 +454,11 @@
       },
       "title": "Kontra ya sika",
       "form": {
+        "client": "Kiliya",
+        "clientSearchPlaceholder": "Luka kiliya (nkombo, NIF, telefɔ́ni…)",
+        "clientSearchEmpty": "Ezali te na ba résultats.",
+        "loadingClients": "Kotanga ba kiliya…",
+        "clientsLoadError": "Ekoki te kotanga ba kiliya.",
         "reference": "Numelo ya Reference",
         "nom": "Kombo ya kontra",
         "auto-renew": {
