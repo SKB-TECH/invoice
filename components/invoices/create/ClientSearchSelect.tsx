@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { Search } from "lucide-react";
 import { useTranslations } from "next-intl";
 
@@ -8,14 +8,22 @@ import type { Client } from "./types";
 import { FieldError } from "./Fields";
 
 export function ClientSearchSelect({
-                                       clients,
-                                       value,
-                                       error,
-                                       onSelect,
-                                   }: {
+    clients,
+    value,
+    error,
+    placeholder,
+    emptyLabel,
+    disabled,
+    inputId = "client-search-select",
+    onSelect,
+}: {
     clients: Client[];
     value: string;
     error?: string;
+    placeholder?: string;
+    emptyLabel?: string;
+    disabled?: boolean;
+    inputId?: string;
     onSelect: (client: Client) => void;
 }) {
     const t = useTranslations("createInvoice");
@@ -23,9 +31,9 @@ export function ClientSearchSelect({
     const [open, setOpen] = useState(false);
     const [search, setSearch] = useState(value);
 
-    useEffect(() => {
-        setSearch(value);
-    }, [value]);
+    const resolvedPlaceholder =
+        placeholder ?? t("client.searchPlaceholder");
+    const resolvedEmpty = emptyLabel ?? t("client.empty");
 
     const filteredClients = useMemo(() => {
         const q = search.trim().toLowerCase();
@@ -53,29 +61,36 @@ export function ClientSearchSelect({
             <div className="relative">
                 <div className="relative">
                     <input
+                        id={inputId}
                         value={search}
-                        onFocus={() => setOpen(true)}
+                        disabled={disabled}
+                        onFocus={() => {
+                            if (!disabled) setOpen(true);
+                        }}
                         onChange={(event) => {
                             setSearch(event.target.value);
                             setOpen(true);
                         }}
-                        placeholder={t("client.searchPlaceholder")}
+                        placeholder={resolvedPlaceholder}
                         className={[
                             "h-[50px] w-full rounded border bg-white px-5 pr-12 text-[17px] font-medium text-slate-700 outline-none placeholder:text-slate-400",
+                            disabled
+                                ? "cursor-not-allowed bg-slate-50 opacity-70"
+                                : "",
                             error
                                 ? "border-red-400 focus:border-red-500"
                                 : "border-slate-300 focus:border-[#0879bd]",
                         ].join(" ")}
                     />
 
-                    <Search className="absolute right-4 top-1/2 size-4 -translate-y-1/2 text-slate-600" />
+                    <Search className="pointer-events-none absolute right-4 top-1/2 size-4 -translate-y-1/2 text-slate-600" />
                 </div>
 
-                {open && (
+                {open && !disabled ? (
                     <div className="absolute left-0 right-0 top-[56px] z-30 max-h-[260px] overflow-y-auto border border-slate-200 bg-white shadow-lg">
                         {filteredClients.length === 0 ? (
                             <div className="px-5 py-4 text-sm font-medium text-slate-500">
-                                {t("client.empty")}
+                                {resolvedEmpty}
                             </div>
                         ) : (
                             filteredClients.map((client) => (
@@ -90,13 +105,14 @@ export function ClientSearchSelect({
                                     </span>
 
                                     <span className="mt-1 text-xs text-slate-500">
-                                        NIF: {client.nif} / RCCM: {client.rccm}
+                                        NIF: {client.nif} / RCCM:{" "}
+                                        {client.rccm}
                                     </span>
                                 </button>
                             ))
                         )}
                     </div>
-                )}
+                ) : null}
             </div>
 
             <FieldError message={error} />

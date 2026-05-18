@@ -162,9 +162,11 @@ export function StepClient({
                     <FieldLabel>{t("client.client")}</FieldLabel>
 
                     <ClientSearchSelect
+                        key={form.clientId ?? "none"}
                         clients={clients}
                         value={form.clientName}
                         error={errors.clientId}
+                        inputId="invoice-create-client"
                         onSelect={handleSelectClient}
                     />
 
