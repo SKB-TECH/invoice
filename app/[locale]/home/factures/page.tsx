@@ -384,16 +384,25 @@ export default function InvoicesPage() {
                 <h1 className="text-2xl font-bold tracking-tight text-slate-800 sm:text-3xl">
                     {t("title")}
                 </h1>
-
-                <Button
-                    size="lg"
-                    className="h-12 w-52 cursor-pointer rounded bg-[#0879bd] px-5 text-white hover:bg-[#076ca8]"
-                    asChild
-                >
-                    <Link href="/home/factures/new">
-                        {t("createInvoice")}
-                    </Link>
-                </Button>
+                <div className="flex items-center gap-2">
+                    <Button
+                        size="lg"
+                        className="h-12 w-52 border border-[#0879bd] cursor-pointer rounded bg-white px-5 text-[#0879bd]"
+                    >
+                        <Link href="/home/factures/payments">
+                            {t("payments")}
+                        </Link>
+                    </Button>
+                    <Button
+                        size="lg"
+                        className="h-12 w-52 cursor-pointer rounded bg-[#0879bd] px-5 text-white hover:bg-[#076ca8]"
+                        asChild
+                    >
+                        <Link href="/home/factures/new">
+                            {t("createInvoice")}
+                        </Link>
+                    </Button>
+                </div>
             </div>
 
             <div className="overflow-hidden border border-slate-200/80 bg-white">

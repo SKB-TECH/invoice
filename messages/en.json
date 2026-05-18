@@ -138,6 +138,7 @@
     },
     "title": "Invoice list",
     "createInvoice": "Create invoice",
+    "payments": "Payments",
     "table": {
       "invoice": "Invoice",
       "client": "Client",
