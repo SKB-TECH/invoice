@@ -837,5 +837,6 @@
   },
   "errors": {
     "loadingDashboard": "Impossible de charger les données du tableau de bord."
-  }
+  },
+  "editInvoice": "Edit invoice"
 }

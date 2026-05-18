@@ -13,6 +13,7 @@ import {
     House,
     Loader2,
     MessageSquareText,
+    PencilLine,
     Send,
     X,
 } from "lucide-react";
@@ -162,6 +163,7 @@ function StatutBadge({ statut }: { statut: InvoiceStatus }) {
         </Badge>
     );
 }
+
 function AvatarStack({ reviewers }: { reviewers: Reviewer[] }) {
     const visibleReviewers = reviewers.slice(0, 3);
     const remaining = reviewers.length - visibleReviewers.length;
@@ -418,7 +420,6 @@ export default function InvoicesPage() {
                                 {t("table.phone")}
                             </TableHead>
 
-
                             <TableHead className="h-11 bg-slate-100 px-4 text-left text-sm font-semibold text-slate-700">
                                 {t("table.interactions")}
                             </TableHead>
@@ -435,7 +436,7 @@ export default function InvoicesPage() {
                         {isLoading ? (
                             <TableRow>
                                 <TableCell
-                                    colSpan={9}
+                                    colSpan={7}
                                     className="h-40 text-center"
                                 >
                                     <div className="flex items-center justify-center gap-2 text-sm text-slate-500">
@@ -447,7 +448,7 @@ export default function InvoicesPage() {
                         ) : isError ? (
                             <TableRow>
                                 <TableCell
-                                    colSpan={9}
+                                    colSpan={7}
                                     className="h-40 text-center text-sm text-red-500"
                                 >
                                     Une erreur est survenue lors du chargement
@@ -457,7 +458,7 @@ export default function InvoicesPage() {
                         ) : invoices.length === 0 ? (
                             <TableRow>
                                 <TableCell
-                                    colSpan={9}
+                                    colSpan={7}
                                     className="h-40 text-center text-sm text-slate-500"
                                 >
                                     Aucune facture trouvée.
@@ -476,11 +477,9 @@ export default function InvoicesPage() {
                                     <TableCell className="px-4 py-3 text-sm text-slate-800">
                                         {row.client}
                                     </TableCell>
+
                                     <TableCell className="px-4 py-3 text-sm font-semibold text-slate-800">
-                                        {formatAmount(
-                                            row.amount,
-                                            row.currency
-                                        )}
+                                        {formatAmount(row.amount, row.currency)}
                                     </TableCell>
 
                                     <TableCell className="px-4 py-3 text-sm text-slate-800">
@@ -509,23 +508,51 @@ export default function InvoicesPage() {
                                     </TableCell>
 
                                     <TableCell className="px-4 py-3 text-right">
-                                        <Button
-                                            variant="ghost"
-                                            size="icon"
-                                            asChild
-                                            className="cursor-pointer text-slate-500 hover:bg-slate-100 hover:text-slate-700"
-                                        >
-                                            <Link
-                                                href={`/home/factures/${encodeURIComponent(
-                                                    row?.id
-                                                )}`}
-                                                aria-label={t(
-                                                    "table.viewInvoice"
-                                                )}
+                                        <div className="flex items-center justify-end gap-1">
+                                            {row.statut === "Brouillon" && (
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    asChild
+                                                    className="cursor-pointer text-[#0879bd] hover:bg-sky-50 hover:text-[#076ca8]"
+                                                >
+                                                    <Link
+                                                        href={`/home/factures/update/${encodeURIComponent(
+                                                            row.id
+                                                        )}`}
+                                                        aria-label={t(
+                                                            "table.editInvoice"
+                                                        )}
+                                                        title={t(
+                                                            "table.editInvoice"
+                                                        )}
+                                                    >
+                                                        <PencilLine className="size-4" />
+                                                    </Link>
+                                                </Button>
+                                            )}
+
+                                            <Button
+                                                variant="ghost"
+                                                size="icon"
+                                                asChild
+                                                className="cursor-pointer text-slate-500 hover:bg-slate-100 hover:text-slate-700"
                                             >
-                                                <Eye className="size-4" />
-                                            </Link>
-                                        </Button>
+                                                <Link
+                                                    href={`/home/factures/${encodeURIComponent(
+                                                        row.id
+                                                    )}`}
+                                                    aria-label={t(
+                                                        "table.viewInvoice"
+                                                    )}
+                                                    title={t(
+                                                        "table.viewInvoice"
+                                                    )}
+                                                >
+                                                    <Eye className="size-4" />
+                                                </Link>
+                                            </Button>
+                                        </div>
                                     </TableCell>
                                 </TableRow>
                             ))
@@ -685,7 +712,7 @@ export default function InvoicesPage() {
                                             type="button"
                                             variant="outline"
                                             onClick={() =>
-                                                handleChangeStatus("Annulée")
+                                                handleChangeStatus("Classée")
                                             }
                                             className="h-10 rounded border-red-100 bg-red-50 text-red-500 hover:bg-red-100 hover:text-red-600"
                                         >
