@@ -31,6 +31,11 @@ import {
     useNormalizeInvoice,
 } from "@/core/hooks/invoices/useInvoices";
 
+import {
+    useCreateInvoiceComment,
+    useGetInvoiceComments,
+} from "@/core/hooks/invoices/useInvoiceComments";
+
 import { InvoicePdfDocument } from "@/components/shared/OtherComponents/components/invoice/InvoicePdfDocument";
 
 type InvoiceStatus =
@@ -50,7 +55,7 @@ type Reviewer = {
     role: string;
 };
 
-type InvoiceComment = {
+type InvoiceCommentViewModel = {
     id: string;
     author: string;
     initials: string;
@@ -58,6 +63,7 @@ type InvoiceComment = {
     message: string;
     date: string;
     status?: "open" | "resolved";
+    replyToId?: number | null;
 };
 
 type InvoiceLine = {
@@ -109,14 +115,13 @@ type InvoiceViewModel = {
     paymentBankName: string;
     paymentAccountNumber: string;
     reviewers: Reviewer[];
-    comments: InvoiceComment[];
+    comments: InvoiceCommentViewModel[];
     lines: InvoiceLine[];
 };
 
 type InvoiceOverrides = {
     statut?: InvoiceStatus;
     reviewers?: Reviewer[];
-    comments?: InvoiceComment[];
 };
 
 function safeText(value: unknown, fallback = "—") {
@@ -162,6 +167,30 @@ function formatApiDate(value?: string | null) {
     }
 
     return date.toLocaleDateString("fr-FR");
+}
+
+function formatCommentDate(value?: string | null) {
+    if (!value) return "—";
+
+    const date = new Date(value);
+
+    if (Number.isNaN(date.getTime())) {
+        return value;
+    }
+
+    return date.toLocaleString("fr-FR", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+    });
+}
+
+function getCommentInitials(userId?: number | null) {
+    if (!userId) return "US";
+
+    return `U${String(userId).slice(-1)}`;
 }
 
 function mapWorkflowStatusToUiStatus(
@@ -386,17 +415,12 @@ function TemplateAPreview({
                         className="grid min-w-[900px] grid-cols-[60px_1fr_140px_100px_120px_160px] border-b border-slate-300 py-4 text-sm font-semibold text-slate-700"
                     >
                         <div>{index + 1}</div>
-
                         <div>{line.designation}</div>
-
                         <div className="text-right">
                             {formatSimpleAmount(line.unitPrice)}
                         </div>
-
                         <div className="text-right">{line.quantity}</div>
-
                         <div className="text-right">{line.taxRate}%</div>
-
                         <div className="text-right">
                             {formatSimpleAmount(line.lineTotal)}
                         </div>
@@ -548,17 +572,12 @@ function TemplateBPreview({
                         className="grid min-w-[860px] grid-cols-[60px_1fr_170px_110px_150px_150px] border-t border-slate-300 px-3 py-2 text-sm"
                     >
                         <div>{index + 1}</div>
-
                         <div>{line.designation}</div>
-
                         <div className="text-right">
                             {formatSimpleAmount(line.unitPrice)}
                         </div>
-
                         <div className="text-right">{line.quantity}</div>
-
                         <div className="text-right">{line.taxRate}%</div>
-
                         <div className="text-right">
                             {formatSimpleAmount(line.lineTotal)}
                         </div>
@@ -579,16 +598,12 @@ function TemplateBPreview({
                         <div key={group.rate}>
                             <div className="flex justify-between">
                                 <span>H.T. Taxable {group.rate}%</span>
-                                <span>
-                                    {formatSimpleAmount(group.subtotal)}
-                                </span>
+                                <span>{formatSimpleAmount(group.subtotal)}</span>
                             </div>
 
                             <div className="flex justify-between">
                                 <span>TVA Taxable {group.rate}%</span>
-                                <span>
-                                    {formatSimpleAmount(group.taxAmount)}
-                                </span>
+                                <span>{formatSimpleAmount(group.taxAmount)}</span>
                             </div>
                         </div>
                     ))}
@@ -656,6 +671,26 @@ export default function InvoiceViewerPage() {
     } = useInvoiceById(invoiceId);
 
     const {
+        data: apiComments = [],
+        isLoading: isLoadingComments,
+    } = useGetInvoiceComments(invoiceId, {
+        enabled: Boolean(invoiceId),
+    });
+
+    const {
+        mutate: createInvoiceComment,
+        isPending: isCreatingComment,
+    } = useCreateInvoiceComment({
+        onSuccess: () => {
+            toast.success("Commentaire ajouté avec succès.");
+            setComment("");
+        },
+        onError: () => {
+            toast.error("Impossible d’ajouter le commentaire.");
+        },
+    });
+
+    const {
         mutate: normalizeInvoice,
         isPending: isNormalizing,
     } = useNormalizeInvoice({
@@ -669,6 +704,39 @@ export default function InvoiceViewerPage() {
 
     const [comment, setComment] = useState("");
     const [overrides, setOverrides] = useState<InvoiceOverrides>({});
+    const [resolvedCommentIds, setResolvedCommentIds] = useState<string[]>([]);
+
+    const comments = useMemo<InvoiceCommentViewModel[]>(() => {
+        return apiComments.map((item) => ({
+            id: String(item.id),
+            author: `Utilisateur #${item.user_id}`,
+            initials: getCommentInitials(item.user_id),
+            role: "Commentaire",
+            message: item.comment,
+            date: formatCommentDate(item.created_at),
+            status: resolvedCommentIds.includes(String(item.id))
+                ? "resolved"
+                : "open",
+            replyToId: item.reply_to_id,
+        }));
+    }, [apiComments, resolvedCommentIds]);
+
+    const reviewers = useMemo<Reviewer[]>(() => {
+        const uniqueUsers = new Map<number, Reviewer>();
+
+        apiComments.forEach((item) => {
+            if (!uniqueUsers.has(item.user_id)) {
+                uniqueUsers.set(item.user_id, {
+                    id: String(item.user_id),
+                    name: `Utilisateur #${item.user_id}`,
+                    initials: getCommentInitials(item.user_id),
+                    role: "Commentateur",
+                });
+            }
+        });
+
+        return Array.from(uniqueUsers.values());
+    }, [apiComments]);
 
     const baseInvoice = useMemo<InvoiceViewModel | null>(() => {
         if (!invoiceData) return null;
@@ -761,11 +829,11 @@ export default function InvoiceViewerPage() {
             paymentMethod: safeText(paymentInfo.method),
             paymentBankName: safeText(paymentInfo.bank_name),
             paymentAccountNumber: safeText(paymentInfo.account_number),
-            reviewers: [],
-            comments: [],
+            reviewers,
+            comments,
             lines,
         };
-    }, [invoiceData]);
+    }, [invoiceData, reviewers, comments]);
 
     const invoice = useMemo<InvoiceViewModel | null>(() => {
         if (!baseInvoice) return null;
@@ -774,7 +842,6 @@ export default function InvoiceViewerPage() {
             ...baseInvoice,
             statut: overrides.statut ?? baseInvoice.statut,
             reviewers: overrides.reviewers ?? baseInvoice.reviewers,
-            comments: overrides.comments ?? baseInvoice.comments,
         };
     }, [baseInvoice, overrides]);
 
@@ -821,54 +888,22 @@ export default function InvoiceViewerPage() {
     };
 
     const handleAddComment = () => {
-        if (!invoice || !comment.trim()) return;
+        if (!invoiceId || !comment.trim()) return;
 
-        const newComment: InvoiceComment = {
-            id: crypto.randomUUID(),
-            author: t("you"),
-            initials: "VO",
-            role: t("reviewer"),
-            message: comment.trim(),
-            date: t("now"),
-            status: "open",
-        };
-
-        const currentUser: Reviewer = {
-            id: "current-user",
-            name: t("you"),
-            initials: "VO",
-            role: t("reviewer"),
-        };
-
-        const reviewers = invoice.reviewers.some(
-            (reviewer) => reviewer.id === currentUser.id
-        )
-            ? invoice.reviewers
-            : [...invoice.reviewers, currentUser];
-
-        setOverrides((current) => ({
-            ...current,
-            reviewers,
-            comments: [newComment, ...invoice.comments],
-        }));
-
-        setComment("");
+        createInvoiceComment({
+            invoiceId,
+            payload: {
+                comment: comment.trim(),
+            },
+        });
     };
 
     const handleResolveComment = (commentId: string) => {
-        if (!invoice) return;
-
-        setOverrides((current) => ({
-            ...current,
-            comments: invoice.comments.map((item) =>
-                item.id === commentId
-                    ? {
-                        ...item,
-                        status: "resolved",
-                    }
-                    : item
-            ),
-        }));
+        setResolvedCommentIds((current) =>
+            current.includes(commentId)
+                ? current
+                : [...current, commentId]
+        );
     };
 
     if (isLoading) {
@@ -942,7 +977,7 @@ export default function InvoiceViewerPage() {
                                 size="sm"
                                 onClick={handleNormalizeInvoice}
                                 disabled={isNormalizing}
-                                className="h-12 w-52 rounded text-sm bg-[#0879bd] text-white disabled:cursor-not-allowed disabled:opacity-60"
+                                className="h-12 w-52 rounded bg-[#0879bd] text-sm text-white disabled:cursor-not-allowed disabled:opacity-60"
                             >
                                 {isNormalizing ? (
                                     <>
@@ -962,7 +997,7 @@ export default function InvoiceViewerPage() {
                             type="button"
                             variant="outline"
                             size="sm"
-                            className="h-12 w-52  rounded font-semibold text-sm text-[#0879bd] border-[#0879bd]"
+                            className="h-12 w-52 rounded border-[#0879bd] text-sm font-semibold text-[#0879bd]"
                         >
                             <Printer className="mr-2 size-4" />
                             {t("print")}
@@ -974,7 +1009,7 @@ export default function InvoiceViewerPage() {
                                     <InvoicePdfDocument invoice={pdfInvoice} />
                                 }
                                 fileName={`${invoice.invoice}.pdf`}
-                                className="inline-flex h-12 w-52  items-center justify-center rounded border font-semibold text-sm text-[#0879bd] border-[#0879bd] bg-white px-3 text-sm font-medium text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-900"
+                                className="inline-flex h-12 w-52 items-center justify-center rounded border border-[#0879bd] bg-white px-3 text-sm font-semibold text-[#0879bd] transition-colors hover:bg-slate-100"
                             >
                                 {({ loading }) => (
                                     <>
@@ -1142,7 +1177,12 @@ export default function InvoiceViewerPage() {
                                 </p>
 
                                 <div className="space-y-3">
-                                    {invoice.comments.length === 0 ? (
+                                    {isLoadingComments ? (
+                                        <div className="flex items-center justify-center rounded border border-dashed border-slate-200 bg-slate-50 px-4 py-8 text-sm text-slate-500">
+                                            <Loader2 className="mr-2 size-4 animate-spin" />
+                                            Chargement des commentaires...
+                                        </div>
+                                    ) : invoice.comments.length === 0 ? (
                                         <div className="rounded border border-dashed border-slate-200 bg-slate-50 px-4 py-8 text-center">
                                             <MessageSquareText className="mx-auto size-5 text-slate-400" />
 
@@ -1170,9 +1210,7 @@ export default function InvoiceViewerPage() {
                                                         <div className="flex items-start justify-between gap-3">
                                                             <div>
                                                                 <p className="text-sm font-semibold text-slate-800">
-                                                                    {
-                                                                        item.author
-                                                                    }
+                                                                    {item.author}
                                                                 </p>
 
                                                                 <p className="text-xs text-slate-500">
@@ -1233,11 +1271,20 @@ export default function InvoiceViewerPage() {
                             <Button
                                 type="button"
                                 onClick={handleAddComment}
-                                disabled={!comment.trim()}
-                                className="mt-3 h-11 w-full rounded bg-[#0879bd] text-white hover:bg-[#076ca8]"
+                                disabled={!comment.trim() || isCreatingComment}
+                                className="mt-3 h-11 w-full rounded bg-[#0879bd] text-white hover:bg-[#076ca8] disabled:cursor-not-allowed disabled:opacity-60"
                             >
-                                <Send className="mr-2 size-4" />
-                                {t("sendComment")}
+                                {isCreatingComment ? (
+                                    <>
+                                        <Loader2 className="mr-2 size-4 animate-spin" />
+                                        Envoi...
+                                    </>
+                                ) : (
+                                    <>
+                                        <Send className="mr-2 size-4" />
+                                        {t("sendComment")}
+                                    </>
+                                )}
                             </Button>
                         </div>
                     </div>
