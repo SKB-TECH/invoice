@@ -418,9 +418,6 @@ export default function InvoicesPage() {
                                 {t("table.phone")}
                             </TableHead>
 
-                            <TableHead className="h-11 bg-slate-100 px-4 text-left text-sm font-semibold text-slate-700">
-                                {t("table.comments")}
-                            </TableHead>
 
                             <TableHead className="h-11 bg-slate-100 px-4 text-left text-sm font-semibold text-slate-700">
                                 {t("table.interactions")}
@@ -492,19 +489,6 @@ export default function InvoicesPage() {
 
                                     <TableCell className="px-4 py-3 text-sm text-slate-800">
                                         {row.telephone}
-                                    </TableCell>
-
-                                    <TableCell className="px-4 py-3 text-sm text-slate-800">
-                                        <button
-                                            type="button"
-                                            onClick={() =>
-                                                setSelectedInvoice(row)
-                                            }
-                                            className="inline-flex items-center gap-2 text-slate-500 hover:text-[#0879bd]"
-                                        >
-                                            <MessageSquareText className="size-4" />
-                                            <span>{row.comments.length}</span>
-                                        </button>
                                     </TableCell>
 
                                     <TableCell className="px-4 py-3 text-sm text-slate-800">
