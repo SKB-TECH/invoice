@@ -138,6 +138,7 @@
     },
     "title": "Liste ya bafaktire",
     "createInvoice": "Kosala faktire",
+    "payments": "Babotosi",
     "table": {
       "invoice": "Faktire",
       "client": "Kiliya",
@@ -168,6 +169,87 @@
       "you": "Yo",
       "reviewer": "Moto azali kotala",
       "now": "Sikoyo"
+    }
+  },
+  "paymentsPage": {
+    "title": "Babotosi",
+    "createTitle": "Botosi ya sika",
+    "backToList": "Zonga na liste",
+    "backToInvoices": "Zonga na bafaktire",
+    "recordPayment": "Kobakisa botosi",
+    "loading": "Kozwa babotosi…",
+    "loadError": "Ekoki te kozwa babotosi.",
+    "empty": "Botosi ezali te sikoyo.",
+    "breadcrumb": {
+      "invoices": "Bafaktire",
+      "payments": "Babotosi"
+    },
+    "table": {
+      "paymentReference": "Référence ya botosi",
+      "invoiceName": "Nkombo ya faktire",
+      "amountWithCurrency": "Motuya",
+      "date": "Date"
+    },
+    "pagination": {
+      "summary": "Page {page} / {totalPages} — {total} botosi",
+      "prev": "O liboso",
+      "next": "Nsima"
+    },
+    "sheet": {
+      "title": "Botosi ya sika",
+      "description": "Tia ba informations mpo na kobakisa botosi na serveur."
+    },
+    "stepper": {
+      "step1": "Faktire mpe kotrati",
+      "step2": "Makambo ya botosi"
+    },
+    "step1": {
+      "title": "Banga botosi na faktire",
+      "subtitle": "Pona faktire mpe kotrati oyo ezali na kiliya."
+    },
+    "step2": {
+      "title": "Motuya mpe méthode ya botosi",
+      "subtitle": "Tia motuya, moné mpe makambo ya kofuta."
+    },
+    "form": {
+      "invoice": "Faktire",
+      "invoicePlaceholder": "Pona faktire",
+      "client": "Kiliya",
+      "contract": "Kotrati",
+      "contractPlaceholder": "Pona kotrati",
+      "amount": "Motuya",
+      "amountPlaceholder": "Bandeko 250",
+      "currency": "Moné",
+      "channel": "Canal",
+      "channelPlaceholder": "Canal ya botosi",
+      "method": "Méthode",
+      "methodPlaceholder": "Méthode ya botosi",
+      "exchangeRate": "Taux ya échange",
+      "cashInfo": "Ba infos caisse",
+      "collector": "Collecteur",
+      "drawer": "Tiroir ya mbongo",
+      "cancel": "Longola",
+      "next": "Kende elongi",
+      "back": "Zonga",
+      "loadingChannels": "Canaux bazali koya…",
+      "loadingMethods": "Méthodes bazali koya…",
+      "noChannels": "Canal ezali te",
+      "noMethods": "Méthode ezali te",
+      "noContracts": "Kotrati ezali te",
+      "contractNeedsInvoice": "Pona liboso faktire",
+      "success": "Botosi ebakisami malamu.",
+      "submit": "Tinda botosi",
+      "submitting": "Ezali kotinda…",
+      "submitErrorFallback": "Ekoki te kobakisa botosi."
+    },
+    "validation": {
+      "invoiceRequired": "Pona faktire.",
+      "contractRequired": "Pona kotrati.",
+      "amountInvalid": "Motuya ezali malamu te.",
+      "currencyRequired": "Moné ezali na lisungi.",
+      "channelRequired": "Pona canal.",
+      "methodRequired": "Pona méthode.",
+      "exchangeRateInvalid": "Taux ya échange ezali malamu te."
     }
   },
   "invoiceViewer": {
