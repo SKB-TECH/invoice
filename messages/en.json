@@ -770,5 +770,72 @@
       "verify": "Verifying code...",
       "resend": "Sending a new code..."
     }
+  },
+  "invoiceDashboard": {
+    "alert": {
+      "message": "Remember to remit last month's VAT. Total amount to remit is"
+    },
+    "cards": {
+      "previousYear": "Previous year",
+      "currentMonth": "Current month",
+      "totalVatCollected": "Total VAT collected",
+      "totalVatReversed": "Total VAT remitted",
+      "invoiceNormalization": "Invoice normalization",
+      "totalNormalizedInvoice": "Total normalized invoices",
+      "pendingNormalization": "Pending normalization",
+      "invoiceStatistics": "Invoice statistics",
+      "paidInvoices": "Paid invoices",
+      "unpaidInvoices": "Unpaid invoices"
+    },
+    "sections": {
+      "cashFlowTracking": "Cash flow tracking",
+      "currentMonth": "Current month",
+      "invoiceTracking": "Invoice tracking",
+      "invoiceNormalization": "Invoice normalization"
+    },
+    "charts": {
+      "issuedInvoices": "Total issued invoices",
+      "totalRevenue": "Total revenue",
+      "totalDebt": "Total debt"
+    },
+    "monthlyStats": {
+      "issued": "Issued",
+      "paid": "Paid",
+      "pending": "Pending",
+      "cancelled": "Cancelled"
+    },
+    "table": {
+      "date": "Date",
+      "client": "Client",
+      "reference": "Ref",
+      "amount": "Amount",
+      "status": "Status",
+      "creation": "Created by"
+    },
+    "status": {
+      "paid": "Paid",
+      "unpaid": "Unpaid",
+      "paidMasculine": "Paid"
+    },
+    "actions": {
+      "viewMore": "View more"
+    },
+    "months": {
+      "jan": "Jan",
+      "feb": "Feb",
+      "mar": "Mar",
+      "apr": "Apr",
+      "may": "May",
+      "jun": "Jun",
+      "jul": "Jul",
+      "aug": "Aug",
+      "sep": "Sep",
+      "oct": "Oct",
+      "nov": "Nov",
+      "dec": "Dec"
+    }
+  },
+  "errors": {
+    "loadingDashboard": "Impossible de charger les données du tableau de bord."
   }
 }

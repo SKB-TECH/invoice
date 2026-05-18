@@ -1,6 +1,7 @@
 "use client";
 
-import React from "react";
+import React, {useEffect} from "react";
+import { useTranslations } from "next-intl";
 import { Bar, Doughnut } from "react-chartjs-2";
 import {
     Chart as ChartJS,
@@ -15,11 +16,19 @@ import {
     Filler,
 } from "chart.js";
 import {
-    FileText,
-    Wallet,
-    ClipboardList,
-    ReceiptText,
+    AlertTriangle,
+    CircleDollarSign,
+    Eye,
+    FileCheck2,
+    HandCoins,
+    TrendingUp,
+    X,
 } from "lucide-react";
+import {useInvoiceDashboardOverview} from "@/core/hooks/useInvoiceDashboard";
+import {DashboardSkeleton} from "@/components/dashboard/DashboardResponse";
+import {useRouter} from "next/navigation";
+import Link from "next/link";
+
 
 ChartJS.register(
     CategoryScale,
@@ -33,348 +42,771 @@ ChartJS.register(
     Filler
 );
 
-const cards = [
-    {
-        title: "TOTAL TVA COLLECTÉE",
-        value: "11,000",
-        subtitle: "Année en cours",
-        icon: FileText,
-        color: "text-yellow-500",
-        bg: "bg-yellow-50",
-    },
-    {
-        title: "TOTAL TVA COLLECTÉE",
-        value: "5,000",
-        subtitle: "Mois en cours",
-        icon: Wallet,
-        color: "text-green-500",
-        bg: "bg-green-50",
-    },
-    {
-        title: "TOTAL TVA VERSÉE",
-        value: "6,000",
-        subtitle: "Mois en cours",
-        icon: ClipboardList,
-        color: "text-blue-500",
-        bg: "bg-blue-50",
-    },
-    {
-        title: "TOTAL FACTURES",
-        value: "122",
-        subtitle: "Mois en cours",
-        icon: ReceiptText,
-        color: "text-purple-500",
-        bg: "bg-purple-50",
-    },
-];
+const MONTH_COLORS = ["#0B83D8", "#18B85D", "#EAB53B", "#F04444"];
 
-const pendingPayments = [
-    ["Rawbank", "00-2001-PMO", "10,000 $", "Non payée", "12-05-2026"],
-    ["Castilo", "00-2001-PMO", "10,000 $", "Payée", "12-05-2026"],
-    ["EquityBCDC", "00-2001-PMO", "10,000 $", "Payée", "12-05-2026"],
-    ["Standard bank", "00-2001-PMO", "10,000 $", "Payée", "12-05-2026"],
-    ["Access Bank", "00-2001-PMO", "10,000 $", "Payée", "12-05-2026"],
-];
+function formatNumber(value?: number) {
+    return Number(value ?? 0).toLocaleString("fr-FR");
+}
 
-const paidPayments = [
-    ["Rawbank", "00-2001-PMO", "10,000 $", "Payé"],
-    ["Castilo", "00-2001-PMO", "10,000 $", "Payé"],
-    ["EquityBCDC", "00-2001-PMO", "10,000 $", "Payé"],
-    ["Standard bank", "00-2001-PMO", "10,000 $", "Payé"],
-    ["Access Bank", "00-2001-PMO", "10,000 $", "Payé"],
-];
+function formatCurrency(value?: number, currency?: string) {
+    return `${currency ?? "CDF"} ${formatNumber(value)}`;
+}
 
-const months = ["Ja", "Fe", "Ma", "Av", "Ma", "Jn", "Ju", "Ao", "Sep", "Oct", "Nov", "Dec"];
+function normalizeText(value?: string) {
+    return (value ?? "")
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toLowerCase()
+        .trim();
+}
 
-const barData = {
-    labels: months,
-    datasets: [
-        {
-            type: "bar" as const,
-            label: "Total factures payées",
-            data: [40, 34, 22, 45, 33, 20, 25, 30, 45, 23, 34, 52],
-            backgroundColor: "#5b8ee6",
-            borderWidth: 0,
-            barThickness: 9,
-            order: 2,
-        },
-        {
-            type: "bar" as const,
-            label: "Total factures non payées",
-            data: [15, 15, 13, 15, 12, 14, 12, 14, 15, 14, 15, 15],
-            backgroundColor: "#16c784",
-            borderWidth: 0,
-            barThickness: 9,
-            order: 2,
-        },
-        {
-            type: "line" as const,
-            label: "Total factures à payer",
-            data: [28, 32, 43, 25, 26, 24, 24, 33, 46, 47, 47, 46],
-            borderColor: "#f1c15b",
-            backgroundColor: "rgba(241,193,91,0.25)",
-            fill: true,
-            tension: 0.45,
-            pointRadius: 0,
-            borderWidth: 0,
-            order: 1,
-        },
-    ],
-};
-
-const barOptions = {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-        legend: {
-            position: "bottom" as const,
-            labels: {
-                usePointStyle: true,
-                boxWidth: 6,
-                boxHeight: 6,
-                padding: 18,
-                font: {
-                    size: 10,
-                },
-            },
-        },
-        tooltip: {
-            enabled: true,
-        },
-    },
-    scales: {
-        x: {
-            grid: {
-                display: false,
-            },
-            ticks: {
-                color: "#64748b",
-                font: {
-                    size: 10,
-                },
-            },
-            border: {
-                display: false,
-            },
-        },
-        y: {
-            display: false,
-            grid: {
-                display: false,
-            },
-        },
-    },
-};
-
-const doughnutData = {
-    labels: [
-        "Factures émises",
-        "Factures payées",
-        "Factures en attente",
-        "Factures annulées",
-        "Contrats en cours",
-    ],
-    datasets: [
-        {
-            data: [122, 12, 12, 12, 12],
-            backgroundColor: [
-                "#13c784",
-                "#e7b63f",
-                "#f3c55d",
-                "#5b8ee6",
-                "#13c784",
-            ],
-            borderWidth: 0,
-            cutout: "72%",
-        },
-    ],
-};
-
-const doughnutOptions = {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-        legend: {
-            display: false,
-        },
-        tooltip: {
-            enabled: true,
-        },
-    },
-};
 
 export default function InvoiceDashboard() {
-    return (
-        <div className="min-h-full min-w-full text-slate-700">
-            <div className="grid grid-cols-12 gap-5">
-                <div className="col-span-12">
-                    <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-4">
-                        {cards.map((card) => {
-                            const Icon = card.icon;
+    const t = useTranslations("invoiceDashboard");
+    const [view, setView] = React.useState(true);
+    const router = useRouter();
+    const {
+        data: dashboardResponse,
+        isLoading,
+        isError,
+    } = useInvoiceDashboardOverview();
 
-                            return (
-                                <div
-                                    key={card.title + card.value + card.subtitle}
-                                    className="border border-slate-200 bg-white px-5 py-4"
-                                >
-                                    <div className="flex items-center gap-4">
-                                        <div className={`flex h-8 w-8 items-center justify-center ${card.bg}`}>
-                                            <Icon className={`h-4 w-4 ${card.color}`} />
+    if (isLoading) {
+        return <DashboardSkeleton />;
+    }
+
+    if (isError || !dashboardResponse?.data) {
+        return (
+            <div className="flex min-h-[250px] items-center justify-center border border-red-100 bg-red-50 text-[14px] font-semibold text-red-600">
+                {t("errors.loadingDashboard")}
+            </div>
+        );
+    }
+
+    console.log(dashboardResponse?.data);
+    const dashboard = dashboardResponse.data;
+
+    const reminder = dashboard.rappel;
+
+    const previousYearCard = dashboard.cards.find(
+        (card) => card.key === "annee_passee"
+    );
+
+    const currentMonthCard = dashboard.cards.find(
+        (card) => card.key === "mois_encours"
+    );
+
+    const normalizationCard = dashboard.cards.find(
+        (card) => card.key === "normalisation_facture"
+    );
+
+    const normalizationValue =
+        normalizationCard &&
+        typeof normalizationCard.value === "object" &&
+        normalizationCard.value !== null
+            ? normalizationCard.value
+            : {
+                normalisees: 0,
+                en_attente: 0,
+            };
+
+    const treasurySeries = dashboard.suivi_tresorerie?.series ?? [];
+
+    const treasuryData = {
+        labels: treasurySeries.map((item) => item.month),
+        datasets: [
+            {
+                type: "line" as const,
+                label: t("charts.issuedInvoices"),
+                data: treasurySeries.map(
+                    (item) => item.total_facture_emise ?? 0
+                ),
+                borderColor: "#E9B63B",
+                backgroundColor: "rgba(233, 182, 59, 0.12)",
+                pointBackgroundColor: "#E9B63B",
+                pointBorderColor: "#E9B63B",
+                pointRadius: 3,
+                pointHoverRadius: 4,
+                borderWidth: 1,
+                fill: true,
+                tension: 0.45,
+                order: 1,
+            },
+            {
+                type: "bar" as const,
+                label: t("charts.totalRevenue"),
+                data: treasurySeries.map((item) => item.total_revenu ?? 0),
+                backgroundColor: "#19B95A",
+                borderRadius: 0,
+                barThickness: 10,
+                order: 2,
+            },
+            {
+                type: "bar" as const,
+                label: t("charts.totalDebt"),
+                data: treasurySeries.map((item) => item.total_dette ?? 0),
+                backgroundColor: "#F44747",
+                borderRadius: 0,
+                barThickness: 10,
+                order: 2,
+            },
+        ],
+    };
+
+    const maxTreasuryValue = Math.max(
+        ...treasurySeries.flatMap((item) => [
+            item.total_facture_emise ?? 0,
+            item.total_revenu ?? 0,
+            item.total_dette ?? 0,
+        ]),
+        2500
+    );
+
+    const treasuryOptions = {
+        responsive: true,
+        maintainAspectRatio: false,
+        interaction: {
+            mode: "index" as const,
+            intersect: false,
+        },
+        plugins: {
+            legend: {
+                position: "bottom" as const,
+                labels: {
+                    usePointStyle: true,
+                    pointStyle: "circle",
+                    boxWidth: 7,
+                    boxHeight: 7,
+                    padding: 24,
+                    color: "#5D6675",
+                    font: {
+                        size: 10,
+                        weight: 600 as const,
+                    },
+                },
+            },
+            tooltip: {
+                enabled: true,
+            },
+        },
+        scales: {
+            x: {
+                grid: {
+                    color: "#F1F3F5",
+                    drawTicks: false,
+                },
+                border: {
+                    display: false,
+                },
+                ticks: {
+                    color: "#7B8494",
+                    font: {
+                        size: 10,
+                    },
+                },
+            },
+            y: {
+                min: 0,
+                max: maxTreasuryValue,
+                ticks: {
+                    color: "#5D6675",
+                    font: {
+                        size: 10,
+                    },
+                    callback: (value: string | number) => {
+                        const numericValue = Number(value);
+
+                        if (numericValue === 0) return "0.00";
+
+                        return numericValue.toLocaleString("en-US", {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2,
+                        });
+                    },
+                },
+                grid: {
+                    display: false,
+                },
+                border: {
+                    display: false,
+                },
+            },
+        },
+    };
+
+    const currentMonthItems = dashboard.mois_en_cours?.items ?? [];
+
+    const issuedItem = currentMonthItems[0];
+    const paidItem = currentMonthItems[1];
+    const pendingItem = currentMonthItems[2];
+    const cancelledItem = currentMonthItems[3];
+
+    const monthlyStats = [
+        {
+            label: t("monthlyStats.issued"),
+            count: issuedItem?.count ?? 0,
+            amount: formatCurrency(
+                issuedItem?.amount,
+                issuedItem?.currency ?? "CDF"
+            ),
+            color: MONTH_COLORS[0],
+        },
+        {
+            label: t("monthlyStats.paid"),
+            count: paidItem?.count ?? 0,
+            amount: formatCurrency(
+                paidItem?.amount,
+                paidItem?.currency ?? "CDF"
+            ),
+            color: MONTH_COLORS[1],
+        },
+        {
+            label: t("monthlyStats.pending"),
+            count: pendingItem?.count ?? 0,
+            amount: formatCurrency(
+                pendingItem?.amount,
+                pendingItem?.currency ?? "CDF"
+            ),
+            color: MONTH_COLORS[2],
+        },
+        {
+            label: t("monthlyStats.cancelled"),
+            count: cancelledItem?.count ?? 0,
+            amount: formatCurrency(
+                cancelledItem?.amount,
+                cancelledItem?.currency ?? "CDF"
+            ),
+            color: MONTH_COLORS[3],
+        },
+    ];
+
+    const monthlyData = {
+        labels: monthlyStats.map((item) => item.label),
+        datasets: [
+            {
+                data: monthlyStats.map((item) => item.count),
+                backgroundColor: monthlyStats.map((item) => item.color),
+                borderWidth: 0,
+                cutout: "73%",
+            },
+        ],
+    };
+
+    const monthlyOptions = {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                display: false,
+            },
+            tooltip: {
+                enabled: true,
+            },
+        },
+    };
+
+    const translateTrackingStatus = (status?: string) => {
+        const normalized = normalizeText(status);
+
+        if (normalized === "paye" || normalized === "payee") {
+            return t("status.paid");
+        }
+
+        if (
+            normalized === "non paye" ||
+            normalized === "non payee" ||
+            normalized === "impaye"
+        ) {
+            return t("status.unpaid");
+        }
+
+        return status ?? "-";
+    };
+
+    const translateNormalizationStatus = (status?: string) => {
+        const normalized = normalizeText(status);
+
+        if (normalized === "paye" || normalized === "payee") {
+            return t("status.paidMasculine");
+        }
+
+        if (
+            normalized === "non paye" ||
+            normalized === "non payee" ||
+            normalized === "impaye"
+        ) {
+            return t("status.unpaid");
+        }
+
+        return status ?? "-";
+    };
+
+    const invoiceRows = dashboard.tables?.suivi_facture ?? [];
+    const normalizationRows =
+        dashboard.tables?.normalisation_facture ?? [];
+
+    const StatusBadge = ({ status }: { status: string }) => {
+        const normalized = normalizeText(status);
+        const paidStatus = normalizeText(t("status.paid"));
+        const paidMasculineStatus = normalizeText(t("status.paidMasculine"));
+
+        const isPaid =
+            normalized === paidStatus || normalized === paidMasculineStatus;
+
+        return (
+            <span
+                className={`inline-flex items-center px-2 py-1 text-[10px] font-semibold ${
+                    isPaid
+                        ? "bg-emerald-100 text-emerald-600"
+                        : "bg-amber-100 text-amber-600"
+                }`}
+            >
+                {status}
+            </span>
+        );
+    };
+
+
+    return (
+        <div className="min-h-full w-full text-[#4E5866]">
+            <div className="mx-auto w-full">
+                {view && Number(reminder?.amount ?? 0) > 0 && (
+                    <div className="mb-4 flex min-h-[58px] items-center justify-between border border-[#F3B35E] bg-[#FFF3E3] px-5">
+                        <div className="flex items-center gap-4">
+                            <AlertTriangle className="h-5 w-5 text-[#F39A23]" />
+
+                            <p className="text-[13px] font-semibold text-[#F07A00]">
+                                {t("alert.message")}{" "}
+                                <span className="font-bold">
+                    {formatNumber(reminder?.amount)}{" "}
+                                    {reminder?.currency ?? "CDF"}
+                </span>
+                            </p>
+                        </div>
+
+                        <button
+                            type="button"
+                            className="flex h-7 w-7 items-center justify-center text-[#F39A23]"
+                            onClick={() => setView(false)}
+                        >
+                            <X className="h-4 w-4" />
+                        </button>
+                    </div>
+                )}
+
+                <div className="grid grid-cols-12 gap-4">
+                    {/* CARD 1 */}
+                    <div className="col-span-12 border border-[#E2E5E9] bg-white xl:col-span-3">
+                        <div className="flex h-[140px] items-center justify-center px-5">
+                            <div className="grid w-full grid-cols-[42px_1fr] items-center gap-5">
+                                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#EDF4FF]">
+                                    <CircleDollarSign className="h-5 w-5 text-[#5D94E5]" />
+                                </div>
+
+                                <div>
+                                    <h3 className="text-[15px] font-bold uppercase leading-none text-[#0074C8]">
+                                        {t("cards.previousYear")}
+                                    </h3>
+
+                                    <p className="mt-4 text-[22px] font-bold leading-none text-[#49515C]">
+                                        <span className="mr-2 text-[13px] font-bold text-[#5D6675]">
+                                            CDF
+                                        </span>
+                                        {formatNumber(
+                                            typeof previousYearCard?.value ===
+                                            "number"
+                                                ? previousYearCard.value
+                                                : 0
+                                        )}
+                                    </p>
+
+                                    <p className="mt-5 text-[9px] font-bold uppercase leading-none text-[#0074C8]">
+                                        {t("cards.totalVatCollected")}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* CARD 2 */}
+                    <div className="col-span-12 border border-[#E2E5E9] bg-white xl:col-span-3">
+                        <div className="flex h-[140px] items-center justify-center px-5">
+                            <div className="grid w-full grid-cols-[42px_1fr] items-center gap-5">
+                                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#EDF4FF]">
+                                    <HandCoins className="h-5 w-5 text-[#5D94E5]" />
+                                </div>
+
+                                <div>
+                                    <h3 className="text-[15px] font-bold uppercase leading-none text-[#0074C8]">
+                                        {t("cards.currentMonth")}
+                                    </h3>
+
+                                    <p className="mt-4 text-[22px] font-bold leading-none text-[#49515C]">
+                                        <span className="mr-2 text-[13px] font-bold text-[#5D6675]">
+                                            CDF
+                                        </span>
+                                        {formatNumber(
+                                            typeof currentMonthCard?.value ===
+                                            "number"
+                                                ? currentMonthCard.value
+                                                : 0
+                                        )}
+                                    </p>
+
+                                    <p className="mt-5 text-[9px] font-bold uppercase leading-none text-[#0074C8]">
+                                        {t("cards.totalVatReversed")}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* CARD 3 */}
+                    <div className="col-span-12 border border-[#E2E5E9] bg-white xl:col-span-3">
+                        <div className="flex h-[140px] items-center justify-center px-5">
+                            <div className="grid w-full grid-cols-[42px_1fr] items-center gap-5">
+                                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#EDF4FF]">
+                                    <FileCheck2 className="h-5 w-5 text-[#5D94E5]" />
+                                </div>
+
+                                <div>
+                                    <h3 className="text-[15px] font-bold uppercase leading-none text-[#0074C8]">
+                                        {t("cards.invoiceNormalization")}
+                                    </h3>
+
+                                    <div className="mt-4 grid grid-cols-[1fr_1px_1fr] items-start">
+                                        <div className="text-left">
+                                            <p className="text-[22px] font-bold leading-none text-[#49515C]">
+                                                {formatNumber(
+                                                    normalizationValue.normalisees
+                                                )}
+                                            </p>
+
+                                            <p className="mt-5 text-[9px] font-bold uppercase leading-[12px] text-[#0074C8]">
+                                                {t(
+                                                    "cards.totalNormalizedInvoice"
+                                                )}
+                                            </p>
                                         </div>
 
-                                        <div>
-                                            <p className="text-[10px] font-semibold uppercase text-slate-400">
-                                                {card.title}
+                                        <div className="mx-auto h-[55px] w-px bg-[#D7DDE4]" />
+
+                                        <div className="pl-5 text-left">
+                                            <p className="text-[22px] font-bold leading-none text-[#49515C]">
+                                                {formatNumber(
+                                                    normalizationValue.en_attente
+                                                )}
                                             </p>
-                                            <h3 className="mt-1 text-lg font-bold text-slate-800">
-                                                {card.value}
-                                            </h3>
-                                            <p className="mt-1 text-[10px] text-slate-400">
-                                                {card.subtitle}
+
+                                            <p className="mt-5 text-[9px] font-bold uppercase leading-[12px] text-[#0074C8]">
+                                                {t(
+                                                    "cards.pendingNormalization"
+                                                )}
                                             </p>
                                         </div>
                                     </div>
                                 </div>
-                            );
-                        })}
+                            </div>
+                        </div>
                     </div>
-                </div>
 
-                <div className="col-span-12 lg:col-span-7">
-                    <div className="h-full border border-slate-200 bg-white">
-                        <div className="border-b border-slate-200 px-5 py-4">
-                            <h2 className="text-[13px] font-semibold text-slate-700">
-                                Projects Overview
+                    {/* CARD 4 */}
+                    <div className="col-span-12 border border-[#E2E5E9] bg-white xl:col-span-3">
+                        <div className="flex h-[140px] items-center justify-center px-5">
+                            <div className="grid w-full grid-cols-[42px_1fr] items-center gap-5">
+                                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#FFF3D7]">
+                                    <TrendingUp className="h-5 w-5 text-[#EAB53B]" />
+                                </div>
+
+                                <div>
+                                    <h3 className="text-[15px] font-bold uppercase leading-none text-[#EAB53B]">
+                                        {t("cards.invoiceStatistics")}
+                                    </h3>
+
+                                    <div className="mt-4 grid grid-cols-[1fr_1px_1fr] items-start">
+                                        <div className="text-left">
+                                            <p className="text-[22px] font-bold leading-none text-[#49515C]">
+                                                {formatNumber(
+                                                    paidItem?.count ?? 0
+                                                )}
+                                            </p>
+
+                                            <p className="mt-5 text-[9px] font-bold uppercase leading-[12px] text-[#EAB53B]">
+                                                {t("cards.paidInvoices")}
+                                            </p>
+                                        </div>
+
+                                        <div className="mx-auto h-[55px] w-px bg-[#D7DDE4]" />
+
+                                        <div className="pl-5 text-left">
+                                            <p className="text-[22px] font-bold leading-none text-[#49515C]">
+                                                {formatNumber(
+                                                    pendingItem?.count ?? 0
+                                                )}
+                                            </p>
+
+                                            <p className="mt-5 text-[9px] font-bold uppercase leading-[12px] text-[#EAB53B]">
+                                                {t("cards.unpaidInvoices")}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* SUIVI DE TRESORERIE */}
+                    <div className="col-span-12 border border-[#E2E5E9] bg-white xl:col-span-7">
+                        <div className="border-b border-[#E7EBEF] px-5 py-5">
+                            <h2 className="text-[15px] font-bold uppercase text-[#4D5662]">
+                                {t("sections.cashFlowTracking")}
                             </h2>
                         </div>
 
-                        <div className="flex justify-around border-b border-slate-100 px-8 py-5 text-[10px] font-semibold text-slate-500">
-                            <span>825.25</span>
-                            <span>825.25</span>
-                            <span>825.25</span>
-                            <span className="text-green-500">825.25</span>
-                        </div>
-
-                        <div className="h-[260px] px-6 py-4">
-                            <Bar data={barData as any} options={barOptions as any} />
-                        </div>
-                    </div>
-                </div>
-
-                <div className="col-span-12 h-full border border-slate-200 bg-white lg:col-span-5">
-                    <div className="border-b border-slate-200 px-5 py-4">
-                        <h2 className="text-[13px] font-semibold text-slate-700">
-                            Mois en cours
-                        </h2>
-                    </div>
-
-                    <div className="flex justify-center py-5">
-                        <div className="h-[145px] w-[145px]">
-                            <Doughnut data={doughnutData} options={doughnutOptions} />
-                        </div>
-                    </div>
-
-                    <div className="px-6 pb-5">
-                        {doughnutData.labels.map((label, index) => (
-                            <div
-                                key={label}
-                                className="grid grid-cols-[1fr_35px_70px] items-center gap-3 border-b border-slate-100 py-2 text-[11px]"
-                            >
-                                <div className="flex items-center gap-2">
-                    <span
-                        className="h-2.5 w-2.5 rounded-full"
-                        style={{
-                            backgroundColor:
-                                doughnutData.datasets[0].backgroundColor[index],
-                        }}
-                    />
-                                    <span className="text-slate-600">{label}</span>
-                                </div>
-
-                                <span className="text-right text-slate-700">
-                    {doughnutData.datasets[0].data[index]}
-                </span>
-
-                                <span className="text-right font-semibold text-green-500">
-                    10,000 $
-                </span>
+                        <div className="grid grid-cols-3 border-b border-[#E7EBEF] px-8 py-5 text-center">
+                            <div className="text-[12px] font-semibold text-[#4D5662]">
+                                {formatNumber(
+                                    treasurySeries.reduce(
+                                        (total, item) =>
+                                            total +
+                                            (item.total_facture_emise ?? 0),
+                                        0
+                                    )
+                                )}{" "}
+                                USD
                             </div>
-                        ))}
+
+                            <div className="text-[12px] font-semibold text-[#4D5662]">
+                                {formatNumber(
+                                    treasurySeries.reduce(
+                                        (total, item) =>
+                                            total + (item.total_revenu ?? 0),
+                                        0
+                                    )
+                                )}{" "}
+                                USD
+                            </div>
+
+                            <div className="text-[12px] font-semibold text-[#16B95B]">
+                                {formatNumber(
+                                    treasurySeries.reduce(
+                                        (total, item) =>
+                                            total + (item.total_dette ?? 0),
+                                        0
+                                    )
+                                )}{" "}
+                                USD
+                            </div>
+                        </div>
+
+                        <div className="h-[315px] px-4 pb-4 pt-6">
+                            <Bar
+                                data={treasuryData as any}
+                                options={treasuryOptions as any}
+                            />
+                        </div>
                     </div>
-                </div>
 
-                <div className="col-span-12 border border-slate-200 bg-white lg:col-span-7">
-                    <div className="border-b border-slate-200 px-5 py-4">
-                        <h2 className="text-[13px] font-semibold text-slate-700">
-                            Derniers paiements des factures en attente
-                        </h2>
-                    </div>
+                    {/* MOIS EN COURS */}
+                    <div className="col-span-12 border border-[#E2E5E9] bg-white xl:col-span-5">
+                        <div className="border-b border-[#E7EBEF] px-5 py-5">
+                            <h2 className="text-[15px] font-bold uppercase text-[#4D5662]">
+                                {t("sections.currentMonth")}
+                            </h2>
+                        </div>
 
-                    <table className="w-full border-collapse text-left text-[11px]">
-                        <thead>
-                        <tr className="border-b border-slate-200 bg-slate-50 text-slate-500">
-                            <th className="px-5 py-3 font-semibold">Clients</th>
-                            <th className="px-5 py-3 font-semibold">Référence</th>
-                            <th className="px-5 py-3 font-semibold">Montant</th>
-                            <th className="px-5 py-3 font-semibold">Statut</th>
-                            <th className="px-5 py-3 font-semibold">Date</th>
-                        </tr>
-                        </thead>
+                        <div className="flex justify-center px-5 pb-5 pt-4">
+                            <div className="h-[180px] w-[180px]">
+                                <Doughnut
+                                    data={monthlyData}
+                                    options={monthlyOptions}
+                                />
+                            </div>
+                        </div>
 
-                        <tbody>
-                        {pendingPayments.map((row, index) => (
-                            <tr key={index} className="border-b border-slate-100">
-                                <td className="px-5 py-4">{row[0]}</td>
-                                <td className="px-5 py-4">{row[1]}</td>
-                                <td className="px-5 py-4">{row[2]}</td>
-                                <td className="px-5 py-4">
+                        <div className="px-8 pb-6">
+                            {monthlyStats.map((item) => (
+                                <div
+                                    key={item.label}
+                                    className="grid grid-cols-[1fr_55px_95px] items-center border-b border-[#EEF1F4] py-3 text-[11px]"
+                                >
+                                    <div className="flex items-center gap-4">
                                         <span
-                                            className={`px-2 py-1 text-[10px] font-semibold ${
-                                                row[3] === "Non payée"
-                                                    ? "bg-yellow-50 text-yellow-600"
-                                                    : "bg-green-50 text-green-600"
-                                            }`}
-                                        >
-                                            {row[3]}
-                                        </span>
-                                </td>
-                                <td className="px-5 py-4">{row[4]}</td>
-                            </tr>
-                        ))}
-                        </tbody>
-                    </table>
-                </div>
+                                            className="h-3.5 w-3.5 rounded-full"
+                                            style={{
+                                                backgroundColor: item.color,
+                                            }}
+                                        />
 
-                <div className="col-span-12 border border-slate-200 bg-white lg:col-span-5">
-                    <div className="border-b border-slate-200 px-5 py-4">
-                        <h2 className="text-[13px] font-semibold text-slate-700">
-                            Derniers paiements validés
-                        </h2>
+                                        <span className="font-medium text-[#5D6675]">
+                                            {item.label}
+                                        </span>
+                                    </div>
+
+                                    <span className="text-center font-semibold text-[#4D5662]">
+                                        {formatNumber(item.count)}
+                                    </span>
+
+                                    <span className="text-right font-semibold text-[#4D5662]">
+                                        {item.amount}
+                                    </span>
+                                </div>
+                            ))}
+                        </div>
                     </div>
 
-                    <table className="w-full border-collapse text-left text-[11px]">
-                        <thead>
-                        <tr className="border-b border-slate-200 bg-slate-50 text-slate-500">
-                            <th className="px-5 py-3 font-semibold">Clients</th>
-                            <th className="px-5 py-3 font-semibold">Référence</th>
-                            <th className="px-5 py-3 font-semibold">Montant</th>
-                            <th className="px-5 py-3 font-semibold">Statut</th>
-                        </tr>
-                        </thead>
+                    {/* SUIVI FACTURE */}
+                    <div className="col-span-12 border border-[#E2E5E9] bg-white xl:col-span-7">
+                        <div className="flex items-center justify-between border-b border-[#E7EBEF] px-5 py-5">
+                            <h2 className="text-[15px] font-bold uppercase text-[#4D5662]">
+                                {t("sections.invoiceTracking")}
+                            </h2>
 
-                        <tbody>
-                        {paidPayments.map((row, index) => (
-                            <tr key={index} className="border-b border-slate-100">
-                                <td className="px-5 py-4">{row[0]}</td>
-                                <td className="px-5 py-4">{row[1]}</td>
-                                <td className="px-5 py-4">{row[2]}</td>
-                                <td className="px-5 py-4 font-semibold text-slate-700">
-                                    {row[3]}
-                                </td>
-                            </tr>
-                        ))}
-                        </tbody>
-                    </table>
+                            <button
+                                type="button"
+                                className="text-[14px] font-semibold text-[#4D5662]"
+                                onClick={() => router.push("/home/factures")}
+                            >
+
+                                {t("actions.viewMore")}
+                            </button>
+                        </div>
+
+                        <div className="overflow-x-auto">
+                            <table className="w-full border-collapse text-left">
+                                <thead>
+                                <tr className="border-b border-[#E7EBEF] bg-[#FAFBFC] text-[12px] font-bold text-[#838C9A]">
+                                    <th className="px-5 py-4">
+                                        {t("table.date")}
+                                    </th>
+                                    <th className="px-5 py-4">
+                                        {t("table.client")}
+                                    </th>
+                                    <th className="px-5 py-4">
+                                        {t("table.reference")}
+                                    </th>
+                                    <th className="px-5 py-4">
+                                        {t("table.amount")}
+                                    </th>
+                                    <th className="px-5 py-4">
+                                        {t("table.status")}
+                                    </th>
+                                    <th className="px-5 py-4">
+                                        {t("table.creation")}
+                                    </th>
+                                </tr>
+                                </thead>
+
+                                <tbody>
+                                {invoiceRows.map((invoice, index) => {
+                                    const status =
+                                        translateTrackingStatus(
+                                            invoice.statut
+                                        );
+
+                                    return (
+                                        <tr
+                                            key={`${invoice.ref}-${invoice.client}-${index}`}
+                                            className="border-b border-[#E7EBEF] text-[11px] font-semibold text-[#4D5662]"
+                                        >
+                                            <td className="px-5 py-5">
+                                                {invoice.date}
+                                            </td>
+
+                                            <td className="px-5 py-5">
+                                                {invoice.client}
+                                            </td>
+
+                                            <td className="px-5 py-5">
+                                                {invoice.ref}
+                                            </td>
+
+                                            <td className="px-5 py-5">
+                                                {formatNumber(
+                                                    invoice.montant
+                                                )}
+                                            </td>
+
+                                            <td className="px-5 py-5">
+                                                <StatusBadge
+                                                    status={status}
+                                                />
+                                            </td>
+
+                                            <td className="px-5 py-5">
+                                                {invoice.creation}
+                                            </td>
+                                        </tr>
+                                    );
+                                })}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    {/* NORMALISATION FACTURE */}
+                    <div className="col-span-12 border border-[#E2E5E9] bg-white xl:col-span-5">
+                        <div className="border-b border-[#E7EBEF] px-5 py-5">
+                            <h2 className="text-[15px] font-bold uppercase text-[#4D5662]">
+                                {t("sections.invoiceNormalization")}
+                            </h2>
+                        </div>
+
+                        <div className="overflow-x-auto">
+                            <table className="w-full border-collapse text-left">
+                                <thead>
+                                <tr className="border-b border-[#E7EBEF] bg-[#FAFBFC] text-[12px] font-bold text-[#838C9A]">
+                                    <th className="px-4 py-4">
+                                        {t("table.date")}
+                                    </th>
+                                    <th className="px-4 py-4">
+                                        {t("table.client")}
+                                    </th>
+                                    <th className="px-4 py-4">
+                                        {t("table.amount")}
+                                    </th>
+                                    <th className="px-4 py-4">
+                                        {t("table.status")}
+                                    </th>
+                                </tr>
+                                </thead>
+
+                                <tbody>
+                                {normalizationRows.map((item, index) => {
+                                    const status =
+                                        translateNormalizationStatus(
+                                            item.statut
+                                        );
+
+                                    return (
+                                        <tr
+                                            key={`${item.client}-${item.date}-${index}`}
+                                            className="border-b border-[#E7EBEF] text-[11px] font-semibold text-[#4D5662]"
+                                        >
+                                            <td className="px-4 py-5">
+                                                {item.date}
+                                            </td>
+
+                                            <td className="px-4 py-5">
+                                                {item.client}
+                                            </td>
+
+                                            <td className="px-4 py-5">
+                                                {formatNumber(
+                                                    item.montant
+                                                )}
+                                            </td>
+
+                                            <td className="px-4 py-5">
+                                                {status}
+                                            </td>
+                                        </tr>
+                                    );
+                                })}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
