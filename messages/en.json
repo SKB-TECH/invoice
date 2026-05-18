@@ -138,6 +138,7 @@
     },
     "title": "Invoice list",
     "createInvoice": "Create invoice",
+    "payments": "Payments",
     "table": {
       "invoice": "Invoice",
       "client": "Client",
@@ -168,6 +169,86 @@
       "you": "You",
       "reviewer": "Reviewer",
       "now": "Now"
+    }
+  },
+  "paymentsPage": {
+    "title": "Payments",
+    "createTitle": "New payment",
+    "backToList": "Back to list",
+    "backToInvoices": "Back to invoices",
+    "recordPayment": "Record a payment",
+    "loading": "Loading payments…",
+    "loadError": "Could not load payments.",
+    "empty": "No payments yet.",
+    "breadcrumb": {
+      "invoices": "Invoices",
+      "payments": "Payments"
+    },
+    "table": {
+      "paymentReference": "Payment reference",
+      "invoiceName": "Invoice reference",
+      "amountWithCurrency": "Amount",
+      "date": "Date"
+    },
+    "pagination": {
+      "summary": "Page {page} / {totalPages} — {total} payment(s)",
+      "prev": "Previous",
+      "next": "Next"
+    },
+    "sheet": {
+      "title": "New payment",
+      "description": "Fill in the details and submit to record the payment on the server."
+    },
+    "stepper": {
+      "step1": "Invoice and contract",
+      "step2": "Payment details"
+    },
+    "step1": {
+      "title": "Perform a payment"
+    },
+    "step2": {
+      "title": "Amount and payment method",
+      "subtitle": "Enter amount, currency, and settlement details."
+    },
+    "form": {
+      "invoice": "Invoice",
+      "invoicePlaceholder": "Select an invoice",
+      "client": "Client",
+      "contract": "Contract",
+      "contractPlaceholder": "Select a contract",
+      "amount": "Amount",
+      "amountPlaceholder": "e.g. 250",
+      "currency": "Currency",
+      "channel": "Channel",
+      "channelPlaceholder": "Payment channel",
+      "method": "Method",
+      "methodPlaceholder": "Payment method",
+      "exchangeRate": "Exchange rate",
+      "cashInfo": "Cash desk details",
+      "collector": "Collector",
+      "drawer": "Cash drawer",
+      "cancel": "Cancel",
+      "next": "Next",
+      "back": "Back",
+      "loadingChannels": "Loading channels…",
+      "loadingMethods": "Loading methods…",
+      "noChannels": "No channel available",
+      "noMethods": "No method available",
+      "noContracts": "No contract available",
+      "contractNeedsInvoice": "Select an invoice first",
+      "success": "Payment recorded successfully.",
+      "submit": "Submit payment",
+      "submitting": "Sending…",
+      "submitErrorFallback": "Could not record the payment."
+    },
+    "validation": {
+      "invoiceRequired": "Please select an invoice.",
+      "contractRequired": "Please select a contract.",
+      "amountInvalid": "Invalid amount.",
+      "currencyRequired": "Currency is required.",
+      "channelRequired": "Please select a channel.",
+      "methodRequired": "Please select a method.",
+      "exchangeRateInvalid": "Invalid exchange rate."
     }
   },
   "invoiceViewer": {
