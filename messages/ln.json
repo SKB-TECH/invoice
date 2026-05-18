@@ -711,6 +711,24 @@
       "email": "Email",
       "saveChanges": "Bomba mbongwana"
     },
+    "logo": {
+      "sectionTitle": "Logo ya entreprise",
+      "introTitle": "Komisa logo ya sika",
+      "introBody": "Logo ezali kopona na ba documents ya application.",
+      "formatsHint": "JPEG, PNG to WebP · 5 Mo kaka",
+      "chooseFile": "Pona fichier",
+      "cancel": "Kozonga",
+      "selectedFile": "Fichier oyo oponi :",
+      "save": "Batela logo",
+      "saving": "Tozali kobatela…",
+      "noLogo": "Ezali logo té",
+      "previewAlt": "Mona logo",
+      "toastSaved": "Logo ebongisami.",
+      "toastError": "Komisa logo elongwaki.",
+      "fileTooLarge": "Fichier esengeli koleka 5 Mo té.",
+      "invalidFormat": "Salela JPEG, PNG to WebP.",
+      "noFileSelected": "Pona fichier liboso ya kobatela."
+    },
     "password": {
       "sectionTitle": "Kobongola mot de passe",
       "oldPassword": "Mot de passe ya kala",

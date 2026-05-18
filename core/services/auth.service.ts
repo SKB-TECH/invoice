@@ -465,6 +465,85 @@ export const authService = {
         }
     },
 
+    async uploadAvatar(file: File): Promise<string> {
+        const fd = new FormData();
+        fd.append("avatar", file);
+
+        const { data } = await api.post<unknown>("/auth/avatar", fd);
+
+        let url: string | undefined;
+
+        if (data !== null && typeof data === "object") {
+            const d = data as Record<string, unknown>;
+            const inner = d.data;
+            if (
+                inner !== null &&
+                typeof inner === "object" &&
+                typeof (inner as { url?: unknown }).url === "string"
+            ) {
+                url = (inner as { url: string }).url;
+            }
+            if (!url && typeof d.url === "string") {
+                url = d.url;
+            }
+        }
+
+        if (!url?.trim()) {
+            const msg =
+                data !== null &&
+                typeof data === "object" &&
+                typeof (data as { message?: unknown }).message === "string"
+                    ? (data as { message: string }).message
+                    : "Échec du téléversement.";
+            throw new Error(msg);
+        }
+
+        return url.trim();
+    },
+
+    mergeSessionPhoto(relativePhotoUrl: string): AuthUser | null {
+        const token =
+            tokenStore.get() ??
+            getCookieOrLocalStorage(AUTH_ACCESS_TOKEN_KEY);
+
+        const userRaw =
+            getCookieOrLocalStorage(AUTH_USER_KEY) ??
+            getCookieOrLocalStorage(USER_COOKIE);
+
+        if (!token || !userRaw) return null;
+
+        let user: AuthUser;
+        try {
+            user = JSON.parse(userRaw) as AuthUser;
+        } catch {
+            return null;
+        }
+
+        const nextUser: AuthUser = {
+            ...user,
+            photo: relativePhotoUrl,
+        };
+
+        const expiresRaw = getCookieOrLocalStorage(AUTH_EXPIRES_KEY);
+        const expiresAt = expiresRaw ? Number(expiresRaw) : Number.NaN;
+        const expiresInSeconds =
+            Number.isFinite(expiresAt) && expiresAt > Date.now()
+                ? Math.max(60, Math.floor((expiresAt - Date.now()) / 1000))
+                : DEFAULT_TOKEN_EXPIRE_SECONDS;
+
+        const refreshToken =
+            getCookieOrLocalStorage(AUTH_REFRESH_TOKEN_KEY);
+
+        authService.saveSession(
+            token,
+            nextUser,
+            expiresInSeconds,
+            refreshToken ?? undefined,
+        );
+
+        return nextUser;
+    },
+
     clearSession() {
         tokenStore.clear();
         deleteCookieAndLocalStorage(AUTH_USER_KEY);

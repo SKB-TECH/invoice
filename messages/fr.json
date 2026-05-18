@@ -710,6 +710,24 @@
       "email": "Email",
       "saveChanges": "Enregistrer les modifications"
     },
+    "logo": {
+      "sectionTitle": "Logo de l'entreprise",
+      "introTitle": "Importer un nouveau logo",
+      "introBody": "Le logo sera affiché dans les documents générés par l'application.",
+      "formatsHint": "JPEG, PNG ou WebP · 5 Mo maximum",
+      "chooseFile": "Choisir un fichier",
+      "cancel": "Annuler",
+      "selectedFile": "Fichier sélectionné :",
+      "save": "Enregistrer le logo",
+      "saving": "Enregistrement…",
+      "noLogo": "Aucun logo",
+      "previewAlt": "Aperçu du logo",
+      "toastSaved": "Logo mis à jour.",
+      "toastError": "Échec du téléversement du logo.",
+      "fileTooLarge": "Le fichier ne doit pas dépasser 5 Mo.",
+      "invalidFormat": "Utilisez une image JPEG, PNG ou WebP.",
+      "noFileSelected": "Sélectionnez une image avant d'enregistrer."
+    },
     "password": {
       "sectionTitle": "Changer mot de passe",
       "oldPassword": "Ancien mot de passe",
