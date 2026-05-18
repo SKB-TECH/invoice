@@ -66,6 +66,18 @@ export type LoginMfaResponse = {
 
 export type LoginResponse = LoginSuccessResponse | LoginMfaResponse;
 
+export type LoginPayload = {
+    identifier: string;
+    password: string;
+};
+
 export type ApiProfile = Record<string, unknown>;
 export type ApiRole = Record<string, unknown>;
 export type ApiBranch = Record<string, unknown>;
+
+/** POST /auth/password */
+export type AuthChangePasswordPayload = {
+    current_password: string;
+    new_password: string;
+    password_confirm: string;
+};

@@ -8,6 +8,7 @@ import type {
 import { api } from "@/core/services/api";
 import { mfaStore } from "@/core/utils/mfaStore";
 import type {
+    AuthChangePasswordPayload,
     RegisterPayload,
     RegisterResponse,
 } from "@/core/types/auth";
@@ -499,6 +500,30 @@ export const authService = {
         }
 
         return url.trim();
+    },
+
+    async changePassword(
+        payload: AuthChangePasswordPayload,
+    ): Promise<string> {
+        const { data } = await api.post<{
+            status?: string | number;
+            message?: string;
+        }>("/auth/password", payload);
+
+        const msg =
+            data?.message && typeof data.message === "string"
+                ? data.message
+                : "Mot de passe mis à jour";
+
+        if (
+            data?.status !== undefined &&
+            data.status !== "" &&
+            String(data.status).toLowerCase() !== "success"
+        ) {
+            throw new Error(msg);
+        }
+
+        return msg;
     },
 
     mergeSessionPhoto(relativePhotoUrl: string): AuthUser | null {

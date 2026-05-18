@@ -736,9 +736,13 @@
       "confirmPassword": "Kondimisa mot de passe ",
       "placeholder": "Tyá mot de passe na yo",
       "submit": "Kobongola mot de passe",
+      "submitting": "Tozali kobongola…",
+      "toastSuccess": "Mot de passe ebongisami.",
+      "toastError": "Kobongola mot de passe elongwaki.",
       "errors": {
         "minLength": "Mot de passe ya sika esengeli kozala na mbula 6 minimum.",
-        "mismatch": "Ba mots de passe bazali te lokola moko."
+        "mismatch": "Ba mots de passe bazali te lokola moko.",
+        "oldRequired": "Tyá mot de passe ya kala."
       }
     },
     "referentialCatalog": {

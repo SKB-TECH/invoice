@@ -735,9 +735,13 @@
       "confirmPassword": "Confirmer le mot de passe",
       "placeholder": "Entrez votre mot de passe",
       "submit": "Modifier le mot de passe",
+      "submitting": "Mise à jour…",
+      "toastSuccess": "Mot de passe mis à jour.",
+      "toastError": "Impossible de modifier le mot de passe.",
       "errors": {
         "minLength": "Le nouveau mot de passe doit contenir au moins 6 caractères.",
-        "mismatch": "Les mots de passe ne correspondent pas."
+        "mismatch": "Les mots de passe ne correspondent pas.",
+        "oldRequired": "Saisissez votre mot de passe actuel."
       }
     },
     "referentialCatalog": {

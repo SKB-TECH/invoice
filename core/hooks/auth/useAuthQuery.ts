@@ -2,7 +2,10 @@
 
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { authService } from "@/core/services/auth.service";
-import type { LoginPayload } from "@/core/types/auth";
+import type {
+    AuthChangePasswordPayload,
+    LoginPayload,
+} from "@/core/types/auth";
 
 export function useAuthSession() {
     return useQuery({
@@ -23,5 +26,12 @@ export function useLogin() {
 export function useLogout() {
     return useMutation({
         mutationFn: () => authService.logout(),
+    });
+}
+
+export function useChangePassword() {
+    return useMutation({
+        mutationFn: (payload: AuthChangePasswordPayload) =>
+            authService.changePassword(payload),
     });
 }

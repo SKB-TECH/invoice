@@ -735,9 +735,13 @@
       "confirmPassword": "Confirm password",
       "placeholder": "Enter your password",
       "submit": "Update password",
+      "submitting": "Updating…",
+      "toastSuccess": "Password updated.",
+      "toastError": "Could not update password.",
       "errors": {
         "minLength": "The new password must be at least 6 characters.",
-        "mismatch": "Passwords do not match."
+        "mismatch": "Passwords do not match.",
+        "oldRequired": "Enter your current password."
       }
     },
     "referentialCatalog": {
