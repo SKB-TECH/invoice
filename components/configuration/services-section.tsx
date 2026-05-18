@@ -25,7 +25,13 @@ function formatMoney(n: number): string {
     }).format(n);
 }
 
-export function ServicesSection() {
+type ServicesSectionProps = {
+    suppressCardHeading?: boolean;
+};
+
+export function ServicesSection({
+    suppressCardHeading = false,
+}: ServicesSectionProps) {
     const t = useTranslations("configuration.services");
     const [page, setPage] = useState(1);
     const [sectorDraft, setSectorDraft] = useState("");
@@ -51,8 +57,8 @@ export function ServicesSection() {
     const total = listData?.meta.total ?? items.length;
     const totalPages = Math.max(1, Math.ceil(total / LIMIT));
 
-    return (
-        <SectionCard title={t("listSectionTitle")}>
+    const inner = (
+        <>
             <div className="mb-5 flex w-full min-w-full flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
                 <div className="flex w-full flex-col gap-3 sm:flex-row sm:items-end md:max-w-xl">
                     <div className="relative min-w-0 flex-1">
@@ -63,7 +69,7 @@ export function ServicesSection() {
                                 setSectorDraft(e.target.value)
                             }
                             placeholder={t("filterSectorPlaceholder")}
-                            className="h-9 w-full border border-slate-200 bg-white px-3 pr-10 text-sm text-slate-700 shadow-none outline-none placeholder:text-slate-400 focus-visible:border-[#0879bd]"
+                            className="h-9 w-full border border-slate-200 bg-white py-0 pl-10 pr-3 text-sm text-slate-700 shadow-none outline-none placeholder:text-slate-400 focus-visible:border-[#0879bd]"
                         />
                         <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-slate-400" />
                     </div>
@@ -93,7 +99,7 @@ export function ServicesSection() {
                     asChild
                     className="h-9 w-full shrink-0 rounded-none! bg-[#0879bd] px-4 text-sm font-medium text-white shadow-none hover:bg-[#0879bd]/90 sm:w-auto"
                 >
-                    <Link href="/home/configuration/services/nouveau">
+                    <Link href="/home/services/nouveau">
                         {t("createButton")}
                     </Link>
                 </Button>
@@ -220,6 +226,16 @@ export function ServicesSection() {
                     </button>
                 </div>
             </div>
+        </>
+    );
+
+    if (suppressCardHeading) {
+        return inner;
+    }
+
+    return (
+        <SectionCard title={t("listSectionTitle")}>
+            {inner}
         </SectionCard>
     );
 }

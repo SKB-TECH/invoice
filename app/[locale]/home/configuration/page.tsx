@@ -1,6 +1,6 @@
 "use client";
 
-import React, { Suspense, useMemo } from "react";
+import React, { Suspense, useEffect, useMemo } from "react";
 import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 
@@ -13,7 +13,6 @@ import { ReferentialsSection } from "@/components/configuration/referentials-sec
 import { BankInformationSection } from "@/components/configuration/bank-information-section";
 import { MembersSection } from "@/components/configuration/members-section";
 import { RolesSection } from "@/components/configuration/roles-section";
-import { ServicesSection } from "@/components/configuration/services-section";
 import { PermissionsSection } from "@/components/configuration/permissions-section";
 import { LanguageSection } from "@/components/configuration/language-section";
 import { InvoiceModelsSection } from "@/components/configuration/invoice-models-section";
@@ -26,7 +25,6 @@ type ConfigMenuId =
     | "bank"
     | "members"
     | "roles"
-    | "services"
     | "permissions"
     | "language"
     | "modelFactures";
@@ -39,7 +37,6 @@ const MENU_IDS: ConfigMenuId[] = [
     "bank",
     "members",
     "roles",
-    "services",
     "permissions",
     "language",
     "modelFactures",
@@ -71,10 +68,17 @@ function ConfigurationPageInner() {
     const pathname = usePathname();
     const searchParams = useSearchParams();
 
+    const menuQuery = searchParams.get("menu");
+
     const activeMenu = useMemo((): ConfigMenuId => {
-        const m = searchParams.get("menu");
-        return isConfigMenuId(m) ? m : "basicInfo";
-    }, [searchParams]);
+        return isConfigMenuId(menuQuery) ? menuQuery : "basicInfo";
+    }, [menuQuery]);
+
+    useEffect(() => {
+        if (menuQuery === "services") {
+            router.replace("/home/services");
+        }
+    }, [menuQuery, router]);
 
     const selectMenu = (id: ConfigMenuId) => {
         const q = new URLSearchParams(searchParams.toString());
@@ -129,7 +133,6 @@ function ConfigurationPageInner() {
                         )}
                         {activeMenu === "members" && <MembersSection />}
                         {activeMenu === "roles" && <RolesSection />}
-                        {activeMenu === "services" && <ServicesSection />}
                         {activeMenu === "permissions" && (
                             <PermissionsSection />
                         )}
