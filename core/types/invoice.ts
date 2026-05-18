@@ -356,3 +356,9 @@ export type NormalizeInvoiceResponse = {
     template_id?: number;
     type?: number;
 };
+
+export type UpdateInvoiceSubmission = {
+    id: number | string;
+    payload: InvoiceCreateRequest;
+    pdfFile?: File | null;
+};

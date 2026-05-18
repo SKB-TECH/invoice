@@ -12,6 +12,7 @@ import type {
     GetInvoiceFournituresParams,
     GetInvoicesParams,
     InvoiceCreateRequest, InvoiceDetailResponse, NormalizeInvoicePayload, NormalizeInvoiceResponse,
+    UpdateInvoiceSubmission,
 } from "@/core/types/invoice";
 
 export function useInvoices(params?: GetInvoicesParams) {
@@ -122,6 +123,31 @@ export function useNormalizeInvoice(
             options?.onSuccess?.(data, variables);
         },
 
+        onError: options?.onError,
+    });
+}
+
+type UseUpdateInvoiceOptions = {
+    onSuccess?: (
+        data: unknown,
+        variables: UpdateInvoiceSubmission
+    ) => void;
+    onError?: (error: unknown) => void;
+};
+
+export function useUpdateInvoice(options?: UseUpdateInvoiceOptions) {
+    const queryClient = useQueryClient();
+    return useMutation<unknown, unknown, UpdateInvoiceSubmission>({
+        mutationFn: invoiceService.updateInvoice,
+        onSuccess: (data, variables) => {
+            queryClient.invalidateQueries({
+                queryKey: ["invoices"],
+            });
+            queryClient.invalidateQueries({
+                queryKey: ["invoice", variables.id],
+            });
+            options?.onSuccess?.(data, variables);
+        },
         onError: options?.onError,
     });
 }

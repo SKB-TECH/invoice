@@ -1060,7 +1060,8 @@
       "reference": "Ref",
       "amount": "Amount",
       "status": "Status",
-      "creation": "Created by"
+      "creation": "Created by",
+      "editInvoice": "Edit invoice"
     },
     "status": {
       "paid": "Paid",
@@ -1211,6 +1212,5 @@
   },
   "errors": {
     "loadingDashboard": "Impossible de charger les données du tableau de bord."
-  },
-  "editInvoice": "Edit invoice"
+  }
 }
