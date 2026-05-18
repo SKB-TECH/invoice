@@ -1,8 +1,10 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Loader2, Search } from "lucide-react";
+import { Search } from "lucide-react";
 import { useTranslations } from "next-intl";
+
+import { BillableServicesTableSkeleton } from "@/components/configuration/billable-services-table-skeleton";
 
 import { SectionCard } from "@/components/configuration/section-card";
 import { Button } from "@/components/ui/button";
@@ -25,7 +27,13 @@ function formatMoney(n: number): string {
     }).format(n);
 }
 
-export function ServicesSection() {
+type ServicesSectionProps = {
+    suppressCardHeading?: boolean;
+};
+
+export function ServicesSection({
+    suppressCardHeading = false,
+}: ServicesSectionProps) {
     const t = useTranslations("configuration.services");
     const [page, setPage] = useState(1);
     const [sectorDraft, setSectorDraft] = useState("");
@@ -43,7 +51,7 @@ export function ServicesSection() {
 
     const {
         data: listData,
-        isPending,
+        isFetching,
         isError,
     } = useBillableServicesList(listParams);
 
@@ -51,8 +59,10 @@ export function ServicesSection() {
     const total = listData?.meta.total ?? items.length;
     const totalPages = Math.max(1, Math.ceil(total / LIMIT));
 
-    return (
-        <SectionCard title={t("listSectionTitle")}>
+    const showTableSkeleton = isFetching && listData === undefined;
+
+    const inner = (
+        <>
             <div className="mb-5 flex w-full min-w-full flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
                 <div className="flex w-full flex-col gap-3 sm:flex-row sm:items-end md:max-w-xl">
                     <div className="relative min-w-0 flex-1">
@@ -63,7 +73,7 @@ export function ServicesSection() {
                                 setSectorDraft(e.target.value)
                             }
                             placeholder={t("filterSectorPlaceholder")}
-                            className="h-9 w-full border border-slate-200 bg-white px-3 pr-10 text-sm text-slate-700 shadow-none outline-none placeholder:text-slate-400 focus-visible:border-[#0879bd]"
+                            className="h-9 w-full border border-slate-200 bg-white py-0 pl-10 pr-3 text-sm text-slate-700 shadow-none outline-none placeholder:text-slate-400 focus-visible:border-[#0879bd]"
                         />
                         <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-slate-400" />
                     </div>
@@ -93,7 +103,7 @@ export function ServicesSection() {
                     asChild
                     className="h-9 w-full shrink-0 rounded-none! bg-[#0879bd] px-4 text-sm font-medium text-white shadow-none hover:bg-[#0879bd]/90 sm:w-auto"
                 >
-                    <Link href="/home/configuration/services/nouveau">
+                    <Link href="/home/services/nouveau">
                         {t("createButton")}
                     </Link>
                 </Button>
@@ -102,32 +112,31 @@ export function ServicesSection() {
             <div className="overflow-hidden border border-slate-200">
                 <div className="overflow-x-auto">
                     <div className="min-w-[880px]">
-                        <div className="grid grid-cols-[minmax(0,140px)_1fr_minmax(0,120px)_minmax(0,100px)_minmax(0,90px)_minmax(0,90px)_minmax(0,90px)_minmax(0,100px)] gap-px bg-slate-200 px-5 py-3 text-[13px] font-semibold text-slate-600">
-                            <span>{t("columns.code")}</span>
-                            <span>{t("columns.name")}</span>
-                            <span>{t("columns.sector")}</span>
-                            <span>{t("columns.unitPrice")}</span>
-                            <span>{t("columns.currency")}</span>
-                            <span>{t("columns.taxRate")}</span>
-                            <span>{t("columns.taxGroup")}</span>
-                            <span>{t("columns.billingType")}</span>
-                        </div>
-
-                        {isPending ? (
-                            <div className="flex h-40 items-center justify-center gap-2 bg-white text-[14px] text-slate-500">
-                                <Loader2 className="size-4 animate-spin" />
-                                {t("loading")}
-                            </div>
-                        ) : isError ? (
-                            <div className="flex h-40 items-center justify-center bg-white px-4 text-[14px] text-red-500">
-                                {t("loadError")}
-                            </div>
-                        ) : items.length === 0 ? (
-                            <div className="flex h-40 items-center justify-center bg-white text-[14px] text-slate-500">
-                                {t("empty")}
-                            </div>
+                        {showTableSkeleton ? (
+                            <BillableServicesTableSkeleton />
                         ) : (
-                            items.map((row) => {
+                            <>
+                                <div className="grid grid-cols-[minmax(0,140px)_1fr_minmax(0,120px)_minmax(0,100px)_minmax(0,90px)_minmax(0,90px)_minmax(0,90px)_minmax(0,100px)] gap-px bg-slate-200 px-5 py-3 text-[13px] font-semibold text-slate-600">
+                                    <span>{t("columns.code")}</span>
+                                    <span>{t("columns.name")}</span>
+                                    <span>{t("columns.sector")}</span>
+                                    <span>{t("columns.unitPrice")}</span>
+                                    <span>{t("columns.currency")}</span>
+                                    <span>{t("columns.taxRate")}</span>
+                                    <span>{t("columns.taxGroup")}</span>
+                                    <span>{t("columns.billingType")}</span>
+                                </div>
+
+                                {isError ? (
+                                    <div className="flex h-40 items-center justify-center bg-white px-4 text-[14px] text-red-500">
+                                        {t("loadError")}
+                                    </div>
+                                ) : items.length === 0 ? (
+                                    <div className="flex h-40 items-center justify-center bg-white text-[14px] text-slate-500">
+                                        {t("empty")}
+                                    </div>
+                                ) : (
+                                    items.map((row) => {
                                 const displayPrice =
                                     row.unit_price ??
                                     row.price_before ??
@@ -176,7 +185,9 @@ export function ServicesSection() {
                                         </span>
                                     </div>
                                 );
-                            })
+                                    })
+                                )}
+                            </>
                         )}
                     </div>
                 </div>
@@ -193,7 +204,7 @@ export function ServicesSection() {
                 <div className="flex items-center gap-2">
                     <button
                         type="button"
-                        disabled={page <= 1 || isPending}
+                        disabled={page <= 1 || isFetching}
                         onClick={() =>
                             setPage((p) => Math.max(1, p - 1))
                         }
@@ -206,7 +217,7 @@ export function ServicesSection() {
                         type="button"
                         disabled={
                             page >= totalPages ||
-                            isPending ||
+                            isFetching ||
                             total === 0
                         }
                         onClick={() =>
@@ -220,6 +231,16 @@ export function ServicesSection() {
                     </button>
                 </div>
             </div>
+        </>
+    );
+
+    if (suppressCardHeading) {
+        return inner;
+    }
+
+    return (
+        <SectionCard title={t("listSectionTitle")}>
+            {inner}
         </SectionCard>
     );
 }

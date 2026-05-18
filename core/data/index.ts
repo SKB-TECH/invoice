@@ -1,6 +1,3 @@
-import * as React from "react";
-import Link from "next/link";
-import Image from "next/image";
 
 interface SubMenuItem {
     title: string;
@@ -33,15 +30,15 @@ export const menuItems: MenuItem[] = [
         ],
     },
     {
-        title: "Article",
+        title: "Catalogue",
         subItems: [
             {
-                title: "NouvelArticle",
-                href: "/home/articles/nouveau",
+                title: "Article",
+                href: "/home/articles",
             },
             {
-                title: "Visualiser",
-                href: "/home/articles",
+                title: "Service",
+                href: "/home/services",
             },
         ],
     },

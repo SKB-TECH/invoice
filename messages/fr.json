@@ -107,7 +107,9 @@
     "Facture": "Facture",
     "MesFactures": "Mes factures",
     "NouvelleFacture": "Nouvelle facture",
-    "Article": "Article",
+    "Catalogue": "Catalogue",
+    "Article": "Articles",
+    "Service": "Services",
     "NouvelArticle": "Nouvel article",
     "Visualiser": "Visualiser",
     "Client": "Client",
@@ -705,10 +707,46 @@
     },
     "basicInfo": {
       "sectionTitle": "Informations de base",
-      "changePhoto": "Changer",
-      "name": "Nom",
+      "edit": "Changer",
+      "cancel": "Annuler",
+      "firstname": "Prénom",
+      "lastname": "Nom",
       "email": "Email",
-      "saveChanges": "Enregistrer les modifications"
+      "phone": "Téléphone",
+      "userType": "Type de compte",
+      "userTypes": {
+        "personal": "Personnel",
+        "pme": "PME",
+        "corporate": "Entreprise"
+      },
+      "loading": "Chargement du profil…",
+      "loadError": "Impossible de charger le profil.",
+      "retry": "Réessayer",
+      "submitting": "Enregistrement…",
+      "saveSuccess": "Profil mis à jour.",
+      "saveError": "Impossible d'enregistrer le profil.",
+      "saveChanges": "Enregistrer les modifications",
+      "errors": {
+        "required": "Prénom, nom et téléphone sont obligatoires."
+      }
+    },
+    "logo": {
+      "sectionTitle": "Logo de l'entreprise",
+      "introTitle": "Importer un nouveau logo",
+      "introBody": "Le logo sera affiché dans les documents générés par l'application.",
+      "formatsHint": "JPEG, PNG ou WebP · 5 Mo maximum",
+      "chooseFile": "Choisir un fichier",
+      "cancel": "Annuler",
+      "selectedFile": "Fichier sélectionné :",
+      "save": "Enregistrer le logo",
+      "saving": "Enregistrement…",
+      "noLogo": "Aucun logo",
+      "previewAlt": "Aperçu du logo",
+      "toastSaved": "Logo mis à jour.",
+      "toastError": "Échec du téléversement du logo.",
+      "fileTooLarge": "Le fichier ne doit pas dépasser 5 Mo.",
+      "invalidFormat": "Utilisez une image JPEG, PNG ou WebP.",
+      "noFileSelected": "Sélectionnez une image avant d'enregistrer."
     },
     "password": {
       "sectionTitle": "Changer mot de passe",
@@ -717,9 +755,13 @@
       "confirmPassword": "Confirmer le mot de passe",
       "placeholder": "Entrez votre mot de passe",
       "submit": "Modifier le mot de passe",
+      "submitting": "Mise à jour…",
+      "toastSuccess": "Mot de passe mis à jour.",
+      "toastError": "Impossible de modifier le mot de passe.",
       "errors": {
         "minLength": "Le nouveau mot de passe doit contenir au moins 6 caractères.",
-        "mismatch": "Les mots de passe ne correspondent pas."
+        "mismatch": "Les mots de passe ne correspondent pas.",
+        "oldRequired": "Saisissez votre mot de passe actuel."
       }
     },
     "referentialCatalog": {
