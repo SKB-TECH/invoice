@@ -793,17 +793,6 @@ export default function PaymentsPage() {
 
             <div className="mb-6 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
                 <div className="flex flex-col gap-2">
-                    <Button
-                        variant="ghost"
-                        size="sm"
-                        className="-ml-2 w-fit"
-                        asChild
-                    >
-                        <Link href="/home/factures" className="gap-1">
-                            <ChevronLeft className="size-4" />
-                            {t("backToInvoices")}
-                        </Link>
-                    </Button>
 
                     <h1 className="text-2xl font-bold tracking-tight text-slate-800 sm:text-3xl">
                         {t("title")}
