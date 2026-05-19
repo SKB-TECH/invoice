@@ -1,17 +1,28 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from "@/components/ui/table";
 import { cn } from "@/lib/utils";
 
 const COLUMN_KEYS = [
-  "code",
-  "title",
-  "referential",
-  "taxGroup",
-  "priceTtc",
-  "status",
-  "period",
+    "code",
+    "title",
+    "referential",
+    "taxGroup",
+    "priceTtc",
+    "status",
+    "period",
 ] as const;
+
+const TABLE_HEAD_CLASS =
+    "h-11 bg-slate-100 px-4 text-left text-sm font-semibold text-slate-700";
 
 type Props = {
     rowCount?: number;
@@ -41,54 +52,62 @@ function cellWidths(row: number, col: number): string {
 }
 
 export function ArticlesTableSkeleton({
-  rowCount = 8,
-  className,
+    rowCount = 8,
+    className,
 }: Props) {
-  const t = useTranslations("articles.list");
+    const t = useTranslations("articles.list");
 
-  return (
-    <div
-      role="status"
-      aria-busy="true"
-      aria-label={t("loading")}
-      className={cn(
-        "border border-slate-200 bg-white text-slate-700",
-        className
-      )}
-    >
-      <table className="w-full border-collapse text-left text-[11px]">
-        <thead>
-          <tr className="border-b border-slate-200 bg-slate-50 text-slate-500">
-            {COLUMN_KEYS.map((key) => (
-              <th key={key} className="px-5 py-3 font-semibold">
-                {t(`columns.${key}`)}
-              </th>
-            ))}
-            <th className="px-5 py-3 text-right font-semibold">
-              {t("action")}
-            </th>
-          </tr>
-        </thead>
-        <tbody className="animate-pulse">
-          {Array.from({ length: rowCount }).map((_, row) => (
-            <tr key={row} className="border-b border-slate-100">
-              {COLUMN_KEYS.map((key, col) => (
-                <td key={key} className="px-5 py-4">
-                  <div
-                    className={cn(
-                      "rounded bg-slate-200/90",
-                      cellWidths(row, col)
-                    )}
-                  />
-                </td>
-              ))}
-              <td className="px-5 py-4 text-right">
-                <div className="ml-auto h-8 w-8 rounded bg-slate-200/90" />
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  );
+    return (
+        <div
+            role="status"
+            aria-busy="true"
+            aria-label={t("loading")}
+            className={cn(
+                "overflow-hidden border border-slate-200/80 bg-white",
+                className,
+            )}
+        >
+            <Table>
+                <TableHeader className="bg-[#F4F4F4BB]">
+                    <TableRow className="border-slate-200 bg-[#F4F4F4BB] hover:bg-transparent">
+                        {COLUMN_KEYS.map((key) => (
+                            <TableHead key={key} className={TABLE_HEAD_CLASS}>
+                                {t(`columns.${key}`)}
+                            </TableHead>
+                        ))}
+                        <TableHead
+                            className={cn(
+                                TABLE_HEAD_CLASS,
+                                "text-right",
+                            )}
+                        >
+                            <span className="sr-only">{t("action")}</span>
+                        </TableHead>
+                    </TableRow>
+                </TableHeader>
+                <TableBody className="animate-pulse">
+                    {Array.from({ length: rowCount }).map((_, row) => (
+                        <TableRow
+                            key={row}
+                            className="border-slate-200 hover:bg-transparent"
+                        >
+                            {COLUMN_KEYS.map((key, col) => (
+                                <TableCell key={key} className="px-4 py-3">
+                                    <div
+                                        className={cn(
+                                            "rounded bg-slate-200/90",
+                                            cellWidths(row, col),
+                                        )}
+                                    />
+                                </TableCell>
+                            ))}
+                            <TableCell className="px-4 py-3 text-right">
+                                <div className="ml-auto h-8 w-8 rounded bg-slate-200/90" />
+                            </TableCell>
+                        </TableRow>
+                    ))}
+                </TableBody>
+            </Table>
+        </div>
+    );
 }
