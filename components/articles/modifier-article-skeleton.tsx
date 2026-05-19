@@ -21,8 +21,9 @@ function SkeletonField() {
     return <SkeletonLine className="h-[50px] w-full" />;
 }
 
-export function ArticleVisualiserSkeleton() {
-    const tView = useTranslations("articles.view");
+export function ModifierArticleSkeleton() {
+    const tCreate = useTranslations("articles.create");
+    const tEdit = useTranslations("articles.edit");
     const tList = useTranslations("articles.list");
     const tNavbar = useTranslations("navbar");
 
@@ -42,44 +43,69 @@ export function ArticleVisualiserSkeleton() {
                     {tList("title")}
                 </Link>
                 <span>/</span>
-                <SkeletonLine className="inline-block h-4 w-28 max-w-48 sm:max-w-md" />
+                <SkeletonLine className="inline-block h-4 w-28 max-w-40 sm:max-w-xs" />
                 <span>/</span>
                 <span className="font-semibold text-slate-500">
-                    {tNavbar("Visualiser")}
+                    {tEdit("breadcrumbSegment")}
                 </span>
             </div>
 
-            <SkeletonLine className="h-10 w-full max-w-lg" />
+            <SkeletonLine className="h-10 w-full max-w-md" />
             <SkeletonLine className="mt-3 h-5 w-36" />
 
             <div className="mt-4 bg-white p-8">
                 <div className="grid grid-cols-1 gap-x-14 gap-y-4 lg:grid-cols-2 animate-pulse">
                     <div>
-                        <FieldLabel>{tView("fields.name")}</FieldLabel>
+                        <FieldLabel>{tCreate("fields.name")}</FieldLabel>
                         <SkeletonField />
                     </div>
                     <div>
-                        <FieldLabel>{tView("fields.code")}</FieldLabel>
-                        <SkeletonField />
-                    </div>
-
-                    <div>
-                        <FieldLabel>{tView("fields.priceExclTax")}</FieldLabel>
-                        <SkeletonField />
-                    </div>
-                    <div>
-                        <FieldLabel>{tView("fields.priceInclTax")}</FieldLabel>
+                        <FieldLabel>{tCreate("fields.code")}</FieldLabel>
                         <SkeletonField />
                     </div>
 
                     <div className="lg:col-span-2">
-                        <FieldLabel>{tView("fields.taxGroup")}</FieldLabel>
-                        <SkeletonField />
-                    </div>
-
-                    <div className="lg:col-span-2">
-                        <FieldLabel>{tView("fields.description")}</FieldLabel>
+                        <FieldLabel>{tCreate("fields.description")}</FieldLabel>
                         <SkeletonLine className="min-h-[120px] w-full" />
+                    </div>
+
+                    <div className="lg:col-span-2">
+                        <FieldLabel>{tCreate("fields.referential")}</FieldLabel>
+                        <SkeletonField />
+                    </div>
+
+                    <div>
+                        <FieldLabel>{tCreate("fields.currency")}</FieldLabel>
+                        <SkeletonField />
+                    </div>
+                    <div>
+                        <FieldLabel>{tCreate("fields.priceExclTax")}</FieldLabel>
+                        <SkeletonField />
+                    </div>
+
+                    <div>
+                        <FieldLabel>{tCreate("fields.taxGroup")}</FieldLabel>
+                        <SkeletonField />
+                    </div>
+                    <div>
+                        <FieldLabel>{tCreate("fields.priceInclTax")}</FieldLabel>
+                        <SkeletonField />
+                    </div>
+
+                    <div>
+                        <FieldLabel>{tCreate("fields.specialPrice")}</FieldLabel>
+                        <SkeletonField />
+                    </div>
+
+                    <div className="flex flex-col gap-4 sm:flex-row sm:items-end">
+                        <div className="min-w-0 flex-1">
+                            <FieldLabel>{tCreate("fields.pieceUnit")}</FieldLabel>
+                            <SkeletonField />
+                        </div>
+                        <div className="w-full sm:w-40">
+                            <FieldLabel>{tCreate("fields.unit")}</FieldLabel>
+                            <SkeletonField />
+                        </div>
                     </div>
                 </div>
 

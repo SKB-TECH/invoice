@@ -1,6 +1,8 @@
 import { ChevronDown } from "lucide-react";
 import type { InputHTMLAttributes, ReactNode } from "react";
 
+import { cn } from "@/lib/utils";
+
 export const createFormSelectClassName =
     "h-[50px] w-full appearance-none rounded border border-slate-300 bg-white px-5 pr-12 text-[17px] font-medium text-slate-700 outline-none focus:border-[#0879bd] disabled:cursor-not-allowed disabled:bg-slate-100";
 
@@ -12,6 +14,38 @@ export function FieldLabel({ children }: { children: ReactNode }) {
         <label className="mb-2 block text-[17px] font-semibold text-slate-700">
             {children}
         </label>
+    );
+}
+
+export const readOnlyFieldClassName =
+    "flex min-h-[50px] w-full items-center rounded border border-slate-300 bg-slate-50 px-5 text-[17px] font-medium text-slate-700";
+
+export const readOnlyTextareaClassName =
+    "min-h-[120px] w-full rounded border border-slate-300 bg-slate-50 px-5 py-3 text-[17px] font-medium leading-relaxed text-slate-700";
+
+export function ReadOnlyField({
+    children,
+    className,
+}: {
+    children: ReactNode;
+    className?: string;
+}) {
+    return (
+        <div className={cn(readOnlyFieldClassName, className)}>{children}</div>
+    );
+}
+
+export function ReadOnlyTextarea({
+    children,
+    className,
+}: {
+    children: ReactNode;
+    className?: string;
+}) {
+    return (
+        <div className={cn(readOnlyTextareaClassName, className)}>
+            {children}
+        </div>
     );
 }
 
@@ -189,6 +223,7 @@ export function CreateFormFooter({
     onSubmit,
     submitDisabled = false,
     submitType = "button",
+    className,
 }: {
     cancelLabel: string;
     submitLabel: string;
@@ -196,13 +231,25 @@ export function CreateFormFooter({
     onSubmit?: () => void;
     submitDisabled?: boolean;
     submitType?: "button" | "submit";
+    className?: string;
 }) {
+    const buttonClass =
+        "inline-flex h-[50px] w-52 items-center justify-center rounded text-[14px] font-semibold leading-none";
+
     return (
-        <div className="mt-0 flex justify-end gap-5 bg-white px-3 py-3">
+        <div
+            className={cn(
+                "mt-6 flex flex-wrap items-center justify-end gap-5",
+                className,
+            )}
+        >
             <button
                 type="button"
                 onClick={onCancel}
-                className="h-12 w-52 rounded bg-slate-400 text-[14px] font-semibold text-white hover:bg-slate-500"
+                className={cn(
+                    buttonClass,
+                    "bg-slate-400 text-white hover:bg-slate-500",
+                )}
             >
                 {cancelLabel}
             </button>
@@ -212,7 +259,10 @@ export function CreateFormFooter({
                 onClick={
                     submitType === "button" ? onSubmit : undefined
                 }
-                className="h-12 w-52 rounded bg-[#0879bd] text-[20px] font-semibold text-white hover:bg-[#076ca8] disabled:cursor-not-allowed disabled:opacity-60"
+                className={cn(
+                    buttonClass,
+                    "bg-[#0879bd] text-white hover:bg-[#076ca8] disabled:cursor-not-allowed disabled:opacity-60",
+                )}
             >
                 {submitLabel}
             </button>

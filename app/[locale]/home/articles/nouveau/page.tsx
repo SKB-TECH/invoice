@@ -236,17 +236,6 @@ export default function NouvelArticlePage() {
 
                         <div className="lg:col-span-2">
                             <FieldLabel>
-                                {tCreate("fields.description")}
-                            </FieldLabel>
-                            <TextareaField
-                                id="description"
-                                name="description"
-                                placeholder={tCreate("placeholders.optional")}
-                            />
-                        </div>
-
-                        <div className="lg:col-span-2">
-                            <FieldLabel>
                                 {tCreate("fields.referential")}
                                 {requiredStar}
                             </FieldLabel>
@@ -428,21 +417,32 @@ export default function NouvelArticlePage() {
                                 <InputField id="unite" name="unite" />
                             </div>
                         </div>
-                    </div>
-                </div>
 
-                <CreateFormFooter
-                    cancelLabel={tCreate("actions.cancel")}
-                    submitLabel={tCreate("actions.save")}
-                    onCancel={() => router.push("/home/articles")}
-                    submitDisabled={
-                        createMutation.isPending ||
-                        referentialsPending ||
-                        referentialsError ||
-                        referentialRows.length === 0
-                    }
-                    submitType="submit"
-                />
+                        <div className="lg:col-span-2">
+                            <FieldLabel>
+                                {tCreate("fields.description")}
+                            </FieldLabel>
+                            <TextareaField
+                                id="description"
+                                name="description"
+                                placeholder={tCreate("placeholders.optional")}
+                            />
+                        </div>
+                    </div>
+
+                    <CreateFormFooter
+                        cancelLabel={tCreate("actions.cancel")}
+                        submitLabel={tCreate("actions.save")}
+                        onCancel={() => router.push("/home/articles")}
+                        submitDisabled={
+                            createMutation.isPending ||
+                            referentialsPending ||
+                            referentialsError ||
+                            referentialRows.length === 0
+                        }
+                        submitType="submit"
+                    />
+                </div>
             </form>
         </main>
     );

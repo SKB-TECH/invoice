@@ -1,14 +1,18 @@
 "use client";
 
-import { ChevronRight, House } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
 import { ArticleTaxGroupLabel } from "@/components/articles/article-tax-group-label";
 import { VisualiserArticleActions } from "@/components/articles/visualiser-article-actions";
+import { ArticleVisualiserSkeleton } from "@/components/articles/article-visualiser-skeleton";
 import { formatDeviseLibelle } from "@/lib/fournitures/articles/articles-data";
 import { mapFournitureArticleToDetailRecord } from "@/lib/fournitures/articles/fournitures-mappers";
 import { useFournitureDetail } from "@/core/hooks/fournitures/useFournitureDetail";
-import { ArticleVisualiserSkeleton } from "@/components/articles/article-visualiser-skeleton";
+import {
+    FieldLabel,
+    ReadOnlyField,
+    ReadOnlyTextarea,
+} from "@/components/invoices/create/Fields";
 import { Button } from "@/components/ui/button";
 
 function formatMontant(n: number): string {
@@ -36,14 +40,19 @@ export function ArticleVisualiserClient({ articleId }: Props) {
 
     if (isError || !data) {
         return (
-            <main className="mx-auto w-full min-w-full space-y-4 text-foreground">
-                <p className="text-sm text-red-600">
+            <main className="w-full text-slate-700">
+                <p className="text-sm font-medium text-red-500">
                     {tList("loadErrorDetail")}
                 </p>
-                <p className="text-xs text-slate-500">
+                <p className="mt-2 text-sm text-slate-500">
                     {error instanceof Error ? error.message : ""}
                 </p>
-                <Button type="button" variant="secondary" onClick={() => refetch()}>
+                <Button
+                    type="button"
+                    variant="secondary"
+                    className="mt-3"
+                    onClick={() => refetch()}
+                >
                     {tList("retry")}
                 </Button>
             </main>
@@ -55,97 +64,82 @@ export function ArticleVisualiserClient({ articleId }: Props) {
     const basePath = `/home/articles/${encodeURIComponent(article.idIkwook)}`;
 
     return (
-        <main className="mx-auto w-full min-w-full text-foreground">
-            <span className="mb-6 flex flex-wrap items-center gap-1 text-sm text-slate-500">
-                <Link href="/home" aria-label={tNavbar("Accueil")}>
-                    <House className="size-4" />
+        <main className="relative w-full text-slate-700">
+            <div className="mb-3 flex flex-wrap items-center gap-1 text-[13px] font-medium text-slate-400">
+                <Link href="/home" className="hover:text-slate-600">
+                    {tNavbar("Accueil")}
                 </Link>
-                <ChevronRight className="size-4 shrink-0" />
-                <Link href="/home/articles" className="hover:text-slate-700">
+                <span>/</span>
+                <Link href="/home/articles" className="hover:text-slate-600">
                     {tList("title")}
                 </Link>
-                <ChevronRight className="size-4 shrink-0" />
-                <span className="max-w-[12rem] truncate text-slate-600 sm:max-w-md">
+                <span>/</span>
+                <span className="max-w-48 truncate text-slate-600 sm:max-w-md">
                     {article.title}
                 </span>
-                <ChevronRight className="size-4 shrink-0" />
-                {tNavbar("Visualiser")}
-            </span>
-
-            <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-                <div>
-                    <h1 className="text-2xl font-bold tracking-tight text-slate-800 sm:text-3xl">
-                        {t("title")}
-                    </h1>
-                    <p className="mt-1 text-sm text-slate-600">
-                        {t("referenceLabel")}
-                        {"\u00a0"}
-                        <span className="font-medium text-slate-800">
-                            {article.code}
-                        </span>
-                    </p>
-                </div>
+                <span>/</span>
+                <span className="font-semibold text-slate-600">
+                    {tNavbar("Visualiser")}
+                </span>
             </div>
 
-            <section className="rounded border border-slate-200/80 bg-white p-6 sm:p-8">
-                <dl className="grid gap-8 sm:grid-cols-2">
+            <h1 className="text-[40px] font-bold tracking-tight text-slate-700">
+                {article.title}
+            </h1>
+            <p className="mt-2 text-[17px] font-medium text-slate-500">
+                {t("referenceLabel")}
+                {"\u00a0"}
+                <span className="text-slate-700">{article.code}</span>
+            </p>
+
+            <div className="mt-4 bg-white p-8">
+                <div className="grid grid-cols-1 gap-x-14 gap-y-4 lg:grid-cols-2">
                     <div>
-                        <dt className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-                            {t("fields.name")}
-                        </dt>
-                        <dd className="mt-1 text-base font-medium text-slate-900">
-                            {article.title}
-                        </dd>
+                        <FieldLabel>{t("fields.name")}</FieldLabel>
+                        <ReadOnlyField>{article.title}</ReadOnlyField>
                     </div>
 
                     <div>
-                        <dt className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-                            {t("fields.code")}
-                        </dt>
-                        <dd className="mt-1 text-base font-medium text-slate-900">
-                            {article.code}
-                        </dd>
-                    </div>
-
-                    <div className="sm:col-span-2">
-                        <dt className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-                            {t("fields.description")}
-                        </dt>
-                        <dd className="mt-2 rounded border border-slate-100 bg-slate-50/80 px-4 py-3 text-sm leading-relaxed text-slate-800">
-                            {article.description || "—"}
-                        </dd>
+                        <FieldLabel>{t("fields.code")}</FieldLabel>
+                        <ReadOnlyField>{article.code}</ReadOnlyField>
                     </div>
 
                     <div>
-                        <dt className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-                            {t("fields.priceExclTax")}
-                        </dt>
-                        <dd className="mt-1 text-base font-semibold tabular-nums text-slate-900">
+                        <FieldLabel>{t("fields.priceExclTax")}</FieldLabel>
+                        <ReadOnlyField className="font-semibold tabular-nums">
                             {formatMontant(article.prixHt)} {devise}
-                        </dd>
+                        </ReadOnlyField>
                     </div>
 
                     <div>
-                        <dt className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-                            {t("fields.priceInclTax")}
-                        </dt>
-                        <dd className="mt-1 text-base font-semibold tabular-nums text-slate-900">
+                        <FieldLabel>{t("fields.priceInclTax")}</FieldLabel>
+                        <ReadOnlyField className="font-semibold tabular-nums">
                             {formatMontant(article.prixTtc)} {devise}
-                        </dd>
+                        </ReadOnlyField>
                     </div>
 
-                    <div className="sm:col-span-2">
-                        <dt className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-                            {t("fields.taxGroup")}
-                        </dt>
-                        <dd className="mt-1 text-base font-medium text-slate-900">
-                            <ArticleTaxGroupLabel taxGroupId={article.groupeTax} />
-                        </dd>
+                    <div className="lg:col-span-2">
+                        <FieldLabel>{t("fields.taxGroup")}</FieldLabel>
+                        <ReadOnlyField>
+                            <ArticleTaxGroupLabel
+                                taxGroupId={article.groupeTax}
+                                includeCode={false}
+                            />
+                        </ReadOnlyField>
                     </div>
-                </dl>
 
-                <VisualiserArticleActions modifierPath={`${basePath}/modifier`} />
-            </section>
+                    <div className="lg:col-span-2">
+                        <FieldLabel>{t("fields.description")}</FieldLabel>
+                        <ReadOnlyTextarea>
+                            {article.description || "—"}
+                        </ReadOnlyTextarea>
+                    </div>
+                </div>
+
+                <VisualiserArticleActions
+                    modifierPath={`${basePath}/modifier`}
+                />
+            </div>
         </main>
     );
 }

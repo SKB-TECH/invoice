@@ -36,7 +36,6 @@ type ServiceFormState = {
     tax_group: string;
     billing_type: string;
     category_id: string;
-    notes: string;
     people_apply: boolean;
     quantity_apply: boolean;
 };
@@ -52,7 +51,6 @@ const INITIAL_FORM: ServiceFormState = {
     tax_group: "2",
     billing_type: "1",
     category_id: "",
-    notes: "",
     people_apply: true,
     quantity_apply: true,
 };
@@ -147,7 +145,7 @@ export function CreateBillableServiceForm({
             quantity_apply: form.quantity_apply,
             billing_type,
             category_id,
-            notes: form.notes.trim(),
+            notes: "",
         };
 
         createMutation.mutate(payload);
@@ -187,15 +185,6 @@ export function CreateBillableServiceForm({
                             value={form.code}
                             onChange={(v) => updateField("code", v)}
                             placeholder={t("placeholders.code")}
-                        />
-                    </div>
-
-                    <div className="lg:col-span-2">
-                        <FieldLabel>{t("fields.description")}</FieldLabel>
-                        <TextareaField
-                            value={form.description}
-                            onChange={(v) => updateField("description", v)}
-                            placeholder={t("placeholders.description")}
                         />
                     </div>
 
@@ -350,28 +339,27 @@ export function CreateBillableServiceForm({
                     </label>
 
                     <div className="lg:col-span-2">
-                        <FieldLabel>{t("fields.notes")}</FieldLabel>
+                        <FieldLabel>{t("fields.description")}</FieldLabel>
                         <TextareaField
-                            value={form.notes}
-                            rows={2}
-                            onChange={(v) => updateField("notes", v)}
-                            placeholder={t("placeholders.notes")}
+                            value={form.description}
+                            onChange={(v) => updateField("description", v)}
+                            placeholder={t("placeholders.description")}
                         />
                     </div>
                 </div>
-            </div>
 
-            <CreateFormFooter
-                cancelLabel={cancelLabel}
-                submitLabel={
-                    createMutation.isPending
-                        ? t("actions.submitting")
-                        : t("actions.submit")
-                }
-                onCancel={onCancel}
-                onSubmit={handleSubmit}
-                submitDisabled={createMutation.isPending || !catalogReady}
-            />
+                <CreateFormFooter
+                    cancelLabel={cancelLabel}
+                    submitLabel={
+                        createMutation.isPending
+                            ? t("actions.submitting")
+                            : t("actions.submit")
+                    }
+                    onCancel={onCancel}
+                    onSubmit={handleSubmit}
+                    submitDisabled={createMutation.isPending || !catalogReady}
+                />
+            </div>
         </>
     );
 }
