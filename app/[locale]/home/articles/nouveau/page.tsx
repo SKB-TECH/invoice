@@ -429,20 +429,20 @@ export default function NouvelArticlePage() {
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <CreateFormFooter
-                    cancelLabel={tCreate("actions.cancel")}
-                    submitLabel={tCreate("actions.save")}
-                    onCancel={() => router.push("/home/articles")}
-                    submitDisabled={
-                        createMutation.isPending ||
-                        referentialsPending ||
-                        referentialsError ||
-                        referentialRows.length === 0
-                    }
-                    submitType="submit"
-                />
+                    <CreateFormFooter
+                        cancelLabel={tCreate("actions.cancel")}
+                        submitLabel={tCreate("actions.save")}
+                        onCancel={() => router.push("/home/articles")}
+                        submitDisabled={
+                            createMutation.isPending ||
+                            referentialsPending ||
+                            referentialsError ||
+                            referentialRows.length === 0
+                        }
+                        submitType="submit"
+                    />
+                </div>
             </form>
         </main>
     );

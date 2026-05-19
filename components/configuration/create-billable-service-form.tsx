@@ -359,19 +359,19 @@ export function CreateBillableServiceForm({
                         />
                     </div>
                 </div>
-            </div>
 
-            <CreateFormFooter
-                cancelLabel={cancelLabel}
-                submitLabel={
-                    createMutation.isPending
-                        ? t("actions.submitting")
-                        : t("actions.submit")
-                }
-                onCancel={onCancel}
-                onSubmit={handleSubmit}
-                submitDisabled={createMutation.isPending || !catalogReady}
-            />
+                <CreateFormFooter
+                    cancelLabel={cancelLabel}
+                    submitLabel={
+                        createMutation.isPending
+                            ? t("actions.submitting")
+                            : t("actions.submit")
+                    }
+                    onCancel={onCancel}
+                    onSubmit={handleSubmit}
+                    submitDisabled={createMutation.isPending || !catalogReady}
+                />
+            </div>
         </>
     );
 }
