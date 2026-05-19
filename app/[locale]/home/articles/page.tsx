@@ -8,6 +8,12 @@ import { ArticlesTable } from "@/components/articles/articles-table";
 import { ArticlesTableSkeleton } from "@/components/articles/articles-table-skeleton";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableRow,
+} from "@/components/ui/table";
 import type {
     ArticleRowStatus,
     ArticleTableRow,
@@ -19,7 +25,7 @@ import { mapFournitureToTableRow } from "@/lib/fournitures/articles/fournitures-
 function matchesArticleSearch(
     row: ArticleTableRow,
     query: string,
-    statusLabels: Record<ArticleRowStatus, string>
+    statusLabels: Record<ArticleRowStatus, string>,
 ): boolean {
     const q = query.trim().toLowerCase();
     if (!q) return true;
@@ -35,7 +41,7 @@ function matchesArticleSearch(
         row.period,
     ];
     return fields.some((field) =>
-        String(field).toLowerCase().includes(q)
+        String(field).toLowerCase().includes(q),
     );
 }
 
@@ -77,27 +83,30 @@ export default function HomeFournituresArticlesPage() {
                     suspendu: suspenduLabel,
                     actif: actifLabel,
                     complet: completLabel,
-                })
+                }),
             ),
-        [tableRows, search, suspenduLabel, actifLabel, completLabel]
+        [tableRows, search, suspenduLabel, actifLabel, completLabel],
     );
 
     const showLoader = isLoading && !data;
+    const columnCount = 8;
 
     return (
-        <div className="w-full min-w-full space-y-6">
-            <span className="flex items-center gap-1 text-sm text-slate-500">
+        <main className="mx-auto w-full min-w-full py-4 text-foreground">
+            <span className="mb-6 flex flex-wrap items-center gap-1 text-sm text-slate-500">
                 <Link href="/home" aria-label={tNavbar("Accueil")}>
                     <House className="size-4" />
                 </Link>
-                <ChevronRight className="size-4" />
-                {t("title")}
+                <ChevronRight className="size-4 shrink-0" />
+                <span className="text-slate-800">{t("title")}</span>
             </span>
 
-            <div className="flex w-full min-w-full flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                <h1 className="text-lg font-bold text-slate-800">{t("title")}</h1>
-                <div className="flex min-w-0 w-full flex-row items-center justify-end gap-3 sm:w-auto sm:max-w-none">
-                    <div className="relative min-w-0 flex-1 sm:flex-none sm:w-96 md:w-md lg:w-lg">
+            <div className="mb-6 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
+                <h1 className="text-2xl font-bold tracking-tight text-slate-800 sm:text-3xl">
+                    {t("title")}
+                </h1>
+                <div className="flex w-full flex-col items-stretch gap-3 sm:w-auto sm:flex-row sm:items-center">
+                    <div className="relative min-w-0 flex-1 sm:w-80">
                         <Search
                             className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-slate-400"
                             aria-hidden
@@ -107,17 +116,18 @@ export default function HomeFournituresArticlesPage() {
                             value={search}
                             onChange={(e) => setSearch(e.target.value)}
                             placeholder={t("searchPlaceholder")}
-                            className="h-9 w-full rounded-none border-slate-200 pl-9 text-sm shadow-none focus-visible:ring-[#0879bd]/30"
+                            className="h-12 w-full rounded border-slate-200 pl-9 text-sm shadow-none focus-visible:ring-[#0879bd]/30"
                             aria-label={t("searchAriaLabel")}
                             autoComplete="off"
                         />
                     </div>
                     <Button
                         type="button"
+                        size="lg"
                         onClick={() => {
                             router.push("/home/articles/nouveau");
                         }}
-                        className="h-9 shrink-0 rounded-none! bg-[#0879bd] px-4 text-sm font-medium text-white hover:bg-[#0879bd]/90"
+                        className="h-12 w-full shrink-0 cursor-pointer rounded bg-[#0879bd] px-5 text-white hover:bg-[#076ca8] sm:w-52"
                     >
                         {tNavbar("NouvelArticle")}
                     </Button>
@@ -128,28 +138,65 @@ export default function HomeFournituresArticlesPage() {
                 {showLoader ? (
                     <ArticlesTableSkeleton className="w-full" />
                 ) : isError ? (
-                    <div className="rounded border border-slate-200 bg-white px-5 py-8 text-center text-sm space-y-3">
-                        <p className="text-red-600">{t("loadError")}</p>
-                        <p className="text-xs text-slate-500 break-words">
-                            {error instanceof Error ? error.message : ""}
-                        </p>
-                        <Button type="button" variant="secondary" size="sm" onClick={() => refetch()}>
-                            {t("retry")}
-                        </Button>
+                    <div className="overflow-hidden border border-slate-200/80 bg-white">
+                        <Table>
+                            <TableBody>
+                                <TableRow>
+                                    <TableCell
+                                        colSpan={columnCount}
+                                        className="h-40 px-4 text-center"
+                                    >
+                                        <p className="text-sm text-red-500">
+                                            {t("loadError")}
+                                        </p>
+                                        <p className="mt-2 text-xs text-slate-500 break-words">
+                                            {error instanceof Error
+                                                ? error.message
+                                                : ""}
+                                        </p>
+                                        <Button
+                                            type="button"
+                                            variant="secondary"
+                                            size="sm"
+                                            className="mt-3"
+                                            onClick={() => refetch()}
+                                        >
+                                            {t("retry")}
+                                        </Button>
+                                    </TableCell>
+                                </TableRow>
+                            </TableBody>
+                        </Table>
                     </div>
                 ) : filteredArticles.length === 0 ? (
-                    <p className="rounded border border-slate-200 bg-white px-5 py-8 text-center text-sm text-slate-500">
-                        {t("empty")}
-                    </p>
+                    <div className="overflow-hidden border border-slate-200/80 bg-white">
+                        <Table>
+                            <TableBody>
+                                <TableRow>
+                                    <TableCell
+                                        colSpan={columnCount}
+                                        className="h-40 text-center text-sm text-slate-500"
+                                    >
+                                        {t("empty")}
+                                    </TableCell>
+                                </TableRow>
+                            </TableBody>
+                        </Table>
+                    </div>
                 ) : (
                     <>
                         {isFetching && !isLoading ? (
-                            <p className="mb-2 text-xs text-slate-400">{t("refreshing")}</p>
+                            <p className="mb-2 text-sm text-slate-500">
+                                {t("refreshing")}
+                            </p>
                         ) : null}
-                        <ArticlesTable rows={filteredArticles} className="w-full" />
+                        <ArticlesTable
+                            rows={filteredArticles}
+                            className="w-full"
+                        />
                     </>
                 )}
             </div>
-        </div>
+        </main>
     );
 }

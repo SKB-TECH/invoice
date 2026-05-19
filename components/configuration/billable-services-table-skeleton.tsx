@@ -2,10 +2,15 @@
 
 import { useTranslations } from "next-intl";
 
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from "@/components/ui/table";
 import { cn } from "@/lib/utils";
-
-const GRID_ROW =
-    "grid grid-cols-[minmax(0,140px)_1fr_minmax(0,120px)_minmax(0,100px)_minmax(0,90px)_minmax(0,90px)_minmax(0,90px)_minmax(0,100px)] gap-px";
 
 const COLUMN_KEYS = [
     "code",
@@ -17,6 +22,9 @@ const COLUMN_KEYS = [
     "taxGroup",
     "billingType",
 ] as const;
+
+const TABLE_HEAD_CLASS =
+    "h-11 bg-slate-100 px-4 text-left text-sm font-semibold text-slate-700";
 
 type Props = {
     rowCount?: number;
@@ -58,44 +66,38 @@ export function BillableServicesTableSkeleton({
             role="status"
             aria-busy="true"
             aria-label={t("loading")}
-            className={cn("min-w-[880px]", className)}
+            className={cn(className)}
         >
-            <div
-                className={cn(
-                    GRID_ROW,
-                    "bg-slate-200 px-5 py-3 text-[13px] font-semibold text-slate-600",
-                )}
-            >
-                {COLUMN_KEYS.map((key) => (
-                    <span key={key}>{t(`columns.${key}`)}</span>
-                ))}
-            </div>
-
-            <div className="animate-pulse bg-white">
-                {Array.from({ length: rowCount }).map((_, row) => (
-                    <div
-                        key={row}
-                        className={cn(
-                            GRID_ROW,
-                            "border-t border-slate-200 bg-white px-5 py-3",
-                        )}
-                    >
-                        {COLUMN_KEYS.map((key, col) => (
-                            <div
-                                key={key}
-                                className="flex min-h-[1.25rem] items-center"
-                            >
-                                <div
-                                    className={cn(
-                                        "rounded bg-slate-200/90",
-                                        barClass(row, col),
-                                    )}
-                                />
-                            </div>
+            <Table>
+                <TableHeader className="bg-[#F4F4F4BB]">
+                    <TableRow className="border-slate-200 bg-[#F4F4F4BB] hover:bg-transparent">
+                        {COLUMN_KEYS.map((key) => (
+                            <TableHead key={key} className={TABLE_HEAD_CLASS}>
+                                {t(`columns.${key}`)}
+                            </TableHead>
                         ))}
-                    </div>
-                ))}
-            </div>
+                    </TableRow>
+                </TableHeader>
+                <TableBody className="animate-pulse">
+                    {Array.from({ length: rowCount }).map((_, row) => (
+                        <TableRow
+                            key={row}
+                            className="border-slate-200 hover:bg-transparent"
+                        >
+                            {COLUMN_KEYS.map((key, col) => (
+                                <TableCell key={key} className="px-4 py-3">
+                                    <div
+                                        className={cn(
+                                            "rounded bg-slate-200/90",
+                                            barClass(row, col),
+                                        )}
+                                    />
+                                </TableCell>
+                            ))}
+                        </TableRow>
+                    ))}
+                </TableBody>
+            </Table>
         </div>
     );
 }
