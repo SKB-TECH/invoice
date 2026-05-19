@@ -247,19 +247,6 @@ export function ModifierArticleForm({
 
                     <div className="lg:col-span-2">
                         <FieldLabel>
-                            {tCreate("fields.description")}
-                        </FieldLabel>
-                        <TextareaField
-                            id="description"
-                            name="description"
-                            placeholder={tCreate("placeholders.optional")}
-                            value={description}
-                            onChange={setDescription}
-                        />
-                    </div>
-
-                    <div className="lg:col-span-2">
-                        <FieldLabel>
                             {tCreate("fields.referential")}
                             {requiredStar}
                         </FieldLabel>
@@ -450,6 +437,19 @@ export function ModifierArticleForm({
                                 onChange={setUnite}
                             />
                         </div>
+                    </div>
+
+                    <div className="lg:col-span-2">
+                        <FieldLabel>
+                            {tCreate("fields.description")}
+                        </FieldLabel>
+                        <TextareaField
+                            id="description"
+                            name="description"
+                            placeholder={tCreate("placeholders.optional")}
+                            value={description}
+                            onChange={setDescription}
+                        />
                     </div>
                 </div>
 
