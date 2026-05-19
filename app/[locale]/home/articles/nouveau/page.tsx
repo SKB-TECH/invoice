@@ -236,17 +236,6 @@ export default function NouvelArticlePage() {
 
                         <div className="lg:col-span-2">
                             <FieldLabel>
-                                {tCreate("fields.description")}
-                            </FieldLabel>
-                            <TextareaField
-                                id="description"
-                                name="description"
-                                placeholder={tCreate("placeholders.optional")}
-                            />
-                        </div>
-
-                        <div className="lg:col-span-2">
-                            <FieldLabel>
                                 {tCreate("fields.referential")}
                                 {requiredStar}
                             </FieldLabel>
@@ -427,6 +416,17 @@ export default function NouvelArticlePage() {
                                 </FieldLabel>
                                 <InputField id="unite" name="unite" />
                             </div>
+                        </div>
+
+                        <div className="lg:col-span-2">
+                            <FieldLabel>
+                                {tCreate("fields.description")}
+                            </FieldLabel>
+                            <TextareaField
+                                id="description"
+                                name="description"
+                                placeholder={tCreate("placeholders.optional")}
+                            />
                         </div>
                     </div>
 
