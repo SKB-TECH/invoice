@@ -1,5 +1,11 @@
 import { ChevronDown } from "lucide-react";
-import type { ReactNode } from "react";
+import type { InputHTMLAttributes, ReactNode } from "react";
+
+export const createFormSelectClassName =
+    "h-[50px] w-full appearance-none rounded border border-slate-300 bg-white px-5 pr-12 text-[17px] font-medium text-slate-700 outline-none focus:border-[#0879bd] disabled:cursor-not-allowed disabled:bg-slate-100";
+
+export const createFormTextareaClassName =
+    "min-h-[120px] w-full rounded border border-slate-300 bg-white px-5 py-3 text-[17px] font-medium text-slate-700 outline-none placeholder:text-slate-400 focus:border-[#0879bd]";
 
 export function FieldLabel({ children }: { children: ReactNode }) {
     return (
@@ -19,33 +25,58 @@ export function FieldError({ message }: { message?: string }) {
     );
 }
 
-export function InputField({
-                               placeholder,
-                               value,
-                               type = "text",
-                               readOnly = false,
-                               error,
-                               onChange,
-                           }: {
+type InputFieldProps = {
     placeholder?: string;
     value?: string;
+    defaultValue?: string;
     type?: string;
     readOnly?: boolean;
     error?: string;
+    id?: string;
+    name?: string;
+    required?: boolean;
+    inputMode?: InputHTMLAttributes<HTMLInputElement>["inputMode"];
     onChange?: (value: string) => void;
-}) {
+    onBlur?: InputHTMLAttributes<HTMLInputElement>["onBlur"];
+};
+
+export function InputField({
+    placeholder,
+    value,
+    defaultValue,
+    type = "text",
+    readOnly = false,
+    error,
+    id,
+    name,
+    required,
+    inputMode,
+    onChange,
+    onBlur,
+}: InputFieldProps) {
+    const isControlled = value !== undefined;
+
     return (
         <>
             <input
+                id={id}
+                name={name}
                 type={type}
-                value={value ?? ""}
+                required={required}
+                inputMode={inputMode}
                 readOnly={readOnly}
                 placeholder={placeholder}
+                onBlur={onBlur}
+                {...(isControlled
+                    ? { value }
+                    : defaultValue !== undefined
+                      ? { defaultValue }
+                      : {})}
                 onChange={(event) => onChange?.(event.target.value)}
                 className={[
                     "h-[50px] w-full rounded border bg-white px-5 text-[17px] font-medium text-slate-700 outline-none",
                     "placeholder:text-slate-400",
-                    readOnly ? "bg-slate-50 text-slate-500" : "",
+                    readOnly ? "cursor-default bg-slate-50 text-slate-500" : "",
                     error
                         ? "border-red-400 focus:border-red-500"
                         : "border-slate-300 focus:border-[#0879bd]",
@@ -54,6 +85,138 @@ export function InputField({
 
             <FieldError message={error} />
         </>
+    );
+}
+
+export function TextareaField({
+    id,
+    name,
+    placeholder,
+    rows = 3,
+    required,
+    defaultValue,
+    value,
+    onChange,
+}: {
+    id?: string;
+    name?: string;
+    placeholder?: string;
+    rows?: number;
+    required?: boolean;
+    defaultValue?: string;
+    value?: string;
+    onChange?: (value: string) => void;
+}) {
+    const isControlled = value !== undefined;
+
+    return (
+        <textarea
+            id={id}
+            name={name}
+            rows={rows}
+            required={required}
+            placeholder={placeholder}
+            {...(isControlled
+                ? { value }
+                : defaultValue !== undefined
+                  ? { defaultValue }
+                  : {})}
+            onChange={(event) => onChange?.(event.target.value)}
+            className={createFormTextareaClassName}
+        />
+    );
+}
+
+export function NativeSelectField({
+    id,
+    name,
+    value,
+    defaultValue,
+    required,
+    disabled,
+    onChange,
+    children,
+    error,
+    "aria-label": ariaLabel,
+}: {
+    id?: string;
+    name?: string;
+    value?: string;
+    defaultValue?: string;
+    required?: boolean;
+    disabled?: boolean;
+    onChange?: (value: string) => void;
+    children: ReactNode;
+    error?: string;
+    "aria-label"?: string;
+}) {
+    const isControlled = value !== undefined;
+
+    return (
+        <>
+            <div className="relative">
+                <select
+                    id={id}
+                    name={name}
+                    required={required}
+                    disabled={disabled}
+                    aria-label={ariaLabel}
+                    {...(isControlled
+                        ? { value, onChange: (e) => onChange?.(e.target.value) }
+                        : defaultValue !== undefined
+                          ? { defaultValue }
+                          : {})}
+                    className={[
+                        createFormSelectClassName,
+                        !isControlled && !defaultValue
+                            ? "text-slate-400"
+                            : "",
+                    ].join(" ")}
+                >
+                    {children}
+                </select>
+                <ChevronDown className="pointer-events-none absolute right-4 top-1/2 size-4 -translate-y-1/2 text-slate-600" />
+            </div>
+            <FieldError message={error} />
+        </>
+    );
+}
+
+export function CreateFormFooter({
+    cancelLabel,
+    submitLabel,
+    onCancel,
+    onSubmit,
+    submitDisabled = false,
+    submitType = "button",
+}: {
+    cancelLabel: string;
+    submitLabel: string;
+    onCancel: () => void;
+    onSubmit?: () => void;
+    submitDisabled?: boolean;
+    submitType?: "button" | "submit";
+}) {
+    return (
+        <div className="mt-0 flex justify-end gap-5 bg-white px-3 py-3">
+            <button
+                type="button"
+                onClick={onCancel}
+                className="h-12 w-52 rounded bg-slate-400 text-[14px] font-semibold text-white hover:bg-slate-500"
+            >
+                {cancelLabel}
+            </button>
+            <button
+                type={submitType}
+                disabled={submitDisabled}
+                onClick={
+                    submitType === "button" ? onSubmit : undefined
+                }
+                className="h-12 w-52 rounded bg-[#0879bd] text-[20px] font-semibold text-white hover:bg-[#076ca8] disabled:cursor-not-allowed disabled:opacity-60"
+            >
+                {submitLabel}
+            </button>
+        </div>
     );
 }
 
