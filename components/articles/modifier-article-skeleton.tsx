@@ -65,11 +65,6 @@ export function ModifierArticleSkeleton() {
                     </div>
 
                     <div className="lg:col-span-2">
-                        <FieldLabel>{tCreate("fields.description")}</FieldLabel>
-                        <SkeletonLine className="min-h-[120px] w-full" />
-                    </div>
-
-                    <div className="lg:col-span-2">
                         <FieldLabel>{tCreate("fields.referential")}</FieldLabel>
                         <SkeletonField />
                     </div>
@@ -106,6 +101,11 @@ export function ModifierArticleSkeleton() {
                             <FieldLabel>{tCreate("fields.unit")}</FieldLabel>
                             <SkeletonField />
                         </div>
+                    </div>
+
+                    <div className="lg:col-span-2">
+                        <FieldLabel>{tCreate("fields.description")}</FieldLabel>
+                        <SkeletonLine className="min-h-[120px] w-full" />
                     </div>
                 </div>
 
