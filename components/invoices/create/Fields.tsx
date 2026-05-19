@@ -17,6 +17,38 @@ export function FieldLabel({ children }: { children: ReactNode }) {
     );
 }
 
+export const readOnlyFieldClassName =
+    "flex min-h-[50px] w-full items-center rounded border border-slate-300 bg-slate-50 px-5 text-[17px] font-medium text-slate-700";
+
+export const readOnlyTextareaClassName =
+    "min-h-[120px] w-full rounded border border-slate-300 bg-slate-50 px-5 py-3 text-[17px] font-medium leading-relaxed text-slate-700";
+
+export function ReadOnlyField({
+    children,
+    className,
+}: {
+    children: ReactNode;
+    className?: string;
+}) {
+    return (
+        <div className={cn(readOnlyFieldClassName, className)}>{children}</div>
+    );
+}
+
+export function ReadOnlyTextarea({
+    children,
+    className,
+}: {
+    children: ReactNode;
+    className?: string;
+}) {
+    return (
+        <div className={cn(readOnlyTextareaClassName, className)}>
+            {children}
+        </div>
+    );
+}
+
 export function FieldError({ message }: { message?: string }) {
     if (!message) return null;
 

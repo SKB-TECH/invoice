@@ -1,21 +1,24 @@
 "use client";
 
-import { ChevronRight, House } from "lucide-react";
 import { useTranslations } from "next-intl";
-
 import { Link } from "@/i18n/routing";
 import { cn } from "@/lib/utils";
+import { FieldLabel } from "@/components/invoices/create/Fields";
 
 function SkeletonLine({ className }: { className?: string }) {
     return (
         <span
             className={cn(
-                "inline-block rounded bg-slate-200/90 align-middle animate-pulse",
-                className
+                "block rounded bg-slate-200/90 animate-pulse",
+                className,
             )}
             aria-hidden
         />
     );
+}
+
+function SkeletonField() {
+    return <SkeletonLine className="h-[50px] w-full" />;
 }
 
 export function ArticleVisualiserSkeleton() {
@@ -28,100 +31,63 @@ export function ArticleVisualiserSkeleton() {
             role="status"
             aria-busy="true"
             aria-label={tList("loading")}
-            className="mx-auto w-full min-w-full text-foreground"
+            className="relative w-full text-slate-700"
         >
-            <span className="mb-6 flex flex-wrap items-center gap-1 text-sm text-slate-500">
-                <Link href="/home" aria-label={tNavbar("Accueil")}>
-                    <House className="size-4" />
+            <div className="mb-3 flex flex-wrap items-center gap-1 text-[13px] font-medium text-slate-400">
+                <Link href="/home" className="hover:text-slate-600">
+                    {tNavbar("Accueil")}
                 </Link>
-                <ChevronRight className="size-4 shrink-0" />
-                <Link href="/home/articles" className="hover:text-slate-700">
+                <span>/</span>
+                <Link href="/home/articles" className="hover:text-slate-600">
                     {tList("title")}
                 </Link>
-                <ChevronRight className="size-4 shrink-0" />
-                <SkeletonLine className="h-4 min-w-[8rem] max-w-[12rem] flex-1 sm:max-w-md" />
-                <ChevronRight className="size-4 shrink-0 opacity-70" />
-                <span className="text-slate-400">{tNavbar("Visualiser")}</span>
-            </span>
-
-            <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-                <div>
-                    <h1 className="text-2xl font-bold tracking-tight text-slate-800 sm:text-3xl">
-                        {tView("title")}
-                    </h1>
-                    <p className="mt-1 flex flex-wrap items-center gap-2 text-sm text-slate-600">
-                        <span>{tView("referenceLabel")}</span>
-                        <SkeletonLine className="h-4 w-32" />
-                    </p>
-                </div>
+                <span>/</span>
+                <SkeletonLine className="inline-block h-4 w-28 max-w-48 sm:max-w-md" />
+                <span>/</span>
+                <span className="font-semibold text-slate-500">
+                    {tNavbar("Visualiser")}
+                </span>
             </div>
 
-            <section className="rounded border border-slate-200/80 bg-white p-6 sm:p-8">
-                <dl className="grid gap-8 sm:grid-cols-2">
-                    <div>
-                        <dt className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-                            {tView("fields.name")}
-                        </dt>
-                        <dd className="mt-2">
-                            <SkeletonLine className="h-5 w-[88%]" />
-                        </dd>
-                    </div>
+            <SkeletonLine className="h-10 w-full max-w-lg" />
+            <SkeletonLine className="mt-3 h-5 w-36" />
 
+            <div className="mt-4 bg-white p-8">
+                <div className="grid grid-cols-1 gap-x-14 gap-y-4 lg:grid-cols-2 animate-pulse">
                     <div>
-                        <dt className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-                            {tView("fields.code")}
-                        </dt>
-                        <dd className="mt-2">
-                            <SkeletonLine className="h-5 w-36" />
-                        </dd>
+                        <FieldLabel>{tView("fields.name")}</FieldLabel>
+                        <SkeletonField />
                     </div>
-
-                    <div className="sm:col-span-2">
-                        <dt className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-                            {tView("fields.description")}
-                        </dt>
-                        <dd className="mt-2 rounded border border-slate-100 bg-slate-50/80 px-4 py-3">
-                            <div className="space-y-2">
-                                <SkeletonLine className="h-4 w-full" />
-                                <SkeletonLine className="h-4 w-[96%]" />
-                                <SkeletonLine className="h-4 w-[78%]" />
-                            </div>
-                        </dd>
+                    <div>
+                        <FieldLabel>{tView("fields.code")}</FieldLabel>
+                        <SkeletonField />
                     </div>
 
                     <div>
-                        <dt className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-                            {tView("fields.priceExclTax")}
-                        </dt>
-                        <dd className="mt-2">
-                            <SkeletonLine className="h-5 w-44" />
-                        </dd>
+                        <FieldLabel>{tView("fields.priceExclTax")}</FieldLabel>
+                        <SkeletonField />
                     </div>
-
                     <div>
-                        <dt className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-                            {tView("fields.priceInclTax")}
-                        </dt>
-                        <dd className="mt-2">
-                            <SkeletonLine className="h-5 w-44" />
-                        </dd>
+                        <FieldLabel>{tView("fields.priceInclTax")}</FieldLabel>
+                        <SkeletonField />
                     </div>
 
-                    <div className="sm:col-span-2">
-                        <dt className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-                            {tView("fields.taxGroup")}
-                        </dt>
-                        <dd className="mt-2">
-                            <SkeletonLine className="h-6 w-48" />
-                        </dd>
+                    <div className="lg:col-span-2">
+                        <FieldLabel>{tView("fields.taxGroup")}</FieldLabel>
+                        <SkeletonField />
                     </div>
-                </dl>
 
-                <div className="mt-8 flex flex-col gap-3 border-t border-slate-100 pt-6 md:flex-row md:flex-wrap md:justify-end">
-                    <SkeletonLine className="h-12 w-52 shrink-0 rounded-none" />
-                    <SkeletonLine className="h-12 w-52 shrink-0 rounded-none" />
+                    <div className="lg:col-span-2">
+                        <FieldLabel>{tView("fields.description")}</FieldLabel>
+                        <SkeletonLine className="min-h-[120px] w-full" />
+                    </div>
                 </div>
-            </section>
+
+                <div className="mt-6 flex flex-wrap items-center justify-end gap-5">
+                    <SkeletonLine className="h-[50px] w-52 shrink-0 rounded" />
+                    <SkeletonLine className="h-[50px] w-52 shrink-0 rounded" />
+                </div>
+            </div>
         </main>
     );
 }
