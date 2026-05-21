@@ -38,6 +38,8 @@ export type CreateBillableServicePayload = {
     code: string;
     business_sector: string;
     unit_price: number;
+    price_before: number;
+    price_after: number;
     tax_rate: number;
     currency: string;
     tax_group: number;

@@ -666,11 +666,12 @@
         "description": "Ndimbola",
         "businessSector": "Secteur ya mosala",
         "unitPrice": "Ntalo unite kozanga TVA",
+        "priceInclTax": "Ntalo na TVA",
         "taxRate": "Taux ya TVA (%)",
         "taxGroup": "Etuluku ya taxe",
         "currency": "Devise",
         "billingType": "Mokapo ya facturation",
-        "categoryId": "Référentiel (category_id)",
+        "categoryId": "Référentiel",
         "peopleApply": "Ezali kopona na batu",
         "quantityApply": "Ezali kopona na quantité",
         "notes": "Remarques"

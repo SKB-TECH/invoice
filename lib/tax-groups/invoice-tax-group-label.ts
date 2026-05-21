@@ -45,6 +45,28 @@ export function resolveBillableServiceTaxGroupLabel(
     return formatInvoiceTaxGroupSelectLabel(group);
 }
 
+export function computePriceAfterTax(
+    priceBefore: number,
+    ratePercent: number,
+): number {
+    return priceBefore * (1 + ratePercent / 100);
+}
+
+export function formatPriceAfterTaxDisplay(
+    priceBefore: number | null,
+    ratePercent: number | undefined,
+): string {
+    if (priceBefore === null || ratePercent === undefined) return "";
+
+    const priceAfter = computePriceAfterTax(priceBefore, ratePercent);
+    if (!Number.isFinite(priceAfter)) return "";
+
+    return new Intl.NumberFormat("fr-FR", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+    }).format(priceAfter);
+}
+
 export function pickDefaultInvoiceTaxGroupId(
     groups: InvoiceTaxGroup[],
 ): string {
