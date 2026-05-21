@@ -654,7 +654,8 @@
         "code": "Code",
         "name": "Name",
         "sector": "Sector",
-        "unitPrice": "Net price",
+        "unitPrice": "Price excl. tax",
+        "priceInclTax": "Price incl. tax",
         "currency": "Currency",
         "taxGroup": "Taxation group",
         "billingType": "Billing"

@@ -654,7 +654,8 @@
         "code": "Code",
         "name": "Nom",
         "sector": "Secteur",
-        "unitPrice": "PU HT",
+        "unitPrice": "Prix HT",
+        "priceInclTax": "Prix TTC",
         "currency": "Devise",
         "taxGroup": "Groupe de taxation",
         "billingType": "Factur."
