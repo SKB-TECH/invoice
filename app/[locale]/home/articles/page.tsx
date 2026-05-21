@@ -35,6 +35,7 @@ function matchesArticleSearch(
         row.title,
         row.referential,
         row.taxGroup,
+        row.priceHt,
         row.priceTtc,
         statusLabels[row.status],
         row.status,
@@ -89,7 +90,7 @@ export default function HomeFournituresArticlesPage() {
     );
 
     const showLoader = isLoading && !data;
-    const columnCount = 8;
+    const columnCount = 9;
 
     return (
         <main className="mx-auto w-full min-w-full py-4 text-foreground">

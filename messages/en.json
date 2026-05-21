@@ -518,7 +518,7 @@
   "articles": {
     "list": {
       "title": "Articles",
-      "searchPlaceholder": "Search by ID, title, referential, tax group, price incl. tax, status, period...",
+      "searchPlaceholder": "Search by code, title, referential, tax group, price excl. tax, price incl. tax…",
       "searchAriaLabel": "Search for an article",
       "loading": "Loading articles…",
       "refreshing": "Updating…",
@@ -531,6 +531,7 @@
         "title": "Title",
         "referential": "Referential",
         "taxGroup": "Tax group",
+        "priceHt": "Price excl. tax",
         "priceTtc": "Price (incl. tax)",
         "status": "Status",
         "period": "Period"
@@ -643,6 +644,8 @@
       "createButton": "Create service",
       "breadcrumbNew": "New service",
       "listSectionTitle": "Billable services",
+      "searchPlaceholder": "Search by code, name, sector, currency, price excl. tax, price incl. tax, tax group…",
+      "searchAriaLabel": "Search for a service",
       "filterSectorPlaceholder": "Filter by business sector (e.g. Technology)",
       "filterApply": "Filter",
       "filterReset": "Show all",
@@ -654,10 +657,10 @@
         "code": "Code",
         "name": "Name",
         "sector": "Sector",
-        "unitPrice": "Net price",
+        "unitPrice": "Price excl. tax",
+        "priceInclTax": "Price incl. tax",
         "currency": "Currency",
-        "taxRate": "VAT %",
-        "taxGroup": "Tax grp.",
+        "taxGroup": "Taxation group",
         "billingType": "Billing"
       },
       "fields": {
@@ -666,11 +669,12 @@
         "description": "Description",
         "businessSector": "Business sector",
         "unitPrice": "Unit price excl. tax",
+        "priceInclTax": "Price incl. tax",
         "taxRate": "VAT rate (%)",
-        "taxGroup": "Tax group (ID)",
+        "taxGroup": "Tax group",
         "currency": "Currency",
         "billingType": "Billing type",
-        "categoryId": "Catalog row (category_id)",
+        "categoryId": "Referential",
         "peopleApply": "Apply by headcount",
         "quantityApply": "Apply by quantity",
         "notes": "Notes"
@@ -691,7 +695,11 @@
         "submit": "Create service",
         "submitting": "Creating…"
       },
-      "referentialsPlaceholder": "Pick catalog row for category_id",
+      "referentialsPlaceholder": "Choose a referential",
+      "taxGroupsPlaceholder": "Select a tax group",
+      "taxGroupsLoading": "Loading tax groups…",
+      "taxGroupsLoadError": "Could not load tax groups.",
+      "retryTaxGroups": "Retry",
       "referentialsLoading": "Loading catalog…",
       "referentialsLoadError": "Could not load catalog rows.",
       "retryReferentials": "Retry",

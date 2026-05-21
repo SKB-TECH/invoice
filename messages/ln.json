@@ -519,7 +519,7 @@
   "articles": {
     "list": {
       "title": "Biloko",
-      "searchPlaceholder": "Luka na ID, titre, référentiel, groupe ya taxe, prix TTC, statut, période...",
+      "searchPlaceholder": "Luka na code, titre, référentiel, groupe ya taxe, prix HT, prix TTC…",
       "searchAriaLabel": "Luka eloko",
       "loading": "Tozali kotia ba articles…",
       "refreshing": "Kobongisa…",
@@ -532,6 +532,7 @@
         "title": "Motó ya likambo",
         "referential": "Référentiel",
         "taxGroup": "Etuluku ya taxe",
+        "priceHt": "Prix HT",
         "priceTtc": "Ntalo na TVA",
         "status": "Etaleli",
         "period": "Eleko"
@@ -644,6 +645,8 @@
       "createButton": "Kokela service",
       "breadcrumbNew": "Service ya sika",
       "listSectionTitle": "Liste ya ba services",
+      "searchPlaceholder": "Luka na code, kombo, secteur, devise, prix HT, prix TTC, groupe ya taxation…",
+      "searchAriaLabel": "Luka service",
       "filterSectorPlaceholder": "Filtre na secteur (exemple Technologie)",
       "filterApply": "Filtre",
       "filterReset": "Komona nyonso",
@@ -655,10 +658,10 @@
         "code": "Code",
         "name": "Kombo",
         "sector": "Secteur",
-        "unitPrice": "Ntalo PU",
+        "unitPrice": "Prix HT",
+        "priceInclTax": "Prix TTC",
         "currency": "Mbongo",
-        "taxRate": "TVA %",
-        "taxGroup": "Groupe fis.",
+        "taxGroup": "Etuluku ya kotá taxe",
         "billingType": "Factur."
       },
       "fields": {
@@ -667,11 +670,12 @@
         "description": "Ndimbola",
         "businessSector": "Secteur ya mosala",
         "unitPrice": "Ntalo unite kozanga TVA",
+        "priceInclTax": "Ntalo na TVA",
         "taxRate": "Taux ya TVA (%)",
-        "taxGroup": "Id ya groupe fis.",
+        "taxGroup": "Etuluku ya taxe",
         "currency": "Devise",
         "billingType": "Mokapo ya facturation",
-        "categoryId": "Référentiel (category_id)",
+        "categoryId": "Référentiel",
         "peopleApply": "Ezali kopona na batu",
         "quantityApply": "Ezali kopona na quantité",
         "notes": "Remarques"
@@ -693,6 +697,10 @@
         "submitting": "Tozali kobakala…"
       },
       "referentialsPlaceholder": "Pona entrée catalogue",
+      "taxGroupsPlaceholder": "Pona etuluku ya taxe",
+      "taxGroupsLoading": "Kozwa bituluku ya taxe…",
+      "taxGroupsLoadError": "Impossible ya kozwa bituluku ya taxe.",
+      "retryTaxGroups": "Meka lisusu",
       "referentialsLoading": "Kozwa catalogue…",
       "referentialsLoadError": "Catalogue elongwaki te.",
       "retryReferentials": "Meke lisusu",
