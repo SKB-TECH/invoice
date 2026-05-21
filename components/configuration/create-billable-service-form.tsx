@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 
@@ -18,10 +18,12 @@ import { useReferentielsCatalog } from "@/core/hooks/referentiels/useReferentiel
 import { getAxiosErrorMessage } from "@/core/utils/axiosErrorMessage";
 import type { CreateBillableServicePayload } from "@/core/types/billable-service";
 import {
+    computePriceAfterTax,
     formatInvoiceTaxGroupSelectLabel,
+    formatPriceAfterTaxDisplay,
     pickDefaultInvoiceTaxGroupId,
 } from "@/lib/tax-groups/invoice-tax-group-label";
-import { formatReferentielOptionLabel } from "@/lib/referentials/referential-option-label";
+import { formatReferentielAxisCodeLabel } from "@/lib/referentials/referential-option-label";
 
 function parseDecimal(raw: string): number | null {
     const t = raw.trim().replace(/\s/g, "").replace(",", ".");
@@ -102,6 +104,28 @@ export function CreateBillableServiceForm({
     const selectedTaxGroupId =
         form.tax_group_id || pickDefaultInvoiceTaxGroupId(taxGroups);
 
+    const selectedTaxGroup = useMemo(
+        () =>
+            taxGroups.find(
+                (group) => String(group.id) === selectedTaxGroupId.trim(),
+            ),
+        [taxGroups, selectedTaxGroupId],
+    );
+
+    const unitPriceParsed = useMemo(
+        () => parseDecimal(form.unit_price),
+        [form.unit_price],
+    );
+
+    const priceAfterDisplay = useMemo(
+        () =>
+            formatPriceAfterTaxDisplay(
+                unitPriceParsed,
+                selectedTaxGroup?.rate,
+            ),
+        [unitPriceParsed, selectedTaxGroup],
+    );
+
     const updateField = <K extends keyof ServiceFormState>(
         key: K,
         value: ServiceFormState[K],
@@ -123,11 +147,8 @@ export function CreateBillableServiceForm({
         const service_name = form.service_name.trim();
         const code = form.code.trim();
         const business_sector = form.business_sector.trim();
-        const unit_price = parseDecimal(form.unit_price);
+        const unit_price = unitPriceParsed;
         const category_id = Number.parseInt(form.category_id.trim(), 10);
-        const selectedTaxGroup = taxGroups.find(
-            (group) => String(group.id) === selectedTaxGroupId.trim(),
-        );
 
         if (
             !service_name ||
@@ -136,6 +157,17 @@ export function CreateBillableServiceForm({
             unit_price === null ||
             !selectedTaxGroup
         ) {
+            toast.error(t("invalidForm"));
+            return;
+        }
+
+        const price_before = unit_price;
+        const price_after = computePriceAfterTax(
+            price_before,
+            selectedTaxGroup.rate,
+        );
+
+        if (!Number.isFinite(price_after)) {
             toast.error(t("invalidForm"));
             return;
         }
@@ -153,6 +185,8 @@ export function CreateBillableServiceForm({
             code,
             business_sector,
             unit_price,
+            price_before,
+            price_after,
             tax_rate: selectedTaxGroup.rate,
             currency: form.currency.trim().toUpperCase() || "USD",
             tax_group: selectedTaxGroup.id,
@@ -275,6 +309,20 @@ export function CreateBillableServiceForm({
                     </div>
 
                     <div>
+                        <FieldLabel>{t("fields.priceInclTax")}</FieldLabel>
+                        <InputField
+                            readOnly
+                            inputMode="decimal"
+                            value={priceAfterDisplay}
+                            placeholder={
+                                selectedTaxGroup && unitPriceParsed !== null
+                                    ? undefined
+                                    : "—"
+                            }
+                        />
+                    </div>
+
+                    <div>
                         <FieldLabel>
                             {t("fields.currency")}
                             {requiredStar}
@@ -290,7 +338,7 @@ export function CreateBillableServiceForm({
                         />
                     </div>
 
-                    <div className="lg:col-span-2">
+                    <div>
                         <FieldLabel>
                             {t("fields.categoryId")}
                             {requiredStar}
@@ -316,11 +364,9 @@ export function CreateBillableServiceForm({
                                     <option
                                         key={row.id}
                                         value={String(row.id)}
-                                        title={formatReferentielOptionLabel(
-                                            row,
-                                        )}
+                                        title={row.title.trim() || undefined}
                                     >
-                                        {formatReferentielOptionLabel(row)}
+                                        {formatReferentielAxisCodeLabel(row)}
                                     </option>
                                 ))}
                         </NativeSelectField>

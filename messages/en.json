@@ -697,11 +697,12 @@
         "description": "Description",
         "businessSector": "Business sector",
         "unitPrice": "Unit price excl. tax",
+        "priceInclTax": "Price incl. tax",
         "taxRate": "VAT rate (%)",
         "taxGroup": "Tax group",
         "currency": "Currency",
         "billingType": "Billing type",
-        "categoryId": "Catalog row (category_id)",
+        "categoryId": "Referential",
         "peopleApply": "Apply by headcount",
         "quantityApply": "Apply by quantity",
         "notes": "Notes"
@@ -722,7 +723,7 @@
         "submit": "Create service",
         "submitting": "Creating…"
       },
-      "referentialsPlaceholder": "Pick catalog row for category_id",
+      "referentialsPlaceholder": "Choose a referential",
       "taxGroupsPlaceholder": "Select a tax group",
       "taxGroupsLoading": "Loading tax groups…",
       "taxGroupsLoadError": "Could not load tax groups.",

@@ -697,11 +697,12 @@
         "description": "Description",
         "businessSector": "Secteur d’activité",
         "unitPrice": "Prix unitaire HT",
+        "priceInclTax": "Prix TTC",
         "taxRate": "Taux TVA (%)",
         "taxGroup": "Groupe de taxe",
         "currency": "Devise",
         "billingType": "Type de facturation",
-        "categoryId": "Référentiel catalogue",
+        "categoryId": "Référentiel",
         "peopleApply": "Appliquer par nombre de personnes",
         "quantityApply": "Appliquer par quantité",
         "notes": "Notes"
@@ -722,7 +723,7 @@
         "submit": "Créer le service",
         "submitting": "Création…"
       },
-      "referentialsPlaceholder": "Choisir un référentiel (category_id)",
+      "referentialsPlaceholder": "Choisir un référentiel",
       "taxGroupsPlaceholder": "Sélectionner un groupe de taxe",
       "taxGroupsLoading": "Chargement des groupes de taxe…",
       "taxGroupsLoadError": "Impossible de charger les groupes de taxe.",
