@@ -28,10 +28,29 @@ function appendContractFields(fd: FormData, payload: Record<string, unknown>) {
             continue;
         }
         if (typeof value === "object" && !(value instanceof File)) {
-            fd.append(key, JSON.stringify(value));
+            try {
+                fd.append(key, JSON.stringify(value));
+            } catch {
+                fd.append(key, "[]");
+            }
             continue;
         }
         fd.append(key, String(value));
+    }
+}
+
+/** Toujours un tableau JSON sérialisable — évite les objets seuls ou valeurs non sérialisables. */
+function normalizeItemsTemplateForApi(
+    raw: CreateContractInput["items_template"]
+): unknown[] {
+    if (!Array.isArray(raw)) {
+        return [];
+    }
+    try {
+        const parsed = JSON.parse(JSON.stringify(raw)) as unknown;
+        return Array.isArray(parsed) ? parsed : [];
+    } catch {
+        return [];
     }
 }
 
@@ -42,11 +61,10 @@ function coerceClientIdForApi(id: string): number | string {
     return t;
 }
 
-/** Corps création aligné sur le schéma OpenAPI (JSON natif : tableaux/objets, entiers). */
+/** Champs communs création / mise à jour (multipart + casts Laravel). */
 export function minimalCreateContractPayload(
     payload: CreateContractInput
 ): Record<string, unknown> {
-    const items = payload.items_template;
     const base: Record<string, unknown> = {
         client_id: coerceClientIdForApi(payload.client_id),
         title: payload.title,
@@ -56,28 +74,20 @@ export function minimalCreateContractPayload(
         auto_renew: payload.auto_renew,
         total: payload.total,
         currency: payload.currency,
-        /** Souvent casté JSON côté backend : absence ou "" provoque « Failed to parse JSON string ». */
-        items_template: Array.isArray(items) ? items : [],
+        /** Toujours un tableau JSON valide (multipart / casts Laravel « array »). */
+        items_template: normalizeItemsTemplateForApi(payload.items_template),
         billing_cycle: billingCycleToApi(payload.billing_cycle),
         monthly: payload.monthly,
         paid: payload.paid,
-        description: payload.description ?? "",
+        description:
+            payload.description === null || payload.description === undefined
+                ? ""
+                : String(payload.description),
     };
     if (payload.type > 0) {
         base.type = payload.type;
     }
     return base;
-}
-
-function contractCreateJsonBody(
-    payload: CreateContractInput
-): Record<string, unknown> {
-    const base = minimalCreateContractPayload(payload);
-    return {
-        ...base,
-        /** OpenAPI : entier 0 | 1 */
-        auto_renew: payload.auto_renew ? 1 : 0,
-    };
 }
 
 function contractPayloadForMultipart(
@@ -95,7 +105,7 @@ function contractPayloadForMultipart(
         paid: payload.paid,
         description: payload.description,
         billing_cycle: billingCycleToApi(payload.billing_cycle),
-        items_template: payload.items_template,
+        items_template: normalizeItemsTemplateForApi(payload.items_template),
         auto_renew: payload.auto_renew,
     };
     if (payload.type > 0) {
@@ -155,17 +165,18 @@ export const contratService = {
         payload: CreateContractInput,
         file?: File | null
     ): Promise<z.infer<typeof contractResponseSchema>> {
+        /**
+         * Toujours multipart comme la mise à jour : plusieurs backends Laravel
+         * attendent les champs (dont items_template JSON) comme FormData,
+         * alors qu’un POST JSON pur entraîne des casts / json_decode incohérents
+         * (« Failed to parse JSON string »).
+         */
+        const fd = new FormData();
+        appendContractFields(fd, minimalCreateContractPayload(payload));
         if (file) {
-            const fd = new FormData();
-            appendContractFields(fd, minimalCreateContractPayload(payload));
             fd.append("file", file);
-            const res = await api.post(CONTRACTS_PATH, fd);
-            const raw = unwrapApiData<unknown>(res.data);
-            return contractResponseSchema.parse(raw);
         }
-
-        /* Pas de fichier : JSON pur (schéma OpenAPI) évite les écarts multipart / casts JSON backend. */
-        const res = await api.post(CONTRACTS_PATH, contractCreateJsonBody(payload));
+        const res = await api.post(CONTRACTS_PATH, fd);
         const raw = unwrapApiData<unknown>(res.data);
         return contractResponseSchema.parse(raw);
     },

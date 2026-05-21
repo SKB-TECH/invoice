@@ -1,17 +1,21 @@
 "use client";
 
 import { useMemo, useState } from "react";
-
-import { ChevronRight, House } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Link, useRouter } from "@/i18n/routing";
 import { toast } from "sonner";
 
 import Loader from "@/components/loader/Loader";
 import { ArticleTaxGroupSelect } from "@/components/articles/article-tax-group-select";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import {
+    CreateFormFooter,
+    createFormSelectClassName,
+    FieldLabel,
+    InputField,
+    NativeSelectField,
+    TextareaField,
+} from "@/components/invoices/create/Fields";
 import { useCreateFourniture } from "@/core/hooks/fournitures/useCreateFourniture";
 import { getAxiosErrorMessage } from "@/core/utils/axiosErrorMessage";
 import type { ArticleDetailRecord } from "@/lib/fournitures/articles/articles-data";
@@ -23,9 +27,6 @@ import {
 import { resolveTaxRateDecimal } from "@/lib/fournitures/articles/tax-rates";
 import { useReferentielsCatalog } from "@/core/hooks/referentiels/useReferentielsCatalog";
 import { formatReferentielOptionLabel } from "@/lib/referentials/referential-option-label";
-
-const selectClass =
-    "h-12 w-full rounded border border-input bg-transparent py-2 pr-2 pl-2.5 text-sm whitespace-nowrap transition-colors outline-none select-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 data-placeholder:text-muted-foreground dark:bg-input/30 dark:hover:bg-input/50 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4";
 
 function parseDecimalInput(raw: string): number | null {
     const t = raw.trim().replace(/\s/g, "").replace(",", ".");
@@ -42,7 +43,7 @@ function formatMoneyFr(n: number): string {
 }
 
 function formPieceToDetailKey(
-    v: string
+    v: string,
 ): ArticleDetailRecord["pieceUnite"] {
     if (v === "heure" || v === "hour") return "heure";
     if (v === "piece" || v === "kg" || v === "forfait") return v;
@@ -65,15 +66,15 @@ export default function NouvelArticlePage() {
     const createMutation = useCreateFourniture({
         onSuccess: (data) => {
             router.push(
-                `/home/articles/${encodeURIComponent(String(data.id))}/visualiser`
+                `/home/articles/${encodeURIComponent(String(data.id))}/visualiser`,
             );
         },
         onError: (error) => {
             toast.error(
                 getAxiosErrorMessage(
                     error,
-                    "Impossible de créer l’article."
-                )
+                    "Impossible de créer l’article.",
+                ),
             );
         },
     });
@@ -89,36 +90,41 @@ export default function NouvelArticlePage() {
     }, [prixHt, groupeTax]);
 
     const requiredStar = (
-        <>
+        <span className="text-red-500" aria-hidden>
             {" "}
-            <span className="text-red-500">*</span>
-        </>
+            *
+        </span>
     );
 
     return (
-        <main className="relative mx-auto w-full min-w-full text-foreground">
+        <main className="relative w-full text-slate-700">
             {createMutation.isPending ? (
                 <Loader variant="overlay" text={tCreate("creating")} />
             ) : null}
 
-            <span className="mb-6 flex items-center gap-1 text-sm text-slate-500">
-                <Link href="/home" aria-label={tNavbar("Accueil")}>
-                    <House className="size-4" />
+            <div className="mb-3 text-[13px] font-medium text-slate-400">
+                <Link href="/home" className="hover:text-slate-600">
+                    {tNavbar("Accueil")}
                 </Link>
-                <ChevronRight className="size-4" />
-                <Link href="/home/articles" className="hover:text-slate-700">
+                {" / "}
+                <Link
+                    href="/home/articles"
+                    className="hover:text-slate-600"
+                >
                     {tList("title")}
                 </Link>
-                <ChevronRight className="size-4" />
-                {tCreate("breadcrumbNew")}
-            </span>
+                {" / "}
+                <span className="font-semibold text-slate-600">
+                    {tCreate("breadcrumbNew")}
+                </span>
+            </div>
 
-            <h1 className="mb-6 text-2xl font-bold tracking-tight text-slate-800 sm:text-3xl">
+            <h1 className="text-[40px] font-bold tracking-tight text-slate-700">
                 {tNavbar("NouvelArticle")}
             </h1>
 
             <form
-                className="rounded-none border border-slate-200/80 bg-white p-6 sm:p-8"
+                className="mt-4"
                 method="post"
                 onSubmit={(e) => {
                     e.preventDefault();
@@ -128,7 +134,7 @@ export default function NouvelArticlePage() {
                     const name = String(fd.get("nom") ?? "").trim();
                     const code = String(fd.get("code") ?? "").trim();
                     const description = String(
-                        fd.get("description") ?? ""
+                        fd.get("description") ?? "",
                     ).trim();
                     const devise = String(fd.get("devise") ?? "")
                         .trim()
@@ -139,17 +145,12 @@ export default function NouvelArticlePage() {
                     const pieceRaw = String(fd.get("pieceUnite") ?? "piece");
                     const unite = String(fd.get("unite") ?? "").trim();
                     const prixSpecialRaw = String(
-                        fd.get("prixSpecial") ?? ""
+                        fd.get("prixSpecial") ?? "",
                     ).trim();
 
                     const price_before = parseDecimalInput(prixHt);
 
-                    if (
-                        !name ||
-                        !code ||
-                        !devise ||
-                        !groupeTaxTrim
-                    ) {
+                    if (!name || !code || !devise || !groupeTaxTrim) {
                         toast.error(tCreate("invalidForm"));
                         return;
                     }
@@ -207,263 +208,240 @@ export default function NouvelArticlePage() {
                     });
                 }}
             >
-                <div className="grid gap-6 sm:grid-cols-2">
-                    <div className="flex flex-col gap-2">
-                        <Label htmlFor="nom" className="font-medium text-slate-700">
-                            {tCreate("fields.name")}
-                            {requiredStar}
-                        </Label>
-                        <Input
-                            id="nom"
-                            name="nom"
-                            required
-                            className="h-12 rounded-none"
-                        />
-                    </div>
+                <div className="bg-white p-8">
+                    <div className="grid grid-cols-1 gap-x-14 gap-y-4 lg:grid-cols-2">
+                        <div>
+                            <FieldLabel>
+                                {tCreate("fields.name")}
+                                {requiredStar}
+                            </FieldLabel>
+                            <InputField
+                                id="nom"
+                                name="nom"
+                                required
+                            />
+                        </div>
 
-                    <div className="flex flex-col gap-2">
-                        <Label htmlFor="code" className="font-medium text-slate-700">
-                            {tCreate("fields.code")}
-                            {requiredStar}
-                        </Label>
-                        <Input
-                            id="code"
-                            name="code"
-                            required
-                            className="h-12 rounded-none"
-                        />
-                    </div>
+                        <div>
+                            <FieldLabel>
+                                {tCreate("fields.code")}
+                                {requiredStar}
+                            </FieldLabel>
+                            <InputField
+                                id="code"
+                                name="code"
+                                required
+                            />
+                        </div>
 
-                    <div className="flex flex-col gap-2 sm:col-span-2">
-                        <Label
-                            htmlFor="description"
-                            className="font-medium text-slate-700"
-                        >
-                            {tCreate("fields.description")}
-                        </Label>
-                        <textarea
-                            id="description"
-                            name="description"
-                            rows={3}
-                            className="rounded-none border border-input bg-transparent px-3 py-2 text-sm outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/40"
-                            placeholder={tCreate("placeholders.optional")}
-                        />
-                    </div>
-
-                    <div className="flex flex-col gap-2 sm:col-span-2">
-                        <Label
-                            htmlFor="referentialId"
-                            className="font-medium text-slate-700"
-                        >
-                            {tCreate("fields.referential")}
-                            {requiredStar}
-                        </Label>
-                        <select
-                            id="referentialId"
-                            name="referentialId"
-                            required
-                            value={referentialId}
-                            onChange={(e) => setReferentialId(e.target.value)}
-                            disabled={
-                                referentialsPending ||
-                                referentialsError ||
-                                referentialRows.length === 0
-                            }
-                            className={selectClass}
-                            aria-label={tCreate("fields.referential")}
-                        >
-                            <option value="">
-                                {referentialsPending
-                                    ? tCreate("referentialLoading")
-                                    : tCreate("referentialPlaceholder")}
-                            </option>
-                            {!referentialsPending &&
-                                referentialRows.map((row) => (
-                                    <option
-                                        key={row.id}
-                                        value={String(row.id)}
-                                        title={formatReferentielOptionLabel(row)}
-                                    >
-                                        {formatReferentielOptionLabel(row)}
-                                    </option>
-                                ))}
-                        </select>
-                        {referentialsError ? (
-                            <div className="flex flex-wrap items-center gap-2 text-[13px] text-red-600">
-                                <span>{tCreate("referentialLoadError")}</span>
-                                <button
-                                    type="button"
-                                    className="underline underline-offset-2 hover:text-red-700"
-                                    onClick={() =>
-                                        void refetchReferentials()
-                                    }
-                                >
-                                    {tCreate("retryReferentialsFetch")}
-                                </button>
-                            </div>
-                        ) : null}
-                        {!referentialsPending &&
-                        !referentialsError &&
-                        referentialRows.length === 0 ? (
-                            <p className="text-[13px] text-amber-700">
-                                {tCreate("referentialNoneForAxis")}
-                            </p>
-                        ) : null}
-                    </div>
-
-                    <div className="flex flex-col gap-2">
-                        <Label htmlFor="devise" className="font-medium text-slate-700">
-                            {tCreate("fields.currency")}
-                            {requiredStar}
-                        </Label>
-                        <select
-                            id="devise"
-                            name="devise"
-                            defaultValue=""
-                            required
-                            className={selectClass}
-                            aria-label={tCreate("fields.currency")}
-                        >
-                            <option value="" disabled>
-                                {tCreate("selectPlaceholder")}
-                            </option>
-                            <option value="usd">USD</option>
-                            <option value="cdf">CDF</option>
-                            <option value="eur">EUR</option>
-                        </select>
-                    </div>
-
-                    <div className="flex flex-col gap-2">
-                        <Label htmlFor="prix-ht" className="font-medium text-slate-700">
-                            {tCreate("fields.priceExclTax")}
-                            {requiredStar}
-                        </Label>
-                        <Input
-                            id="prix-ht"
-                            name="prixHt"
-                            inputMode="decimal"
-                            required
-                            value={prixHt}
-                            onChange={(e) => setPrixHt(e.target.value)}
-                            onBlur={() => {
-                                const ht = parseDecimalInput(prixHt);
-                                if (ht !== null) setPrixHt(formatMoneyFr(ht));
-                            }}
-                            placeholder={tCreate(
-                                "placeholders.priceExclTaxExample"
-                            )}
-                            className="h-12 rounded-none"
-                        />
-                    </div>
-
-                    <div className="flex flex-col gap-2">
-                        <Label
-                            htmlFor="groupe-tax"
-                            className="font-medium text-slate-700"
-                        >
-                            {tCreate("fields.taxGroup")}
-                            {requiredStar}
-                        </Label>
-                        <ArticleTaxGroupSelect
-                            id="groupe-tax"
-                            name="groupeTax"
-                            required
-                            className={selectClass}
-                            value={groupeTax}
-                            onValueChange={setGroupeTax}
-                        />
-                    </div>
-
-                    <div className="flex flex-col gap-2">
-                        <Label
-                            htmlFor="prix-ttc"
-                            className="font-medium text-slate-700"
-                        >
-                            {tCreate("fields.priceInclTax")}
-                            {requiredStar}
-                        </Label>
-                        <Input
-                            id="prix-ttc"
-                            readOnly
-                            tabIndex={-1}
-                            aria-readonly="true"
-                            inputMode="decimal"
-                            required
-                            value={prixTtcAffiche}
-                            placeholder={
-                                groupeTax && prixHt ? undefined : "—"
-                            }
-                            className="h-12 cursor-default rounded-none bg-slate-50 text-slate-800"
-                        />
-                    </div>
-
-                    <div className="flex flex-col gap-2">
-                        <Label htmlFor="prix-special" className="font-medium text-slate-700">
-                            {tCreate("fields.specialPrice")}
-                        </Label>
-                        <Input
-                            id="prix-special"
-                            name="prixSpecial"
-                            inputMode="decimal"
-                            placeholder={tCreate("placeholders.optional")}
-                            className="h-12 rounded-none"
-                        />
-                    </div>
-
-                    <div className="flex flex-col gap-3 sm:flex-row sm:items-end">
-                        <div className="flex min-w-0 flex-1 flex-col gap-2">
-                            <Label htmlFor="piece-unite" className="font-medium text-slate-700">
-                                {tCreate("fields.pieceUnit")}
-                            </Label>
-                            <select
-                                id="piece-unite"
-                                name="pieceUnite"
-                                defaultValue="piece"
-                                className={selectClass}
-                                aria-label={tCreate("fields.pieceUnit")}
+                        <div className="lg:col-span-2">
+                            <FieldLabel>
+                                {tCreate("fields.referential")}
+                                {requiredStar}
+                            </FieldLabel>
+                            <NativeSelectField
+                                id="referentialId"
+                                name="referentialId"
+                                required
+                                value={referentialId}
+                                disabled={
+                                    referentialsPending ||
+                                    referentialsError ||
+                                    referentialRows.length === 0
+                                }
+                                onChange={setReferentialId}
+                                aria-label={tCreate("fields.referential")}
                             >
-                                <option value="piece">
-                                    {tCreate("units.piece")}
+                                <option value="">
+                                    {referentialsPending
+                                        ? tCreate("referentialLoading")
+                                        : tCreate("referentialPlaceholder")}
                                 </option>
-                                <option value="kg">{tCreate("units.kg")}</option>
-                                <option value="heure">
-                                    {tCreate("units.hour")}
-                                </option>
-                                <option value="forfait">
-                                    {tCreate("units.flatRate")}
-                                </option>
-                            </select>
+                                {!referentialsPending &&
+                                    referentialRows.map((row) => (
+                                        <option
+                                            key={row.id}
+                                            value={String(row.id)}
+                                            title={formatReferentielOptionLabel(
+                                                row,
+                                            )}
+                                        >
+                                            {formatReferentielOptionLabel(row)}
+                                        </option>
+                                    ))}
+                            </NativeSelectField>
+                            {referentialsError ? (
+                                <div className="mt-2 flex flex-wrap items-center gap-2 text-sm font-medium text-red-500">
+                                    <span>
+                                        {tCreate("referentialLoadError")}
+                                    </span>
+                                    <button
+                                        type="button"
+                                        className="underline underline-offset-2 hover:text-red-600"
+                                        onClick={() =>
+                                            void refetchReferentials()
+                                        }
+                                    >
+                                        {tCreate("retryReferentialsFetch")}
+                                    </button>
+                                </div>
+                            ) : null}
+                            {!referentialsPending &&
+                            !referentialsError &&
+                            referentialRows.length === 0 ? (
+                                <p className="mt-2 text-sm font-medium text-amber-700">
+                                    {tCreate("referentialNoneForAxis")}
+                                </p>
+                            ) : null}
                         </div>
-                        <div className="flex w-full flex-col gap-2 sm:w-[7.5rem] sm:shrink-0">
-                            <Label htmlFor="unite" className="font-medium text-slate-700">
-                                {tCreate("fields.unit")}
-                            </Label>
-                            <Input id="unite" name="unite" className="h-12 rounded-none" />
+
+                        <div>
+                            <FieldLabel>
+                                {tCreate("fields.currency")}
+                                {requiredStar}
+                            </FieldLabel>
+                            <NativeSelectField
+                                id="devise"
+                                name="devise"
+                                required
+                                defaultValue=""
+                                aria-label={tCreate("fields.currency")}
+                            >
+                                <option value="" disabled>
+                                    {tCreate("selectPlaceholder")}
+                                </option>
+                                <option value="usd">USD</option>
+                                <option value="cdf">CDF</option>
+                                <option value="eur">EUR</option>
+                            </NativeSelectField>
+                        </div>
+
+                        <div>
+                            <FieldLabel>
+                                {tCreate("fields.priceExclTax")}
+                                {requiredStar}
+                            </FieldLabel>
+                            <InputField
+                                id="prix-ht"
+                                name="prixHt"
+                                inputMode="decimal"
+                                required
+                                value={prixHt}
+                                onChange={setPrixHt}
+                                onBlur={() => {
+                                    const ht = parseDecimalInput(prixHt);
+                                    if (ht !== null) setPrixHt(formatMoneyFr(ht));
+                                }}
+                                placeholder={tCreate(
+                                    "placeholders.priceExclTaxExample",
+                                )}
+                            />
+                        </div>
+
+                        <div>
+                            <FieldLabel>
+                                {tCreate("fields.taxGroup")}
+                                {requiredStar}
+                            </FieldLabel>
+                            <div className="relative">
+                                <ArticleTaxGroupSelect
+                                    id="groupe-tax"
+                                    name="groupeTax"
+                                    required
+                                    className={createFormSelectClassName}
+                                    value={groupeTax}
+                                    onValueChange={setGroupeTax}
+                                />
+                                <ChevronDown className="pointer-events-none absolute right-4 top-1/2 size-4 -translate-y-1/2 text-slate-600" />
+                            </div>
+                        </div>
+
+                        <div>
+                            <FieldLabel>
+                                {tCreate("fields.priceInclTax")}
+                                {requiredStar}
+                            </FieldLabel>
+                            <InputField
+                                id="prix-ttc"
+                                readOnly
+                                inputMode="decimal"
+                                required
+                                value={prixTtcAffiche}
+                                placeholder={
+                                    groupeTax && prixHt ? undefined : "—"
+                                }
+                            />
+                        </div>
+
+                        <div>
+                            <FieldLabel>
+                                {tCreate("fields.specialPrice")}
+                            </FieldLabel>
+                            <InputField
+                                id="prix-special"
+                                name="prixSpecial"
+                                inputMode="decimal"
+                                placeholder={tCreate("placeholders.optional")}
+                            />
+                        </div>
+
+                        <div className="flex flex-col gap-4 sm:flex-row sm:items-end">
+                            <div className="min-w-0 flex-1">
+                                <FieldLabel>
+                                    {tCreate("fields.pieceUnit")}
+                                </FieldLabel>
+                                <NativeSelectField
+                                    id="piece-unite"
+                                    name="pieceUnite"
+                                    defaultValue="piece"
+                                    aria-label={tCreate("fields.pieceUnit")}
+                                >
+                                    <option value="piece">
+                                        {tCreate("units.piece")}
+                                    </option>
+                                    <option value="kg">
+                                        {tCreate("units.kg")}
+                                    </option>
+                                    <option value="heure">
+                                        {tCreate("units.hour")}
+                                    </option>
+                                    <option value="forfait">
+                                        {tCreate("units.flatRate")}
+                                    </option>
+                                </NativeSelectField>
+                            </div>
+                            <div className="w-full sm:w-40">
+                                <FieldLabel>
+                                    {tCreate("fields.unit")}
+                                </FieldLabel>
+                                <InputField id="unite" name="unite" />
+                            </div>
+                        </div>
+
+                        <div className="lg:col-span-2">
+                            <FieldLabel>
+                                {tCreate("fields.description")}
+                            </FieldLabel>
+                            <TextareaField
+                                id="description"
+                                name="description"
+                                placeholder={tCreate("placeholders.optional")}
+                            />
                         </div>
                     </div>
-                </div>
 
-                <div className="mt-8 flex flex-col gap-3 border-t border-slate-100 pt-6 md:flex-row md:flex-wrap md:justify-end">
-                    <Button
-                        onClick={() => router.push("/home/articles")}
-                        type="button"
-                        variant="secondary"
-                        className="h-12 w-52 cursor-pointer rounded-none bg-[#949B9F] px-5 text-white hover:bg-[#949B9F]/80"
-                    >
-                        {tCreate("actions.cancel")}
-                    </Button>
-                    <Button
-                        type="submit"
-                        disabled={
+                    <CreateFormFooter
+                        cancelLabel={tCreate("actions.cancel")}
+                        submitLabel={tCreate("actions.save")}
+                        onCancel={() => router.push("/home/articles")}
+                        submitDisabled={
                             createMutation.isPending ||
                             referentialsPending ||
                             referentialsError ||
                             referentialRows.length === 0
                         }
-                        className="h-12 w-52 cursor-pointer rounded-none bg-[#0879bd] px-5 text-white shadow-none hover:bg-[#066aa8]"
-                    >
-                        {tCreate("actions.save")}
-                    </Button>
+                        submitType="submit"
+                    />
                 </div>
             </form>
         </main>

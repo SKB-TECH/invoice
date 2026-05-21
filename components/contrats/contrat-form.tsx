@@ -19,7 +19,8 @@ import {
     type CreateContractInput,
 } from "@/core/schemas/contrat.schema";
 import { fetchReferentielsPage } from "@/core/services/referentiels.service";
-import type { ClientResponse } from "@/core/schemas/client.schema";
+import { ClientSearchSelect } from "@/components/invoices/create/ClientSearchSelect";
+import type { Client } from "@/components/invoices/create/types";
 import {
     contratMutationErrorMessage,
     useCreateContract,
@@ -40,15 +41,6 @@ const textareaClassName = cn(
 const selectClassName = cn(
     "h-12 w-full rounded border border-input bg-transparent py-2 pr-2 pl-2.5 text-sm whitespace-nowrap transition-colors outline-none select-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 data-placeholder:text-muted-foreground dark:bg-input/30 dark:hover:bg-input/50 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
 );
-
-function clientOptionLabel(c: ClientResponse): string {
-    const ext = c as ClientResponse & { name?: string | null };
-    const name =
-        ext.company_name?.trim() ||
-        ext.name?.trim() ||
-        [ext.first_name, ext.last_name].filter(Boolean).join(" ").trim();
-    return name || ext.reference || String(ext.id);
-}
 
 type ContratFormBase = {
     cancelHref: string;
@@ -158,10 +150,25 @@ export function ContratForm(props: ContratFormProps) {
     const fileRef = useRef<HTMLInputElement>(null);
     const itemsTextareaRef = useRef<HTMLTextAreaElement>(null);
 
-    const { data: clientsResult, isLoading: clientsLoading } = useClients({
+    const {
+        data: clientsResult,
+        isPending: clientsPending,
+        isError: clientsError,
+    } = useClients({
         per_page: 200,
     });
-    const clients = clientsResult?.items ?? [];
+    const clientsForSearch: Client[] = useMemo(() => {
+        return (clientsResult?.items ?? []).map((client) => ({
+            id: client.id,
+            name: client.legal_name || client.name || "",
+            nif: client.nif || client.vat_num || "",
+            rccm: client.rccm || client.registration_id || "",
+            idNat: client.idnat || "",
+            address: client.address || "",
+            phone: client.phone || "",
+            email: client.email || "",
+        }));
+    }, [clientsResult?.items]);
 
     const currencyOptions = useMemo(() => currencyService.list(), []);
 
@@ -230,6 +237,25 @@ export function ContratForm(props: ContratFormProps) {
             form.setValue("monthly", 0, { shouldValidate: true });
         }
     }, [billingCycleWatched, form, isCreate]);
+
+    const clientIdStr = form.watch("client_id");
+
+    const editClientNom =
+        props.variant === "edit" ? props.initial.clientNom : "";
+    const editClientId =
+        props.variant === "edit" ? props.initial.client_id : "";
+
+    const selectedClientDisplay = useMemo(() => {
+        const idStr = clientIdStr?.trim() ?? "";
+        const id = Number(idStr);
+        if (!idStr || Number.isNaN(id)) return "";
+        const fromList = clientsForSearch.find((c) => c.id === id);
+        if (fromList) return fromList.name;
+        if (editClientId !== "" && editClientId === idStr) {
+            return editClientNom;
+        }
+        return "";
+    }, [clientIdStr, clientsForSearch, editClientId, editClientNom]);
 
     function syncItemsFromTextarea(): boolean {
         const ta = itemsTextareaRef.current;
@@ -301,22 +327,52 @@ export function ContratForm(props: ContratFormProps) {
         >
             <div className="grid gap-6 sm:grid-cols-2">
                 <div className="flex flex-col gap-2 sm:col-span-1">
-                    <Label htmlFor="client-id" className="font-medium text-slate-700">
-                        Client <span className="text-red-500">*</span>
-                    </Label>
-                    <select
-                        id="client-id"
-                        className={selectClassName}
-                        disabled={pending || clientsLoading}
-                        {...form.register("client_id")}
+                    <Label
+                        htmlFor="contrat-form-client"
+                        className="font-medium text-slate-700"
                     >
-                        <option value="">Sélectionner un client</option>
-                            {clients.map((c) => (
-                                <option key={c.id} value={c.id}>
-                                    {clientOptionLabel(c)}
-                                </option>
-                            ))}
-                    </select>
+                        {t("form.client")}{" "}
+                        <span className="text-red-500">*</span>
+                    </Label>
+                    <Controller
+                        name="client_id"
+                        control={form.control}
+                        render={({ field, fieldState }) => (
+                            <>
+                                <ClientSearchSelect
+                                    key={
+                                        field.value?.trim()
+                                            ? `client-${field.value}`
+                                            : "client-none"
+                                    }
+                                    inputId="contrat-form-client"
+                                    clients={clientsForSearch}
+                                    value={selectedClientDisplay}
+                                    error={fieldState.error?.message}
+                                    placeholder={
+                                        clientsPending
+                                            ? t("form.loadingClients")
+                                            : t(
+                                                  "form.clientSearchPlaceholder"
+                                              )
+                                    }
+                                    emptyLabel={t("form.clientSearchEmpty")}
+                                    disabled={
+                                        pending || clientsPending || clientsError
+                                    }
+                                    onSelect={(c) => {
+                                        field.onChange(String(c.id));
+                                        form.clearErrors("client_id");
+                                    }}
+                                />
+                                {clientsError ? (
+                                    <p className="text-sm text-destructive">
+                                        {t("form.clientsLoadError")}
+                                    </p>
+                                ) : null}
+                            </>
+                        )}
+                    />
                 </div>
 
                     <div className="flex flex-col gap-2 sm:col-span-1">

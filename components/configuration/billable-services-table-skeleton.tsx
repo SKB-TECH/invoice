@@ -1,6 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+
 import {
     Table,
     TableBody,
@@ -13,12 +14,13 @@ import { cn } from "@/lib/utils";
 
 const COLUMN_KEYS = [
     "code",
-    "title",
-    "referential",
+    "name",
+    "sector",
+    "unitPrice",
+    "currency",
+    "taxRate",
     "taxGroup",
-    "priceTtc",
-    "status",
-    "period",
+    "billingType",
 ] as const;
 
 const TABLE_HEAD_CLASS =
@@ -29,43 +31,42 @@ type Props = {
     className?: string;
 };
 
-function cellWidths(row: number, col: number): string {
-    const offsets = (row * 2 + col * 5 + (row % 3) * 7) % 24;
+function barClass(row: number, col: number): string {
+    const n = (row * 7 + col * 11) % 17;
     switch (col) {
         case 0:
-            return cn("h-3.5", offsets % 2 ? "w-[4.5rem]" : "w-20");
+            return cn("h-3.5", n % 2 ? "w-24" : "w-28");
         case 1:
-            return cn("h-3.5", offsets % 3 === 0 ? "w-[88%]" : "w-[72%]");
+            return cn("h-3.5", n % 3 === 0 ? "w-[92%]" : "w-[75%]");
         case 2:
-            return cn("h-3.5", offsets % 2 ? "w-[70%]" : "w-[80%]");
+            return cn("h-3.5", n % 2 ? "w-[70%]" : "w-28");
         case 3:
-            return cn("h-3.5", offsets % 3 === 0 ? "w-16" : "w-[9rem]");
+            return cn("h-3.5", "w-20");
         case 4:
-            return cn("h-3.5", offsets % 2 ? "w-24" : "w-28");
+            return cn("h-3.5", "w-10");
         case 5:
-            return "h-6 w-20 rounded-sm";
+            return cn("h-3.5", "w-12");
         case 6:
-            return cn("h-3.5", offsets % 2 ? "w-[4.25rem]" : "w-24");
+            return cn("h-3.5", "w-8");
+        case 7:
+            return cn("h-3.5", n % 2 ? "w-16" : "w-24");
         default:
             return "h-3.5 w-16";
     }
 }
 
-export function ArticlesTableSkeleton({
-    rowCount = 8,
+export function BillableServicesTableSkeleton({
+    rowCount = 10,
     className,
 }: Props) {
-    const t = useTranslations("articles.list");
+    const t = useTranslations("configuration.services");
 
     return (
         <div
             role="status"
             aria-busy="true"
             aria-label={t("loading")}
-            className={cn(
-                "overflow-hidden border border-slate-200/80 bg-white",
-                className,
-            )}
+            className={cn(className)}
         >
             <Table>
                 <TableHeader className="bg-[#F4F4F4BB]">
@@ -75,14 +76,6 @@ export function ArticlesTableSkeleton({
                                 {t(`columns.${key}`)}
                             </TableHead>
                         ))}
-                        <TableHead
-                            className={cn(
-                                TABLE_HEAD_CLASS,
-                                "text-right",
-                            )}
-                        >
-                            <span className="sr-only">{t("action")}</span>
-                        </TableHead>
                     </TableRow>
                 </TableHeader>
                 <TableBody className="animate-pulse">
@@ -96,14 +89,11 @@ export function ArticlesTableSkeleton({
                                     <div
                                         className={cn(
                                             "rounded bg-slate-200/90",
-                                            cellWidths(row, col),
+                                            barClass(row, col),
                                         )}
                                     />
                                 </TableCell>
                             ))}
-                            <TableCell className="px-4 py-3 text-right">
-                                <div className="ml-auto h-8 w-8 rounded bg-slate-200/90" />
-                            </TableCell>
                         </TableRow>
                     ))}
                 </TableBody>

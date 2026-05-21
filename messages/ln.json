@@ -107,7 +107,9 @@
     "Facture": "Faktire",
     "MesFactures": "Bafaktire na ngai",
     "NouvelleFacture": "Faktire ya sika",
+    "Catalogue": "Catalogue",
     "Article": "Biloko",
+    "Service": "Services",
     "NouvelArticle": "Eloko ya sika",
     "Visualiser": "Komona",
     "Client": "Kiliya",
@@ -214,6 +216,10 @@
     "form": {
       "invoice": "Faktire",
       "invoicePlaceholder": "Pona faktire",
+      "invoiceSearchPlaceholder": "Luka faktire (référence, kiliya…)",
+      "invoiceSearchEmpty": "Ezali te na ba résultats.",
+      "loadingInvoices": "Kotanga ba faktire…",
+      "invoicesLoadError": "Ekoki te kotanga ba faktire.",
       "client": "Kiliya",
       "contract": "Kotrati",
       "contractPlaceholder": "Pona kotrati",
@@ -450,6 +456,11 @@
       },
       "title": "Kontra ya sika",
       "form": {
+        "client": "Kiliya",
+        "clientSearchPlaceholder": "Luka kiliya (nkombo, NIF, telefɔ́ni…)",
+        "clientSearchEmpty": "Ezali te na ba résultats.",
+        "loadingClients": "Kotanga ba kiliya…",
+        "clientsLoadError": "Ekoki te kotanga ba kiliya.",
         "reference": "Numelo ya Reference",
         "nom": "Kombo ya kontra",
         "auto-renew": {
@@ -697,10 +708,46 @@
     },
     "basicInfo": {
       "sectionTitle": "Bansango ya moboko",
-      "changePhoto": "Kobongola",
-      "name": "Kombo",
+      "edit": "Kobongola",
+      "cancel": "Kozonga",
+      "firstname": "Kombo ya liboso",
+      "lastname": "Kombo ya nsuka",
       "email": "Email",
-      "saveChanges": "Bomba mbongwana"
+      "phone": "Telefone",
+      "userType": "Mokapo ya compte",
+      "userTypes": {
+        "personal": "Motuni",
+        "pme": "PME",
+        "corporate": "Entreprise"
+      },
+      "loading": "Kozwa profil…",
+      "loadError": "Profil elongwaki te.",
+      "retry": "Meke lisusu",
+      "submitting": "Tozali kobomba…",
+      "saveSuccess": "Profil ebongisami.",
+      "saveError": "Kobomba profil elongwaki.",
+      "saveChanges": "Bomba mbongwana",
+      "errors": {
+        "required": "Kombo ya liboso, ya nsuka mpe telefone bazali obligatoire."
+      }
+    },
+    "logo": {
+      "sectionTitle": "Logo ya entreprise",
+      "introTitle": "Komisa logo ya sika",
+      "introBody": "Logo ezali kopona na ba documents ya application.",
+      "formatsHint": "JPEG, PNG to WebP · 5 Mo kaka",
+      "chooseFile": "Pona fichier",
+      "cancel": "Kozonga",
+      "selectedFile": "Fichier oyo oponi :",
+      "save": "Batela logo",
+      "saving": "Tozali kobatela…",
+      "noLogo": "Ezali logo té",
+      "previewAlt": "Mona logo",
+      "toastSaved": "Logo ebongisami.",
+      "toastError": "Komisa logo elongwaki.",
+      "fileTooLarge": "Fichier esengeli koleka 5 Mo té.",
+      "invalidFormat": "Salela JPEG, PNG to WebP.",
+      "noFileSelected": "Pona fichier liboso ya kobatela."
     },
     "password": {
       "sectionTitle": "Kobongola mot de passe",
@@ -709,9 +756,13 @@
       "confirmPassword": "Kondimisa mot de passe ",
       "placeholder": "Tyá mot de passe na yo",
       "submit": "Kobongola mot de passe",
+      "submitting": "Tozali kobongola…",
+      "toastSuccess": "Mot de passe ebongisami.",
+      "toastError": "Kobongola mot de passe elongwaki.",
       "errors": {
         "minLength": "Mot de passe ya sika esengeli kozala na mbula 6 minimum.",
-        "mismatch": "Ba mots de passe bazali te lokola moko."
+        "mismatch": "Ba mots de passe bazali te lokola moko.",
+        "oldRequired": "Tyá mot de passe ya kala."
       }
     },
     "referentialCatalog": {

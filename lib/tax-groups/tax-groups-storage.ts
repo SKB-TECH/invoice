@@ -101,7 +101,6 @@ export function writeTaxGroups(groups: TaxGroup[]): void {
   window.dispatchEvent(new CustomEvent(TAX_GROUPS_CHANGED_EVENT));
 }
 
-/** Libellé hors navigateur (SSR) ou si le groupe est inconnu dans le stockage. */
 export function taxGroupLabelFallback(id: string): string {
   const def = groupById(id);
   if (def) {
@@ -110,13 +109,46 @@ export function taxGroupLabelFallback(id: string): string {
   return id;
 }
 
-export function getTaxGroupDisplayLabel(id: string): string {
+function formatTaxGroupNameAndRate(
+  name: string,
+  ratePercent: number,
+  active: boolean,
+): string {
+  const suffix = active ? "" : " — inactif";
+  return `${name} (${ratePercent}\u202f%)${suffix}`;
+}
+
+export function getTaxGroupReadableLabel(id: string): string {
   if (typeof window !== "undefined") {
     const g = readTaxGroups().find((x) => x.id === id);
     if (g) {
+      return formatTaxGroupNameAndRate(g.name, g.ratePercent, g.active);
+    }
+  }
+  const def = groupById(id);
+  if (def) {
+    return formatTaxGroupNameAndRate(def.name, def.ratePercent, true);
+  }
+  return id;
+}
+
+export function getTaxGroupDisplayLabel(
+  id: string,
+  opts?: { includeCode?: boolean },
+): string {
+  const includeCode = opts?.includeCode ?? true;
+  if (typeof window !== "undefined") {
+    const g = readTaxGroups().find((x) => x.id === id);
+    if (g) {
+      if (!includeCode) {
+        return formatTaxGroupNameAndRate(g.name, g.ratePercent, g.active);
+      }
       const suffix = g.active ? "" : " — inactif";
       return `${g.code} — ${g.name} (${g.ratePercent}\u202f%)${suffix}`;
     }
+  }
+  if (!includeCode) {
+    return getTaxGroupReadableLabel(id);
   }
   return taxGroupLabelFallback(id);
 }

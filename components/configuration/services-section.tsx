@@ -1,15 +1,27 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Loader2, Search } from "lucide-react";
+import { ChevronLeft, ChevronRight, Search } from "lucide-react";
 import { useTranslations } from "next-intl";
 
+import { BillableServicesTableSkeleton } from "@/components/configuration/billable-services-table-skeleton";
 import { SectionCard } from "@/components/configuration/section-card";
 import { Button } from "@/components/ui/button";
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from "@/components/ui/table";
 import { Link } from "@/i18n/routing";
 import { useBillableServicesList } from "@/core/hooks/billable-services/useBillableServices";
 
 const LIMIT = 10;
+
+const TABLE_HEAD_CLASS =
+    "h-11 bg-slate-100 px-4 text-left text-sm font-semibold text-slate-700";
 
 /** Taux indicatif si l’API ne renvoie pas tax_rate mais indique tax_group. */
 const REFERENCE_PERCENT_BY_TAX_GROUP: Record<number, number> = {
@@ -25,7 +37,13 @@ function formatMoney(n: number): string {
     }).format(n);
 }
 
-export function ServicesSection() {
+type ServicesSectionProps = {
+    suppressCardHeading?: boolean;
+};
+
+export function ServicesSection({
+    suppressCardHeading = false,
+}: ServicesSectionProps) {
     const t = useTranslations("configuration.services");
     const [page, setPage] = useState(1);
     const [sectorDraft, setSectorDraft] = useState("");
@@ -43,7 +61,7 @@ export function ServicesSection() {
 
     const {
         data: listData,
-        isPending,
+        isFetching,
         isError,
     } = useBillableServicesList(listParams);
 
@@ -51,9 +69,11 @@ export function ServicesSection() {
     const total = listData?.meta.total ?? items.length;
     const totalPages = Math.max(1, Math.ceil(total / LIMIT));
 
-    return (
-        <SectionCard title={t("listSectionTitle")}>
-            <div className="mb-5 flex w-full min-w-full flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+    const showTableSkeleton = isFetching && listData === undefined;
+
+    const inner = (
+        <>
+            <div className="mb-6 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
                 <div className="flex w-full flex-col gap-3 sm:flex-row sm:items-end md:max-w-xl">
                     <div className="relative min-w-0 flex-1">
                         <input
@@ -63,7 +83,7 @@ export function ServicesSection() {
                                 setSectorDraft(e.target.value)
                             }
                             placeholder={t("filterSectorPlaceholder")}
-                            className="h-9 w-full border border-slate-200 bg-white px-3 pr-10 text-sm text-slate-700 shadow-none outline-none placeholder:text-slate-400 focus-visible:border-[#0879bd]"
+                            className="h-9 w-full border border-slate-200 bg-white py-0 pl-10 pr-3 text-sm text-slate-700 shadow-none outline-none placeholder:text-slate-400 focus-visible:border-[#0879bd]"
                         />
                         <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-slate-400" />
                     </div>
@@ -90,136 +110,177 @@ export function ServicesSection() {
                     </button>
                 </div>
                 <Button
+                    size="lg"
+                    className="h-12 w-full shrink-0 cursor-pointer rounded bg-[#0879bd] px-5 text-white hover:bg-[#076ca8] sm:w-52"
                     asChild
-                    className="h-9 w-full shrink-0 rounded-none! bg-[#0879bd] px-4 text-sm font-medium text-white shadow-none hover:bg-[#0879bd]/90 sm:w-auto"
                 >
-                    <Link href="/home/configuration/services/nouveau">
+                    <Link href="/home/services/nouveau">
                         {t("createButton")}
                     </Link>
                 </Button>
             </div>
 
-            <div className="overflow-hidden border border-slate-200">
-                <div className="overflow-x-auto">
-                    <div className="min-w-[880px]">
-                        <div className="grid grid-cols-[minmax(0,140px)_1fr_minmax(0,120px)_minmax(0,100px)_minmax(0,90px)_minmax(0,90px)_minmax(0,90px)_minmax(0,100px)] gap-px bg-slate-200 px-5 py-3 text-[13px] font-semibold text-slate-600">
-                            <span>{t("columns.code")}</span>
-                            <span>{t("columns.name")}</span>
-                            <span>{t("columns.sector")}</span>
-                            <span>{t("columns.unitPrice")}</span>
-                            <span>{t("columns.currency")}</span>
-                            <span>{t("columns.taxRate")}</span>
-                            <span>{t("columns.taxGroup")}</span>
-                            <span>{t("columns.billingType")}</span>
-                        </div>
-
-                        {isPending ? (
-                            <div className="flex h-40 items-center justify-center gap-2 bg-white text-[14px] text-slate-500">
-                                <Loader2 className="size-4 animate-spin" />
-                                {t("loading")}
-                            </div>
-                        ) : isError ? (
-                            <div className="flex h-40 items-center justify-center bg-white px-4 text-[14px] text-red-500">
-                                {t("loadError")}
-                            </div>
-                        ) : items.length === 0 ? (
-                            <div className="flex h-40 items-center justify-center bg-white text-[14px] text-slate-500">
-                                {t("empty")}
-                            </div>
-                        ) : (
-                            items.map((row) => {
-                                const displayPrice =
-                                    row.unit_price ??
-                                    row.price_before ??
-                                    row.price_after;
-                                const displayRate =
-                                    row.tax_rate ??
-                                    (typeof row.tax_group ===
-                                        "number" &&
-                                    REFERENCE_PERCENT_BY_TAX_GROUP[
-                                        row.tax_group
-                                    ] !== undefined
-                                        ? REFERENCE_PERCENT_BY_TAX_GROUP[
-                                              row.tax_group!
-                                          ]
-                                        : undefined);
-                                return (
-                                    <div
-                                        key={`${row.id}-${row.code}`}
-                                        className="grid grid-cols-[minmax(0,140px)_1fr_minmax(0,120px)_minmax(0,100px)_minmax(0,90px)_minmax(0,90px)_minmax(0,90px)_minmax(0,100px)] gap-px border-t border-slate-200 bg-white px-5 py-3 text-[13px] text-slate-700 hover:bg-slate-50"
+            <div className="overflow-hidden border border-slate-200/80 bg-white">
+                {showTableSkeleton ? (
+                    <BillableServicesTableSkeleton />
+                ) : (
+                    <Table>
+                        <TableHeader className="bg-[#F4F4F4BB]">
+                            <TableRow className="border-slate-200 bg-[#F4F4F4BB] hover:bg-transparent">
+                                <TableHead className={TABLE_HEAD_CLASS}>
+                                    {t("columns.code")}
+                                </TableHead>
+                                <TableHead className={TABLE_HEAD_CLASS}>
+                                    {t("columns.name")}
+                                </TableHead>
+                                <TableHead className={TABLE_HEAD_CLASS}>
+                                    {t("columns.sector")}
+                                </TableHead>
+                                <TableHead className={TABLE_HEAD_CLASS}>
+                                    {t("columns.unitPrice")}
+                                </TableHead>
+                                <TableHead className={TABLE_HEAD_CLASS}>
+                                    {t("columns.currency")}
+                                </TableHead>
+                                <TableHead className={TABLE_HEAD_CLASS}>
+                                    {t("columns.taxRate")}
+                                </TableHead>
+                                <TableHead className={TABLE_HEAD_CLASS}>
+                                    {t("columns.taxGroup")}
+                                </TableHead>
+                                <TableHead className={TABLE_HEAD_CLASS}>
+                                    {t("columns.billingType")}
+                                </TableHead>
+                            </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                            {isError ? (
+                                <TableRow>
+                                    <TableCell
+                                        colSpan={8}
+                                        className="h-40 text-center text-sm text-red-500"
                                     >
-                                        <span className="font-medium text-slate-900">
-                                            {row.code}
-                                        </span>
-                                        <span className="truncate">
-                                            {row.name}
-                                        </span>
-                                        <span className="truncate text-slate-600">
-                                            {row.business_sector ?? "—"}
-                                        </span>
-                                        <span>
-                                            {displayPrice !== undefined
-                                                ? formatMoney(
-                                                      displayPrice,
-                                                  )
-                                                : "—"}
-                                        </span>
-                                        <span>{row.currency}</span>
-                                        <span>
-                                            {displayRate !== undefined
-                                                ? `${new Intl.NumberFormat("fr-FR", { minimumFractionDigits: 0, maximumFractionDigits: 4 }).format(displayRate)}\u202f%`
-                                                : "—"}
-                                        </span>
-                                        <span>{row.tax_group ?? "—"}</span>
-                                        <span>
-                                            {row.billing_type ?? "—"}
-                                        </span>
-                                    </div>
-                                );
-                            })
-                        )}
-                    </div>
-                </div>
+                                        {t("loadError")}
+                                    </TableCell>
+                                </TableRow>
+                            ) : items.length === 0 ? (
+                                <TableRow>
+                                    <TableCell
+                                        colSpan={8}
+                                        className="h-40 text-center text-sm text-slate-500"
+                                    >
+                                        {t("empty")}
+                                    </TableCell>
+                                </TableRow>
+                            ) : (
+                                items.map((row) => {
+                                    const displayPrice =
+                                        row.unit_price ??
+                                        row.price_before ??
+                                        row.price_after;
+                                    const displayRate =
+                                        row.tax_rate ??
+                                        (typeof row.tax_group === "number" &&
+                                        REFERENCE_PERCENT_BY_TAX_GROUP[
+                                            row.tax_group
+                                        ] !== undefined
+                                            ? REFERENCE_PERCENT_BY_TAX_GROUP[
+                                                  row.tax_group!
+                                              ]
+                                            : undefined);
+
+                                    return (
+                                        <TableRow
+                                            key={`${row.id}-${row.code}`}
+                                            className="border-slate-200 hover:bg-slate-50/80"
+                                        >
+                                            <TableCell className="px-4 py-3 text-sm font-semibold text-slate-800">
+                                                {row.code}
+                                            </TableCell>
+                                            <TableCell className="max-w-[240px] truncate px-4 py-3 text-sm text-slate-800">
+                                                {row.name}
+                                            </TableCell>
+                                            <TableCell className="max-w-[160px] truncate px-4 py-3 text-sm text-slate-800">
+                                                {row.business_sector ?? "—"}
+                                            </TableCell>
+                                            <TableCell className="px-4 py-3 text-sm font-semibold text-slate-800">
+                                                {displayPrice !== undefined
+                                                    ? formatMoney(displayPrice)
+                                                    : "—"}
+                                            </TableCell>
+                                            <TableCell className="px-4 py-3 text-sm text-slate-800">
+                                                {row.currency}
+                                            </TableCell>
+                                            <TableCell className="px-4 py-3 text-sm text-slate-800">
+                                                {displayRate !== undefined
+                                                    ? `${new Intl.NumberFormat("fr-FR", { minimumFractionDigits: 0, maximumFractionDigits: 4 }).format(displayRate)}\u202f%`
+                                                    : "—"}
+                                            </TableCell>
+                                            <TableCell className="px-4 py-3 text-sm text-slate-800">
+                                                {row.tax_group ?? "—"}
+                                            </TableCell>
+                                            <TableCell className="px-4 py-3 text-sm text-slate-800">
+                                                {row.billing_type ?? "—"}
+                                            </TableCell>
+                                        </TableRow>
+                                    );
+                                })
+                            )}
+                        </TableBody>
+                    </Table>
+                )}
             </div>
 
             <div className="mt-5 flex flex-col items-center justify-between gap-4 sm:flex-row">
-                <p className="text-[13px] text-slate-500">
-                    {t("pageOfTotal", {
-                        page,
-                        totalPages,
-                    })}
+                <p className="text-sm text-slate-500">
+                    {t("totalCount", { count: total })}
                 </p>
 
                 <div className="flex items-center gap-2">
-                    <button
+                    <Button
                         type="button"
-                        disabled={page <= 1 || isPending}
-                        onClick={() =>
-                            setPage((p) => Math.max(1, p - 1))
-                        }
-                        className="h-10 border border-slate-200 px-4 text-[13px] font-medium text-slate-700 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50"
+                        variant="outline"
+                        size="icon"
+                        onClick={() => setPage((p) => Math.max(1, p - 1))}
+                        disabled={page <= 1 || isFetching}
+                        className="h-10 w-10 rounded"
                     >
-                        {t("paginationPrev")}
-                    </button>
+                        <ChevronLeft className="size-4" />
+                    </Button>
 
-                    <button
+                    <div className="flex h-10 min-w-32 items-center justify-center border border-slate-200 px-4 text-sm font-medium text-slate-700">
+                        {t("pageOfTotal", {
+                            page,
+                            totalPages,
+                        })}
+                    </div>
+
+                    <Button
                         type="button"
-                        disabled={
-                            page >= totalPages ||
-                            isPending ||
-                            total === 0
-                        }
+                        variant="outline"
+                        size="icon"
                         onClick={() =>
-                            setPage((p) =>
-                                Math.min(totalPages, p + 1),
-                            )
+                            setPage((p) => Math.min(totalPages, p + 1))
                         }
-                        className="h-10 border border-slate-200 px-4 text-[13px] font-medium text-slate-700 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50"
+                        disabled={
+                            page >= totalPages || isFetching || total === 0
+                        }
+                        className="h-10 w-10 rounded"
                     >
-                        {t("paginationNext")}
-                    </button>
+                        <ChevronRight className="size-4" />
+                    </Button>
                 </div>
             </div>
+        </>
+    );
+
+    if (suppressCardHeading) {
+        return inner;
+    }
+
+    return (
+        <SectionCard title={t("listSectionTitle")}>
+            {inner}
         </SectionCard>
     );
 }

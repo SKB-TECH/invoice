@@ -4,9 +4,14 @@ import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 
-import { SectionCard } from "@/components/configuration/section-card";
-import { FormActions } from "@/components/configuration/form-actions";
-import { InputField } from "@/components/configuration/input-field";
+import {
+    CreateFormFooter,
+    FieldLabel,
+    InputField,
+    NativeSelectField,
+    SelectField,
+    TextareaField,
+} from "@/components/invoices/create/Fields";
 import { useCreateBillableService } from "@/core/hooks/billable-services/useBillableServices";
 import { useReferentielsCatalog } from "@/core/hooks/referentiels/useReferentielsCatalog";
 import { getAxiosErrorMessage } from "@/core/utils/axiosErrorMessage";
@@ -31,7 +36,6 @@ type ServiceFormState = {
     tax_group: string;
     billing_type: string;
     category_id: string;
-    notes: string;
     people_apply: boolean;
     quantity_apply: boolean;
 };
@@ -47,7 +51,6 @@ const INITIAL_FORM: ServiceFormState = {
     tax_group: "2",
     billing_type: "1",
     category_id: "",
-    notes: "",
     people_apply: true,
     quantity_apply: true,
 };
@@ -142,7 +145,7 @@ export function CreateBillableServiceForm({
             quantity_apply: form.quantity_apply,
             billing_type,
             category_id,
-            notes: form.notes.trim(),
+            notes: "",
         };
 
         createMutation.mutate(payload);
@@ -151,220 +154,212 @@ export function CreateBillableServiceForm({
     const catalogReady =
         !referentialsPending && !referentialsError && referentialRows.length > 0;
 
+    const requiredStar = (
+        <span className="text-red-500" aria-hidden>
+            {" "}
+            *
+        </span>
+    );
+
     return (
-        <SectionCard title={t("createSectionTitle")}>
-            <div className="grid gap-5 md:grid-cols-2">
-                <InputField
-                    label={`${t("fields.serviceName")} *`}
-                    value={form.service_name}
-                    onChange={(v) =>
-                        updateField("service_name", v)
-                    }
-                    placeholder={t("placeholders.serviceName")}
-                />
-                <InputField
-                    label={`${t("fields.code")} *`}
-                    value={form.code}
-                    onChange={(v) => updateField("code", v)}
-                    placeholder={t("placeholders.code")}
-                />
+        <>
+            <div className="bg-white p-8">
+                <div className="grid grid-cols-1 gap-x-14 gap-y-4 lg:grid-cols-2">
+                    <div>
+                        <FieldLabel>
+                            {t("fields.serviceName")}
+                            {requiredStar}
+                        </FieldLabel>
+                        <InputField
+                            value={form.service_name}
+                            onChange={(v) => updateField("service_name", v)}
+                            placeholder={t("placeholders.serviceName")}
+                        />
+                    </div>
+                    <div>
+                        <FieldLabel>
+                            {t("fields.code")}
+                            {requiredStar}
+                        </FieldLabel>
+                        <InputField
+                            value={form.code}
+                            onChange={(v) => updateField("code", v)}
+                            placeholder={t("placeholders.code")}
+                        />
+                    </div>
 
-                <div className="md:col-span-2">
-                    <label className="mb-1 block text-[13px] font-medium">
-                        {t("fields.description")}
-                    </label>
-                    <textarea
-                        value={form.description}
-                        rows={3}
-                        onChange={(e) =>
-                            updateField(
-                                "description",
-                                e.target.value,
-                            )
-                        }
-                        placeholder={t("placeholders.description")}
-                        className="min-h-[5rem] w-full border border-slate-200 px-3 py-2 text-[13px] outline-none focus:border-[#1f6a9a]"
-                    />
-                </div>
+                    <div>
+                        <FieldLabel>
+                            {t("fields.businessSector")}
+                            {requiredStar}
+                        </FieldLabel>
+                        <InputField
+                            value={form.business_sector}
+                            onChange={(v) =>
+                                updateField("business_sector", v)
+                            }
+                            placeholder={t("placeholders.businessSector")}
+                        />
+                    </div>
+                    <div>
+                        <FieldLabel>
+                            {t("fields.unitPrice")}
+                            {requiredStar}
+                        </FieldLabel>
+                        <InputField
+                            value={form.unit_price}
+                            onChange={(v) => updateField("unit_price", v)}
+                            placeholder={t("placeholders.unitPrice")}
+                        />
+                    </div>
 
-                <InputField
-                    label={`${t("fields.businessSector")} *`}
-                    value={form.business_sector}
-                    onChange={(v) =>
-                        updateField("business_sector", v)
-                    }
-                    placeholder={t("placeholders.businessSector")}
-                />
-                <InputField
-                    label={`${t("fields.unitPrice")} *`}
-                    value={form.unit_price}
-                    onChange={(v) =>
-                        updateField("unit_price", v)
-                    }
-                    type="text"
-                    placeholder={t("placeholders.unitPrice")}
-                />
+                    <div>
+                        <FieldLabel>
+                            {t("fields.taxRate")}
+                            {requiredStar}
+                        </FieldLabel>
+                        <InputField
+                            value={form.tax_rate}
+                            onChange={(v) => updateField("tax_rate", v)}
+                            placeholder={t("placeholders.taxRate")}
+                        />
+                    </div>
+                    <div>
+                        <FieldLabel>
+                            {t("fields.taxGroup")}
+                            {requiredStar}
+                        </FieldLabel>
+                        <InputField
+                            type="number"
+                            value={form.tax_group}
+                            onChange={(v) => updateField("tax_group", v)}
+                        />
+                    </div>
 
-                <InputField
-                    label={`${t("fields.taxRate")} *`}
-                    value={form.tax_rate}
-                    onChange={(v) =>
-                        updateField("tax_rate", v)
-                    }
-                    type="text"
-                    placeholder={t("placeholders.taxRate")}
-                />
-                <div>
-                    <label className="mb-1 block text-[13px] font-medium">
-                        {`${t("fields.taxGroup")} *`}
-                    </label>
-                    <input
-                        type="number"
-                        min={1}
-                        value={form.tax_group}
-                        onChange={(e) =>
-                            updateField("tax_group", e.target.value)
-                        }
-                        className="h-11 w-full border border-slate-200 px-3 text-[13px] outline-none focus:border-[#1f6a9a]"
-                    />
-                </div>
+                    <div>
+                        <FieldLabel>
+                            {t("fields.currency")}
+                            {requiredStar}
+                        </FieldLabel>
+                        <SelectField
+                            value={form.currency}
+                            onChange={(v) => updateField("currency", v)}
+                            options={[
+                                { label: "USD", value: "USD" },
+                                { label: "CDF", value: "CDF" },
+                                { label: "EUR", value: "EUR" },
+                            ]}
+                        />
+                    </div>
 
-                <div>
-                    <label className="mb-1 block text-[13px] font-medium">
-                        {`${t("fields.currency")} *`}
-                    </label>
-                    <select
-                        value={form.currency}
-                        onChange={(e) =>
-                            updateField("currency", e.target.value)
-                        }
-                        className="h-11 w-full border border-slate-200 bg-white px-3 text-[13px] outline-none focus:border-[#1f6a9a]"
-                    >
-                        <option value="USD">USD</option>
-                        <option value="CDF">CDF</option>
-                        <option value="EUR">EUR</option>
-                    </select>
-                </div>
+                    <div>
+                        <FieldLabel>
+                            {t("fields.billingType")}
+                            {requiredStar}
+                        </FieldLabel>
+                        <InputField
+                            value={form.billing_type}
+                            onChange={(v) => updateField("billing_type", v)}
+                            placeholder={t("placeholders.billingType")}
+                        />
+                    </div>
 
-                <InputField
-                    label={`${t("fields.billingType")} *`}
-                    value={form.billing_type}
-                    onChange={(v) =>
-                        updateField("billing_type", v)
-                    }
-                    type="text"
-                    placeholder={t("placeholders.billingType")}
-                />
-
-                <div className="md:col-span-2">
-                    <label className="mb-1 block text-[13px] font-medium">
-                        {`${t("fields.categoryId")} *`}
-                    </label>
-                    <select
-                        required
-                        value={form.category_id}
-                        disabled={
-                            referentialsPending ||
-                            referentialsError ||
-                            referentialRows.length === 0
-                        }
-                        onChange={(e) =>
-                            updateField("category_id", e.target.value)
-                        }
-                        className="h-11 w-full border border-slate-200 bg-white px-3 text-[13px] outline-none focus:border-[#1f6a9a] disabled:bg-slate-50"
-                        aria-label={t("fields.categoryId")}
-                    >
-                        <option value="">
-                            {referentialsPending
-                                ? t("referentialsLoading")
-                                : t("referentialsPlaceholder")}
-                        </option>
-                        {!referentialsPending &&
-                            referentialRows.map((row) => (
-                                <option
-                                    key={row.id}
-                                    value={String(row.id)}
-                                    title={formatReferentielOptionLabel(
-                                        row,
-                                    )}
+                    <div className="lg:col-span-2">
+                        <FieldLabel>
+                            {t("fields.categoryId")}
+                            {requiredStar}
+                        </FieldLabel>
+                        <NativeSelectField
+                            required
+                            value={form.category_id}
+                            disabled={
+                                referentialsPending ||
+                                referentialsError ||
+                                referentialRows.length === 0
+                            }
+                            onChange={(v) => updateField("category_id", v)}
+                            aria-label={t("fields.categoryId")}
+                        >
+                            <option value="">
+                                {referentialsPending
+                                    ? t("referentialsLoading")
+                                    : t("referentialsPlaceholder")}
+                            </option>
+                            {!referentialsPending &&
+                                referentialRows.map((row) => (
+                                    <option
+                                        key={row.id}
+                                        value={String(row.id)}
+                                        title={formatReferentielOptionLabel(
+                                            row,
+                                        )}
+                                    >
+                                        {formatReferentielOptionLabel(row)}
+                                    </option>
+                                ))}
+                        </NativeSelectField>
+                        {referentialsError ? (
+                            <div className="mt-2 flex flex-wrap gap-2 text-sm font-medium text-red-500">
+                                <span>{t("referentialsLoadError")}</span>
+                                <button
+                                    type="button"
+                                    className="underline underline-offset-2 hover:text-red-600"
+                                    onClick={() => void refetchReferentials()}
                                 >
-                                    {formatReferentielOptionLabel(row)}
-                                </option>
-                            ))}
-                    </select>
-                    {referentialsError ? (
-                        <div className="mt-2 flex flex-wrap gap-2 text-[12px] text-red-600">
-                            <span>{t("referentialsLoadError")}</span>
-                            <button
-                                type="button"
-                                className="underline underline-offset-2 hover:text-red-700"
-                                onClick={() =>
-                                    void refetchReferentials()
-                                }
-                            >
-                                {t("retryReferentials")}
-                            </button>
-                        </div>
-                    ) : null}
-                </div>
+                                    {t("retryReferentials")}
+                                </button>
+                            </div>
+                        ) : null}
+                    </div>
 
-                <label className="flex cursor-pointer items-center gap-3 text-[13px] text-slate-700 md:col-span-1">
-                    <input
-                        type="checkbox"
-                        checked={form.people_apply}
-                        onChange={(e) =>
-                            updateField("people_apply", e.target.checked)
-                        }
-                        className="size-4 rounded border border-slate-300"
-                    />
-                    {t("fields.peopleApply")}
-                </label>
-                <label className="flex cursor-pointer items-center gap-3 text-[13px] text-slate-700 md:col-span-1">
-                    <input
-                        type="checkbox"
-                        checked={form.quantity_apply}
-                        onChange={(e) =>
-                            updateField(
-                                "quantity_apply",
-                                e.target.checked,
-                            )
-                        }
-                        className="size-4 rounded border border-slate-300"
-                    />
-                    {t("fields.quantityApply")}
-                </label>
-
-                <div className="md:col-span-2">
-                    <label className="mb-1 block text-[13px] font-medium">
-                        {t("fields.notes")}
+                    <label className="flex cursor-pointer items-center gap-3 text-[17px] font-medium text-slate-700">
+                        <input
+                            type="checkbox"
+                            checked={form.people_apply}
+                            onChange={(e) =>
+                                updateField("people_apply", e.target.checked)
+                            }
+                            className="size-4 rounded border border-slate-300"
+                        />
+                        {t("fields.peopleApply")}
                     </label>
-                    <textarea
-                        value={form.notes}
-                        rows={2}
-                        onChange={(e) =>
-                            updateField("notes", e.target.value)
-                        }
-                        placeholder={t("placeholders.notes")}
-                        className="min-h-[3.5rem] w-full border border-slate-200 px-3 py-2 text-[13px] outline-none focus:border-[#1f6a9a]"
-                    />
-                </div>
-            </div>
+                    <label className="flex cursor-pointer items-center gap-3 text-[17px] font-medium text-slate-700">
+                        <input
+                            type="checkbox"
+                            checked={form.quantity_apply}
+                            onChange={(e) =>
+                                updateField(
+                                    "quantity_apply",
+                                    e.target.checked,
+                                )
+                            }
+                            className="size-4 rounded border border-slate-300"
+                        />
+                        {t("fields.quantityApply")}
+                    </label>
 
-            <div className="mt-8">
-                <FormActions
+                    <div className="lg:col-span-2">
+                        <FieldLabel>{t("fields.description")}</FieldLabel>
+                        <TextareaField
+                            value={form.description}
+                            onChange={(v) => updateField("description", v)}
+                            placeholder={t("placeholders.description")}
+                        />
+                    </div>
+                </div>
+
+                <CreateFormFooter
                     cancelLabel={cancelLabel}
                     submitLabel={
                         createMutation.isPending
                             ? t("actions.submitting")
                             : t("actions.submit")
                     }
-                    submitDisabled={
-                        createMutation.isPending || !catalogReady
-                    }
                     onCancel={onCancel}
                     onSubmit={handleSubmit}
+                    submitDisabled={createMutation.isPending || !catalogReady}
                 />
             </div>
-        </SectionCard>
+        </>
     );
 }

@@ -6,8 +6,12 @@ import type {
     RolePermission,
 } from "@/core/types/rbac";
 import { api } from "@/core/services/api";
+import { unwrapApiData } from "@/core/utils/apiResponse";
 import { mfaStore } from "@/core/utils/mfaStore";
 import type {
+    AuthChangePasswordPayload,
+    AuthProfileData,
+    AuthUpdateProfilePayload,
     RegisterPayload,
     RegisterResponse,
 } from "@/core/types/auth";
@@ -243,6 +247,52 @@ export function mapApiUser(data: ApiUserData): AuthUser {
     } as AuthUser;
 }
 
+function parseAuthProfileResponse(inner: unknown): AuthProfileData {
+    if (
+        inner === null ||
+        typeof inner !== "object" ||
+        Array.isArray(inner)
+    ) {
+        throw new Error("Réponse profil invalide.");
+    }
+
+    const r = inner as Record<string, unknown>;
+
+    const str = (v: unknown): string | undefined =>
+        typeof v === "string" ? v : undefined;
+
+    const phone =
+        r.phone === null
+            ? null
+            : typeof r.phone === "string"
+              ? r.phone
+              : undefined;
+
+    const avatar =
+        r.avatar === null
+            ? null
+            : typeof r.avatar === "string"
+              ? r.avatar
+              : undefined;
+
+    return {
+        id: r.id !== undefined ? String(r.id) : undefined,
+        email: str(r.email),
+        phone,
+        firstname: str(r.firstname),
+        lastname: str(r.lastname),
+        userType: str(r.userType),
+        avatar,
+        permissions: Array.isArray(r.permissions)
+            ? r.permissions
+            : undefined,
+        modules: Array.isArray(r.modules) ? r.modules : undefined,
+        createdAt: str(r.createdAt),
+        updatedAt: str(r.updatedAt),
+        language: str(r.language),
+    };
+}
+
 export const authService = {
     async register(payload: RegisterPayload): Promise<RegisterResponse> {
         const formData = new FormData();
@@ -283,6 +333,28 @@ export const authService = {
 
         return data;
     },
+
+    async getProfile(): Promise<AuthProfileData> {
+        const { data } = await api.get<unknown>("/auth/profile");
+        const inner = unwrapApiData<unknown>(data);
+        return parseAuthProfileResponse(inner);
+    },
+
+    async updateProfile(
+        payload: AuthUpdateProfilePayload,
+    ): Promise<AuthProfileData | null> {
+        const { data } = await api.put<unknown>("/auth/profile", payload);
+        if (data === null || data === undefined || data === "") {
+            return null;
+        }
+        const inner = unwrapApiData<unknown>(data);
+        try {
+            return parseAuthProfileResponse(inner);
+        } catch {
+            return null;
+        }
+    },
+
     async login(identifier: string, password: string) {
         const { data } = await api.post<ApiUserData>("/auth/login", {
             identifier,
@@ -463,6 +535,109 @@ export const authService = {
             authService.clearSession();
             return null;
         }
+    },
+
+    async uploadAvatar(file: File): Promise<string> {
+        const fd = new FormData();
+        fd.append("avatar", file);
+
+        const { data } = await api.post<unknown>("/auth/avatar", fd);
+
+        let url: string | undefined;
+
+        if (data !== null && typeof data === "object") {
+            const d = data as Record<string, unknown>;
+            const inner = d.data;
+            if (
+                inner !== null &&
+                typeof inner === "object" &&
+                typeof (inner as { url?: unknown }).url === "string"
+            ) {
+                url = (inner as { url: string }).url;
+            }
+            if (!url && typeof d.url === "string") {
+                url = d.url;
+            }
+        }
+
+        if (!url?.trim()) {
+            const msg =
+                data !== null &&
+                typeof data === "object" &&
+                typeof (data as { message?: unknown }).message === "string"
+                    ? (data as { message: string }).message
+                    : "Échec du téléversement.";
+            throw new Error(msg);
+        }
+
+        return url.trim();
+    },
+
+    async changePassword(
+        payload: AuthChangePasswordPayload,
+    ): Promise<string> {
+        const { data } = await api.post<{
+            status?: string | number;
+            message?: string;
+        }>("/auth/password", payload);
+
+        const msg =
+            data?.message && typeof data.message === "string"
+                ? data.message
+                : "Mot de passe mis à jour";
+
+        if (
+            data?.status !== undefined &&
+            data.status !== "" &&
+            String(data.status).toLowerCase() !== "success"
+        ) {
+            throw new Error(msg);
+        }
+
+        return msg;
+    },
+
+    mergeSessionPhoto(relativePhotoUrl: string): AuthUser | null {
+        const token =
+            tokenStore.get() ??
+            getCookieOrLocalStorage(AUTH_ACCESS_TOKEN_KEY);
+
+        const userRaw =
+            getCookieOrLocalStorage(AUTH_USER_KEY) ??
+            getCookieOrLocalStorage(USER_COOKIE);
+
+        if (!token || !userRaw) return null;
+
+        let user: AuthUser;
+        try {
+            user = JSON.parse(userRaw) as AuthUser;
+        } catch {
+            return null;
+        }
+
+        const nextUser: AuthUser = {
+            ...user,
+            photo: relativePhotoUrl,
+        };
+
+        const expiresRaw = getCookieOrLocalStorage(AUTH_EXPIRES_KEY);
+        const expiresAt = expiresRaw ? Number(expiresRaw) : Number.NaN;
+        const expiresInSeconds =
+            Number.isFinite(expiresAt) && expiresAt > Date.now()
+                ? Math.max(60, Math.floor((expiresAt - Date.now()) / 1000))
+                : DEFAULT_TOKEN_EXPIRE_SECONDS;
+
+        const refreshToken =
+            getCookieOrLocalStorage(AUTH_REFRESH_TOKEN_KEY);
+
+        authService.saveSession(
+            token,
+            nextUser,
+            expiresInSeconds,
+            refreshToken ?? undefined,
+        );
+
+        return nextUser;
     },
 
     clearSession() {

@@ -66,6 +66,42 @@ export type LoginMfaResponse = {
 
 export type LoginResponse = LoginSuccessResponse | LoginMfaResponse;
 
+export type LoginPayload = {
+    identifier: string;
+    password: string;
+};
+
 export type ApiProfile = Record<string, unknown>;
 export type ApiRole = Record<string, unknown>;
 export type ApiBranch = Record<string, unknown>;
+
+/** GET /auth/profile, PUT /auth/profile (réponse). */
+export type AuthProfileData = {
+    id?: string;
+    email?: string;
+    phone?: string | null;
+    firstname?: string;
+    lastname?: string;
+    userType?: string;
+    avatar?: string | null;
+    permissions?: unknown[];
+    modules?: unknown[];
+    createdAt?: string;
+    updatedAt?: string;
+    language?: string;
+};
+
+/** PUT /auth/profile. */
+export type AuthUpdateProfilePayload = {
+    firstname: string;
+    lastname: string;
+    phone: string;
+    language: string;
+};
+
+/** POST /auth/password */
+export type AuthChangePasswordPayload = {
+    current_password: string;
+    new_password: string;
+    password_confirm: string;
+};
