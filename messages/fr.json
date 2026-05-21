@@ -518,7 +518,7 @@
   "articles": {
     "list": {
       "title": "Articles",
-      "searchPlaceholder": "Recherche par ID, titre, référentiel, groupe de taxe, prix TTC, statut, période…",
+      "searchPlaceholder": "Recherche par code, titre, référentiel, groupe de taxe, prix HT, prix TTC…",
       "searchAriaLabel": "Rechercher un article",
       "loading": "Chargement des articles…",
       "refreshing": "Mise à jour…",
@@ -531,6 +531,7 @@
         "title": "Titre",
         "referential": "Référentiel",
         "taxGroup": "Groupe de taxe",
+        "priceHt": "Prix HT",
         "priceTtc": "Prix TTC",
         "status": "Statut",
         "period": "Période"
@@ -643,6 +644,8 @@
       "createButton": "Créer un service",
       "breadcrumbNew": "Nouveau service",
       "listSectionTitle": "Liste des services facturables",
+      "searchPlaceholder": "Recherche par code, nom, secteur, devise, prix HT, prix TTC, groupe de taxation…",
+      "searchAriaLabel": "Rechercher un service",
       "filterSectorPlaceholder": "Filtrer par secteur d’activité (ex. Technologie)",
       "filterApply": "Filtrer",
       "filterReset": "Tout afficher",

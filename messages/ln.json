@@ -519,7 +519,7 @@
   "articles": {
     "list": {
       "title": "Biloko",
-      "searchPlaceholder": "Luka na ID, titre, référentiel, groupe ya taxe, prix TTC, statut, période...",
+      "searchPlaceholder": "Luka na code, titre, référentiel, groupe ya taxe, prix HT, prix TTC…",
       "searchAriaLabel": "Luka eloko",
       "loading": "Tozali kotia ba articles…",
       "refreshing": "Kobongisa…",
@@ -532,6 +532,7 @@
         "title": "Motó ya likambo",
         "referential": "Référentiel",
         "taxGroup": "Etuluku ya taxe",
+        "priceHt": "Prix HT",
         "priceTtc": "Ntalo na TVA",
         "status": "Etaleli",
         "period": "Eleko"
@@ -644,6 +645,8 @@
       "createButton": "Kokela service",
       "breadcrumbNew": "Service ya sika",
       "listSectionTitle": "Liste ya ba services",
+      "searchPlaceholder": "Luka na code, kombo, secteur, devise, prix HT, prix TTC, groupe ya taxation…",
+      "searchAriaLabel": "Luka service",
       "filterSectorPlaceholder": "Filtre na secteur (exemple Technologie)",
       "filterApply": "Filtre",
       "filterReset": "Komona nyonso",

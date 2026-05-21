@@ -6,6 +6,7 @@ export type ArticleTableRow = {
     title: string;
     referential: string;
     taxGroup: string;
+    priceHt: string;
     priceTtc: string;
     status: ArticleRowStatus;
     period: string;

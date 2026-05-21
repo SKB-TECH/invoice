@@ -16,6 +16,7 @@ const COLUMN_KEYS = [
     "title",
     "referential",
     "taxGroup",
+    "priceHt",
     "priceTtc",
     "status",
     "period",
@@ -43,8 +44,10 @@ function cellWidths(row: number, col: number): string {
         case 4:
             return cn("h-3.5", offsets % 2 ? "w-24" : "w-28");
         case 5:
-            return "h-6 w-20 rounded-sm";
+            return cn("h-3.5", offsets % 2 ? "w-24" : "w-28");
         case 6:
+            return "h-6 w-20 rounded-sm";
+        case 7:
             return cn("h-3.5", offsets % 2 ? "w-[4.25rem]" : "w-24");
         default:
             return "h-3.5 w-16";
@@ -81,7 +84,7 @@ export function ArticlesTableSkeleton({
                                 "text-right",
                             )}
                         >
-                            <span className="sr-only">{t("action")}</span>
+                            {t("action")}
                         </TableHead>
                     </TableRow>
                 </TableHeader>
