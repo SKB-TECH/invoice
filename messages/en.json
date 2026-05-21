@@ -688,8 +688,7 @@
         "sector": "Sector",
         "unitPrice": "Net price",
         "currency": "Currency",
-        "taxRate": "VAT %",
-        "taxGroup": "Tax grp.",
+        "taxGroup": "Taxation group",
         "billingType": "Billing"
       },
       "fields": {
@@ -699,7 +698,7 @@
         "businessSector": "Business sector",
         "unitPrice": "Unit price excl. tax",
         "taxRate": "VAT rate (%)",
-        "taxGroup": "Tax group (ID)",
+        "taxGroup": "Tax group",
         "currency": "Currency",
         "billingType": "Billing type",
         "categoryId": "Catalog row (category_id)",
@@ -724,6 +723,10 @@
         "submitting": "Creating…"
       },
       "referentialsPlaceholder": "Pick catalog row for category_id",
+      "taxGroupsPlaceholder": "Select a tax group",
+      "taxGroupsLoading": "Loading tax groups…",
+      "taxGroupsLoadError": "Could not load tax groups.",
+      "retryTaxGroups": "Retry",
       "referentialsLoading": "Loading catalog…",
       "referentialsLoadError": "Could not load catalog rows.",
       "retryReferentials": "Retry",

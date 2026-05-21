@@ -17,18 +17,15 @@ import {
 } from "@/components/ui/table";
 import { Link } from "@/i18n/routing";
 import { useBillableServicesList } from "@/core/hooks/billable-services/useBillableServices";
+import { useInvoiceTaxGroups } from "@/core/hooks/invoices/useInvoiceTaxGroups";
+import { resolveBillableServiceTaxGroupLabel } from "@/lib/tax-groups/invoice-tax-group-label";
 
 const LIMIT = 10;
 
 const TABLE_HEAD_CLASS =
     "h-11 bg-slate-100 px-4 text-left text-sm font-semibold text-slate-700";
 
-/** Taux indicatif si l’API ne renvoie pas tax_rate mais indique tax_group. */
-const REFERENCE_PERCENT_BY_TAX_GROUP: Record<number, number> = {
-    1: 0,
-    2: 16,
-    3: 5,
-};
+const TABLE_COLUMN_COUNT = 6;
 
 function formatMoney(n: number): string {
     return new Intl.NumberFormat("fr-FR", {
@@ -64,6 +61,7 @@ export function ServicesSection({
         isFetching,
         isError,
     } = useBillableServicesList(listParams);
+    const { data: taxGroups = [] } = useInvoiceTaxGroups();
 
     const items = listData?.items ?? [];
     const total = listData?.meta.total ?? items.length;
@@ -143,13 +141,7 @@ export function ServicesSection({
                                     {t("columns.currency")}
                                 </TableHead>
                                 <TableHead className={TABLE_HEAD_CLASS}>
-                                    {t("columns.taxRate")}
-                                </TableHead>
-                                <TableHead className={TABLE_HEAD_CLASS}>
                                     {t("columns.taxGroup")}
-                                </TableHead>
-                                <TableHead className={TABLE_HEAD_CLASS}>
-                                    {t("columns.billingType")}
                                 </TableHead>
                             </TableRow>
                         </TableHeader>
@@ -157,7 +149,7 @@ export function ServicesSection({
                             {isError ? (
                                 <TableRow>
                                     <TableCell
-                                        colSpan={8}
+                                        colSpan={TABLE_COLUMN_COUNT}
                                         className="h-40 text-center text-sm text-red-500"
                                     >
                                         {t("loadError")}
@@ -166,7 +158,7 @@ export function ServicesSection({
                             ) : items.length === 0 ? (
                                 <TableRow>
                                     <TableCell
-                                        colSpan={8}
+                                        colSpan={TABLE_COLUMN_COUNT}
                                         className="h-40 text-center text-sm text-slate-500"
                                     >
                                         {t("empty")}
@@ -178,16 +170,11 @@ export function ServicesSection({
                                         row.unit_price ??
                                         row.price_before ??
                                         row.price_after;
-                                    const displayRate =
-                                        row.tax_rate ??
-                                        (typeof row.tax_group === "number" &&
-                                        REFERENCE_PERCENT_BY_TAX_GROUP[
-                                            row.tax_group
-                                        ] !== undefined
-                                            ? REFERENCE_PERCENT_BY_TAX_GROUP[
-                                                  row.tax_group!
-                                              ]
-                                            : undefined);
+                                    const displayTaxGroup =
+                                        resolveBillableServiceTaxGroupLabel(
+                                            row.tax_group,
+                                            taxGroups,
+                                        );
 
                                     return (
                                         <TableRow
@@ -211,16 +198,8 @@ export function ServicesSection({
                                             <TableCell className="px-4 py-3 text-sm text-slate-800">
                                                 {row.currency}
                                             </TableCell>
-                                            <TableCell className="px-4 py-3 text-sm text-slate-800">
-                                                {displayRate !== undefined
-                                                    ? `${new Intl.NumberFormat("fr-FR", { minimumFractionDigits: 0, maximumFractionDigits: 4 }).format(displayRate)}\u202f%`
-                                                    : "—"}
-                                            </TableCell>
-                                            <TableCell className="px-4 py-3 text-sm text-slate-800">
-                                                {row.tax_group ?? "—"}
-                                            </TableCell>
-                                            <TableCell className="px-4 py-3 text-sm text-slate-800">
-                                                {row.billing_type ?? "—"}
+                                            <TableCell className="max-w-[220px] truncate px-4 py-3 text-sm text-slate-800">
+                                                {displayTaxGroup ?? "—"}
                                             </TableCell>
                                         </TableRow>
                                     );

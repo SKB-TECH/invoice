@@ -689,8 +689,7 @@
         "sector": "Secteur",
         "unitPrice": "Ntalo PU",
         "currency": "Mbongo",
-        "taxRate": "TVA %",
-        "taxGroup": "Groupe fis.",
+        "taxGroup": "Etuluku ya kotá taxe",
         "billingType": "Factur."
       },
       "fields": {
@@ -700,7 +699,7 @@
         "businessSector": "Secteur ya mosala",
         "unitPrice": "Ntalo unite kozanga TVA",
         "taxRate": "Taux ya TVA (%)",
-        "taxGroup": "Id ya groupe fis.",
+        "taxGroup": "Etuluku ya taxe",
         "currency": "Devise",
         "billingType": "Mokapo ya facturation",
         "categoryId": "Référentiel (category_id)",
@@ -725,6 +724,10 @@
         "submitting": "Tozali kobakala…"
       },
       "referentialsPlaceholder": "Pona entrée catalogue",
+      "taxGroupsPlaceholder": "Pona etuluku ya taxe",
+      "taxGroupsLoading": "Kozwa bituluku ya taxe…",
+      "taxGroupsLoadError": "Impossible ya kozwa bituluku ya taxe.",
+      "retryTaxGroups": "Meka lisusu",
       "referentialsLoading": "Kozwa catalogue…",
       "referentialsLoadError": "Catalogue elongwaki te.",
       "retryReferentials": "Meke lisusu",
