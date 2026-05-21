@@ -1,7 +1,7 @@
 import type { ReferentielRecord } from "@/core/schemas/referentiel.schema";
 
 export function formatReferentielAxisCodeLabel(r: ReferentielRecord): string {
-    return `[${r.referentiel.trim()}] ${r.code.trim()}`;
+    return `${r.referentiel.trim()} (${r.code.trim()})`;
 }
 
 export function formatReferentielOptionLabel(r: ReferentielRecord): string {

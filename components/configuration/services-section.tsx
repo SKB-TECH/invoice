@@ -18,14 +18,18 @@ import {
 import { Link } from "@/i18n/routing";
 import { useBillableServicesList } from "@/core/hooks/billable-services/useBillableServices";
 import { useInvoiceTaxGroups } from "@/core/hooks/invoices/useInvoiceTaxGroups";
-import { resolveBillableServiceTaxGroupLabel } from "@/lib/tax-groups/invoice-tax-group-label";
+import {
+    computePriceAfterTax,
+    resolveBillableServiceTaxGroupLabel,
+    resolveBillableServiceTaxRate,
+} from "@/lib/tax-groups/invoice-tax-group-label";
 
 const LIMIT = 10;
 
 const TABLE_HEAD_CLASS =
     "h-11 bg-slate-100 px-4 text-left text-sm font-semibold text-slate-700";
 
-const TABLE_COLUMN_COUNT = 6;
+const TABLE_COLUMN_COUNT = 7;
 
 function formatMoney(n: number): string {
     return new Intl.NumberFormat("fr-FR", {
@@ -138,6 +142,9 @@ export function ServicesSection({
                                     {t("columns.unitPrice")}
                                 </TableHead>
                                 <TableHead className={TABLE_HEAD_CLASS}>
+                                    {t("columns.priceInclTax")}
+                                </TableHead>
+                                <TableHead className={TABLE_HEAD_CLASS}>
                                     {t("columns.currency")}
                                 </TableHead>
                                 <TableHead className={TABLE_HEAD_CLASS}>
@@ -166,10 +173,22 @@ export function ServicesSection({
                                 </TableRow>
                             ) : (
                                 items.map((row) => {
-                                    const displayPrice =
-                                        row.unit_price ??
-                                        row.price_before ??
-                                        row.price_after;
+                                    const priceBefore =
+                                        row.unit_price ?? row.price_before;
+                                    const taxRate = resolveBillableServiceTaxRate(
+                                        row.tax_rate,
+                                        row.tax_group,
+                                        taxGroups,
+                                    );
+                                    const priceAfter =
+                                        row.price_after ??
+                                        (priceBefore !== undefined &&
+                                        taxRate !== undefined
+                                            ? computePriceAfterTax(
+                                                  priceBefore,
+                                                  taxRate,
+                                              )
+                                            : undefined);
                                     const displayTaxGroup =
                                         resolveBillableServiceTaxGroupLabel(
                                             row.tax_group,
@@ -191,8 +210,13 @@ export function ServicesSection({
                                                 {row.business_sector ?? "—"}
                                             </TableCell>
                                             <TableCell className="px-4 py-3 text-sm font-semibold text-slate-800">
-                                                {displayPrice !== undefined
-                                                    ? formatMoney(displayPrice)
+                                                {priceBefore !== undefined
+                                                    ? formatMoney(priceBefore)
+                                                    : "—"}
+                                            </TableCell>
+                                            <TableCell className="px-4 py-3 text-sm font-semibold text-slate-800">
+                                                {priceAfter !== undefined
+                                                    ? formatMoney(priceAfter)
                                                     : "—"}
                                             </TableCell>
                                             <TableCell className="px-4 py-3 text-sm text-slate-800">

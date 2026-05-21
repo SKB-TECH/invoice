@@ -687,7 +687,8 @@
         "code": "Code",
         "name": "Kombo",
         "sector": "Secteur",
-        "unitPrice": "Ntalo PU",
+        "unitPrice": "Prix HT",
+        "priceInclTax": "Prix TTC",
         "currency": "Mbongo",
         "taxGroup": "Etuluku ya kotá taxe",
         "billingType": "Factur."
