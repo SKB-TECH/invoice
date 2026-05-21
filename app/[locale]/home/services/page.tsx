@@ -20,10 +20,6 @@ export default function BillableServicesPage() {
                 <span className="text-slate-800">{t("listSectionTitle")}</span>
             </span>
 
-            <h1 className="mb-6 text-2xl font-bold tracking-tight text-slate-800 sm:text-3xl">
-                {t("listSectionTitle")}
-            </h1>
-
             <ServicesSection suppressCardHeading />
         </main>
     );

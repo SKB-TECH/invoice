@@ -21,6 +21,7 @@ const COLUMN_ORDER = [
     "title",
     "referential",
     "taxGroup",
+    "priceHt",
     "priceTtc",
     "status",
     "period",
@@ -59,7 +60,7 @@ export function ArticlesTable({ rows, className }: ArticlesTableProps) {
                                 "text-right",
                             )}
                         >
-                            <span className="sr-only">{t("action")}</span>
+                            {t("action")}
                         </TableHead>
                     </TableRow>
                 </TableHeader>

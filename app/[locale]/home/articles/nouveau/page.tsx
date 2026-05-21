@@ -26,7 +26,7 @@ import {
 } from "@/lib/fournitures/articles/fournitures-mappers";
 import { resolveTaxRateDecimal } from "@/lib/fournitures/articles/tax-rates";
 import { useReferentielsCatalog } from "@/core/hooks/referentiels/useReferentielsCatalog";
-import { formatReferentielOptionLabel } from "@/lib/referentials/referential-option-label";
+import { formatReferentielAxisCodeLabel } from "@/lib/referentials/referential-option-label";
 
 function parseDecimalInput(raw: string): number | null {
     const t = raw.trim().replace(/\s/g, "").replace(",", ".");
@@ -262,11 +262,9 @@ export default function NouvelArticlePage() {
                                         <option
                                             key={row.id}
                                             value={String(row.id)}
-                                            title={formatReferentielOptionLabel(
-                                                row,
-                                            )}
+                                            title={row.title.trim() || undefined}
                                         >
-                                            {formatReferentielOptionLabel(row)}
+                                            {formatReferentielAxisCodeLabel(row)}
                                         </option>
                                     ))}
                             </NativeSelectField>
