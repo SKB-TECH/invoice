@@ -43,7 +43,7 @@ export type CreateBillableServicePayload = {
     tax_group: number;
     people_apply: boolean;
     quantity_apply: boolean;
-    billing_type: number;
     category_id: number;
     notes: string;
+    billing_type?: number;
 };

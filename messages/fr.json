@@ -656,8 +656,7 @@
         "sector": "Secteur",
         "unitPrice": "PU HT",
         "currency": "Devise",
-        "taxRate": "TVA %",
-        "taxGroup": "Gr. fiscal",
+        "taxGroup": "Groupe de taxation",
         "billingType": "Factur."
       },
       "fields": {
@@ -667,7 +666,7 @@
         "businessSector": "Secteur d’activité",
         "unitPrice": "Prix unitaire HT",
         "taxRate": "Taux TVA (%)",
-        "taxGroup": "Groupe fiscal (ID)",
+        "taxGroup": "Groupe de taxe",
         "currency": "Devise",
         "billingType": "Type de facturation",
         "categoryId": "Référentiel catalogue",
@@ -692,6 +691,10 @@
         "submitting": "Création…"
       },
       "referentialsPlaceholder": "Choisir un référentiel (category_id)",
+      "taxGroupsPlaceholder": "Sélectionner un groupe de taxe",
+      "taxGroupsLoading": "Chargement des groupes de taxe…",
+      "taxGroupsLoadError": "Impossible de charger les groupes de taxe.",
+      "retryTaxGroups": "Réessayer",
       "referentialsLoading": "Chargement du catalogue…",
       "referentialsLoadError": "Impossible de charger les référentiels.",
       "retryReferentials": "Réessayer",

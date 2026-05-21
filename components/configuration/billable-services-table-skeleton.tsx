@@ -18,9 +18,7 @@ const COLUMN_KEYS = [
     "sector",
     "unitPrice",
     "currency",
-    "taxRate",
     "taxGroup",
-    "billingType",
 ] as const;
 
 const TABLE_HEAD_CLASS =
@@ -45,11 +43,7 @@ function barClass(row: number, col: number): string {
         case 4:
             return cn("h-3.5", "w-10");
         case 5:
-            return cn("h-3.5", "w-12");
-        case 6:
-            return cn("h-3.5", "w-8");
-        case 7:
-            return cn("h-3.5", n % 2 ? "w-16" : "w-24");
+            return cn("h-3.5", n % 2 ? "w-[70%]" : "w-28");
         default:
             return "h-3.5 w-16";
     }
