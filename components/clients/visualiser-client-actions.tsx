@@ -1,9 +1,9 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 
-import { Button } from "@/components/ui/button";
 import {
     clientMutationErrorMessage,
     useDeleteClient,
@@ -21,14 +21,18 @@ export function VisualiserClientActions({
     modifierPath,
 }: VisualiserClientActionsProps) {
     const router = useRouter();
+    const t = useTranslations("clients.view.actions");
     const del = useDeleteClient();
 
+    const buttonClass =
+        "inline-flex h-[50px] w-52 items-center justify-center rounded text-[14px] font-semibold leading-none disabled:cursor-not-allowed disabled:opacity-60";
+
     const handleDelete = () => {
-        if (!window.confirm("Supprimer définitivement ce client ?")) return;
+        if (!window.confirm(t("deleteConfirm"))) return;
 
         del.mutate(clientId, {
             onSuccess: () => {
-                toast.success("Client supprimé.");
+                toast.success(t("deleteSuccess"));
                 router.push(listPath);
             },
             onError: (err) => {
@@ -38,31 +42,29 @@ export function VisualiserClientActions({
     };
 
     return (
-        <div className="mt-8 flex flex-col gap-3 border-t border-slate-100 pt-6 md:flex-row md:flex-wrap md:justify-end">
-            <Button
+        <div className="mt-6 flex flex-wrap items-center justify-end gap-5">
+            <button
                 type="button"
-                variant="secondary"
                 onClick={() => router.push(listPath)}
-                className="h-12 w-52 cursor-pointer rounded bg-[#949B9F] px-5 text-white hover:bg-[#949B9F]/80"
+                className={`${buttonClass} bg-slate-400 text-white hover:bg-slate-500`}
             >
-                Retour à la liste
-            </Button>
-            <Button
+                {t("backToList")}
+            </button>
+            <button
                 type="button"
-                variant="destructive"
                 disabled={del.isPending}
                 onClick={handleDelete}
-                className="h-12 w-52 cursor-pointer rounded px-5"
+                className={`${buttonClass} bg-red-600 text-white hover:bg-red-700`}
             >
-                Supprimer
-            </Button>
-            <Button
+                {t("delete")}
+            </button>
+            <button
                 type="button"
                 onClick={() => router.push(modifierPath)}
-                className="h-12 w-52 cursor-pointer rounded bg-[#0879bd] px-5 text-white shadow-none hover:bg-[#066aa8]"
+                className={`${buttonClass} bg-[#0879bd] text-white hover:bg-[#076ca8]`}
             >
-                Modifier
-            </Button>
+                {t("edit")}
+            </button>
         </div>
     );
 }

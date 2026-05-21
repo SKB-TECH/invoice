@@ -246,12 +246,14 @@
       "success": "Botosi ebakisami malamu.",
       "submit": "Tinda botosi",
       "submitting": "Ezali kotinda…",
-      "submitErrorFallback": "Ekoki te kobakisa botosi."
+      "submitErrorFallback": "Ekoki te kobakisa botosi.",
+      "invoiceTotalHint": "Motuya ya faktire : {amount}"
     },
     "validation": {
       "invoiceRequired": "Pona faktire.",
       "contractRequired": "Pona kotrati.",
       "amountInvalid": "Motuya ezali malamu te.",
+      "amountExceedsInvoice": "Motuya ekoki koleka te oyo ya faktire ({max}).",
       "currencyRequired": "Moné ezali na lisungi.",
       "channelRequired": "Pona canal.",
       "methodRequired": "Pona méthode.",
@@ -445,6 +447,36 @@
             "entreprise": "Kompanyi"
           }
         }
+      }
+    },
+    "view": {
+      "referenceLabel": "Ref.",
+      "loading": "Kotanga…",
+      "loadError": "Ekoki te kotanga kiliya oyo.",
+      "retry": "Meka lisusu",
+      "backToList": "Zonga na liste",
+      "fields": {
+        "displayName": "Nkombo ya komona",
+        "subtitle": "Sous-titre",
+        "status": "Etaleli",
+        "clientType": "Lolenge ya kiliya",
+        "firstName": "Prénom",
+        "lastName": "Nom",
+        "businessSector": "Secteur ya mosala",
+        "legalRepresentative": "Représentant légal",
+        "nif": "NIF",
+        "rccm": "RCCM",
+        "phone": "Telefɔ́ni",
+        "email": "Email",
+        "country": "Mboka",
+        "address": "Adresse"
+      },
+      "actions": {
+        "backToList": "Zonga na liste",
+        "edit": "Bobongisa",
+        "delete": "Kolongola",
+        "deleteConfirm": "Longola kiliya oyo mpenza ?",
+        "deleteSuccess": "Kiliya elongolami."
       }
     }
   },

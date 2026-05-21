@@ -246,12 +246,14 @@
       "success": "Payment recorded successfully.",
       "submit": "Submit payment",
       "submitting": "Sending…",
-      "submitErrorFallback": "Could not record the payment."
+      "submitErrorFallback": "Could not record the payment.",
+      "invoiceTotalHint": "Invoice amount: {amount}"
     },
     "validation": {
       "invoiceRequired": "Please select an invoice.",
       "contractRequired": "Please select a contract.",
       "amountInvalid": "Invalid amount.",
+      "amountExceedsInvoice": "Amount cannot exceed the invoice total ({max}).",
       "currencyRequired": "Currency is required.",
       "channelRequired": "Please select a channel.",
       "methodRequired": "Please select a method.",
@@ -445,6 +447,36 @@
             "entreprise": "Company"
           }
         }
+      }
+    },
+    "view": {
+      "referenceLabel": "Ref.",
+      "loading": "Loading…",
+      "loadError": "Could not load this customer.",
+      "retry": "Retry",
+      "backToList": "Back to list",
+      "fields": {
+        "displayName": "Display name",
+        "subtitle": "Subtitle",
+        "status": "Status",
+        "clientType": "Customer type",
+        "firstName": "First name",
+        "lastName": "Last name",
+        "businessSector": "Business sector",
+        "legalRepresentative": "Legal representative",
+        "nif": "Tax ID (NIF)",
+        "rccm": "RCCM",
+        "phone": "Phone",
+        "email": "Email",
+        "country": "Country",
+        "address": "Address"
+      },
+      "actions": {
+        "backToList": "Back to list",
+        "edit": "Edit",
+        "delete": "Delete",
+        "deleteConfirm": "Permanently delete this customer?",
+        "deleteSuccess": "Customer deleted."
       }
     }
   },
