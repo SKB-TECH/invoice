@@ -1,4 +1,3 @@
-// components/shared/Loader.tsx
 'use client';
 
 import React from 'react';

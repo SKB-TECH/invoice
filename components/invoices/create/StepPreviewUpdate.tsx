@@ -6,7 +6,10 @@ import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 
-import { useUpdateInvoice } from "@/core/hooks/invoices/useInvoices";
+import {
+    useAttachInvoicePdf,
+    useUpdateInvoice,
+} from "@/core/hooks/invoices/useInvoices";
 
 import { FieldError } from "./Fields";
 import { TemplateAPreview } from "./TemplateAPreview";
@@ -31,7 +34,7 @@ import type {
 import type { InvoiceCreateRequest } from "@/core/types/invoice";
 import type { Dispatch, SetStateAction } from "react";
 
-type ActionMode = "submit" | "save" | "draft" | "normalize";
+type ActionMode = "submit" | "enregistrer" | "draft" | "normalize";
 
 export function StepPreviewUpdate({
                                       invoiceId,
@@ -55,28 +58,8 @@ export function StepPreviewUpdate({
 
     const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
 
-    const updateInvoice = useUpdateInvoice({
-        onSuccess: (_data, variables) => {
-            const workflowStatus = variables.payload.workflow_status;
-
-            if (workflowStatus === "brouillon") {
-                toast.success("Facture mise à jour et conservée en brouillon.");
-            } else {
-                toast.success("Facture mise à jour avec succès.");
-            }
-
-            router.push("/home/factures");
-        },
-
-        onError: () => {
-            toast.error("La mise à jour de la facture a échoué.");
-
-            setErrors((prev) => ({
-                ...prev,
-                submit: "La mise à jour de la facture a échoué.",
-            }));
-        },
-    });
+    const updateInvoice = useUpdateInvoice();
+    const attachInvoicePdf = useAttachInvoicePdf();
 
     const subtotal = items.reduce(
         (sum, item) => sum + getLineSubtotal(item),
@@ -88,7 +71,11 @@ export function StepPreviewUpdate({
     const taxGroups = getTaxGroups(items);
 
     const isArticle = form.itemKind === "Article";
-    const isProcessing = updateInvoice.isPending || isGeneratingPdf;
+
+    const isProcessing =
+        updateInvoice.isPending ||
+        attachInvoicePdf.isPending ||
+        isGeneratingPdf;
 
     const buildInvoicePayload = (
         mode: ActionMode
@@ -149,7 +136,7 @@ export function StepPreviewUpdate({
         }
 
         const loadingToastId = toast.loading(
-            "Génération du PDF et mise à jour de la facture..."
+            "Mise à jour de la facture et génération du nouveau PDF..."
         );
 
         try {
@@ -159,7 +146,6 @@ export function StepPreviewUpdate({
             }));
 
             setIsGeneratingPdf(true);
-
             const pdfFile = await generateInvoicePdf({
                 form,
                 items,
@@ -168,25 +154,40 @@ export function StepPreviewUpdate({
                 total,
                 taxGroups,
             });
-
             const payload = buildInvoicePayload(mode);
-
-            toast.dismiss(loadingToastId);
-
-            updateInvoice.mutate({
+            await updateInvoice.mutateAsync({
                 id: invoiceId,
                 payload,
+            });
+            await attachInvoicePdf.mutateAsync({
+                id: invoiceId,
                 pdfFile,
             });
-        } catch (error) {
-            console.error("Erreur génération PDF :", error);
 
             toast.dismiss(loadingToastId);
-            toast.error("Impossible de générer le PDF de la facture.");
+
+            if (payload.workflow_status === "brouillon") {
+                toast.success(
+                    "Facture mise à jour et conservée en brouillon."
+                );
+            } else {
+                toast.success("Facture mise à jour avec succès.");
+            }
+
+            router.push("/home/factures");
+        } catch (error) {
+            console.error("Erreur mise à jour facture :", error);
+
+            toast.dismiss(loadingToastId);
+
+            toast.error(
+                "La mise à jour de la facture ou du PDF a échoué."
+            );
 
             setErrors((prev) => ({
                 ...prev,
-                submit: "Impossible de générer le PDF de la facture.",
+                submit:
+                    "La mise à jour de la facture ou du PDF a échoué.",
             }));
         } finally {
             setIsGeneratingPdf(false);
@@ -269,9 +270,9 @@ export function StepPreviewUpdate({
                 <div className="mt-6 flex flex-wrap justify-end gap-4">
                     <button
                         type="button"
-                        onClick={() => runAction("submit")}
+                        onClick={() => runAction("enregistrer")}
                         disabled={isProcessing}
-                        className="h-12 w-52 rounded bg-[#0879bd] text-sm font-semibold text-white hover:bg-[#076ca8] disabled:cursor-not-allowed disabled:bg-slate-300"
+                        className="h-12 w-52 rounded bg-[#0879bd] text-sm font-semibold text-white hover:bg-slate-800 disabled:cursor-not-allowed disabled:bg-slate-300"
                     >
                         {isProcessing ? (
                             <span className="inline-flex items-center gap-2">
@@ -279,27 +280,10 @@ export function StepPreviewUpdate({
                                 Traitement...
                             </span>
                         ) : (
-                            "Soumettre"
+                            "Enregistrer"
                         )}
                     </button>
 
-                    <button
-                        type="button"
-                        onClick={() => runAction("save")}
-                        disabled={isProcessing}
-                        className="h-12 w-52 rounded bg-slate-700 text-sm font-semibold text-white hover:bg-slate-800 disabled:cursor-not-allowed disabled:bg-slate-300"
-                    >
-                        Enregistrer
-                    </button>
-
-                    <button
-                        type="button"
-                        onClick={() => runAction("draft")}
-                        disabled={isProcessing}
-                        className="h-12 w-52 rounded bg-amber-500 text-sm font-semibold text-white hover:bg-amber-600 disabled:cursor-not-allowed disabled:bg-slate-300"
-                    >
-                        Brouillon
-                    </button>
 
                     <button
                         type="button"

@@ -1,5 +1,6 @@
 import { api } from "@/core/services/api";
 import type {
+    AttachInvoicePdfPayload, AttachInvoicePdfResponse,
     CreateInvoiceResponse, CreateInvoiceSubmission,
     GetInvoiceContractsParams,
     GetInvoiceContractsResponse, GetInvoiceFournituresParams, GetInvoiceFournituresResponse,
@@ -177,4 +178,25 @@ export const invoiceService = {
 
         return response.data;
     },
+    attachInvoicePdf: async ({
+                                 id,
+                                 pdfFile,
+                             }: AttachInvoicePdfPayload): Promise<AttachInvoicePdfResponse> => {
+        const formData = new FormData();
+
+        formData.append("pdf_file", pdfFile);
+
+        const response = await api.post<AttachInvoicePdfResponse>(
+            `/invoices/${id}/pdf`,
+            formData,
+            {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                },
+            }
+        );
+
+        return response.data;
+    },
 };
+
