@@ -40,11 +40,12 @@ export function getCookie(name: string): string | null {
 }
 
 export function deleteCookie(name: string): void {
-    if (typeof document === 'undefined') return;
+    if (typeof document === "undefined") return;
 
-    const hostname = typeof window !== 'undefined' ? window.location.hostname : '';
-    const domain = hostname ? `domain=${hostname}; ` : '';
-    const secure = typeof window !== 'undefined' && window.location.protocol === 'https:' ? 'Secure; ' : '';
+    const secure =
+        typeof window !== "undefined" && window.location.protocol === "https:"
+            ? "Secure; "
+            : "";
 
-    document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; ${domain}${secure}`;
+    document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; ${secure}SameSite=Lax`;
 }

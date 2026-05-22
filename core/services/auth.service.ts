@@ -409,25 +409,40 @@ export const authService = {
             raw: data,
         };
     },
+
     saveSession(
         token: string,
         user: AuthUser,
         expiresInSeconds = DEFAULT_TOKEN_EXPIRE_SECONDS,
         refreshToken?: string | null
     ) {
-        const tokenExpiresAt = getTokenExpiration(token);
-        const effectiveExpiresAt = tokenExpiresAt ?? Date.now() + expiresInSeconds * 1000;
-        const effectiveSeconds = Math.max(Math.floor((effectiveExpiresAt - Date.now()) / 1000), 0);
-        const expiresInDays = effectiveSeconds / (24 * 60 * 60);
-        tokenStore.set(token, expiresInDays);
-        setCookieAndLocalStorage(
-            AUTH_ACCESS_TOKEN_KEY,
-            token,
-            expiresInDays
+        const jwtExpiresAt = getTokenExpiration(token);
+
+        const expiresInMs =
+            expiresInSeconds > 100000
+                ? expiresInSeconds
+                : expiresInSeconds * 1000;
+
+        const fallbackExpiresAt = Date.now() + expiresInMs;
+
+        const effectiveExpiresAt = jwtExpiresAt ?? fallbackExpiresAt;
+
+        const remainingSeconds = Math.max(
+            Math.floor((effectiveExpiresAt - Date.now()) / 1000),
+            60
         );
+
+        const expiresInDays = remainingSeconds / 86400;
+
+        tokenStore.set(token, expiresInDays);
+
+        setCookieAndLocalStorage(AUTH_ACCESS_TOKEN_KEY, token, expiresInDays);
+
         const userJson = JSON.stringify(user);
+
         setCookieAndLocalStorage(AUTH_USER_KEY, userJson, expiresInDays);
         setCookieAndLocalStorage(USER_COOKIE, userJson, expiresInDays);
+
         setCookieAndLocalStorage(
             AUTH_EXPIRES_KEY,
             String(effectiveExpiresAt),
@@ -435,26 +450,20 @@ export const authService = {
         );
 
         if (refreshToken) {
-            setCookieAndLocalStorage(
-                AUTH_REFRESH_TOKEN_KEY,
-                refreshToken,
-                7
-            );
+            setCookieAndLocalStorage(AUTH_REFRESH_TOKEN_KEY, refreshToken, 7);
         }
 
         if (process.env.NODE_ENV === "development") {
-            console.log("SAVE SESSION DEBUG:", {
-                tokenStored: !!tokenStore.get(),
-                authAccessTokenStored:
-                    !!getCookieOrLocalStorage(AUTH_ACCESS_TOKEN_KEY),
-                userStored: !!getCookieOrLocalStorage(AUTH_USER_KEY),
-                expiresStored: !!getCookieOrLocalStorage(AUTH_EXPIRES_KEY),
-                refreshStored:
-                    !!getCookieOrLocalStorage(AUTH_REFRESH_TOKEN_KEY),
+            console.log("SESSION EXPIRE DEBUG:", {
+                jwtExpiresAt,
+                expiresInSeconds,
+                effectiveExpiresAt,
+                remainingSeconds,
+                expiresInDays,
+                expireDate: new Date(effectiveExpiresAt).toLocaleString(),
             });
         }
     },
-
     restoreSession() {
         const token =
             tokenStore.get() ??

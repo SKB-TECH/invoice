@@ -131,7 +131,8 @@
     "passwordPlaceholder": "********",
     "submit": "Sign in",
     "noAccount": "Don't have an account yet?",
-    "createAccount": "Click here to create your account"
+    "createAccount": "Click here to create your account",
+    "loading": "Loading..."
   },
   "invoicesPage": {
     "breadcrumb": {

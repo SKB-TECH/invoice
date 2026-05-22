@@ -7,6 +7,8 @@ import {
 import { invoiceService } from "@/core/services/invoice.service";
 
 import type {
+    AttachInvoicePdfPayload,
+    AttachInvoicePdfResponse,
     CreateInvoiceResponse, CreateInvoiceSubmission,
     GetInvoiceContractsParams,
     GetInvoiceFournituresParams,
@@ -148,6 +150,42 @@ export function useUpdateInvoice(options?: UseUpdateInvoiceOptions) {
             });
             options?.onSuccess?.(data, variables);
         },
+        onError: options?.onError,
+    });
+}
+
+type UseAttachInvoicePdfOptions = {
+    onSuccess?: (
+        data: AttachInvoicePdfResponse,
+        variables: AttachInvoicePdfPayload
+    ) => void;
+    onError?: (error: unknown) => void;
+};
+
+export function useAttachInvoicePdf(
+    options?: UseAttachInvoicePdfOptions
+) {
+    const queryClient = useQueryClient();
+
+    return useMutation<
+        AttachInvoicePdfResponse,
+        unknown,
+        AttachInvoicePdfPayload
+    >({
+        mutationFn: invoiceService.attachInvoicePdf,
+
+        onSuccess: (data, variables) => {
+            queryClient.invalidateQueries({
+                queryKey: ["invoices"],
+            });
+
+            queryClient.invalidateQueries({
+                queryKey: ["invoice", variables.id],
+            });
+
+            options?.onSuccess?.(data, variables);
+        },
+
         onError: options?.onError,
     });
 }
