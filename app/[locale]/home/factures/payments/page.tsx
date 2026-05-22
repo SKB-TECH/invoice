@@ -638,7 +638,7 @@ export default function PaymentsPage() {
                                         autoCapitalize="characters"
                                         aria-label={t("form.currency")}
                                         className="w-[5rem] bg-transparent px-3 text-center text-[17px] font-semibold uppercase tracking-wide text-slate-700 outline-none placeholder:text-slate-400"
-                                        placeholder="USD"
+                                        disabled={true}
                                     />
                                 </div>
                                 <input
