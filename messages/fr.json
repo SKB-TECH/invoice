@@ -519,7 +519,7 @@
   "articles": {
     "list": {
       "title": "Articles",
-      "searchPlaceholder": "Recherche par ID, titre, référentiel, groupe de taxe, prix TTC, statut, période…",
+      "searchPlaceholder": "Recherche par code, titre, référentiel, groupe de taxe, prix HT, prix TTC…",
       "searchAriaLabel": "Rechercher un article",
       "loading": "Chargement des articles…",
       "refreshing": "Mise à jour…",
@@ -532,6 +532,7 @@
         "title": "Titre",
         "referential": "Référentiel",
         "taxGroup": "Groupe de taxe",
+        "priceHt": "Prix HT",
         "priceTtc": "Prix TTC",
         "status": "Statut",
         "period": "Période"
@@ -644,6 +645,8 @@
       "createButton": "Créer un service",
       "breadcrumbNew": "Nouveau service",
       "listSectionTitle": "Liste des services facturables",
+      "searchPlaceholder": "Recherche par code, nom, secteur, devise, prix HT, prix TTC, groupe de taxation…",
+      "searchAriaLabel": "Rechercher un service",
       "filterSectorPlaceholder": "Filtrer par secteur d’activité (ex. Technologie)",
       "filterApply": "Filtrer",
       "filterReset": "Tout afficher",
@@ -655,10 +658,10 @@
         "code": "Code",
         "name": "Nom",
         "sector": "Secteur",
-        "unitPrice": "PU HT",
+        "unitPrice": "Prix HT",
+        "priceInclTax": "Prix TTC",
         "currency": "Devise",
-        "taxRate": "TVA %",
-        "taxGroup": "Gr. fiscal",
+        "taxGroup": "Groupe de taxation",
         "billingType": "Factur."
       },
       "fields": {
@@ -667,11 +670,12 @@
         "description": "Description",
         "businessSector": "Secteur d’activité",
         "unitPrice": "Prix unitaire HT",
+        "priceInclTax": "Prix TTC",
         "taxRate": "Taux TVA (%)",
-        "taxGroup": "Groupe fiscal (ID)",
+        "taxGroup": "Groupe de taxe",
         "currency": "Devise",
         "billingType": "Type de facturation",
-        "categoryId": "Référentiel catalogue",
+        "categoryId": "Référentiel",
         "peopleApply": "Appliquer par nombre de personnes",
         "quantityApply": "Appliquer par quantité",
         "notes": "Notes"
@@ -692,7 +696,11 @@
         "submit": "Créer le service",
         "submitting": "Création…"
       },
-      "referentialsPlaceholder": "Choisir un référentiel (category_id)",
+      "referentialsPlaceholder": "Choisir un référentiel",
+      "taxGroupsPlaceholder": "Sélectionner un groupe de taxe",
+      "taxGroupsLoading": "Chargement des groupes de taxe…",
+      "taxGroupsLoadError": "Impossible de charger les groupes de taxe.",
+      "retryTaxGroups": "Réessayer",
       "referentialsLoading": "Chargement du catalogue…",
       "referentialsLoadError": "Impossible de charger les référentiels.",
       "retryReferentials": "Réessayer",

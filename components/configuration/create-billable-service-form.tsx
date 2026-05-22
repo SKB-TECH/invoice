@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 
@@ -13,10 +13,17 @@ import {
     TextareaField,
 } from "@/components/invoices/create/Fields";
 import { useCreateBillableService } from "@/core/hooks/billable-services/useBillableServices";
+import { useInvoiceTaxGroups } from "@/core/hooks/invoices/useInvoiceTaxGroups";
 import { useReferentielsCatalog } from "@/core/hooks/referentiels/useReferentielsCatalog";
 import { getAxiosErrorMessage } from "@/core/utils/axiosErrorMessage";
 import type { CreateBillableServicePayload } from "@/core/types/billable-service";
-import { formatReferentielOptionLabel } from "@/lib/referentials/referential-option-label";
+import {
+    computePriceAfterTax,
+    formatInvoiceTaxGroupSelectLabel,
+    formatPriceAfterTaxDisplay,
+    pickDefaultInvoiceTaxGroupId,
+} from "@/lib/tax-groups/invoice-tax-group-label";
+import { formatReferentielAxisCodeLabel } from "@/lib/referentials/referential-option-label";
 
 function parseDecimal(raw: string): number | null {
     const t = raw.trim().replace(/\s/g, "").replace(",", ".");
@@ -31,10 +38,8 @@ type ServiceFormState = {
     code: string;
     business_sector: string;
     unit_price: string;
-    tax_rate: string;
     currency: string;
-    tax_group: string;
-    billing_type: string;
+    tax_group_id: string;
     category_id: string;
     people_apply: boolean;
     quantity_apply: boolean;
@@ -46,10 +51,8 @@ const INITIAL_FORM: ServiceFormState = {
     code: "",
     business_sector: "",
     unit_price: "",
-    tax_rate: "16",
     currency: "USD",
-    tax_group: "2",
-    billing_type: "1",
+    tax_group_id: "",
     category_id: "",
     people_apply: true,
     quantity_apply: true,
@@ -76,10 +79,20 @@ export function CreateBillableServiceForm({
         refetch: refetchReferentials,
     } = useReferentielsCatalog(null);
 
+    const {
+        data: taxGroups = [],
+        isPending: taxGroupsPending,
+        isError: taxGroupsError,
+        refetch: refetchTaxGroups,
+    } = useInvoiceTaxGroups();
+
     const createMutation = useCreateBillableService({
         onSuccess: () => {
             toast.success(t("toastCreated"));
-            setForm(INITIAL_FORM);
+            setForm({
+                ...INITIAL_FORM,
+                tax_group_id: pickDefaultInvoiceTaxGroupId(taxGroups),
+            });
             onCreated?.();
         },
         onError: (err) =>
@@ -87,6 +100,31 @@ export function CreateBillableServiceForm({
                 getAxiosErrorMessage(err, t("toastCreateErrorFallback")),
             ),
     });
+
+    const selectedTaxGroupId =
+        form.tax_group_id || pickDefaultInvoiceTaxGroupId(taxGroups);
+
+    const selectedTaxGroup = useMemo(
+        () =>
+            taxGroups.find(
+                (group) => String(group.id) === selectedTaxGroupId.trim(),
+            ),
+        [taxGroups, selectedTaxGroupId],
+    );
+
+    const unitPriceParsed = useMemo(
+        () => parseDecimal(form.unit_price),
+        [form.unit_price],
+    );
+
+    const priceAfterDisplay = useMemo(
+        () =>
+            formatPriceAfterTaxDisplay(
+                unitPriceParsed,
+                selectedTaxGroup?.rate,
+            ),
+        [unitPriceParsed, selectedTaxGroup],
+    );
 
     const updateField = <K extends keyof ServiceFormState>(
         key: K,
@@ -96,18 +134,20 @@ export function CreateBillableServiceForm({
     };
 
     const handleSubmit = () => {
-        if (createMutation.isPending || referentialsPending || referentialsError)
+        if (
+            createMutation.isPending ||
+            referentialsPending ||
+            referentialsError ||
+            taxGroupsPending ||
+            taxGroupsError
+        ) {
             return;
+        }
 
         const service_name = form.service_name.trim();
         const code = form.code.trim();
         const business_sector = form.business_sector.trim();
-
-        const unit_price = parseDecimal(form.unit_price);
-        const tax_rate = parseDecimal(form.tax_rate);
-
-        const tax_group = Number.parseInt(form.tax_group.trim(), 10);
-        const billing_type = Number.parseInt(form.billing_type.trim(), 10);
+        const unit_price = unitPriceParsed;
         const category_id = Number.parseInt(form.category_id.trim(), 10);
 
         if (
@@ -115,16 +155,23 @@ export function CreateBillableServiceForm({
             !code ||
             !business_sector ||
             unit_price === null ||
-            tax_rate === null
+            !selectedTaxGroup
         ) {
             toast.error(t("invalidForm"));
             return;
         }
+
+        const price_before = unit_price;
+        const price_after = computePriceAfterTax(
+            price_before,
+            selectedTaxGroup.rate,
+        );
+
+        if (!Number.isFinite(price_after)) {
+            toast.error(t("invalidForm"));
+            return;
+        }
         if (
-            !Number.isFinite(tax_group) ||
-            tax_group < 1 ||
-            !Number.isFinite(billing_type) ||
-            billing_type < 0 ||
             !Number.isFinite(category_id) ||
             category_id < 1
         ) {
@@ -138,12 +185,13 @@ export function CreateBillableServiceForm({
             code,
             business_sector,
             unit_price,
-            tax_rate,
+            price_before,
+            price_after,
+            tax_rate: selectedTaxGroup.rate,
             currency: form.currency.trim().toUpperCase() || "USD",
-            tax_group,
+            tax_group: selectedTaxGroup.id,
             people_apply: form.people_apply,
             quantity_apply: form.quantity_apply,
-            billing_type,
             category_id,
             notes: "",
         };
@@ -153,6 +201,8 @@ export function CreateBillableServiceForm({
 
     const catalogReady =
         !referentialsPending && !referentialsError && referentialRows.length > 0;
+    const taxGroupsReady =
+        !taxGroupsPending && !taxGroupsError && taxGroups.length > 0;
 
     const requiredStar = (
         <span className="text-red-500" aria-hidden>
@@ -215,24 +265,60 @@ export function CreateBillableServiceForm({
 
                     <div>
                         <FieldLabel>
-                            {t("fields.taxRate")}
-                            {requiredStar}
-                        </FieldLabel>
-                        <InputField
-                            value={form.tax_rate}
-                            onChange={(v) => updateField("tax_rate", v)}
-                            placeholder={t("placeholders.taxRate")}
-                        />
-                    </div>
-                    <div>
-                        <FieldLabel>
                             {t("fields.taxGroup")}
                             {requiredStar}
                         </FieldLabel>
+                        <NativeSelectField
+                            required
+                            value={selectedTaxGroupId}
+                            disabled={
+                                taxGroupsPending ||
+                                taxGroupsError ||
+                                taxGroups.length === 0
+                            }
+                            onChange={(v) => updateField("tax_group_id", v)}
+                            aria-label={t("fields.taxGroup")}
+                        >
+                            <option value="">
+                                {taxGroupsPending
+                                    ? t("taxGroupsLoading")
+                                    : t("taxGroupsPlaceholder")}
+                            </option>
+                            {!taxGroupsPending &&
+                                taxGroups.map((group) => (
+                                    <option
+                                        key={group.id}
+                                        value={String(group.id)}
+                                    >
+                                        {formatInvoiceTaxGroupSelectLabel(group)}
+                                    </option>
+                                ))}
+                        </NativeSelectField>
+                        {taxGroupsError ? (
+                            <div className="mt-2 flex flex-wrap gap-2 text-sm font-medium text-red-500">
+                                <span>{t("taxGroupsLoadError")}</span>
+                                <button
+                                    type="button"
+                                    className="underline underline-offset-2 hover:text-red-600"
+                                    onClick={() => void refetchTaxGroups()}
+                                >
+                                    {t("retryTaxGroups")}
+                                </button>
+                            </div>
+                        ) : null}
+                    </div>
+
+                    <div>
+                        <FieldLabel>{t("fields.priceInclTax")}</FieldLabel>
                         <InputField
-                            type="number"
-                            value={form.tax_group}
-                            onChange={(v) => updateField("tax_group", v)}
+                            readOnly
+                            inputMode="decimal"
+                            value={priceAfterDisplay}
+                            placeholder={
+                                selectedTaxGroup && unitPriceParsed !== null
+                                    ? undefined
+                                    : "—"
+                            }
                         />
                     </div>
 
@@ -253,18 +339,6 @@ export function CreateBillableServiceForm({
                     </div>
 
                     <div>
-                        <FieldLabel>
-                            {t("fields.billingType")}
-                            {requiredStar}
-                        </FieldLabel>
-                        <InputField
-                            value={form.billing_type}
-                            onChange={(v) => updateField("billing_type", v)}
-                            placeholder={t("placeholders.billingType")}
-                        />
-                    </div>
-
-                    <div className="lg:col-span-2">
                         <FieldLabel>
                             {t("fields.categoryId")}
                             {requiredStar}
@@ -290,11 +364,9 @@ export function CreateBillableServiceForm({
                                     <option
                                         key={row.id}
                                         value={String(row.id)}
-                                        title={formatReferentielOptionLabel(
-                                            row,
-                                        )}
+                                        title={row.title.trim() || undefined}
                                     >
-                                        {formatReferentielOptionLabel(row)}
+                                        {formatReferentielAxisCodeLabel(row)}
                                     </option>
                                 ))}
                         </NativeSelectField>
@@ -357,7 +429,12 @@ export function CreateBillableServiceForm({
                     }
                     onCancel={onCancel}
                     onSubmit={handleSubmit}
-                    submitDisabled={createMutation.isPending || !catalogReady}
+                    submitDisabled={
+                        createMutation.isPending ||
+                        !catalogReady ||
+                        !taxGroupsReady ||
+                        !selectedTaxGroupId
+                    }
                 />
             </div>
         </>

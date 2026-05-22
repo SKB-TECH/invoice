@@ -165,17 +165,22 @@ function formatApiTimestampToDdMmYyyy(ts: string): string {
     return ts.slice(0, 10).split("-").reverse().join("-") || ts;
 }
 
+function formatArticlePrice(amount: number, currencyLabel: string): string {
+    const priceFmt = Number.isFinite(amount)
+        ? amount.toLocaleString("fr-FR", {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+          })
+        : String(amount);
+
+    return `${priceFmt} ${currencyLabel}`.trim();
+}
+
 export function mapFournitureToTableRow(
     item: FournitureArticle,
     referentialTitleByCategoryId?: ReadonlyMap<number, string>,
 ): ArticleTableRow {
     const currencyLabel = item.currency?.trim()?.toUpperCase() ?? "";
-    const priceFmt = Number.isFinite(item.price_after)
-        ? item.price_after.toLocaleString("fr-FR", {
-              minimumFractionDigits: 2,
-              maximumFractionDigits: 2,
-          })
-        : String(item.price_after);
 
     const referential = resolveReferentialTitleForTable(
         item,
@@ -188,7 +193,8 @@ export function mapFournitureToTableRow(
         title: item.name,
         referential,
         taxGroup: resolveTaxGroupTableLabel(item),
-        priceTtc: `${priceFmt} ${currencyLabel}`.trim(),
+        priceHt: formatArticlePrice(item.price_before, currencyLabel),
+        priceTtc: formatArticlePrice(item.price_after, currencyLabel),
         status: mapApiArticleStatus(item.status),
         period: formatApiTimestampToDdMmYyyy(item.created_at ?? ""),
     };
