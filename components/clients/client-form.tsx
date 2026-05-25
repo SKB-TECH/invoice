@@ -14,13 +14,13 @@ import {
     useUpdateClient,
     clientMutationErrorMessage,
 } from "@/core/hooks/client/useClient";
+import {
+    FieldLabel,
+    InputField,
+    NativeSelectField,
+} from "@/components/invoices/create/Fields";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { useTranslations } from "next-intl";
-
-const selectClassName =
-    "h-12 w-full rounded border border-input bg-transparent py-2 pr-2 pl-2.5 text-sm whitespace-nowrap transition-colors outline-none select-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 data-placeholder:text-muted-foreground dark:bg-input/30 dark:hover:bg-input/50 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4";
 
 export type ClientFormValues = {
     client_type: ClientType;
@@ -72,8 +72,7 @@ function detailToFormValues(d: ClientDetailRecord): ClientFormValues {
         nif: d.nif,
         first_name: d.first_name,
         last_name: d.last_name,
-        company_name:
-            d.client_type === "personal" ? "" : d.nomClient,
+        company_name: d.client_type === "personal" ? "" : d.nomClient,
         subtitle: d.sousTitre,
         rccm: d.rccm,
         business_sector: d.business_sector,
@@ -171,251 +170,238 @@ export function ClientForm(props: ClientFormProps) {
     });
 
     const pending = createMut.isPending || updateMut.isPending;
+    const errors = form.formState.errors;
 
     return (
-        <form
-            className="rounded border border-slate-200/80 bg-white p-6 sm:p-8"
-            onSubmit={onSubmit}
-            noValidate
-        >
-            <div className="grid gap-6 sm:grid-cols-2">
-                <div className="flex flex-col gap-2 sm:col-span-1">
-                    <Label htmlFor="client-type" className="font-medium text-slate-700">
+        <form className="mt-4 bg-white p-8" onSubmit={onSubmit} noValidate>
+            <div className="grid grid-cols-1 gap-x-14 gap-y-4 lg:grid-cols-2">
+                <div>
+                    <FieldLabel>
                         Type de client <span className="text-red-500">*</span>
-                    </Label>
-                    <select
+                    </FieldLabel>
+                    <NativeSelectField
                         id="client-type"
-                        className={selectClassName}
+                        value={clientType}
                         disabled={pending}
-                        {...form.register("client_type")}
+                        onChange={(value) =>
+                            form.setValue(
+                                "client_type",
+                                value as ClientType,
+                                { shouldValidate: true }
+                            )
+                        }
                     >
                         <option value="personal">Personne physique</option>
                         <option value="pme">PME</option>
                         <option value="corporate">Entreprise</option>
-                    </select>
+                    </NativeSelectField>
                 </div>
 
-                <div className="flex flex-col gap-2">
-                    <Label htmlFor="reference" className="font-medium text-slate-700">
+                <div>
+                    <FieldLabel>
                         {t("reference")} <span className="text-red-500">*</span>
-                    </Label>
-                    <Input
+                    </FieldLabel>
+                    <InputField
                         id="reference"
-                        className="h-12 rounded"
-                        disabled={pending}
-                        aria-invalid={Boolean(form.formState.errors.reference)}
-                        {...form.register("reference")}
+                        value={form.watch("reference")}
+                        onChange={(value) =>
+                            form.setValue("reference", value, {
+                                shouldValidate: true,
+                            })
+                        }
+                        error={errors.reference?.message}
                     />
-                    {form.formState.errors.reference?.message ? (
-                        <p className="text-sm text-destructive">
-                            {form.formState.errors.reference.message}
-                        </p>
-                    ) : null}
                 </div>
 
-                <div className="flex flex-col gap-2">
-                    <Label htmlFor="statut" className="font-medium text-slate-700">
-                        {t("status.title")}
-                    </Label>
-                    <select
+                <div>
+                    <FieldLabel>{t("status.title")}</FieldLabel>
+                    <NativeSelectField
                         id="statut"
-                        className={selectClassName}
+                        value={form.watch("status")}
                         disabled={pending}
-                        {...form.register("status")}
+                        onChange={(value) =>
+                            form.setValue(
+                                "status",
+                                value as ClientStatutForm,
+                                { shouldValidate: true }
+                            )
+                        }
                     >
-                        <option value="actif">{t("status.options.actif")}</option>
+                        <option value="actif">
+                            {t("status.options.actif")}
+                        </option>
                         <option value="suspendu">
                             {t("status.options.suspendu")}
                         </option>
-                        <option value="complet">{t("status.options.complet")}</option>
-                    </select>
+                        <option value="complet">
+                            {t("status.options.complet")}
+                        </option>
+                    </NativeSelectField>
                 </div>
 
                 {clientType === "personal" ? (
                     <>
-                        <div className="flex flex-col gap-2">
-                            <Label className="font-medium text-slate-700">
+                        <div>
+                            <FieldLabel>
                                 Prénom <span className="text-red-500">*</span>
-                            </Label>
-                            <Input
-                                className="h-12 rounded"
-                                disabled={pending}
-                                {...form.register("first_name")}
+                            </FieldLabel>
+                            <InputField
+                                value={form.watch("first_name")}
+                                onChange={(value) =>
+                                    form.setValue("first_name", value, {
+                                        shouldValidate: true,
+                                    })
+                                }
+                                error={errors.first_name?.message}
                             />
-                            {form.formState.errors.first_name?.message ? (
-                                <p className="text-sm text-destructive">
-                                    {form.formState.errors.first_name.message}
-                                </p>
-                            ) : null}
                         </div>
-                        <div className="flex flex-col gap-2">
-                            <Label className="font-medium text-slate-700">
+                        <div>
+                            <FieldLabel>
                                 Nom <span className="text-red-500">*</span>
-                            </Label>
-                            <Input
-                                className="h-12 rounded"
-                                disabled={pending}
-                                {...form.register("last_name")}
+                            </FieldLabel>
+                            <InputField
+                                value={form.watch("last_name")}
+                                onChange={(value) =>
+                                    form.setValue("last_name", value, {
+                                        shouldValidate: true,
+                                    })
+                                }
+                                error={errors.last_name?.message}
                             />
-                            {form.formState.errors.last_name?.message ? (
-                                <p className="text-sm text-destructive">
-                                    {form.formState.errors.last_name.message}
-                                </p>
-                            ) : null}
                         </div>
                     </>
                 ) : null}
 
-                {(clientType === "pme" || clientType === "corporate") && (
+                {clientType === "pme" || clientType === "corporate" ? (
                     <>
-                        <div className="flex flex-col gap-2 sm:col-span-2">
-                            <Label className="font-medium text-slate-700">
-                                {t("nom")} <span className="text-red-500">*</span>
-                            </Label>
-                            <Input
-                                className="h-12 rounded"
-                                disabled={pending}
-                                {...form.register("company_name")}
-                            />
-                            {form.formState.errors.company_name?.message ? (
-                                <p className="text-sm text-destructive">
-                                    {form.formState.errors.company_name.message}
-                                </p>
-                            ) : null}
-                        </div>
-                        <div className="flex flex-col gap-2 sm:col-span-2">
-                            <Label className="font-medium text-slate-700">
-                                {t("sousTitre")}
-                            </Label>
-                            <Input
-                                className="h-12 rounded"
-                                disabled={pending}
-                                {...form.register("subtitle")}
+                        <div className="lg:col-span-2">
+                            <FieldLabel>
+                                {t("nom")}{" "}
+                                <span className="text-red-500">*</span>
+                            </FieldLabel>
+                            <InputField
+                                value={form.watch("company_name")}
+                                onChange={(value) =>
+                                    form.setValue("company_name", value, {
+                                        shouldValidate: true,
+                                    })
+                                }
+                                error={errors.company_name?.message}
                             />
                         </div>
-                        <div className="flex flex-col gap-2">
-                            <Label className="font-medium text-slate-700">
-                                {t("rccm")} <span className="text-red-500">*</span>
-                            </Label>
-                            <Input
-                                className="h-12 rounded"
-                                disabled={pending}
-                                {...form.register("rccm")}
+                        <div className="lg:col-span-2">
+                            <FieldLabel>{t("sousTitre")}</FieldLabel>
+                            <InputField
+                                value={form.watch("subtitle")}
+                                onChange={(value) =>
+                                    form.setValue("subtitle", value)
+                                }
                             />
-                            {form.formState.errors.rccm?.message ? (
-                                <p className="text-sm text-destructive">
-                                    {form.formState.errors.rccm.message}
-                                </p>
-                            ) : null}
                         </div>
-                        <div className="flex flex-col gap-2">
-                            <Label className="font-medium text-slate-700">
+                        <div>
+                            <FieldLabel>
+                                {t("rccm")}{" "}
+                                <span className="text-red-500">*</span>
+                            </FieldLabel>
+                            <InputField
+                                value={form.watch("rccm")}
+                                onChange={(value) =>
+                                    form.setValue("rccm", value, {
+                                        shouldValidate: true,
+                                    })
+                                }
+                                error={errors.rccm?.message}
+                            />
+                        </div>
+                        <div>
+                            <FieldLabel>
                                 Secteur d&apos;activité{" "}
                                 <span className="text-red-500">*</span>
-                            </Label>
-                            <Input
-                                className="h-12 rounded"
-                                disabled={pending}
-                                {...form.register("business_sector")}
+                            </FieldLabel>
+                            <InputField
+                                value={form.watch("business_sector")}
+                                onChange={(value) =>
+                                    form.setValue("business_sector", value, {
+                                        shouldValidate: true,
+                                    })
+                                }
+                                error={errors.business_sector?.message}
                             />
-                            {form.formState.errors.business_sector?.message ? (
-                                <p className="text-sm text-destructive">
-                                    {form.formState.errors.business_sector.message}
-                                </p>
-                            ) : null}
                         </div>
                     </>
-                )}
+                ) : null}
 
                 {clientType === "corporate" ? (
-                    <div className="flex flex-col gap-2 sm:col-span-2">
-                        <Label className="font-medium text-slate-700">
-                            Représentant légal
-                        </Label>
-                        <Input
-                            className="h-12 rounded"
-                            disabled={pending}
-                            {...form.register("legal_representative")}
+                    <div className="lg:col-span-2">
+                        <FieldLabel>Représentant légal</FieldLabel>
+                        <InputField
+                            value={form.watch("legal_representative")}
+                            onChange={(value) =>
+                                form.setValue("legal_representative", value)
+                            }
                         />
                     </div>
                 ) : null}
 
-                <div className="flex flex-col gap-2">
-                    <Label htmlFor="nif" className="font-medium text-slate-700">
-                        {t("nif")}
-                    </Label>
-                    <Input
+                <div>
+                    <FieldLabel>{t("nif")}</FieldLabel>
+                    <InputField
                         id="nif"
-                        className="h-12 rounded"
-                        disabled={pending}
-                        {...form.register("nif")}
+                        value={form.watch("nif")}
+                        onChange={(value) => form.setValue("nif", value)}
                     />
                 </div>
 
-                <div className="flex flex-col gap-2">
-                    <Label htmlFor="telephone" className="font-medium text-slate-700">
-                        {t("tel")}
-                    </Label>
-                    <Input
+                <div>
+                    <FieldLabel>{t("tel")}</FieldLabel>
+                    <InputField
                         id="telephone"
                         type="tel"
-                        className="h-12 rounded"
-                        disabled={pending}
-                        {...form.register("phone")}
+                        value={form.watch("phone")}
+                        onChange={(value) => form.setValue("phone", value)}
                     />
                 </div>
 
-                <div className="flex flex-col gap-2">
-                    <Label htmlFor="email" className="font-medium text-slate-700">
-                        {t("email")}
-                    </Label>
-                    <Input
+                <div>
+                    <FieldLabel>{t("email")}</FieldLabel>
+                    <InputField
                         id="email"
                         type="email"
-                        className="h-12 rounded"
-                        disabled={pending}
-                        {...form.register("email")}
-                    />
-                    {form.formState.errors.email?.message ? (
-                        <p className="text-sm text-destructive">
-                            {form.formState.errors.email.message}
-                        </p>
-                    ) : null}
-                </div>
-
-                <div className="flex flex-col gap-2">
-                    <Label htmlFor="adresse" className="font-medium text-slate-700">
-                        {t("adresse")}
-                    </Label>
-                    <Input
-                        id="adresse"
-                        type="text"
-                        className="h-12 rounded"
-                        disabled={pending}
-                        {...form.register("address")}
+                        value={form.watch("email")}
+                        onChange={(value) =>
+                            form.setValue("email", value, {
+                                shouldValidate: true,
+                            })
+                        }
+                        error={errors.email?.message}
                     />
                 </div>
 
-                <div className="flex flex-col gap-2">
-                    <Label htmlFor="pays" className="font-medium text-slate-700">
-                        {t("pays")}
-                    </Label>
-                    <Input
+                <div>
+                    <FieldLabel>{t("pays")}</FieldLabel>
+                    <InputField
                         id="pays"
-                        type="text"
-                        className="h-12 rounded"
-                        disabled={pending}
-                        {...form.register("country")}
+                        value={form.watch("country")}
+                        onChange={(value) => form.setValue("country", value)}
+                    />
+                </div>
+
+                <div className="lg:col-span-2">
+                    <FieldLabel>{t("adresse")}</FieldLabel>
+                    <InputField
+                        id="adresse"
+                        value={form.watch("address")}
+                        onChange={(value) => form.setValue("address", value)}
                     />
                 </div>
             </div>
 
-            <div className="mt-8 flex flex-col flex-wrap gap-3 border-t border-slate-100 pt-6 md:flex-row md:justify-end">
+            <div className="mt-6 flex flex-wrap items-center justify-end gap-5">
                 <Link href={cancelHref}>
                     <Button
                         type="button"
                         variant="secondary"
-                        className="h-12 w-52 cursor-pointer rounded bg-[#949B9F] px-5 text-white hover:bg-[#949B9F]/80"
+                        className="inline-flex h-[50px] w-52 items-center justify-center rounded bg-slate-400 px-5 text-[14px] font-semibold text-white hover:bg-slate-500"
                     >
                         {t("annule")}
                     </Button>
@@ -423,7 +409,7 @@ export function ClientForm(props: ClientFormProps) {
                 <Button
                     type="submit"
                     disabled={pending}
-                    className="h-12 w-52 cursor-pointer rounded bg-[#0879bd] px-5 text-white shadow-none hover:bg-[#066aa8]"
+                    className="inline-flex h-[50px] w-52 items-center justify-center rounded bg-[#0879bd] px-5 text-[14px] font-semibold text-white shadow-none hover:bg-[#066aa8]"
                 >
                     {pending ? "..." : t("save")}
                 </Button>
