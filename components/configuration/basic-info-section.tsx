@@ -1,10 +1,10 @@
 "use client";
 
 import React, { useRef, useState } from "react";
-import { Loader2 } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { toast } from "sonner";
 
+import { BasicInfoSectionSkeleton } from "@/components/configuration/basic-info-section-skeleton";
 import { SectionCard } from "@/components/configuration/section-card";
 import { FormActions } from "@/components/configuration/form-actions";
 import { InputField } from "@/components/configuration/input-field";
@@ -207,14 +207,7 @@ export function BasicInfoSection() {
         useAuthProfile();
 
     if (isPending) {
-        return (
-            <SectionCard title={t("basicInfo.sectionTitle")}>
-                <div className="flex min-h-[120px] items-center justify-center gap-2 text-[14px] text-slate-500">
-                    <Loader2 className="size-5 animate-spin" />
-                    {t("basicInfo.loading")}
-                </div>
-            </SectionCard>
-        );
+        return <BasicInfoSectionSkeleton />;
     }
 
     if (isError || !data) {
