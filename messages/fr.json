@@ -772,8 +772,18 @@
           "referential": "Référentiel"
         },
         "actions": {
-          "backToList": "Retour à la liste"
+          "backToList": "Retour à la liste",
+          "edit": "Modifier"
         }
+      },
+      "edit": {
+        "title": "Modifier le service",
+        "breadcrumbSegment": "Modifier",
+        "referencePrefix": "Réf. : ",
+        "saving": "Enregistrement…",
+        "saveChanges": "Enregistrer les modifications",
+        "toastSaved": "Service mis à jour.",
+        "toastSaveError": "Impossible d'enregistrer le service."
       }
     },
     "basicInfo": {

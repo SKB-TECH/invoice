@@ -773,8 +773,18 @@
           "referential": "Référentiel"
         },
         "actions": {
-          "backToList": "Kozonga na liste"
+          "backToList": "Kozonga na liste",
+          "edit": "Kobongola"
         }
+      },
+      "edit": {
+        "title": "Kobongola service",
+        "breadcrumbSegment": "Kobongola",
+        "referencePrefix": "Réf. : ",
+        "saving": "Kobomba…",
+        "saveChanges": "Kobomba ba changements",
+        "toastSaved": "Service ebongisami.",
+        "toastSaveError": "Kobomba service elongwaki te."
       }
     },
     "basicInfo": {

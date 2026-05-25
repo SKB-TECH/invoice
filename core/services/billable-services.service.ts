@@ -7,6 +7,7 @@ import type {
     BillableServicesListMeta,
     BillableServicesListResult,
     CreateBillableServicePayload,
+    UpdateBillableServicePayload,
 } from "@/core/types/billable-service";
 
 const SERVICES_PATH = "/invoices/services";
@@ -228,6 +229,24 @@ export const billableServicesService = {
     async getById(id: number): Promise<BillableServiceItem> {
         const { data } = await api.get<unknown>(
             `${SERVICES_PATH}/${encodeURIComponent(String(id))}`,
+        );
+        const raw =
+            data &&
+            typeof data === "object" &&
+            "data" in data &&
+            (data as { data: unknown }).data !== undefined
+                ? (data as { data: unknown }).data
+                : unwrapApiData<unknown>(data) ?? data;
+        return normalizeBillableService(raw);
+    },
+
+    async update(
+        id: number,
+        payload: UpdateBillableServicePayload,
+    ): Promise<BillableServiceItem> {
+        const { data } = await api.put<unknown>(
+            `${SERVICES_PATH}/${encodeURIComponent(String(id))}`,
+            payload,
         );
         const raw =
             data &&

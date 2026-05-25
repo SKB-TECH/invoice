@@ -772,8 +772,18 @@
           "referential": "Referential"
         },
         "actions": {
-          "backToList": "Back to list"
+          "backToList": "Back to list",
+          "edit": "Edit"
         }
+      },
+      "edit": {
+        "title": "Edit service",
+        "breadcrumbSegment": "Edit",
+        "referencePrefix": "Ref.: ",
+        "saving": "Saving…",
+        "saveChanges": "Save changes",
+        "toastSaved": "Service updated.",
+        "toastSaveError": "Could not save service."
       }
     },
     "basicInfo": {

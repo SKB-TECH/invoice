@@ -8,6 +8,7 @@ import {
 import type {
     BillableServiceItem,
     CreateBillableServicePayload,
+    UpdateBillableServicePayload,
 } from "@/core/types/billable-service";
 
 export const billableServicesKeys = {
@@ -47,6 +48,28 @@ export function useCreateBillableService(options?: {
     return useMutation({
         mutationFn: (payload: CreateBillableServicePayload) =>
             billableServicesService.create(payload),
+        onSuccess: async (data) => {
+            await qc.invalidateQueries({
+                queryKey: billableServicesKeys.all,
+            });
+            options?.onSuccess?.(data);
+        },
+        onError: options?.onError,
+    });
+}
+
+export function useUpdateBillableService(
+    serviceId: number,
+    options?: {
+        onSuccess?: (data: BillableServiceItem) => void;
+        onError?: (error: unknown) => void;
+    },
+) {
+    const qc = useQueryClient();
+
+    return useMutation({
+        mutationFn: (payload: UpdateBillableServicePayload) =>
+            billableServicesService.update(serviceId, payload),
         onSuccess: async (data) => {
             await qc.invalidateQueries({
                 queryKey: billableServicesKeys.all,

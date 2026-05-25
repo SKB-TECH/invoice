@@ -71,3 +71,14 @@ export type CreateBillableServicePayload = {
     notes: string;
     billing_type?: number;
 };
+
+export type UpdateBillableServicePayload = {
+    service_name: string;
+    description: string;
+    code: string;
+    business_sector: string;
+    unit_price: number;
+    tax_rate: number;
+    currency: string;
+    tax_group: number;
+};
