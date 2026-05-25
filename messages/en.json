@@ -387,7 +387,7 @@
       },
       "title": "New customer",
       "form": {
-        "reference": "Reference number",
+        "reference": "IDNAT",
         "nom": "Customer name",
         "sousTitre": "Subtitle",
         "nif": "Tax ID Number (NIF)",
@@ -414,6 +414,15 @@
         "annule": "Cancel",
         "save": "Save"
       }
+    },
+    "editClient": {
+      "breadcrumbStep": "Edit",
+      "title": "Edit customer",
+      "idnatLabel": "IDNAT",
+      "loading": "Loading…",
+      "loadError": "Could not load this customer.",
+      "retry": "Retry",
+      "backToList": "Back to list"
     },
     "listClients": {
       "breadcrumb": {
@@ -460,6 +469,7 @@
         "subtitle": "Subtitle",
         "status": "Status",
         "clientType": "Customer type",
+        "idnat": "IDNAT",
         "firstName": "First name",
         "lastName": "Last name",
         "businessSector": "Business sector",

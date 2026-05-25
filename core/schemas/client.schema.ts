@@ -88,8 +88,13 @@ export function normalizeClientResponseInput(raw: unknown): unknown {
         pickStr(r.client_name) ??
         pickStr(r.legal_name) ??
         pickStr((r as { name?: unknown }).name);
-    if (clientName && !pickStr(r.company_name)) {
-        r.company_name = clientName;
+    if (clientName) {
+        if (!pickStr(r.company_name)) {
+            r.company_name = clientName;
+        }
+        if (!pickStr(r.client_name)) {
+            r.client_name = clientName;
+        }
     }
 
     const typeRaw = pickStr(r.client_type)?.toLowerCase();
@@ -114,6 +119,7 @@ export function normalizeClientResponseInput(raw: unknown): unknown {
 
     if (!pickStr(r.reference)) {
         const alt =
+            pickStr(r.idnat) ??
             pickStr(r.code) ??
             pickStr(r.client_code) ??
             pickStr((r as { numero?: unknown }).numero);
@@ -171,7 +177,9 @@ const clientResponseShape = z
     .object({
         id: idLike,
         client_type: clientTypeEnum,
+        client_name: z.string().nullable().optional(),
         reference: z.string(),
+        idnat: z.string().nullable().optional(),
         status: z.string(),
         first_name: z.string().nullable().optional(),
         last_name: z.string().nullable().optional(),
