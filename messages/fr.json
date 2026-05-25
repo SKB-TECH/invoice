@@ -646,6 +646,10 @@
       },
       "actions": {
         "backToList": "Retour à la liste",
+        "delete": "Supprimer",
+        "deleteConfirm": "Supprimer définitivement cet article ?",
+        "deleteSuccess": "Article supprimé.",
+        "deleteError": "Impossible de supprimer l'article.",
         "edit": "Modifier"
       }
     },

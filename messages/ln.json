@@ -647,6 +647,10 @@
       },
       "actions": {
         "backToList": "Kozonga na liste",
+        "delete": "Kolongola",
+        "deleteConfirm": "Kolongola eloko oyo mpo na libela ?",
+        "deleteSuccess": "Eloko elongolami.",
+        "deleteError": "Kolongola eloko elongwaki te.",
         "edit": "Kobongisa"
       }
     },

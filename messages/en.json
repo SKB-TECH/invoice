@@ -646,6 +646,10 @@
       },
       "actions": {
         "backToList": "Back to list",
+        "delete": "Delete",
+        "deleteConfirm": "Permanently delete this article?",
+        "deleteSuccess": "Article deleted.",
+        "deleteError": "Could not delete article.",
         "edit": "Edit"
       }
     },

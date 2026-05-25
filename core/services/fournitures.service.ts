@@ -48,3 +48,9 @@ export async function updateFourniture(
     );
     return data;
 }
+
+export async function deleteFourniture(id: number | string): Promise<void> {
+    await api.delete(
+        `${FOURNITURES_PATH}/${encodeURIComponent(String(id))}`,
+    );
+}
