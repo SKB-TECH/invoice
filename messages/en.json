@@ -751,9 +751,30 @@
       "loading": "Loading services…",
       "loadError": "Could not load services.",
       "empty": "No services match.",
+      "action": "Action",
+      "viewServiceDetail": "View service details for {code}",
+      "loadErrorDetail": "Could not load this service.",
+      "retryLoad": "Retry",
       "pageOfTotal": "Page {page} of {totalPages}",
       "paginationPrev": "Previous",
-      "paginationNext": "Next"
+      "paginationNext": "Next",
+      "view": {
+        "referenceLabel": "Ref.",
+        "fields": {
+          "serviceName": "Service name",
+          "code": "Code",
+          "description": "Description",
+          "businessSector": "Business sector",
+          "unitPrice": "Unit price excl. tax",
+          "priceInclTax": "Price incl. tax",
+          "taxGroup": "Taxation group",
+          "currency": "Currency",
+          "referential": "Referential"
+        },
+        "actions": {
+          "backToList": "Back to list"
+        }
+      }
     },
     "basicInfo": {
       "sectionTitle": "Basic information",

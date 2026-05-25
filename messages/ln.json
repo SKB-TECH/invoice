@@ -752,9 +752,30 @@
       "loading": "Kozwa ba services…",
       "loadError": "Liste elongwaki te.",
       "empty": "Ezali lisusu té.",
+      "action": "Etamboli",
+      "viewServiceDetail": "Komona service {code}",
+      "loadErrorDetail": "Kozwa service elongwami te.",
+      "retryLoad": "Meka lisusu",
       "pageOfTotal": "Page {page} / {totalPages}",
       "paginationPrev": "Liboso",
-      "paginationNext": "Landí"
+      "paginationNext": "Landí",
+      "view": {
+        "referenceLabel": "Réf.",
+        "fields": {
+          "serviceName": "Kombo ya service",
+          "code": "Code",
+          "description": "Ndimbola",
+          "businessSector": "Secteur ya mosala",
+          "unitPrice": "Ntalo unite kozanga TVA",
+          "priceInclTax": "Ntalo na TVA",
+          "taxGroup": "Etuluku ya kotá taxe",
+          "currency": "Devise",
+          "referential": "Référentiel"
+        },
+        "actions": {
+          "backToList": "Kozonga na liste"
+        }
+      }
     },
     "basicInfo": {
       "sectionTitle": "Bansango ya moboko",
