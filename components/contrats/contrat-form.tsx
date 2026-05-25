@@ -170,7 +170,7 @@ export function ContratForm(props: ContratFormProps) {
         }));
     }, [clientsResult?.items]);
 
-    const currencyOptions = useMemo(() => currencyService.list(), []);
+    const currencyOptions = [{ code: "USD", label: "USD" }, { code: "CDF", label: "CDF" }];
 
     const { data: referentielsPage, isLoading: referentielsLoading } =
         useQuery({
