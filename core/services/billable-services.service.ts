@@ -257,4 +257,10 @@ export const billableServicesService = {
                 : unwrapApiData<unknown>(data) ?? data;
         return normalizeBillableService(raw);
     },
+
+    async delete(id: number): Promise<void> {
+        await api.delete(
+            `${SERVICES_PATH}/${encodeURIComponent(String(id))}`,
+        );
+    },
 };

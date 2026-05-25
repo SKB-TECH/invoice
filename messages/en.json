@@ -773,6 +773,10 @@
         },
         "actions": {
           "backToList": "Back to list",
+          "delete": "Delete",
+          "deleteConfirm": "Permanently delete this service?",
+          "deleteSuccess": "Service deleted.",
+          "deleteError": "Could not delete service.",
           "edit": "Edit"
         }
       },

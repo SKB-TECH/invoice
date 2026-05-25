@@ -774,6 +774,10 @@
         },
         "actions": {
           "backToList": "Kozonga na liste",
+          "delete": "Kolongola",
+          "deleteConfirm": "Kolongola service oyo mpo na libela ?",
+          "deleteSuccess": "Service elongolami.",
+          "deleteError": "Kolongola service elongwaki te.",
           "edit": "Kobongola"
         }
       },

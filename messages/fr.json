@@ -773,6 +773,10 @@
         },
         "actions": {
           "backToList": "Retour à la liste",
+          "delete": "Supprimer",
+          "deleteConfirm": "Supprimer définitivement ce service ?",
+          "deleteSuccess": "Service supprimé.",
+          "deleteError": "Impossible de supprimer le service.",
           "edit": "Modifier"
         }
       },

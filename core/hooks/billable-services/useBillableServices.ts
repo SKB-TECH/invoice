@@ -79,3 +79,21 @@ export function useUpdateBillableService(
         onError: options?.onError,
     });
 }
+
+export function useDeleteBillableService(options?: {
+    onSuccess?: () => void;
+    onError?: (error: unknown) => void;
+}) {
+    const qc = useQueryClient();
+
+    return useMutation({
+        mutationFn: (id: number) => billableServicesService.delete(id),
+        onSuccess: async () => {
+            await qc.invalidateQueries({
+                queryKey: billableServicesKeys.all,
+            });
+            options?.onSuccess?.();
+        },
+        onError: options?.onError,
+    });
+}

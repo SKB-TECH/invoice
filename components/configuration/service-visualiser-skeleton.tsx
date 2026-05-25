@@ -95,6 +95,7 @@ export function ServiceVisualiserSkeleton() {
                 <div className="mt-6 flex flex-wrap items-center justify-end gap-5">
                     <SkeletonLine className="h-[50px] w-52 shrink-0 rounded" />
                     <SkeletonLine className="h-[50px] w-52 shrink-0 rounded" />
+                    <SkeletonLine className="h-[50px] w-52 shrink-0 rounded" />
                 </div>
             </div>
         </main>
