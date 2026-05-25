@@ -21,9 +21,9 @@ function SkeletonField() {
     return <SkeletonLine className="h-[50px] w-full" />;
 }
 
-export function ArticleVisualiserSkeleton() {
-    const tView = useTranslations("articles.view");
-    const tList = useTranslations("articles.list");
+export function ServiceVisualiserSkeleton() {
+    const tView = useTranslations("configuration.services.view");
+    const tList = useTranslations("configuration.services");
     const tNavbar = useTranslations("navbar");
 
     return (
@@ -38,8 +38,8 @@ export function ArticleVisualiserSkeleton() {
                     {tNavbar("Accueil")}
                 </Link>
                 <span>/</span>
-                <Link href="/home/articles" className="hover:text-slate-600">
-                    {tList("title")}
+                <Link href="/home/services" className="hover:text-slate-600">
+                    {tList("listSectionTitle")}
                 </Link>
                 <span>/</span>
                 <SkeletonLine className="inline-block h-4 w-28 max-w-48 sm:max-w-md" />
@@ -55,28 +55,37 @@ export function ArticleVisualiserSkeleton() {
             <div className="mt-4 bg-white p-8">
                 <div className="grid grid-cols-1 gap-x-14 gap-y-4 lg:grid-cols-2 animate-pulse">
                     <div>
-                        <FieldLabel>{tView("fields.name")}</FieldLabel>
+                        <FieldLabel>{tView("fields.serviceName")}</FieldLabel>
                         <SkeletonField />
                     </div>
                     <div>
                         <FieldLabel>{tView("fields.code")}</FieldLabel>
                         <SkeletonField />
                     </div>
-
                     <div>
-                        <FieldLabel>{tView("fields.priceExclTax")}</FieldLabel>
+                        <FieldLabel>{tView("fields.businessSector")}</FieldLabel>
+                        <SkeletonField />
+                    </div>
+                    <div>
+                        <FieldLabel>{tView("fields.unitPrice")}</FieldLabel>
+                        <SkeletonField />
+                    </div>
+                    <div>
+                        <FieldLabel>{tView("fields.taxGroup")}</FieldLabel>
                         <SkeletonField />
                     </div>
                     <div>
                         <FieldLabel>{tView("fields.priceInclTax")}</FieldLabel>
                         <SkeletonField />
                     </div>
-
-                    <div className="lg:col-span-2">
-                        <FieldLabel>{tView("fields.taxGroup")}</FieldLabel>
+                    <div>
+                        <FieldLabel>{tView("fields.currency")}</FieldLabel>
                         <SkeletonField />
                     </div>
-
+                    <div>
+                        <FieldLabel>{tView("fields.referential")}</FieldLabel>
+                        <SkeletonField />
+                    </div>
                     <div className="lg:col-span-2">
                         <FieldLabel>{tView("fields.description")}</FieldLabel>
                         <SkeletonLine className="min-h-[120px] w-full" />

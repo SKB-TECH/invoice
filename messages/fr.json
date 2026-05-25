@@ -646,6 +646,10 @@
       },
       "actions": {
         "backToList": "Retour à la liste",
+        "delete": "Supprimer",
+        "deleteConfirm": "Supprimer définitivement cet article ?",
+        "deleteSuccess": "Article supprimé.",
+        "deleteError": "Impossible de supprimer l'article.",
         "edit": "Modifier"
       }
     },
@@ -751,9 +755,44 @@
       "loading": "Chargement des services…",
       "loadError": "Impossible de charger les services.",
       "empty": "Aucun service correspondant.",
+      "action": "Action",
+      "viewServiceDetail": "Voir le détail du service {code}",
+      "loadErrorDetail": "Impossible de charger ce service.",
+      "retryLoad": "Réessayer",
       "pageOfTotal": "Page {page} sur {totalPages}",
       "paginationPrev": "Précédent",
-      "paginationNext": "Suivant"
+      "paginationNext": "Suivant",
+      "view": {
+        "referenceLabel": "Réf.",
+        "fields": {
+          "serviceName": "Nom du service",
+          "code": "Code",
+          "description": "Description",
+          "businessSector": "Secteur d’activité",
+          "unitPrice": "Prix unitaire HT",
+          "priceInclTax": "Prix TTC",
+          "taxGroup": "Groupe de taxation",
+          "currency": "Devise",
+          "referential": "Référentiel"
+        },
+        "actions": {
+          "backToList": "Retour à la liste",
+          "delete": "Supprimer",
+          "deleteConfirm": "Supprimer définitivement ce service ?",
+          "deleteSuccess": "Service supprimé.",
+          "deleteError": "Impossible de supprimer le service.",
+          "edit": "Modifier"
+        }
+      },
+      "edit": {
+        "title": "Modifier le service",
+        "breadcrumbSegment": "Modifier",
+        "referencePrefix": "Réf. : ",
+        "saving": "Enregistrement…",
+        "saveChanges": "Enregistrer les modifications",
+        "toastSaved": "Service mis à jour.",
+        "toastSaveError": "Impossible d'enregistrer le service."
+      }
     },
     "basicInfo": {
       "sectionTitle": "Informations de base",

@@ -646,6 +646,10 @@
       },
       "actions": {
         "backToList": "Back to list",
+        "delete": "Delete",
+        "deleteConfirm": "Permanently delete this article?",
+        "deleteSuccess": "Article deleted.",
+        "deleteError": "Could not delete article.",
         "edit": "Edit"
       }
     },
@@ -751,9 +755,44 @@
       "loading": "Loading services…",
       "loadError": "Could not load services.",
       "empty": "No services match.",
+      "action": "Action",
+      "viewServiceDetail": "View service details for {code}",
+      "loadErrorDetail": "Could not load this service.",
+      "retryLoad": "Retry",
       "pageOfTotal": "Page {page} of {totalPages}",
       "paginationPrev": "Previous",
-      "paginationNext": "Next"
+      "paginationNext": "Next",
+      "view": {
+        "referenceLabel": "Ref.",
+        "fields": {
+          "serviceName": "Service name",
+          "code": "Code",
+          "description": "Description",
+          "businessSector": "Business sector",
+          "unitPrice": "Unit price excl. tax",
+          "priceInclTax": "Price incl. tax",
+          "taxGroup": "Taxation group",
+          "currency": "Currency",
+          "referential": "Referential"
+        },
+        "actions": {
+          "backToList": "Back to list",
+          "delete": "Delete",
+          "deleteConfirm": "Permanently delete this service?",
+          "deleteSuccess": "Service deleted.",
+          "deleteError": "Could not delete service.",
+          "edit": "Edit"
+        }
+      },
+      "edit": {
+        "title": "Edit service",
+        "breadcrumbSegment": "Edit",
+        "referencePrefix": "Ref.: ",
+        "saving": "Saving…",
+        "saveChanges": "Save changes",
+        "toastSaved": "Service updated.",
+        "toastSaveError": "Could not save service."
+      }
     },
     "basicInfo": {
       "sectionTitle": "Basic information",

@@ -3,25 +3,25 @@
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 
-import { useDeleteFourniture } from "@/core/hooks/fournitures/useDeleteFourniture";
+import { useDeleteBillableService } from "@/core/hooks/billable-services/useBillableServices";
 import { getAxiosErrorMessage } from "@/core/utils/axiosErrorMessage";
 import { useRouter } from "@/i18n/routing";
 
-type VisualiserArticleActionsProps = {
-    articleId: number;
+type Props = {
+    serviceId: number;
     listPath?: string;
     modifierPath: string;
 };
 
-export function VisualiserArticleActions({
-    articleId,
-    listPath = "/home/articles",
+export function VisualiserServiceActions({
+    serviceId,
+    listPath = "/home/services",
     modifierPath,
-}: VisualiserArticleActionsProps) {
+}: Props) {
     const router = useRouter();
-    const t = useTranslations("articles.view.actions");
+    const t = useTranslations("configuration.services.view.actions");
 
-    const deleteMutation = useDeleteFourniture();
+    const deleteMutation = useDeleteBillableService();
 
     const buttonClass =
         "inline-flex h-[50px] w-52 items-center justify-center rounded text-[14px] font-semibold leading-none disabled:cursor-not-allowed disabled:opacity-60";
@@ -29,13 +29,15 @@ export function VisualiserArticleActions({
     const handleDelete = () => {
         if (!window.confirm(t("deleteConfirm"))) return;
 
-        deleteMutation.mutate(articleId, {
+        deleteMutation.mutate(serviceId, {
             onSuccess: () => {
                 toast.success(t("deleteSuccess"));
                 router.push(listPath);
             },
             onError: (err) => {
-                toast.error(getAxiosErrorMessage(err, t("deleteError")));
+                toast.error(
+                    getAxiosErrorMessage(err, t("deleteError")),
+                );
             },
         });
     };

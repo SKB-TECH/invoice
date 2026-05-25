@@ -2,9 +2,12 @@ import { api } from "@/core/services/api";
 import { unwrapApiData } from "@/core/utils/apiResponse";
 import type {
     BillableServiceItem,
+    BillableServiceReferentialInfo,
+    BillableServiceTaxGroupInfo,
     BillableServicesListMeta,
     BillableServicesListResult,
     CreateBillableServicePayload,
+    UpdateBillableServicePayload,
 } from "@/core/types/billable-service";
 
 const SERVICES_PATH = "/invoices/services";
@@ -72,6 +75,52 @@ function extractRowsAndTotal(raw: unknown): {
     return null;
 }
 
+function parseReferentialInfo(
+    raw: unknown,
+): BillableServiceReferentialInfo | undefined {
+    if (!raw || typeof raw !== "object") return undefined;
+    const o = raw as Record<string, unknown>;
+    const idRaw = o.id;
+    return {
+        id:
+            typeof idRaw === "number"
+                ? idRaw
+                : Number.isFinite(Number(idRaw))
+                  ? Number(idRaw)
+                  : undefined,
+        referentiel:
+            typeof o.referentiel === "string" ? o.referentiel : undefined,
+        title: typeof o.title === "string" ? o.title : undefined,
+        code: typeof o.code === "string" ? o.code : undefined,
+        value: typeof o.value === "string" ? o.value : undefined,
+        parent_id:
+            typeof o.parent_id === "number" ? o.parent_id : undefined,
+    };
+}
+
+function parseTaxGroupInfo(
+    raw: unknown,
+): BillableServiceTaxGroupInfo | undefined {
+    if (!raw || typeof raw !== "object") return undefined;
+    const o = raw as Record<string, unknown>;
+    const idRaw = o.id;
+    const id =
+        typeof idRaw === "number"
+            ? idRaw
+            : Number.isFinite(Number(idRaw))
+              ? Number(idRaw)
+              : NaN;
+    if (!Number.isFinite(id)) return undefined;
+
+    return {
+        id,
+        code: typeof o.code === "string" ? o.code : undefined,
+        title: typeof o.title === "string" ? o.title : undefined,
+        rate: typeof o.rate === "number" ? o.rate : undefined,
+        mention: typeof o.mention === "string" ? o.mention : undefined,
+    };
+}
+
 export function normalizeBillableService(row: unknown): BillableServiceItem {
     const o = row as Record<string, unknown>;
     const idRaw = o.id;
@@ -95,6 +144,7 @@ export function normalizeBillableService(row: unknown): BillableServiceItem {
                 : "USD",
         tax_group:
             typeof o.tax_group === "number" ? o.tax_group : undefined,
+        tax_group_info: parseTaxGroupInfo(o.tax_group_info) ?? null,
         tax_rate:
             typeof o.tax_rate === "number" ? o.tax_rate : undefined,
         unit_price:
@@ -107,8 +157,10 @@ export function normalizeBillableService(row: unknown): BillableServiceItem {
                 : undefined,
         billing_type:
             typeof o.billing_type === "number" ? o.billing_type : undefined,
+        billing_type_info: parseReferentialInfo(o.billing_type_info) ?? null,
         category_id:
             typeof o.category_id === "number" ? o.category_id : undefined,
+        category_info: parseReferentialInfo(o.category_info) ?? null,
         business_sector:
             typeof o.business_sector === "string"
                 ? o.business_sector
@@ -117,6 +169,10 @@ export function normalizeBillableService(row: unknown): BillableServiceItem {
         status: typeof o.status === "number" ? o.status : undefined,
         account_id:
             typeof o.account_id === "number" ? o.account_id : undefined,
+        created_at:
+            typeof o.created_at === "string" ? o.created_at : undefined,
+        updated_at:
+            typeof o.updated_at === "string" ? o.updated_at : undefined,
     };
 }
 
@@ -168,5 +224,43 @@ export const billableServicesService = {
                 ? (data as { data: unknown }).data
                 : data;
         return normalizeBillableService(raw);
+    },
+
+    async getById(id: number): Promise<BillableServiceItem> {
+        const { data } = await api.get<unknown>(
+            `${SERVICES_PATH}/${encodeURIComponent(String(id))}`,
+        );
+        const raw =
+            data &&
+            typeof data === "object" &&
+            "data" in data &&
+            (data as { data: unknown }).data !== undefined
+                ? (data as { data: unknown }).data
+                : unwrapApiData<unknown>(data) ?? data;
+        return normalizeBillableService(raw);
+    },
+
+    async update(
+        id: number,
+        payload: UpdateBillableServicePayload,
+    ): Promise<BillableServiceItem> {
+        const { data } = await api.put<unknown>(
+            `${SERVICES_PATH}/${encodeURIComponent(String(id))}`,
+            payload,
+        );
+        const raw =
+            data &&
+            typeof data === "object" &&
+            "data" in data &&
+            (data as { data: unknown }).data !== undefined
+                ? (data as { data: unknown }).data
+                : unwrapApiData<unknown>(data) ?? data;
+        return normalizeBillableService(raw);
+    },
+
+    async delete(id: number): Promise<void> {
+        await api.delete(
+            `${SERVICES_PATH}/${encodeURIComponent(String(id))}`,
+        );
     },
 };

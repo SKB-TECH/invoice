@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { ChevronLeft, ChevronRight, Search } from "lucide-react";
+import { ChevronLeft, ChevronRight, Eye, Search } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 import { BillableServicesTableSkeleton } from "@/components/configuration/billable-services-table-skeleton";
@@ -16,7 +16,8 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
-import { Link } from "@/i18n/routing";
+import { Link, useRouter } from "@/i18n/routing";
+import { cn } from "@/lib/utils";
 import { useBillableServicesList } from "@/core/hooks/billable-services/useBillableServices";
 import { useInvoiceTaxGroups } from "@/core/hooks/invoices/useInvoiceTaxGroups";
 import {
@@ -32,7 +33,7 @@ const LIMIT = 10;
 const TABLE_HEAD_CLASS =
     "h-11 bg-slate-100 px-4 text-left text-sm font-semibold text-slate-700";
 
-const TABLE_COLUMN_COUNT = 7;
+const TABLE_COLUMN_COUNT = 8;
 
 function formatMoney(n: number): string {
     return new Intl.NumberFormat("fr-FR", {
@@ -96,6 +97,7 @@ type ServicesSectionProps = {
 export function ServicesSection({
     suppressCardHeading = false,
 }: ServicesSectionProps) {
+    const router = useRouter();
     const t = useTranslations("configuration.services");
     const [page, setPage] = useState(1);
     const [search, setSearch] = useState("");
@@ -199,6 +201,14 @@ export function ServicesSection({
                                 <TableHead className={TABLE_HEAD_CLASS}>
                                     {t("columns.taxGroup")}
                                 </TableHead>
+                                <TableHead
+                                    className={cn(
+                                        TABLE_HEAD_CLASS,
+                                        "text-right",
+                                    )}
+                                >
+                                    {t("action")}
+                                </TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
@@ -259,6 +269,25 @@ export function ServicesSection({
                                             </TableCell>
                                             <TableCell className="max-w-[220px] truncate px-4 py-3 text-sm text-slate-800">
                                                 {displayTaxGroup ?? "—"}
+                                            </TableCell>
+                                            <TableCell className="px-4 py-3 text-right">
+                                                <Button
+                                                    type="button"
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    className="cursor-pointer text-slate-500 hover:bg-slate-100 hover:text-slate-700"
+                                                    aria-label={t(
+                                                        "viewServiceDetail",
+                                                        { code: row.code },
+                                                    )}
+                                                    onClick={() =>
+                                                        router.push(
+                                                            `/home/services/${encodeURIComponent(String(row.id))}/visualiser`,
+                                                        )
+                                                    }
+                                                >
+                                                    <Eye className="size-4" />
+                                                </Button>
                                             </TableCell>
                                         </TableRow>
                                     );
