@@ -387,7 +387,7 @@
       },
       "title": "Kiliya ya sika",
       "form": {
-        "reference": "Numelo ya Reference",
+        "reference": "IDNAT",
         "nom": "Kombo ya kiliya",
         "sousTitre": "Motó ya nse",
         "nif": "Numelo ya NIF",
@@ -414,6 +414,15 @@
         "annule": "Kanga",
         "save": "Bomba"
       }
+    },
+    "editClient": {
+      "breadcrumbStep": "Bobongisa",
+      "title": "Bobongisa kiliya",
+      "idnatLabel": "IDNAT",
+      "loading": "Kotanga…",
+      "loadError": "Ekoki te kotanga kiliya oyo.",
+      "retry": "Meka lisusu",
+      "backToList": "Zonga na liste"
     },
     "listClients": {
       "breadcrumb": {
@@ -460,6 +469,7 @@
         "subtitle": "Sous-titre",
         "status": "Etaleli",
         "clientType": "Lolenge ya kiliya",
+        "idnat": "IDNAT",
         "firstName": "Prénom",
         "lastName": "Nom",
         "businessSector": "Secteur ya mosala",

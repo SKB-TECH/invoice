@@ -180,7 +180,7 @@ export default function PaymentsPage() {
     const [currencyStr, setCurrencyStr] = useState("USD");
     const [channelIdStr, setChannelIdStr] = useState("");
     const [methodIdStr, setMethodIdStr] = useState("");
-    const [exchangeRateStr, setExchangeRateStr] = useState("1");
+    const [exchangeRateStr, setExchangeRateStr] = useState("");
     const [collectorStr, setCollectorStr] = useState("");
     const [drawerStr, setDrawerStr] = useState("");
     const [formError, setFormError] = useState("");
@@ -278,7 +278,7 @@ export default function PaymentsPage() {
         setCurrencyStr("USD");
         setChannelIdStr("");
         setMethodIdStr("");
-        setExchangeRateStr("1");
+        setExchangeRateStr("");
         setCollectorStr("");
         setDrawerStr("");
         setFormError("");
@@ -666,7 +666,15 @@ export default function PaymentsPage() {
                             ) : null}
                         </div>
 
-                        <div>
+                        <div className="min-w-0">
+                            <FieldLabel>{t("form.exchangeRate")}</FieldLabel>
+                            <InputField
+                                value={exchangeRateStr}
+                                onChange={(v) => setExchangeRateStr(v)}
+                            />
+                        </div>
+
+                        <div className="min-w-0">
                             <FieldLabel>{t("form.channel")}</FieldLabel>
                             <SelectField
                                 placeholder={channelPlaceHolder}
@@ -683,7 +691,7 @@ export default function PaymentsPage() {
                             />
                         </div>
 
-                        <div>
+                        <div className="min-w-0">
                             <FieldLabel>{t("form.method")}</FieldLabel>
                             <SelectField
                                 placeholder={methodPlaceHolder}
@@ -696,14 +704,6 @@ export default function PaymentsPage() {
                                     setMethodIdStr(v);
                                     setFormError("");
                                 }}
-                            />
-                        </div>
-
-                        <div className="min-w-0">
-                            <FieldLabel>{t("form.exchangeRate")}</FieldLabel>
-                            <InputField
-                                value={exchangeRateStr}
-                                onChange={(v) => setExchangeRateStr(v)}
                             />
                         </div>
                     </div>

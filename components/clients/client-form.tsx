@@ -175,7 +175,7 @@ export function ClientForm(props: ClientFormProps) {
     return (
         <form className="mt-4 bg-white p-8" onSubmit={onSubmit} noValidate>
             <div className="grid grid-cols-1 gap-x-14 gap-y-4 lg:grid-cols-2">
-                <div>
+                <div className="min-w-0">
                     <FieldLabel>
                         Type de client <span className="text-red-500">*</span>
                     </FieldLabel>
@@ -197,7 +197,7 @@ export function ClientForm(props: ClientFormProps) {
                     </NativeSelectField>
                 </div>
 
-                <div>
+                <div className="min-w-0">
                     <FieldLabel>
                         {t("reference")} <span className="text-red-500">*</span>
                     </FieldLabel>
@@ -213,7 +213,7 @@ export function ClientForm(props: ClientFormProps) {
                     />
                 </div>
 
-                <div>
+                <div className="min-w-0">
                     <FieldLabel>{t("status.title")}</FieldLabel>
                     <NativeSelectField
                         id="statut"
@@ -239,9 +239,18 @@ export function ClientForm(props: ClientFormProps) {
                     </NativeSelectField>
                 </div>
 
+                <div className="min-w-0">
+                    <FieldLabel>{t("nif")}</FieldLabel>
+                    <InputField
+                        id="nif"
+                        value={form.watch("nif")}
+                        onChange={(value) => form.setValue("nif", value)}
+                    />
+                </div>
+
                 {clientType === "personal" ? (
                     <>
-                        <div>
+                        <div className="min-w-0">
                             <FieldLabel>
                                 Prénom <span className="text-red-500">*</span>
                             </FieldLabel>
@@ -255,7 +264,7 @@ export function ClientForm(props: ClientFormProps) {
                                 error={errors.first_name?.message}
                             />
                         </div>
-                        <div>
+                        <div className="min-w-0">
                             <FieldLabel>
                                 Nom <span className="text-red-500">*</span>
                             </FieldLabel>
@@ -274,7 +283,7 @@ export function ClientForm(props: ClientFormProps) {
 
                 {clientType === "pme" || clientType === "corporate" ? (
                     <>
-                        <div className="lg:col-span-2">
+                        <div className="min-w-0">
                             <FieldLabel>
                                 {t("nom")}{" "}
                                 <span className="text-red-500">*</span>
@@ -289,7 +298,7 @@ export function ClientForm(props: ClientFormProps) {
                                 error={errors.company_name?.message}
                             />
                         </div>
-                        <div className="lg:col-span-2">
+                        <div className="min-w-0">
                             <FieldLabel>{t("sousTitre")}</FieldLabel>
                             <InputField
                                 value={form.watch("subtitle")}
@@ -298,7 +307,7 @@ export function ClientForm(props: ClientFormProps) {
                                 }
                             />
                         </div>
-                        <div>
+                        <div className="min-w-0">
                             <FieldLabel>
                                 {t("rccm")}{" "}
                                 <span className="text-red-500">*</span>
@@ -313,7 +322,7 @@ export function ClientForm(props: ClientFormProps) {
                                 error={errors.rccm?.message}
                             />
                         </div>
-                        <div>
+                        <div className="min-w-0">
                             <FieldLabel>
                                 Secteur d&apos;activité{" "}
                                 <span className="text-red-500">*</span>
@@ -331,28 +340,7 @@ export function ClientForm(props: ClientFormProps) {
                     </>
                 ) : null}
 
-                {clientType === "corporate" ? (
-                    <div className="lg:col-span-2">
-                        <FieldLabel>Représentant légal</FieldLabel>
-                        <InputField
-                            value={form.watch("legal_representative")}
-                            onChange={(value) =>
-                                form.setValue("legal_representative", value)
-                            }
-                        />
-                    </div>
-                ) : null}
-
-                <div>
-                    <FieldLabel>{t("nif")}</FieldLabel>
-                    <InputField
-                        id="nif"
-                        value={form.watch("nif")}
-                        onChange={(value) => form.setValue("nif", value)}
-                    />
-                </div>
-
-                <div>
+                <div className="min-w-0">
                     <FieldLabel>{t("tel")}</FieldLabel>
                     <InputField
                         id="telephone"
@@ -362,7 +350,7 @@ export function ClientForm(props: ClientFormProps) {
                     />
                 </div>
 
-                <div>
+                <div className="min-w-0">
                     <FieldLabel>{t("email")}</FieldLabel>
                     <InputField
                         id="email"
@@ -377,23 +365,64 @@ export function ClientForm(props: ClientFormProps) {
                     />
                 </div>
 
-                <div>
-                    <FieldLabel>{t("pays")}</FieldLabel>
-                    <InputField
-                        id="pays"
-                        value={form.watch("country")}
-                        onChange={(value) => form.setValue("country", value)}
-                    />
-                </div>
+                {clientType === "corporate" ? (
+                    <>
+                        <div className="min-w-0">
+                            <FieldLabel>Représentant légal</FieldLabel>
+                            <InputField
+                                value={form.watch("legal_representative")}
+                                onChange={(value) =>
+                                    form.setValue("legal_representative", value)
+                                }
+                            />
+                        </div>
+                        <div className="min-w-0">
+                            <FieldLabel>{t("pays")}</FieldLabel>
+                            <InputField
+                                id="pays"
+                                value={form.watch("country")}
+                                onChange={(value) =>
+                                    form.setValue("country", value)
+                                }
+                            />
+                        </div>
 
-                <div className="lg:col-span-2">
-                    <FieldLabel>{t("adresse")}</FieldLabel>
-                    <InputField
-                        id="adresse"
-                        value={form.watch("address")}
-                        onChange={(value) => form.setValue("address", value)}
-                    />
-                </div>
+                        <div className="min-w-0 lg:col-span-2">
+                            <FieldLabel>{t("adresse")}</FieldLabel>
+                            <InputField
+                                id="adresse"
+                                value={form.watch("address")}
+                                onChange={(value) =>
+                                    form.setValue("address", value)
+                                }
+                            />
+                        </div>
+                    </>
+                ) : (
+                    <>
+                        <div className="min-w-0">
+                            <FieldLabel>{t("pays")}</FieldLabel>
+                            <InputField
+                                id="pays"
+                                value={form.watch("country")}
+                                onChange={(value) =>
+                                    form.setValue("country", value)
+                                }
+                            />
+                        </div>
+
+                        <div className="min-w-0">
+                            <FieldLabel>{t("adresse")}</FieldLabel>
+                            <InputField
+                                id="adresse"
+                                value={form.watch("address")}
+                                onChange={(value) =>
+                                    form.setValue("address", value)
+                                }
+                            />
+                        </div>
+                    </>
+                )}
             </div>
 
             <div className="mt-6 flex flex-wrap items-center justify-end gap-5">

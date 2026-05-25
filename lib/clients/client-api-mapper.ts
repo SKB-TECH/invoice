@@ -18,16 +18,25 @@ export function apiStatusToClientStatut(status: string): ClientStatutForm {
     return "actif";
 }
 
-export function clientResponseToListRow(row: ClientResponse): ClientListRow {
-    const nom =
+function clientDisplayName(row: ClientResponse): string {
+    return (
+        row.client_name?.trim() ||
         row.company_name?.trim() ||
         [row.first_name, row.last_name].filter(Boolean).join(" ").trim() ||
-        row.reference;
+        row.idnat?.trim() ||
+        row.reference
+    );
+}
 
+function clientReference(row: ClientResponse): string {
+    return row.idnat?.trim() || row.reference;
+}
+
+export function clientResponseToListRow(row: ClientResponse): ClientListRow {
     return {
         id: row.id,
-        reference: row.reference,
-        titre: nom,
+        reference: clientReference(row),
+        titre: clientDisplayName(row),
         type: clientTypeLibelle(row.client_type),
         nif: row.nif ?? "",
         statut: clientStatutToUi(apiStatusToClientStatut(row.status)),
@@ -36,14 +45,11 @@ export function clientResponseToListRow(row: ClientResponse): ClientListRow {
 }
 
 export function clientResponseToDetail(row: ClientResponse): ClientDetailRecord {
-    const nom =
-        row.company_name?.trim() ||
-        [row.first_name, row.last_name].filter(Boolean).join(" ").trim() ||
-        row.reference;
+    const nom = clientDisplayName(row);
 
     return {
         id: row.id,
-        reference: row.reference,
+        reference: clientReference(row),
         nomClient: nom,
         sousTitre: row.subtitle ?? "",
         nif: row.nif ?? "",
