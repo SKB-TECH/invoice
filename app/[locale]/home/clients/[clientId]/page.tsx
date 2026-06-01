@@ -17,8 +17,9 @@ import {
     type ClientStatutUi,
 } from "@/lib/clients/clients-data";
 import { clientResponseToDetail } from "@/lib/clients/client-api-mapper";
-import { resolveCountryDisplay } from "@/components/shared/OtherComponents/components/clients/countries";
+import { resolveCountryDisplay } from "@/core/schemas/country.schema";
 import { useClient } from "@/core/hooks/client/useClient";
+import { useCountries } from "@/core/hooks/country/useCountry";
 import { useTypeClient } from "@/core/hooks/type-client/useTypeClient";
 import { clientTypeShowsField } from "@/core/schemas/type-client.schema";
 
@@ -48,6 +49,7 @@ export default function VisualiserClientPage() {
     const tList = useTranslations("clients.listClients");
     const tNavbar = useTranslations("navbar");
     const { data, isPending, isError, refetch } = useClient(clientId);
+    const { data: countries = [] } = useCountries();
     const { data: clientTypes = [] } = useTypeClient();
 
     if (isPending) {
@@ -229,7 +231,8 @@ export default function VisualiserClientPage() {
                     <div className="min-w-0">
                         <FieldLabel>{t("fields.country")}</FieldLabel>
                         <ReadOnlyField>
-                            {resolveCountryDisplay(client.pays) || "—"}
+                            {resolveCountryDisplay(countries, client.pays) ||
+                                "—"}
                         </ReadOnlyField>
                     </div>
 

@@ -394,6 +394,8 @@
         "legalRepresentative": "Legal representative",
         "countryHint": "Numeric code (e.g. 243)",
         "countryPlaceholder": "Search for a country…",
+        "countryLoading": "Loading countries…",
+        "countryLoadError": "Could not load countries.",
         "clientTypePlaceholder": "Choose a type",
         "clientTypeLoading": "Loading types…",
         "clientTypeLoadError": "Could not load customer types.",

@@ -19,6 +19,11 @@ import {
     clientMutationErrorMessage,
 } from "@/core/hooks/client/useClient";
 import { useTypeClient } from "@/core/hooks/type-client/useTypeClient";
+import { useCountries } from "@/core/hooks/country/useCountry";
+import {
+    countryFormValue,
+    findCountryByValue,
+} from "@/core/schemas/country.schema";
 import {
     clientTypeFieldIsRequired,
     clientTypeShowsField,
@@ -62,7 +67,7 @@ function emptyCreateDefaults(): ClientFormValues {
         phone: "",
         email: "",
         address: "",
-        country: "243",
+        country: "",
         nif: "",
         rccm: "",
         business_sector: "",
@@ -224,6 +229,11 @@ export function ClientForm(props: ClientFormProps) {
         isPending: clientTypesPending,
         isError: clientTypesError,
     } = useTypeClient();
+    const {
+        data: countries = [],
+        isPending: countriesPending,
+        isError: countriesError,
+    } = useCountries();
 
     const defaults =
         props.variant === "edit"
@@ -288,6 +298,25 @@ export function ClientForm(props: ClientFormProps) {
             });
         }
     }, [clientTypes, form]);
+
+    useEffect(() => {
+        if (countries.length === 0) return;
+
+        const current = form.getValues("country");
+        if (current && findCountryByValue(countries, current)) {
+            return;
+        }
+
+        if (props.variant !== "create") return;
+
+        const defaultCountry =
+            countries.find((item) => item.code === "CD") ?? countries[0];
+        if (defaultCountry) {
+            form.setValue("country", countryFormValue(defaultCountry), {
+                shouldValidate: false,
+            });
+        }
+    }, [countries, form, props.variant]);
 
     const onSubmit = form.handleSubmit((values) => {
         const typeError = validateRequiredTypeFields(
@@ -678,8 +707,13 @@ export function ClientForm(props: ClientFormProps) {
                     <CountryAutocomplete
                         id="pays"
                         value={form.watch("country")}
+                        countries={countries}
+                        loading={countriesPending}
+                        loadError={countriesError}
                         disabled={pending}
                         placeholder={t("countryPlaceholder")}
+                        loadingPlaceholder={t("countryLoading")}
+                        loadErrorMessage={t("countryLoadError")}
                         onChange={(value) =>
                             form.setValue("country", value, {
                                 shouldValidate: true,
