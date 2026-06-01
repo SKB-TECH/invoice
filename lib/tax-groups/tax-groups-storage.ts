@@ -104,7 +104,7 @@ export function writeTaxGroups(groups: TaxGroup[]): void {
 export function taxGroupLabelFallback(id: string): string {
   const def = groupById(id);
   if (def) {
-    return `${def.code} — ${def.name} (${def.ratePercent}\u202f%)`;
+    return `${def.code} — ${def.name} [${def.ratePercent}\u202f%]`;
   }
   return id;
 }
@@ -115,7 +115,7 @@ function formatTaxGroupNameAndRate(
   active: boolean,
 ): string {
   const suffix = active ? "" : " — inactif";
-  return `${name} (${ratePercent}\u202f%)${suffix}`;
+  return `${name} [${ratePercent}\u202f%]${suffix}`;
 }
 
 export function getTaxGroupReadableLabel(id: string): string {
@@ -144,7 +144,7 @@ export function getTaxGroupDisplayLabel(
         return formatTaxGroupNameAndRate(g.name, g.ratePercent, g.active);
       }
       const suffix = g.active ? "" : " — inactif";
-      return `${g.code} — ${g.name} (${g.ratePercent}\u202f%)${suffix}`;
+      return `${g.code} — ${g.name} [${g.ratePercent}\u202f%]${suffix}`;
     }
   }
   if (!includeCode) {
@@ -159,7 +159,7 @@ export function formatTaxGroupOptionLabel(
 ): string {
   const showInactive = opts?.showInactive ?? false;
   const suffix = !g.active && showInactive ? " — inactif" : "";
-  return `${g.name} - ${g.ratePercent}%${suffix}`;
+  return `${g.name} [${g.ratePercent}\u202f%]${suffix}`;
 }
 
 export function generateNewTaxGroupId(name: string): string {

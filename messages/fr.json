@@ -642,7 +642,10 @@
       "retryReferentialsFetch": "Réessayer",
       "referentialLoadError": "Impossible de charger les référentiels.",
       "referentialNoneForAxis": "Aucun référentiel disponible dans le catalogue. Ajoutez-en dans la configuration.",
-      "invalidReferential": "Choisissez un référentiel valide."
+      "invalidReferential": "Choisissez un référentiel valide.",
+      "itemTypeLoading": "Chargement des codes…",
+      "itemTypeLoadError": "Impossible de charger les types d'article.",
+      "retryItemTypesFetch": "Réessayer"
     },
     "view": {
       "title": "Détail de l'article",
@@ -760,6 +763,10 @@
       "referentialsLoading": "Chargement du catalogue…",
       "referentialsLoadError": "Impossible de charger les référentiels.",
       "retryReferentials": "Réessayer",
+      "itemTypesPlaceholder": "Sélectionner un code",
+      "itemTypeLoading": "Chargement des codes…",
+      "itemTypeLoadError": "Impossible de charger les types d'article.",
+      "retryItemTypesFetch": "Réessayer",
       "toastCreated": "Service créé.",
       "toastCreateErrorFallback": "Création du service impossible.",
       "invalidForm": "Complétez tous les champs obligatoires (nombres entiers positifs où requis pour groupe fiscal et référentiel).",

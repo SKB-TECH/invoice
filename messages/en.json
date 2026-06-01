@@ -642,7 +642,10 @@
       "retryReferentialsFetch": "Try again",
       "referentialLoadError": "Could not load referentials.",
       "referentialNoneForAxis": "No referential rows in the catalogue. Add some in settings.",
-      "invalidReferential": "Please choose a valid referential."
+      "invalidReferential": "Please choose a valid referential.",
+      "itemTypeLoading": "Loading codes…",
+      "itemTypeLoadError": "Unable to load item types.",
+      "retryItemTypesFetch": "Retry"
     },
     "view": {
       "title": "Article details",
@@ -760,6 +763,10 @@
       "referentialsLoading": "Loading catalog…",
       "referentialsLoadError": "Could not load catalog rows.",
       "retryReferentials": "Retry",
+      "itemTypesPlaceholder": "Select a code",
+      "itemTypeLoading": "Loading codes…",
+      "itemTypeLoadError": "Unable to load item types.",
+      "retryItemTypesFetch": "Retry",
       "toastCreated": "Service created.",
       "toastCreateErrorFallback": "Could not create service.",
       "invalidForm": "Fill required fields; use valid numbers for IDs and monetary fields.",

@@ -643,7 +643,10 @@
       "retryReferentialsFetch": "Komeka lisusu",
       "referentialLoadError": "Référentiels ekokaki te kótia.",
       "referentialNoneForAxis": "Référentiel moko te. Bakisa na bobongisi.",
-      "invalidReferential": "Pona référentiel ya malamu."
+      "invalidReferential": "Pona référentiel ya malamu.",
+      "itemTypeLoading": "Tozali koluka ba codes…",
+      "itemTypeLoadError": "Impossible de koluka ba types ya article.",
+      "retryItemTypesFetch": "Meka lisusu"
     },
     "view": {
       "title": "Makambo matali eloko",
@@ -761,6 +764,10 @@
       "referentialsLoading": "Kozwa catalogue…",
       "referentialsLoadError": "Catalogue elongwaki te.",
       "retryReferentials": "Meke lisusu",
+      "itemTypesPlaceholder": "Pona code",
+      "itemTypeLoading": "Tozali koluka ba codes…",
+      "itemTypeLoadError": "Impossible de koluka ba types ya article.",
+      "retryItemTypesFetch": "Meka lisusu",
       "toastCreated": "Service ebakisami.",
       "toastCreateErrorFallback": "Kokela service elongwaki te.",
       "invalidForm": "Tála ba champs mpe nimero malamu.",
