@@ -16,6 +16,7 @@ import { getAxiosErrorMessage } from "@/core/utils/apiResponse";
 export type ClientMutationInput = {
     payload: CreateClientInput;
     typeOption?: ClientTypeOption;
+    referenceDocumentFile?: File | null;
 };
 
 export const clientQueryKeys = {
@@ -46,8 +47,8 @@ export function useCreateClient() {
     const qc = useQueryClient();
 
     return useMutation({
-        mutationFn: ({ payload, typeOption }: ClientMutationInput) =>
-            clientService.create(payload, typeOption),
+        mutationFn: ({ payload, typeOption, referenceDocumentFile }: ClientMutationInput) =>
+            clientService.create(payload, typeOption, referenceDocumentFile),
         onSuccess: async () => {
             await qc.invalidateQueries({ queryKey: clientQueryKeys.all });
         },
@@ -62,11 +63,19 @@ export function useUpdateClient() {
             id,
             payload,
             typeOption,
+            referenceDocumentFile,
         }: {
             id: string;
             payload: CreateClientInput;
             typeOption?: ClientTypeOption;
-        }) => clientService.update(id, payload, typeOption),
+            referenceDocumentFile?: File | null;
+        }) =>
+            clientService.update(
+                id,
+                payload,
+                typeOption,
+                referenceDocumentFile
+            ),
         onSuccess: async (_data, variables) => {
             await qc.invalidateQueries({ queryKey: clientQueryKeys.all });
             await qc.invalidateQueries({

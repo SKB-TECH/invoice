@@ -123,14 +123,69 @@ export type ClientTypeOption = z.infer<typeof clientTypeOptionSchema>;
 
 export const clientTypesListSchema = z.array(clientTypeOptionSchema);
 
+/** Harmonise les libellés API (« Nom », « Reference document ») avec nos clés internes. */
+export function normalizeRequiredFieldKey(field: string): string {
+    const key = field.trim().toLowerCase().replace(/[\s-]+/g, "_");
+
+    switch (key) {
+        case "nom":
+        case "name":
+        case "client_name":
+        case "denomination":
+        case "raison_sociale":
+            return "client_name";
+        case "reference_document":
+        case "document_de_reference":
+        case "document_reference":
+            return "reference_document";
+        case "telephone":
+        case "tel":
+            return "phone";
+        case "adresse":
+            return "address";
+        case "pays":
+            return "country";
+        case "idnat":
+        case "reference":
+            return "idnat";
+        default:
+            return key;
+    }
+}
+
+export function resolveClientTypeOption(
+    clientTypeId: string,
+    options: readonly ClientTypeOption[] = []
+): ClientTypeOption | undefined {
+    const id = clientTypeId.trim();
+    if (!id) return undefined;
+
+    const found = options.find((item) => item.id === id);
+    if (found) return found;
+
+    const fields = FALLBACK_REQUIRED_FIELDS_BY_ID[id];
+    if (!fields) return undefined;
+
+    return {
+        id,
+        code: id,
+        title: id,
+        required_fields: [...fields],
+        is_default: false,
+    };
+}
+
 export function getEffectiveRequiredFields(
     typeOption: ClientTypeOption | undefined
 ): readonly string[] {
     if (!typeOption) return [];
-    if (typeOption.required_fields.length > 0) {
-        return typeOption.required_fields;
-    }
-    return FALLBACK_REQUIRED_FIELDS_BY_ID[typeOption.id] ?? [];
+
+    const raw =
+        typeOption.required_fields.length > 0
+            ? typeOption.required_fields
+            : (FALLBACK_REQUIRED_FIELDS_BY_ID[typeOption.id] ?? []);
+
+    return raw.map(normalizeRequiredFieldKey);
 }
 
 export function clientTypeRequiresField(
@@ -138,10 +193,11 @@ export function clientTypeRequiresField(
     ...aliases: string[]
 ): boolean {
     if (!requiredFields?.length) return false;
-    const normalized = new Set(
-        requiredFields.map((field) => field.trim().toLowerCase())
+
+    const normalized = new Set(requiredFields.map(normalizeRequiredFieldKey));
+    return aliases.some((alias) =>
+        normalized.has(normalizeRequiredFieldKey(alias))
     );
-    return aliases.some((alias) => normalized.has(alias.trim().toLowerCase()));
 }
 
 export function clientTypeShowsField(

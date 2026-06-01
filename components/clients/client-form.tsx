@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useForm, useWatch, type Path } from "react-hook-form";
 import { toast } from "sonner";
 import type { ZodIssue } from "zod";
@@ -22,6 +22,7 @@ import { useTypeClient } from "@/core/hooks/type-client/useTypeClient";
 import {
     clientTypeFieldIsRequired,
     clientTypeShowsField,
+    resolveClientTypeOption,
     type ClientTypeOption,
 } from "@/core/schemas/type-client.schema";
 import {
@@ -29,6 +30,8 @@ import {
     InputField,
     NativeSelectField,
 } from "@/components/invoices/create/Fields";
+import { ClientReferenceDocumentField } from "@/components/shared/OtherComponents/components/clients/ClientReferenceDocumentField";
+import { CountryAutocomplete } from "@/components/shared/OtherComponents/components/clients/CountryAutocomplete";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useTranslations } from "next-intl";
@@ -37,7 +40,7 @@ export type ClientFormValues = {
     client_type_id: string;
     client_name: string;
     reference: string;
-    reference_document: string;
+    reference_document_existing: string;
     status: ClientStatutForm;
     phone: string;
     email: string;
@@ -54,7 +57,7 @@ function emptyCreateDefaults(): ClientFormValues {
         client_type_id: "",
         client_name: "",
         reference: "",
-        reference_document: "",
+        reference_document_existing: "",
         status: "actif",
         phone: "",
         email: "",
@@ -72,7 +75,7 @@ function detailToFormValues(d: ClientDetailRecord): ClientFormValues {
         client_type_id: d.client_type_id,
         client_name: d.nomClient,
         reference: d.reference,
-        reference_document: d.reference_document,
+        reference_document_existing: d.reference_document,
         status: d.statut,
         phone: d.telephone,
         email: d.email,
@@ -101,7 +104,8 @@ function applyZodFieldErrors(
 
 function validateRequiredTypeFields(
     values: ClientFormValues,
-    typeOption: ClientTypeOption | undefined
+    typeOption: ClientTypeOption | undefined,
+    referenceDocumentFile: File | null
 ): string | null {
     const checks: {
         aliases: string[];
@@ -128,11 +132,6 @@ function validateRequiredTypeFields(
             aliases: ["idnat", "reference"],
             value: values.reference,
             message: "L'IDNAT est requis.",
-        },
-        {
-            aliases: ["reference_document"],
-            value: values.reference_document,
-            message: "Le document de référence est requis.",
         },
         {
             aliases: ["business_sector", "secteur", "secteur_activite"],
@@ -177,8 +176,16 @@ function validateRequiredTypeFields(
         }
 
         if (check.numericCountry && !parseCountryForApi(check.value)) {
-            return "Le code pays doit être un nombre (ex. 243).";
+            return "Veuillez sélectionner un pays valide.";
         }
+    }
+
+    if (
+        clientTypeFieldIsRequired(typeOption, "reference_document") &&
+        !referenceDocumentFile &&
+        !(values.reference_document_existing ?? "").trim()
+    ) {
+        return "Le document de référence est requis.";
     }
 
     return null;
@@ -210,6 +217,8 @@ export function ClientForm(props: ClientFormProps) {
     const router = useRouter();
     const createMut = useCreateClient();
     const updateMut = useUpdateClient();
+    const [referenceDocumentFile, setReferenceDocumentFile] =
+        useState<File | null>(null);
     const {
         data: clientTypes = [],
         isPending: clientTypesPending,
@@ -233,7 +242,7 @@ export function ClientForm(props: ClientFormProps) {
     });
 
     const selectedTypeOption = useMemo(
-        () => clientTypes.find((item) => item.id === clientTypeId),
+        () => resolveClientTypeOption(clientTypeId, clientTypes),
         [clientTypes, clientTypeId]
     );
 
@@ -281,13 +290,19 @@ export function ClientForm(props: ClientFormProps) {
     }, [clientTypes, form]);
 
     const onSubmit = form.handleSubmit((values) => {
-        const typeError = validateRequiredTypeFields(values, selectedTypeOption);
+        const typeError = validateRequiredTypeFields(
+            values,
+            selectedTypeOption,
+            referenceDocumentFile
+        );
         if (typeError) {
             toast.error(typeError);
             return;
         }
 
-        const parsed = createClientSchema.safeParse(values);
+        const { reference_document_existing: _existingDoc, ...apiValues } =
+            values;
+        const parsed = createClientSchema.safeParse(apiValues);
         if (!parsed.success) {
             applyZodFieldErrors(form.setError, parsed.error.issues);
             toast.error("Merci de corriger les champs du formulaire.");
@@ -297,6 +312,7 @@ export function ClientForm(props: ClientFormProps) {
         const mutationInput = {
             payload: parsed.data,
             typeOption: selectedTypeOption,
+            referenceDocumentFile,
         };
 
         if (props.variant === "create") {
@@ -533,15 +549,17 @@ export function ClientForm(props: ClientFormProps) {
                                 )}
                             />
                         </FieldLabel>
-                        <InputField
-                            id="reference-document"
-                            value={form.watch("reference_document")}
-                            onChange={(value) =>
-                                form.setValue("reference_document", value, {
-                                    shouldValidate: true,
-                                })
+                        <ClientReferenceDocumentField
+                            file={referenceDocumentFile}
+                            existingLabel={form.watch("reference_document_existing")}
+                            disabled={pending}
+                            onChange={setReferenceDocumentFile}
+                            error={
+                                referenceDocumentFile ||
+                                form.watch("reference_document_existing")
+                                    ? undefined
+                                    : errors.reference_document_existing?.message
                             }
-                            error={errors.reference_document?.message}
                         />
                     </div>
                 ) : null}
@@ -657,10 +675,11 @@ export function ClientForm(props: ClientFormProps) {
                             )}
                         />
                     </FieldLabel>
-                    <InputField
+                    <CountryAutocomplete
                         id="pays"
                         value={form.watch("country")}
-                        placeholder={t("countryHint")}
+                        disabled={pending}
+                        placeholder={t("countryPlaceholder")}
                         onChange={(value) =>
                             form.setValue("country", value, {
                                 shouldValidate: true,

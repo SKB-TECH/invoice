@@ -17,6 +17,7 @@ import {
     type ClientStatutUi,
 } from "@/lib/clients/clients-data";
 import { clientResponseToDetail } from "@/lib/clients/client-api-mapper";
+import { resolveCountryDisplay } from "@/components/shared/OtherComponents/components/clients/countries";
 import { useClient } from "@/core/hooks/client/useClient";
 import { useTypeClient } from "@/core/hooks/type-client/useTypeClient";
 import { clientTypeShowsField } from "@/core/schemas/type-client.schema";
@@ -227,7 +228,9 @@ export default function VisualiserClientPage() {
 
                     <div className="min-w-0">
                         <FieldLabel>{t("fields.country")}</FieldLabel>
-                        <ReadOnlyField>{client.pays || "—"}</ReadOnlyField>
+                        <ReadOnlyField>
+                            {resolveCountryDisplay(client.pays) || "—"}
+                        </ReadOnlyField>
                     </div>
 
                     <div className="min-w-0">

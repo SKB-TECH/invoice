@@ -9,6 +9,7 @@ import {
 import {
     clientTypeRequiresField,
     getEffectiveRequiredFields,
+    resolveClientTypeOption,
     type ClientTypeOption,
 } from "@/core/schemas/type-client.schema";
 import { unwrapApiData } from "@/core/utils/apiResponse";
@@ -38,18 +39,51 @@ function appendIfPresent(
     }
 }
 
+function appendClientFields(fd: FormData, payload: Record<string, unknown>) {
+    for (const [key, value] of Object.entries(payload)) {
+        if (value === undefined || value === null) continue;
+        if (value instanceof File) {
+            fd.append(key, value);
+            continue;
+        }
+        fd.append(key, String(value));
+    }
+}
+
+function clientPayloadToFormData(
+    payload: Record<string, unknown>
+): FormData {
+    const fd = new FormData();
+    appendClientFields(fd, payload);
+    return fd;
+}
+
+function resolveTypeOptionForPayload(
+    input: CreateClientInput,
+    typeOption?: ClientTypeOption
+): ClientTypeOption | undefined {
+    return (
+        typeOption ?? resolveClientTypeOption(input.client_type_id ?? "", [])
+    );
+}
+
 /** Corps POST/PUT selon le contrat API (`client_type_id`, champs dynamiques). */
 export function clientPayloadForApi(
     input: CreateClientInput,
-    typeOption?: ClientTypeOption
+    typeOption?: ClientTypeOption,
+    referenceDocumentFile?: File | null
 ): Record<string, unknown> {
+    const resolvedType = resolveTypeOptionForPayload(input, typeOption);
     const client_type_id = Number(input.client_type_id);
-    const required = getEffectiveRequiredFields(typeOption);
+    const required = getEffectiveRequiredFields(resolvedType);
+    const clientName = input.client_name.trim();
 
     const payload: Record<string, unknown> = {
         client_type_id,
         status: statusFormToApi(input.status ?? "actif"),
-        client_name: input.client_name.trim(),
+        client_name: clientName,
+        /** Alias Laravel éventuel pour le libellé « Nom ». */
+        nom: clientName,
     };
 
     appendIfPresent(payload, "phone", input.phone ?? undefined);
@@ -82,15 +116,8 @@ export function clientPayloadForApi(
         appendIfPresent(payload, "idnat", input.reference ?? undefined);
     }
 
-    if (
-        clientTypeRequiresField(required, "reference_document") ||
-        (input.reference_document ?? "").trim()
-    ) {
-        appendIfPresent(
-            payload,
-            "reference_document",
-            input.reference_document ?? undefined
-        );
+    if (referenceDocumentFile instanceof File) {
+        payload.reference_document = referenceDocumentFile;
     }
 
     if (
@@ -230,11 +257,17 @@ export const clientService = {
 
     async create(
         input: CreateClientInput,
-        typeOption?: ClientTypeOption
+        typeOption?: ClientTypeOption,
+        referenceDocumentFile?: File | null
     ): Promise<z.infer<typeof clientResponseSchema>> {
+        const payload = clientPayloadForApi(
+            input,
+            typeOption,
+            referenceDocumentFile
+        );
         const res = await api.post(
             CLIENTS_PATH,
-            clientPayloadForApi(input, typeOption)
+            clientPayloadToFormData(payload)
         );
         const raw = unwrapApiData<unknown>(res.data);
         return clientResponseSchema.parse(raw);
@@ -243,11 +276,17 @@ export const clientService = {
     async update(
         id: string,
         input: CreateClientInput,
-        typeOption?: ClientTypeOption
+        typeOption?: ClientTypeOption,
+        referenceDocumentFile?: File | null
     ): Promise<z.infer<typeof clientResponseSchema>> {
+        const payload = clientPayloadForApi(
+            input,
+            typeOption,
+            referenceDocumentFile
+        );
         const res = await api.put(
             `${CLIENTS_PATH}/${encodeURIComponent(id)}`,
-            clientPayloadForApi(input, typeOption)
+            clientPayloadToFormData(payload)
         );
         const raw = unwrapApiData<unknown>(res.data);
         return clientResponseSchema.parse(raw);
