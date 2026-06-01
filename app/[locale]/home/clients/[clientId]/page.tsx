@@ -1,11 +1,16 @@
 "use client";
 
-import Link from "next/link";
 import { useParams } from "next/navigation";
-import { ChevronRight, House } from "lucide-react";
+import { useTranslations } from "next-intl";
 
+import { Link } from "@/i18n/routing";
 import { VisualiserClientActions } from "@/components/clients/visualiser-client-actions";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+    FieldLabel,
+    ReadOnlyField,
+} from "@/components/invoices/create/Fields";
 import { cn } from "@/lib/utils";
 import {
     clientStatutToUi,
@@ -37,24 +42,40 @@ function StatutBadge({ statut }: { statut: ClientStatutUi }) {
 export default function VisualiserClientPage() {
     const params = useParams();
     const clientId = decodeURIComponent(String(params.clientId ?? ""));
-    const { data, isPending, isError } = useClient(clientId);
+    const t = useTranslations("clients.view");
+    const tList = useTranslations("clients.listClients");
+    const tNavbar = useTranslations("navbar");
+    const { data, isPending, isError, refetch } = useClient(clientId);
 
     if (isPending) {
         return (
-            <main className="mx-auto w-full min-w-full py-4 text-foreground">
-                <p className="text-slate-600">Chargement…</p>
+            <main className="w-full text-slate-700">
+                <p className="text-sm font-medium text-slate-500">
+                    {t("loading")}
+                </p>
             </main>
         );
     }
 
     if (isError || !data) {
         return (
-            <main className="mx-auto w-full min-w-full py-4 text-foreground">
-                <p className="text-destructive">
-                    Client introuvable ou erreur de chargement.
+            <main className="w-full text-slate-700">
+                <p className="text-sm font-medium text-red-500">
+                    {t("loadError")}
                 </p>
-                <Link href="/home/clients" className="mt-4 inline-block text-[#0879bd]">
-                    Retour à la liste
+                <Button
+                    type="button"
+                    variant="secondary"
+                    className="mt-3"
+                    onClick={() => refetch()}
+                >
+                    {t("retry")}
+                </Button>
+                <Link
+                    href="/home/clients"
+                    className="mt-4 block text-[#0879bd]"
+                >
+                    {t("backToList")}
                 </Link>
             </main>
         );
@@ -63,184 +84,119 @@ export default function VisualiserClientPage() {
     const client = clientResponseToDetail(data);
     const basePath = `/home/clients/${encodeURIComponent(client.id)}`;
     const statutUi = clientStatutToUi(client.statut);
+    const isPersonal = client.client_type === "personal";
+    const isCompany =
+        client.client_type === "pme" || client.client_type === "corporate";
 
     return (
-        <main className="mx-auto w-full min-w-full py-4 text-foreground">
-            <span className="mb-6 flex flex-wrap items-center gap-1 text-sm text-slate-500">
-                <Link href="/home">
-                    <House className="size-4" />
+        <main className="relative w-full text-slate-700">
+            <div className="mb-3 flex flex-wrap items-center gap-1 text-[13px] font-medium text-slate-400">
+                <Link href="/home" className="hover:text-slate-600">
+                    {tNavbar("Accueil")}
                 </Link>
-                <ChevronRight className="size-4 shrink-0" />
-                <Link href="/home/clients" className="hover:text-slate-700">
-                    Clients
+                <span>/</span>
+                <Link href="/home/clients" className="hover:text-slate-600">
+                    {tList("title")}
                 </Link>
-                <ChevronRight className="size-4 shrink-0" />
-                <Link href="/home/clients" className="hover:text-slate-700">
-                    Visualiser
-                </Link>
-                <ChevronRight className="size-4 shrink-0" />
-                <span className="max-w-[12rem] truncate text-slate-600 sm:max-w-md">
+                <span>/</span>
+                <span className="max-w-48 truncate text-slate-600 sm:max-w-md">
                     {client.nomClient}
                 </span>
-            </span>
-
-            <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-                <div>
-                    <h1 className="text-2xl font-bold tracking-tight text-slate-800 sm:text-3xl">
-                        Détail du client
-                    </h1>
-                    <p className="mt-1 text-sm text-slate-600">
-                        Réf.&nbsp;
-                        <span className="font-medium text-slate-800">
-                            {client.reference}
-                        </span>
-                    </p>
-                </div>
+                <span>/</span>
+                <span className="font-semibold text-slate-600">
+                    {tNavbar("Visualiser")}
+                </span>
             </div>
 
-            <section className="rounded border border-slate-200/80 bg-white p-6 sm:p-8">
-                <dl className="grid gap-8 sm:grid-cols-2">
-                    <div>
-                        <dt className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-                            Nom affiché
-                        </dt>
-                        <dd className="mt-1 text-base font-medium text-slate-900">
-                            {client.nomClient}
-                        </dd>
-                    </div>
+            <h1 className="text-[40px] font-bold tracking-tight text-slate-700">
+                {client.nomClient}
+            </h1>
+            <p className="mt-2 text-[17px] font-medium text-slate-500">
+                {t("fields.idnat")}
+                {"\u00a0"}
+                <span className="text-slate-700">{client.reference || "—"}</span>
+            </p>
 
-                    <div>
-                        <dt className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-                            Sous-titre
-                        </dt>
-                        <dd className="mt-1 text-base font-medium text-slate-900">
-                            {client.sousTitre || "—"}
-                        </dd>
-                    </div>
-
-                    <div>
-                        <dt className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-                            Statut
-                        </dt>
-                        <dd className="mt-2">
-                            <StatutBadge statut={statutUi} />
-                        </dd>
-                    </div>
-
-                    <div>
-                        <dt className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-                            Type de client
-                        </dt>
-                        <dd className="mt-1 text-base font-medium text-slate-900">
+            <div className="mt-4 bg-white p-8">
+                <div className="grid grid-cols-1 gap-x-14 gap-y-4 lg:grid-cols-2">
+                    <div className="min-w-0">
+                        <FieldLabel>{t("fields.clientType")}</FieldLabel>
+                        <ReadOnlyField>
                             {clientTypeLibelle(client.client_type)}
-                        </dd>
+                        </ReadOnlyField>
                     </div>
 
-                    {client.client_type === "personal" ? (
+                    <div className="min-w-0">
+                        <FieldLabel>{t("fields.idnat")}</FieldLabel>
+                        <ReadOnlyField>{client.reference || "—"}</ReadOnlyField>
+                    </div>
+
+                    {isPersonal ? (
                         <>
-                            <div>
-                                <dt className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-                                    Prénom
-                                </dt>
-                                <dd className="mt-1 text-base font-medium text-slate-900">
+                            <div className="min-w-0">
+                                <FieldLabel>{t("fields.firstName")}</FieldLabel>
+                                <ReadOnlyField>
                                     {client.first_name || "—"}
-                                </dd>
+                                </ReadOnlyField>
                             </div>
-                            <div>
-                                <dt className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-                                    Nom
-                                </dt>
-                                <dd className="mt-1 text-base font-medium text-slate-900">
+                            <div className="min-w-0">
+                                <FieldLabel>{t("fields.lastName")}</FieldLabel>
+                                <ReadOnlyField>
                                     {client.last_name || "—"}
-                                </dd>
+                                </ReadOnlyField>
                             </div>
                         </>
                     ) : null}
 
-                    {(client.client_type === "pme" ||
-                        client.client_type === "corporate") && (
-                        <div className="sm:col-span-2">
-                            <dt className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-                                Secteur d&apos;activité
-                            </dt>
-                            <dd className="mt-1 text-base font-medium text-slate-900">
-                                {client.business_sector || "—"}
-                            </dd>
-                        </div>
-                    )}
-
-                    {client.client_type === "corporate" &&
-                    client.legal_representative ? (
-                        <div className="sm:col-span-2">
-                            <dt className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-                                Représentant légal
-                            </dt>
-                            <dd className="mt-1 text-base font-medium text-slate-900">
-                                {client.legal_representative}
-                            </dd>
+                    {isCompany ? (
+                        <div className="min-w-0 lg:col-span-2">
+                            <FieldLabel>{t("fields.displayName")}</FieldLabel>
+                            <ReadOnlyField>{client.nomClient}</ReadOnlyField>
                         </div>
                     ) : null}
 
-                    <div>
-                        <dt className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-                            NIF
-                        </dt>
-                        <dd className="mt-1 text-base font-medium text-slate-900">
-                            {client.nif || "—"}
-                        </dd>
-                    </div>
+                    {isCompany ? (
+                        <>
+                            <div className="min-w-0">
+                                <FieldLabel>{t("fields.nif")}</FieldLabel>
+                                <ReadOnlyField>
+                                    {client.nif || "—"}
+                                </ReadOnlyField>
+                            </div>
+                            <div className="min-w-0">
+                                <FieldLabel>{t("fields.rccm")}</FieldLabel>
+                                <ReadOnlyField>
+                                    {client.rccm || "—"}
+                                </ReadOnlyField>
+                            </div>
+                        </>
+                    ) : null}
 
-                    <div>
-                        <dt className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-                            RCCM
-                        </dt>
-                        <dd className="mt-1 text-base font-medium text-slate-900">
-                            {client.rccm || "—"}
-                        </dd>
-                    </div>
-
-                    <div>
-                        <dt className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-                            Téléphone
-                        </dt>
-                        <dd className="mt-1 text-base font-medium text-slate-900">
+                    <div className="min-w-0">
+                        <FieldLabel>{t("fields.phone")}</FieldLabel>
+                        <ReadOnlyField>
                             {client.telephone || "—"}
-                        </dd>
+                        </ReadOnlyField>
                     </div>
 
-                    <div>
-                        <dt className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-                            Email
-                        </dt>
-                        <dd className="mt-1 text-base font-medium text-slate-900">
-                            {client.email || "—"}
-                        </dd>
+                    <div className="min-w-0">
+                        <FieldLabel>{t("fields.email")}</FieldLabel>
+                        <ReadOnlyField>{client.email || "—"}</ReadOnlyField>
                     </div>
 
-                    <div className="sm:col-span-2">
-                        <dt className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-                            Adresse
-                        </dt>
-                        <dd className="mt-1 text-base font-medium text-slate-900">
-                            {client.adresse || "—"}
-                        </dd>
+                    <div className="min-w-0">
+                        <FieldLabel>{t("fields.status")}</FieldLabel>
+                        <ReadOnlyField className="border-0 bg-transparent px-0">
+                            <StatutBadge statut={statutUi} />
+                        </ReadOnlyField>
                     </div>
-
-                    <div>
-                        <dt className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-                            Pays
-                        </dt>
-                        <dd className="mt-1 text-base font-medium text-slate-900">
-                            {client.pays || "—"}
-                        </dd>
-                    </div>
-                </dl>
+                </div>
 
                 <VisualiserClientActions
                     clientId={client.id}
                     modifierPath={`${basePath}/modifier`}
                 />
-            </section>
+            </div>
         </main>
     );
 }

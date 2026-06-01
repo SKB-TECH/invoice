@@ -20,53 +20,46 @@ export type ClientsListResult = {
     meta?: z.infer<typeof paginatedClientsSchema>["meta"];
 };
 
-/**
- * Corps attendu par l’API (ex. client_name, legal_name, …) — ne pas envoyer
- * company_name / reference si le backend valide strictement ce contrat.
- */
+/** Corps POST/PUT selon le contrat API par type de client. */
 export function clientPayloadForApi(input: CreateClientInput): Record<string, unknown> {
+    const idnat = input.reference.trim();
     const phone = (input.phone ?? "").trim();
     const email = (input.email ?? "").trim();
-    const nif = (input.nif ?? "").trim();
-
-    let client_name: string;
-    let legal_name: string;
-    let rccm: string;
-    let business_sector: string;
 
     switch (input.client_type) {
-        case "personal": {
-            client_name = `${input.first_name} ${input.last_name}`.trim();
-            legal_name = client_name;
-            rccm = (input.rccm ?? "").trim();
-            business_sector = (input.business_sector ?? "").trim();
-            break;
-        }
+        case "personal":
+            return {
+                client_name: `${input.first_name} ${input.last_name}`.trim(),
+                client_type: "personal",
+                idnat,
+                phone,
+                email,
+            };
         case "pme":
-        case "corporate": {
-            const denomination = input.company_name.trim();
-            client_name = denomination;
-            legal_name = denomination;
-            rccm = input.rccm.trim();
-            business_sector = input.business_sector.trim();
-            break;
-        }
+            return {
+                client_name: input.company_name.trim(),
+                client_type: "pme",
+                nif: (input.nif ?? "").trim(),
+                rccm: input.rccm.trim(),
+                idnat,
+                phone,
+                email,
+            };
+        case "corporate":
+            return {
+                client_name: input.company_name.trim(),
+                client_type: "corporate",
+                nif: (input.nif ?? "").trim(),
+                rccm: input.rccm.trim(),
+                idnat,
+                phone,
+                email,
+            };
         default: {
             const _exhaustive: never = input;
             return _exhaustive;
         }
     }
-
-    return {
-        client_name,
-        legal_name,
-        client_type: input.client_type,
-        nif,
-        rccm,
-        business_sector,
-        phone,
-        email,
-    };
 }
 
 function extractListItemsAndMeta(

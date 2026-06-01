@@ -45,7 +45,6 @@ import { getAxiosErrorMessage } from "@/core/utils/apiResponse";
 const PER_PAGE = 20;
 
 type PageMode = "list" | "create";
-type CreateStep = 1 | 2;
 
 function formatAmount(amount: number | undefined, currency: string | undefined) {
     const cur = (currency ?? "").trim() || "—";
@@ -168,73 +167,10 @@ function formatPaymentTableDate(raw: string): string {
     return d.toLocaleString("fr-FR");
 }
 
-function PaymentStepper({ currentStep }: { currentStep: CreateStep }) {
-    const t = useTranslations("paymentsPage");
-
-    const steps = [
-        { id: 1 as const, label: t("stepper.step1") },
-        { id: 2 as const, label: t("stepper.step2") },
-    ];
-
-    return (
-        <div className="mt-12">
-            <div className="relative flex items-start justify-between">
-                <div className="absolute left-[35px] right-[35px] top-[17px] h-px bg-slate-300" />
-
-                <div
-                    className="absolute left-[35px] top-[17px] h-px bg-[#0EAA2C]"
-                    style={{
-                        width: currentStep === 1 ? "0%" : "100%",
-                    }}
-                />
-
-                {steps.map((step) => {
-                    const isActive = step.id === currentStep;
-                    const isDone = step.id < currentStep;
-
-                    return (
-                        <div
-                            key={step.id}
-                            className="relative z-10 flex w-[140px] flex-col items-center"
-                        >
-                            <div
-                                className={[
-                                    "flex size-9 items-center justify-center rounded-full text-sm font-bold",
-                                    isActive
-                                        ? "bg-[#0879bd] text-white"
-                                        : isDone
-                                          ? "bg-[#0EAA2C] text-white"
-                                          : "bg-slate-300 text-slate-500",
-                                ].join(" ")}
-                            >
-                                {step.id}
-                            </div>
-
-                            <p
-                                className={[
-                                    "mt-4 text-center text-[11px] font-semibold",
-                                    isActive
-                                        ? "text-[#0879bd]"
-                                        : isDone
-                                          ? "text-[#0EAA2C]"
-                                          : "text-slate-400",
-                                ].join(" ")}
-                            >
-                                {step.label}
-                            </p>
-                        </div>
-                    );
-                })}
-            </div>
-        </div>
-    );
-}
-
 export default function PaymentsPage() {
     const t = useTranslations("paymentsPage");
 
     const [mode, setMode] = useState<PageMode>("list");
-    const [createStep, setCreateStep] = useState<CreateStep>(1);
 
     const [page, setPage] = useState(1);
 
@@ -244,7 +180,7 @@ export default function PaymentsPage() {
     const [currencyStr, setCurrencyStr] = useState("USD");
     const [channelIdStr, setChannelIdStr] = useState("");
     const [methodIdStr, setMethodIdStr] = useState("");
-    const [exchangeRateStr, setExchangeRateStr] = useState("1");
+    const [exchangeRateStr, setExchangeRateStr] = useState("");
     const [collectorStr, setCollectorStr] = useState("");
     const [drawerStr, setDrawerStr] = useState("");
     const [formError, setFormError] = useState("");
@@ -336,14 +272,13 @@ export default function PaymentsPage() {
     });
 
     function resetForm() {
-        setCreateStep(1);
         setInvoiceIdStr("");
         setContractIdStr("");
         setAmountStr("");
         setCurrencyStr("USD");
         setChannelIdStr("");
         setMethodIdStr("");
-        setExchangeRateStr("1");
+        setExchangeRateStr("");
         setCollectorStr("");
         setDrawerStr("");
         setFormError("");
@@ -375,7 +310,21 @@ export default function PaymentsPage() {
         setPage((p) => Math.min(totalPages, p + 1));
     };
 
-    const validateStep1 = (): boolean => {
+    const selectedInvoiceTotal = useMemo(() => {
+        if (!selectedInvoice) return undefined;
+        const total = selectedInvoice.total;
+        return typeof total === "number" && !Number.isNaN(total)
+            ? total
+            : undefined;
+    }, [selectedInvoice]);
+
+    const selectedInvoiceCurrency = useMemo(() => {
+        if (!selectedInvoice?.currency) return undefined;
+        const cur = selectedInvoice.currency.trim().toUpperCase();
+        return cur || undefined;
+    }, [selectedInvoice]);
+
+    const validateForm = (): boolean => {
         if (!selectedInvoice || resolvedClientId === undefined) {
             setFormError(t("validation.invoiceRequired"));
             return false;
@@ -390,8 +339,7 @@ export default function PaymentsPage() {
     const handleSubmit = () => {
         setFormError("");
 
-        if (!validateStep1()) {
-            setCreateStep(1);
+        if (!validateForm()) {
             return;
         }
 
@@ -404,6 +352,21 @@ export default function PaymentsPage() {
         const currency = currencyStr.trim();
         if (!currency) {
             setFormError(t("validation.currencyRequired"));
+            return;
+        }
+
+        if (
+            selectedInvoiceTotal !== undefined &&
+            amount > selectedInvoiceTotal
+        ) {
+            setFormError(
+                t("validation.amountExceedsInvoice", {
+                    max: formatAmount(
+                        selectedInvoiceTotal,
+                        selectedInvoiceCurrency ?? currency
+                    ),
+                })
+            );
             return;
         }
 
@@ -564,257 +527,213 @@ export default function PaymentsPage() {
                     {t("createTitle")}
                 </h1>
 
-                <PaymentStepper currentStep={createStep} />
+                <div className="mt-4 bg-white p-8">
+                    <FieldError message={formError} />
 
-                {createStep === 1 ? (
-                    <div className="mt-4 bg-white p-8">
-                        <div className="mb-8">
-                            <p className="text-[17px] font-semibold text-slate-700">
-                                {t("step1.title")}
-                            </p>
-                            <p className="mt-1 text-sm font-medium text-slate-400">
-                                {t("step1.subtitle")}
-                            </p>
-                        </div>
-
-                        <FieldError message={formError} />
-
-                        <div className="mt-6 grid grid-cols-1 gap-x-14 gap-y-6 lg:grid-cols-2">
-                            <div>
-                                <FieldLabel>{t("form.invoice")}</FieldLabel>
-                                <InvoiceSearchSelect
-                                    key={
-                                        invoiceIdStr.trim() === "" ||
-                                        Number.isNaN(Number(invoiceIdStr))
-                                            ? "invoice-none"
-                                            : `invoice-${invoiceIdStr}`
-                                    }
-                                    options={invoiceSearchOptions}
-                                    value={selectedInvoiceDisplayLabel}
-                                    placeholder={
-                                        invoicesPending
-                                            ? t("form.loadingInvoices")
-                                            : t(
-                                                  "form.invoiceSearchPlaceholder"
-                                              )
-                                    }
-                                    emptyLabel={t("form.invoiceSearchEmpty")}
-                                    disabled={
-                                        invoicesPending || invoicesError
-                                    }
-                                    onSelect={(id) => {
-                                        setInvoiceIdStr(String(id));
-                                        setFormError("");
-                                        const inv = (
-                                            invoicesData?.items ?? []
-                                        ).find((invItem) => invItem.id === id);
-                                        const cid = inv
-                                            ? (
-                                                  inv as {
-                                                      contract_id?: number;
-                                                  }
-                                              ).contract_id
-                                            : undefined;
-                                        if (
-                                            !(
-                                                typeof cid === "number" &&
-                                                cid > 0
-                                            )
-                                        ) {
-                                            setContractIdStr("");
-                                        }
-                                    }}
-                                />
-
-                                {invoicesError ? (
-                                    <p className="mt-2 text-sm font-medium text-red-500">
-                                        {t("form.invoicesLoadError")}
-                                    </p>
-                                ) : null}
-                            </div>
-
-                            <div>
-                                <FieldLabel>{t("form.client")}</FieldLabel>
-                                <InputField
-                                    readOnly
-                                    value={clientDisplay}
-                                    placeholder="—"
-                                />
-                            </div>
-
-                            <div className="lg:col-span-2">
-                                <FieldLabel>{t("form.contract")}</FieldLabel>
-                                <SelectField
-                                    placeholder={
-                                        !resolvedClientId ||
-                                        resolvedClientId <= 0
-                                            ? t("form.contractNeedsInvoice")
-                                            : contracts.length === 0
-                                              ? t("form.noContracts")
-                                              : t("form.contractPlaceholder")
-                                    }
-                                    value={resolvedContractIdStr}
-                                    options={contractOptions}
-                                    disabled={
-                                        !resolvedClientId ||
-                                        resolvedClientId <= 0 ||
-                                        contracts.length === 0 ||
-                                        (invoiceContractId !== undefined &&
-                                            contracts.length === 1)
-                                    }
-                                    onChange={(v) => {
-                                        setContractIdStr(v);
-                                        setFormError("");
-                                    }}
-                                />
-                            </div>
-                        </div>
-
-                        <div className="mt-10 flex flex-wrap justify-end gap-4">
-                            <button
-                                type="button"
-                                onClick={() => exitCreateMode()}
-                                disabled={isProcessing}
-                                className="h-12 w-52 rounded bg-red-600 text-sm font-semibold text-white hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-60"
-                            >
-                                {t("form.cancel")}
-                            </button>
-                            <button
-                                type="button"
-                                onClick={() => {
+                    <div className="mt-6 grid grid-cols-1 gap-x-14 gap-y-6 lg:grid-cols-2">
+                        <div>
+                            <FieldLabel>{t("form.invoice")}</FieldLabel>
+                            <InvoiceSearchSelect
+                                key={
+                                    invoiceIdStr.trim() === "" ||
+                                    Number.isNaN(Number(invoiceIdStr))
+                                        ? "invoice-none"
+                                        : `invoice-${invoiceIdStr}`
+                                }
+                                options={invoiceSearchOptions}
+                                value={selectedInvoiceDisplayLabel}
+                                placeholder={
+                                    invoicesPending
+                                        ? t("form.loadingInvoices")
+                                        : t("form.invoiceSearchPlaceholder")
+                                }
+                                emptyLabel={t("form.invoiceSearchEmpty")}
+                                disabled={invoicesPending || invoicesError}
+                                onSelect={(id) => {
+                                    setInvoiceIdStr(String(id));
                                     setFormError("");
-                                    if (!validateStep1()) return;
-                                    setCreateStep(2);
+                                    const inv = (
+                                        invoicesData?.items ?? []
+                                    ).find((invItem) => invItem.id === id);
+                                    if (inv?.currency?.trim()) {
+                                        setCurrencyStr(
+                                            inv.currency.trim().toUpperCase()
+                                        );
+                                    }
+                                    const cid = inv
+                                        ? (
+                                              inv as {
+                                                  contract_id?: number;
+                                              }
+                                          ).contract_id
+                                        : undefined;
+                                    if (
+                                        !(
+                                            typeof cid === "number" &&
+                                            cid > 0
+                                        )
+                                    ) {
+                                        setContractIdStr("");
+                                    }
                                 }}
-                                disabled={isProcessing}
-                                className="h-12 w-52 rounded bg-[#0879bd] text-sm font-semibold text-white hover:bg-[#076ca8] disabled:cursor-not-allowed disabled:bg-slate-300"
-                            >
-                                {t("form.next")}
-                            </button>
+                            />
+
+                            {invoicesError ? (
+                                <p className="mt-2 text-sm font-medium text-red-500">
+                                    {t("form.invoicesLoadError")}
+                                </p>
+                            ) : null}
                         </div>
-                    </div>
-                ) : (
-                    <div className="mt-4 bg-white p-8">
 
-                        <FieldError message={formError} />
+                        <div>
+                            <FieldLabel>{t("form.client")}</FieldLabel>
+                            <InputField
+                                readOnly
+                                value={clientDisplay}
+                                placeholder="—"
+                            />
+                        </div>
 
-                        <div className="mt-6 grid grid-cols-1 gap-x-14 gap-y-6 lg:grid-cols-2">
-                            <div className="min-w-0">
-                                <FieldLabel>{t("form.amount")}</FieldLabel>
-                                <div className="flex h-[50px] w-full overflow-hidden rounded border border-slate-300 bg-white transition-colors focus-within:border-[#0879bd]">
-                                    <div className="flex shrink-0 items-stretch border-r border-slate-200 bg-slate-50">
-                                        <input
-                                            type="text"
-                                            value={currencyStr}
-                                            onChange={(e) =>
-                                                setCurrencyStr(
-                                                    e.target.value.toUpperCase()
-                                                )
-                                            }
-                                            maxLength={16}
-                                            spellCheck={false}
-                                            autoCapitalize="characters"
-                                            aria-label={t("form.currency")}
-                                            className="w-[5rem] bg-transparent px-3 text-center text-[17px] font-semibold uppercase tracking-wide text-slate-700 outline-none placeholder:text-slate-400"
-                                            placeholder="USD"
-                                        />
-                                    </div>
+                        <div className="lg:col-span-2">
+                            <FieldLabel>{t("form.contract")}</FieldLabel>
+                            <SelectField
+                                placeholder={
+                                    !resolvedClientId ||
+                                    resolvedClientId <= 0
+                                        ? t("form.contractNeedsInvoice")
+                                        : contracts.length === 0
+                                          ? t("form.noContracts")
+                                          : t("form.contractPlaceholder")
+                                }
+                                value={resolvedContractIdStr}
+                                options={contractOptions}
+                                disabled={
+                                    !resolvedClientId ||
+                                    resolvedClientId <= 0 ||
+                                    contracts.length === 0 ||
+                                    (invoiceContractId !== undefined &&
+                                        contracts.length === 1)
+                                }
+                                onChange={(v) => {
+                                    setContractIdStr(v);
+                                    setFormError("");
+                                }}
+                            />
+                        </div>
+
+                        <div className="min-w-0">
+                            <FieldLabel>{t("form.amount")}</FieldLabel>
+                            <div className="flex h-[50px] w-full overflow-hidden rounded border border-slate-300 bg-white transition-colors focus-within:border-[#0879bd]">
+                                <div className="flex shrink-0 items-stretch border-r border-slate-200 bg-slate-50">
                                     <input
                                         type="text"
-                                        inputMode="decimal"
-                                        dir="rtl"
-                                        placeholder={t(
-                                            "form.amountPlaceholder"
-                                        )}
-                                        value={amountStr}
+                                        value={currencyStr}
                                         onChange={(e) =>
-                                            setAmountStr(e.target.value)
+                                            setCurrencyStr(
+                                                e.target.value.toUpperCase()
+                                            )
                                         }
-                                        className="min-w-0 flex-1 border-0 bg-transparent px-4 text-[17px] font-medium text-slate-700 outline-none placeholder:text-slate-400"
+                                        maxLength={16}
+                                        spellCheck={false}
+                                        autoCapitalize="characters"
+                                        aria-label={t("form.currency")}
+                                        className="w-[5rem] bg-transparent px-3 text-center text-[17px] font-semibold uppercase tracking-wide text-slate-700 outline-none placeholder:text-slate-400"
+                                        disabled={true}
                                     />
                                 </div>
-                            </div>
-
-                            <div>
-                                <FieldLabel>{t("form.channel")}</FieldLabel>
-                                <SelectField
-                                    placeholder={channelPlaceHolder}
-                                    value={channelIdStr}
-                                    options={channelOptions}
-                                    disabled={
-                                        channelsPending ||
-                                        channelRefs.length === 0
+                                <input
+                                    type="text"
+                                    inputMode="decimal"
+                                    dir="rtl"
+                                    placeholder={t("form.amountPlaceholder")}
+                                    value={amountStr}
+                                    onChange={(e) =>
+                                        setAmountStr(e.target.value)
                                     }
-                                    onChange={(v) => {
-                                        setChannelIdStr(v);
-                                        setFormError("");
-                                    }}
+                                    className="min-w-0 flex-1 border-0 bg-transparent px-4 text-[17px] font-medium text-slate-700 outline-none placeholder:text-slate-400"
                                 />
                             </div>
-                            <div>
-                                <FieldLabel>{t("form.method")}</FieldLabel>
-                                <SelectField
-                                    placeholder={methodPlaceHolder}
-                                    value={methodIdStr}
-                                    options={methodOptions}
-                                    disabled={
-                                        methodsPending ||
-                                        methodRefs.length === 0
-                                    }
-                                    onChange={(v) => {
-                                        setMethodIdStr(v);
-                                        setFormError("");
-                                    }}
-                                />
-                            </div>
-
-                            <div className="min-w-0">
-                                <FieldLabel>{t("form.exchangeRate")}</FieldLabel>
-                                <InputField
-                                    value={exchangeRateStr}
-                                    onChange={(v) => setExchangeRateStr(v)}
-                                />
-                            </div>
+                            {selectedInvoiceTotal !== undefined ? (
+                                <p className="mt-2 text-sm font-medium text-slate-500">
+                                    {t("form.invoiceTotalHint", {
+                                        amount: formatAmount(
+                                            selectedInvoiceTotal,
+                                            selectedInvoiceCurrency ??
+                                                currencyStr
+                                        ),
+                                    })}
+                                </p>
+                            ) : null}
                         </div>
 
-                        <div className="mt-10 flex flex-wrap justify-end gap-4">
-                            <button
-                                type="button"
-                                onClick={() => {
+                        <div className="min-w-0">
+                            <FieldLabel>{t("form.exchangeRate")}</FieldLabel>
+                            <InputField
+                                value={exchangeRateStr}
+                                onChange={(v) => setExchangeRateStr(v)}
+                            />
+                        </div>
+
+                        <div className="min-w-0">
+                            <FieldLabel>{t("form.channel")}</FieldLabel>
+                            <SelectField
+                                placeholder={channelPlaceHolder}
+                                value={channelIdStr}
+                                options={channelOptions}
+                                disabled={
+                                    channelsPending ||
+                                    channelRefs.length === 0
+                                }
+                                onChange={(v) => {
+                                    setChannelIdStr(v);
                                     setFormError("");
-                                    setCreateStep(1);
                                 }}
-                                disabled={isProcessing}
-                                className="h-12 rounded border border-slate-300 bg-white px-5 text-sm font-semibold text-slate-700 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60"
-                            >
-                                {t("form.back")}
-                            </button>
-                            <button
-                                type="button"
-                                onClick={() => exitCreateMode()}
-                                disabled={isProcessing}
-                                className="h-12 w-52 rounded bg-red-600 text-sm font-semibold text-white hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-60"
-                            >
-                                {t("form.cancel")}
-                            </button>
-                            <button
-                                type="button"
-                                onClick={handleSubmit}
-                                disabled={isProcessing}
-                                className="h-12 w-52 rounded bg-[#0879bd] text-sm font-semibold text-white hover:bg-[#076ca8] disabled:cursor-not-allowed disabled:bg-slate-300"
-                            >
-                                {isProcessing ? (
-                                    <span className="inline-flex items-center justify-center gap-2">
-                                        <Loader2 className="size-4 animate-spin" />
-                                        {t("form.submitting")}
-                                    </span>
-                                ) : (
-                                    t("form.submit")
-                                )}
-                            </button>
+                            />
+                        </div>
+
+                        <div className="min-w-0">
+                            <FieldLabel>{t("form.method")}</FieldLabel>
+                            <SelectField
+                                placeholder={methodPlaceHolder}
+                                value={methodIdStr}
+                                options={methodOptions}
+                                disabled={
+                                    methodsPending || methodRefs.length === 0
+                                }
+                                onChange={(v) => {
+                                    setMethodIdStr(v);
+                                    setFormError("");
+                                }}
+                            />
                         </div>
                     </div>
-                )}
+
+                    <div className="mt-10 flex flex-wrap justify-end gap-4">
+                        <button
+                            type="button"
+                            onClick={() => exitCreateMode()}
+                            disabled={isProcessing}
+                            className="h-12 w-52 rounded bg-red-600 text-sm font-semibold text-white hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-60"
+                        >
+                            {t("form.cancel")}
+                        </button>
+                        <button
+                            type="button"
+                            onClick={handleSubmit}
+                            disabled={isProcessing}
+                            className="h-12 w-52 rounded bg-[#0879bd] text-sm font-semibold text-white hover:bg-[#076ca8] disabled:cursor-not-allowed disabled:bg-slate-300"
+                        >
+                            {isProcessing ? (
+                                <span className="inline-flex items-center justify-center gap-2">
+                                    <Loader2 className="size-4 animate-spin" />
+                                    {t("form.submitting")}
+                                </span>
+                            ) : (
+                                t("form.submit")
+                            )}
+                        </button>
+                    </div>
+                </div>
             </main>
         );
     }

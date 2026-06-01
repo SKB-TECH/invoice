@@ -73,6 +73,14 @@ export function BillableServicesTableSkeleton({
                                 {t(`columns.${key}`)}
                             </TableHead>
                         ))}
+                        <TableHead
+                            className={cn(
+                                TABLE_HEAD_CLASS,
+                                "text-right",
+                            )}
+                        >
+                            {t("action")}
+                        </TableHead>
                     </TableRow>
                 </TableHeader>
                 <TableBody className="animate-pulse">
@@ -91,6 +99,9 @@ export function BillableServicesTableSkeleton({
                                     />
                                 </TableCell>
                             ))}
+                            <TableCell className="px-4 py-3 text-right">
+                                <div className="ml-auto h-8 w-8 rounded bg-slate-200/90" />
+                            </TableCell>
                         </TableRow>
                     ))}
                 </TableBody>

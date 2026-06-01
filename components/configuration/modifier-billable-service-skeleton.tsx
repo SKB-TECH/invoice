@@ -21,16 +21,16 @@ function SkeletonField() {
     return <SkeletonLine className="h-[50px] w-full" />;
 }
 
-export function ArticleVisualiserSkeleton() {
-    const tView = useTranslations("articles.view");
-    const tList = useTranslations("articles.list");
+export function ModifierBillableServiceSkeleton() {
+    const t = useTranslations("configuration.services");
+    const tEdit = useTranslations("configuration.services.edit");
     const tNavbar = useTranslations("navbar");
 
     return (
         <main
             role="status"
             aria-busy="true"
-            aria-label={tList("loading")}
+            aria-label={t("loading")}
             className="relative w-full text-slate-700"
         >
             <div className="mb-3 flex flex-wrap items-center gap-1 text-[13px] font-medium text-slate-400">
@@ -38,53 +38,57 @@ export function ArticleVisualiserSkeleton() {
                     {tNavbar("Accueil")}
                 </Link>
                 <span>/</span>
-                <Link href="/home/articles" className="hover:text-slate-600">
-                    {tList("title")}
+                <Link href="/home/services" className="hover:text-slate-600">
+                    {t("listSectionTitle")}
                 </Link>
                 <span>/</span>
-                <SkeletonLine className="inline-block h-4 w-28 max-w-48 sm:max-w-md" />
+                <SkeletonLine className="inline-block h-4 w-28 max-w-48 sm:max-w-xs" />
                 <span>/</span>
                 <span className="font-semibold text-slate-500">
-                    {tNavbar("Visualiser")}
+                    {tEdit("breadcrumbSegment")}
                 </span>
             </div>
 
-            <SkeletonLine className="h-10 w-full max-w-lg" />
+            <SkeletonLine className="h-10 w-full max-w-md" />
             <SkeletonLine className="mt-3 h-5 w-36" />
 
             <div className="mt-4 bg-white p-8">
                 <div className="grid grid-cols-1 gap-x-14 gap-y-4 lg:grid-cols-2 animate-pulse">
                     <div>
-                        <FieldLabel>{tView("fields.name")}</FieldLabel>
+                        <FieldLabel>{t("fields.serviceName")}</FieldLabel>
                         <SkeletonField />
                     </div>
                     <div>
-                        <FieldLabel>{tView("fields.code")}</FieldLabel>
-                        <SkeletonField />
-                    </div>
-
-                    <div>
-                        <FieldLabel>{tView("fields.priceExclTax")}</FieldLabel>
+                        <FieldLabel>{t("fields.code")}</FieldLabel>
                         <SkeletonField />
                     </div>
                     <div>
-                        <FieldLabel>{tView("fields.priceInclTax")}</FieldLabel>
+                        <FieldLabel>{t("fields.businessSector")}</FieldLabel>
                         <SkeletonField />
                     </div>
-
+                    <div>
+                        <FieldLabel>{t("fields.currency")}</FieldLabel>
+                        <SkeletonField />
+                    </div>
+                    <div>
+                        <FieldLabel>{t("fields.unitPrice")}</FieldLabel>
+                        <SkeletonField />
+                    </div>
+                    <div>
+                        <FieldLabel>{t("fields.priceInclTax")}</FieldLabel>
+                        <SkeletonField />
+                    </div>
                     <div className="lg:col-span-2">
-                        <FieldLabel>{tView("fields.taxGroup")}</FieldLabel>
+                        <FieldLabel>{t("fields.taxGroup")}</FieldLabel>
                         <SkeletonField />
                     </div>
-
                     <div className="lg:col-span-2">
-                        <FieldLabel>{tView("fields.description")}</FieldLabel>
+                        <FieldLabel>{t("fields.description")}</FieldLabel>
                         <SkeletonLine className="min-h-[120px] w-full" />
                     </div>
                 </div>
 
                 <div className="mt-6 flex flex-wrap items-center justify-end gap-5">
-                    <SkeletonLine className="h-[50px] w-52 shrink-0 rounded" />
                     <SkeletonLine className="h-[50px] w-52 shrink-0 rounded" />
                     <SkeletonLine className="h-[50px] w-52 shrink-0 rounded" />
                 </div>

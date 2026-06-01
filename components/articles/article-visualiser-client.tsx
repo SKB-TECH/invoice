@@ -137,6 +137,7 @@ export function ArticleVisualiserClient({ articleId }: Props) {
                 </div>
 
                 <VisualiserArticleActions
+                    articleId={data.id}
                     modifierPath={`${basePath}/modifier`}
                 />
             </div>

@@ -247,12 +247,14 @@
       "success": "Botosi ebakisami malamu.",
       "submit": "Tinda botosi",
       "submitting": "Ezali kotinda…",
-      "submitErrorFallback": "Ekoki te kobakisa botosi."
+      "submitErrorFallback": "Ekoki te kobakisa botosi.",
+      "invoiceTotalHint": "Motuya ya faktire : {amount}"
     },
     "validation": {
       "invoiceRequired": "Pona faktire.",
       "contractRequired": "Pona kotrati.",
       "amountInvalid": "Motuya ezali malamu te.",
+      "amountExceedsInvoice": "Motuya ekoki koleka te oyo ya faktire ({max}).",
       "currencyRequired": "Moné ezali na lisungi.",
       "channelRequired": "Pona canal.",
       "methodRequired": "Pona méthode.",
@@ -386,7 +388,7 @@
       },
       "title": "Kiliya ya sika",
       "form": {
-        "reference": "Numelo ya Reference",
+        "reference": "IDNAT",
         "nom": "Kombo ya kiliya",
         "sousTitre": "Motó ya nse",
         "nif": "Numelo ya NIF",
@@ -413,6 +415,15 @@
         "annule": "Kanga",
         "save": "Bomba"
       }
+    },
+    "editClient": {
+      "breadcrumbStep": "Bobongisa",
+      "title": "Bobongisa kiliya",
+      "idnatLabel": "IDNAT",
+      "loading": "Kotanga…",
+      "loadError": "Ekoki te kotanga kiliya oyo.",
+      "retry": "Meka lisusu",
+      "backToList": "Zonga na liste"
     },
     "listClients": {
       "breadcrumb": {
@@ -446,6 +457,37 @@
             "entreprise": "Kompanyi"
           }
         }
+      }
+    },
+    "view": {
+      "referenceLabel": "Ref.",
+      "loading": "Kotanga…",
+      "loadError": "Ekoki te kotanga kiliya oyo.",
+      "retry": "Meka lisusu",
+      "backToList": "Zonga na liste",
+      "fields": {
+        "displayName": "Nkombo ya komona",
+        "subtitle": "Sous-titre",
+        "status": "Etaleli",
+        "clientType": "Lolenge ya kiliya",
+        "idnat": "IDNAT",
+        "firstName": "Prénom",
+        "lastName": "Nom",
+        "businessSector": "Secteur ya mosala",
+        "legalRepresentative": "Représentant légal",
+        "nif": "NIF",
+        "rccm": "RCCM",
+        "phone": "Telefɔ́ni",
+        "email": "Email",
+        "country": "Mboka",
+        "address": "Adresse"
+      },
+      "actions": {
+        "backToList": "Zonga na liste",
+        "edit": "Bobongisa",
+        "delete": "Kolongola",
+        "deleteConfirm": "Longola kiliya oyo mpenza ?",
+        "deleteSuccess": "Kiliya elongolami."
       }
     }
   },
@@ -606,6 +648,10 @@
       },
       "actions": {
         "backToList": "Kozonga na liste",
+        "delete": "Kolongola",
+        "deleteConfirm": "Kolongola eloko oyo mpo na libela ?",
+        "deleteSuccess": "Eloko elongolami.",
+        "deleteError": "Kolongola eloko elongwaki te.",
         "edit": "Kobongisa"
       }
     },
@@ -711,9 +757,44 @@
       "loading": "Kozwa ba services…",
       "loadError": "Liste elongwaki te.",
       "empty": "Ezali lisusu té.",
+      "action": "Etamboli",
+      "viewServiceDetail": "Komona service {code}",
+      "loadErrorDetail": "Kozwa service elongwami te.",
+      "retryLoad": "Meka lisusu",
       "pageOfTotal": "Page {page} / {totalPages}",
       "paginationPrev": "Liboso",
-      "paginationNext": "Landí"
+      "paginationNext": "Landí",
+      "view": {
+        "referenceLabel": "Réf.",
+        "fields": {
+          "serviceName": "Kombo ya service",
+          "code": "Code",
+          "description": "Ndimbola",
+          "businessSector": "Secteur ya mosala",
+          "unitPrice": "Ntalo unite kozanga TVA",
+          "priceInclTax": "Ntalo na TVA",
+          "taxGroup": "Etuluku ya kotá taxe",
+          "currency": "Devise",
+          "referential": "Référentiel"
+        },
+        "actions": {
+          "backToList": "Kozonga na liste",
+          "delete": "Kolongola",
+          "deleteConfirm": "Kolongola service oyo mpo na libela ?",
+          "deleteSuccess": "Service elongolami.",
+          "deleteError": "Kolongola service elongwaki te.",
+          "edit": "Kobongola"
+        }
+      },
+      "edit": {
+        "title": "Kobongola service",
+        "breadcrumbSegment": "Kobongola",
+        "referencePrefix": "Réf. : ",
+        "saving": "Kobomba…",
+        "saveChanges": "Kobomba ba changements",
+        "toastSaved": "Service ebongisami.",
+        "toastSaveError": "Kobomba service elongwaki te."
+      }
     },
     "basicInfo": {
       "sectionTitle": "Bansango ya moboko",

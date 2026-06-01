@@ -247,12 +247,14 @@
       "success": "Paiement enregistré avec succès.",
       "submit": "Valider le paiement",
       "submitting": "Envoi…",
-      "submitErrorFallback": "Échec de l’enregistrement du paiement."
+      "submitErrorFallback": "Échec de l’enregistrement du paiement.",
+      "invoiceTotalHint": "Montant de la facture : {amount}"
     },
     "validation": {
       "invoiceRequired": "Veuillez sélectionner une facture.",
       "contractRequired": "Veuillez sélectionner un contrat.",
       "amountInvalid": "Montant invalide.",
+      "amountExceedsInvoice": "Le montant ne peut pas dépasser celui de la facture ({max}).",
       "currencyRequired": "La devise est requise.",
       "channelRequired": "Veuillez sélectionner un canal.",
       "methodRequired": "Veuillez sélectionner une méthode.",
@@ -386,7 +388,7 @@
       },
       "title": "Nouveau client",
       "form": {
-        "reference": "N° Référence",
+        "reference": "IDNAT",
         "nom": "Nom client",
         "sousTitre": "Sous titre",
         "nif": "Numéro impôt/NIF",
@@ -413,6 +415,15 @@
         "annule": "Annuler",
         "save": "Enregistrer"
       }
+    },
+    "editClient": {
+      "breadcrumbStep": "Modifier",
+      "title": "Modifier le client",
+      "idnatLabel": "IDNAT",
+      "loading": "Chargement…",
+      "loadError": "Impossible de charger ce client.",
+      "retry": "Réessayer",
+      "backToList": "Retour à la liste"
     },
     "listClients": {
       "breadcrumb": {
@@ -446,6 +457,37 @@
             "entreprise": "Entreprise"
           }
         }
+      }
+    },
+    "view": {
+      "referenceLabel": "Réf.",
+      "loading": "Chargement…",
+      "loadError": "Impossible de charger ce client.",
+      "retry": "Réessayer",
+      "backToList": "Retour à la liste",
+      "fields": {
+        "displayName": "Nom affiché",
+        "subtitle": "Sous-titre",
+        "status": "Statut",
+        "clientType": "Type de client",
+        "idnat": "IDNAT",
+        "firstName": "Prénom",
+        "lastName": "Nom",
+        "businessSector": "Secteur d'activité",
+        "legalRepresentative": "Représentant légal",
+        "nif": "NIF",
+        "rccm": "RCCM",
+        "phone": "Téléphone",
+        "email": "E-mail",
+        "country": "Pays",
+        "address": "Adresse"
+      },
+      "actions": {
+        "backToList": "Retour à la liste",
+        "edit": "Modifier",
+        "delete": "Supprimer",
+        "deleteConfirm": "Supprimer définitivement ce client ?",
+        "deleteSuccess": "Client supprimé."
       }
     }
   },
@@ -605,6 +647,10 @@
       },
       "actions": {
         "backToList": "Retour à la liste",
+        "delete": "Supprimer",
+        "deleteConfirm": "Supprimer définitivement cet article ?",
+        "deleteSuccess": "Article supprimé.",
+        "deleteError": "Impossible de supprimer l'article.",
         "edit": "Modifier"
       }
     },
@@ -710,9 +756,44 @@
       "loading": "Chargement des services…",
       "loadError": "Impossible de charger les services.",
       "empty": "Aucun service correspondant.",
+      "action": "Action",
+      "viewServiceDetail": "Voir le détail du service {code}",
+      "loadErrorDetail": "Impossible de charger ce service.",
+      "retryLoad": "Réessayer",
       "pageOfTotal": "Page {page} sur {totalPages}",
       "paginationPrev": "Précédent",
-      "paginationNext": "Suivant"
+      "paginationNext": "Suivant",
+      "view": {
+        "referenceLabel": "Réf.",
+        "fields": {
+          "serviceName": "Nom du service",
+          "code": "Code",
+          "description": "Description",
+          "businessSector": "Secteur d’activité",
+          "unitPrice": "Prix unitaire HT",
+          "priceInclTax": "Prix TTC",
+          "taxGroup": "Groupe de taxation",
+          "currency": "Devise",
+          "referential": "Référentiel"
+        },
+        "actions": {
+          "backToList": "Retour à la liste",
+          "delete": "Supprimer",
+          "deleteConfirm": "Supprimer définitivement ce service ?",
+          "deleteSuccess": "Service supprimé.",
+          "deleteError": "Impossible de supprimer le service.",
+          "edit": "Modifier"
+        }
+      },
+      "edit": {
+        "title": "Modifier le service",
+        "breadcrumbSegment": "Modifier",
+        "referencePrefix": "Réf. : ",
+        "saving": "Enregistrement…",
+        "saveChanges": "Enregistrer les modifications",
+        "toastSaved": "Service mis à jour.",
+        "toastSaveError": "Impossible d'enregistrer le service."
+      }
     },
     "basicInfo": {
       "sectionTitle": "Informations de base",

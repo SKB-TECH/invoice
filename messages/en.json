@@ -247,12 +247,14 @@
       "success": "Payment recorded successfully.",
       "submit": "Submit payment",
       "submitting": "Sending…",
-      "submitErrorFallback": "Could not record the payment."
+      "submitErrorFallback": "Could not record the payment.",
+      "invoiceTotalHint": "Invoice amount: {amount}"
     },
     "validation": {
       "invoiceRequired": "Please select an invoice.",
       "contractRequired": "Please select a contract.",
       "amountInvalid": "Invalid amount.",
+      "amountExceedsInvoice": "Amount cannot exceed the invoice total ({max}).",
       "currencyRequired": "Currency is required.",
       "channelRequired": "Please select a channel.",
       "methodRequired": "Please select a method.",
@@ -386,7 +388,7 @@
       },
       "title": "New customer",
       "form": {
-        "reference": "Reference number",
+        "reference": "IDNAT",
         "nom": "Customer name",
         "sousTitre": "Subtitle",
         "nif": "Tax ID Number (NIF)",
@@ -413,6 +415,15 @@
         "annule": "Cancel",
         "save": "Save"
       }
+    },
+    "editClient": {
+      "breadcrumbStep": "Edit",
+      "title": "Edit customer",
+      "idnatLabel": "IDNAT",
+      "loading": "Loading…",
+      "loadError": "Could not load this customer.",
+      "retry": "Retry",
+      "backToList": "Back to list"
     },
     "listClients": {
       "breadcrumb": {
@@ -446,6 +457,37 @@
             "entreprise": "Company"
           }
         }
+      }
+    },
+    "view": {
+      "referenceLabel": "Ref.",
+      "loading": "Loading…",
+      "loadError": "Could not load this customer.",
+      "retry": "Retry",
+      "backToList": "Back to list",
+      "fields": {
+        "displayName": "Display name",
+        "subtitle": "Subtitle",
+        "status": "Status",
+        "clientType": "Customer type",
+        "idnat": "IDNAT",
+        "firstName": "First name",
+        "lastName": "Last name",
+        "businessSector": "Business sector",
+        "legalRepresentative": "Legal representative",
+        "nif": "Tax ID (NIF)",
+        "rccm": "RCCM",
+        "phone": "Phone",
+        "email": "Email",
+        "country": "Country",
+        "address": "Address"
+      },
+      "actions": {
+        "backToList": "Back to list",
+        "edit": "Edit",
+        "delete": "Delete",
+        "deleteConfirm": "Permanently delete this customer?",
+        "deleteSuccess": "Customer deleted."
       }
     }
   },
@@ -605,6 +647,10 @@
       },
       "actions": {
         "backToList": "Back to list",
+        "delete": "Delete",
+        "deleteConfirm": "Permanently delete this article?",
+        "deleteSuccess": "Article deleted.",
+        "deleteError": "Could not delete article.",
         "edit": "Edit"
       }
     },
@@ -710,9 +756,44 @@
       "loading": "Loading services…",
       "loadError": "Could not load services.",
       "empty": "No services match.",
+      "action": "Action",
+      "viewServiceDetail": "View service details for {code}",
+      "loadErrorDetail": "Could not load this service.",
+      "retryLoad": "Retry",
       "pageOfTotal": "Page {page} of {totalPages}",
       "paginationPrev": "Previous",
-      "paginationNext": "Next"
+      "paginationNext": "Next",
+      "view": {
+        "referenceLabel": "Ref.",
+        "fields": {
+          "serviceName": "Service name",
+          "code": "Code",
+          "description": "Description",
+          "businessSector": "Business sector",
+          "unitPrice": "Unit price excl. tax",
+          "priceInclTax": "Price incl. tax",
+          "taxGroup": "Taxation group",
+          "currency": "Currency",
+          "referential": "Referential"
+        },
+        "actions": {
+          "backToList": "Back to list",
+          "delete": "Delete",
+          "deleteConfirm": "Permanently delete this service?",
+          "deleteSuccess": "Service deleted.",
+          "deleteError": "Could not delete service.",
+          "edit": "Edit"
+        }
+      },
+      "edit": {
+        "title": "Edit service",
+        "breadcrumbSegment": "Edit",
+        "referencePrefix": "Ref.: ",
+        "saving": "Saving…",
+        "saveChanges": "Save changes",
+        "toastSaved": "Service updated.",
+        "toastSaveError": "Could not save service."
+      }
     },
     "basicInfo": {
       "sectionTitle": "Basic information",
