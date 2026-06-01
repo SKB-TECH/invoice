@@ -1,12 +1,16 @@
 import { z } from "zod";
 
+/** Code renvoyé par GET /invoices/client-types (ex. PM, PP). */
+export type ClientType = string;
+
 export const clientTypeEnum = z.enum(["personal", "pme", "corporate"]);
 
 export const clientStatusEnum = z.enum(["actif", "suspendu", "complet"]);
 
 const trimmedString = z.string().trim();
 
-const baseFields = {
+const sharedClientFields = {
+    client_type: trimmedString.min(1, "Le type de client est requis"),
     reference: trimmedString.min(1, "La référence est requise"),
     status: clientStatusEnum.optional().default("actif"),
     phone: trimmedString.optional().nullable(),
@@ -17,50 +21,34 @@ const baseFields = {
     address: trimmedString.optional().nullable(),
     country: trimmedString.optional().nullable(),
     nif: trimmedString.optional().nullable(),
-};
-
-export const personalClientFieldsSchema = z.object({
-    client_type: z.literal("personal"),
-    ...baseFields,
-    first_name: trimmedString.min(1, "Le prénom est requis"),
-    last_name: trimmedString.min(1, "Le nom est requis"),
-    /** Les personnes physiques n’ont pas de RCCM métier */
-    rccm: trimmedString.optional().nullable(),
+    first_name: trimmedString.optional().nullable(),
+    last_name: trimmedString.optional().nullable(),
     company_name: trimmedString.optional().nullable(),
     subtitle: trimmedString.optional().nullable(),
+    rccm: trimmedString.optional().nullable(),
     business_sector: trimmedString.optional().nullable(),
+    legal_representative: trimmedString.optional().nullable(),
+};
+
+export const createClientSchema = z.object(sharedClientFields);
+
+export const updateClientSchema = createClientSchema;
+
+/** @deprecated schémas legacy — conservés pour référence */
+export const personalClientFieldsSchema = z.object({
+    client_type: z.literal("personal"),
+    ...sharedClientFields,
 });
 
 export const pmeClientFieldsSchema = z.object({
     client_type: z.literal("pme"),
-    ...baseFields,
-    company_name: trimmedString.min(1, "La dénomination est requise"),
-    subtitle: trimmedString.optional().nullable(),
-    rccm: trimmedString.min(1, "Le RCCM est requis pour une PME"),
-    business_sector: trimmedString.min(1, "Le secteur d’activité est requis"),
-    first_name: trimmedString.optional().nullable(),
-    last_name: trimmedString.optional().nullable(),
+    ...sharedClientFields,
 });
 
 export const corporateClientFieldsSchema = z.object({
     client_type: z.literal("corporate"),
-    ...baseFields,
-    company_name: trimmedString.min(1, "La dénomination sociale est requise"),
-    subtitle: trimmedString.optional().nullable(),
-    rccm: trimmedString.min(1, "Le RCCM est requis"),
-    business_sector: trimmedString.min(1, "Le secteur d’activité est requis"),
-    legal_representative: trimmedString.optional().nullable(),
-    first_name: trimmedString.optional().nullable(),
-    last_name: trimmedString.optional().nullable(),
+    ...sharedClientFields,
 });
-
-export const createClientSchema = z.discriminatedUnion("client_type", [
-    personalClientFieldsSchema,
-    pmeClientFieldsSchema,
-    corporateClientFieldsSchema,
-]);
-
-export const updateClientSchema = createClientSchema;
 
 const idLike = z.union([z.string(), z.number()]).transform(String);
 
@@ -97,24 +85,29 @@ export function normalizeClientResponseInput(raw: unknown): unknown {
         }
     }
 
-    const typeRaw = pickStr(r.client_type)?.toLowerCase();
-    const typeAliases: Record<string, z.infer<typeof clientTypeEnum>> = {
-        personal: "personal",
-        pme: "pme",
-        corporate: "corporate",
-        individual: "personal",
-        particulier: "personal",
-        person: "personal",
-        company: "corporate",
-        enterprise: "corporate",
-        sas: "corporate",
-    };
+    const typeRaw = pickStr(r.client_type);
     if (typeRaw) {
-        const mapped = typeAliases[typeRaw] ?? (typeRaw as z.infer<typeof clientTypeEnum>);
-        const allowed: z.infer<typeof clientTypeEnum>[] = ["personal", "pme", "corporate"];
-        r.client_type = allowed.includes(mapped) ? mapped : "pme";
+        r.client_type = typeRaw;
     } else {
-        r.client_type = "personal";
+        r.client_type = "";
+    }
+
+    const isLegacyPersonal =
+        typeRaw?.toLowerCase() === "personal" ||
+        typeRaw?.toLowerCase() === "individual" ||
+        typeRaw?.toLowerCase() === "particulier";
+
+    if (isLegacyPersonal && clientName) {
+        if (!pickStr(r.first_name) && !pickStr(r.last_name)) {
+            const parts = clientName.split(/\s+/).filter(Boolean);
+            if (parts.length >= 2) {
+                r.first_name = parts[0];
+                r.last_name = parts.slice(1).join(" ");
+            } else {
+                r.first_name = clientName;
+                r.last_name = "";
+            }
+        }
     }
 
     if (!pickStr(r.reference)) {
@@ -137,19 +130,6 @@ export function normalizeClientResponseInput(raw: unknown): unknown {
         st === null || st === undefined || st === ""
             ? "actif"
             : String(st).toLowerCase();
-
-    if (r.client_type === "personal" && clientName) {
-        if (!pickStr(r.first_name) && !pickStr(r.last_name)) {
-            const parts = clientName.split(/\s+/).filter(Boolean);
-            if (parts.length >= 2) {
-                r.first_name = parts[0];
-                r.last_name = parts.slice(1).join(" ");
-            } else {
-                r.first_name = clientName;
-                r.last_name = "";
-            }
-        }
-    }
 
     const tel =
         r.phone ??
@@ -176,7 +156,7 @@ export function normalizeClientResponseInput(raw: unknown): unknown {
 const clientResponseShape = z
     .object({
         id: idLike,
-        client_type: clientTypeEnum,
+        client_type: z.string(),
         client_name: z.string().nullable().optional(),
         reference: z.string(),
         idnat: z.string().nullable().optional(),
@@ -218,4 +198,3 @@ export const paginatedClientsSchema = z
 
 export type CreateClientInput = z.infer<typeof createClientSchema>;
 export type ClientResponse = z.infer<typeof clientResponseSchema>;
-export type ClientType = z.infer<typeof clientTypeEnum>;

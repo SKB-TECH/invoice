@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useEffect, useMemo } from "react";
 import { useForm, useWatch, type Path } from "react-hook-form";
 import { toast } from "sonner";
 
@@ -14,6 +15,16 @@ import {
     useUpdateClient,
     clientMutationErrorMessage,
 } from "@/core/hooks/client/useClient";
+import { useTypeClient } from "@/core/hooks/type-client/useTypeClient";
+import {
+    clientTypeRequiresField,
+    clientTypeShowsBusinessSector,
+    clientTypeShowsCompanyName,
+    clientTypeShowsCorporateLayout,
+    clientTypeShowsPersonalFields,
+    clientTypeShowsRccm,
+    type ClientTypeOption,
+} from "@/core/schemas/type-client.schema";
 import {
     FieldLabel,
     InputField,
@@ -42,7 +53,7 @@ export type ClientFormValues = {
 
 function emptyCreateDefaults(): ClientFormValues {
     return {
-        client_type: "personal",
+        client_type: "",
         reference: "",
         status: "actif",
         phone: "",
@@ -94,6 +105,67 @@ function applyZodFieldErrors(
     }
 }
 
+function validateRequiredTypeFields(
+    values: ClientFormValues,
+    typeOption: ClientTypeOption | undefined
+): string | null {
+    const required = typeOption?.required_fields ?? [];
+
+    if (
+        clientTypeRequiresField(required, "first_name", "prenom") &&
+        !(values.first_name ?? "").trim()
+    ) {
+        return "Le prénom est requis.";
+    }
+
+    if (
+        clientTypeRequiresField(required, "last_name", "nom") &&
+        !(values.last_name ?? "").trim()
+    ) {
+        return "Le nom est requis.";
+    }
+
+    if (
+        clientTypeRequiresField(
+            required,
+            "denomination",
+            "company_name",
+            "raison_sociale"
+        ) &&
+        !(values.company_name ?? "").trim()
+    ) {
+        return "La dénomination est requise.";
+    }
+
+    if (
+        clientTypeRequiresField(required, "nif") &&
+        !(values.nif ?? "").trim()
+    ) {
+        return "Le NIF est requis.";
+    }
+
+    if (
+        clientTypeRequiresField(required, "rccm") &&
+        !(values.rccm ?? "").trim()
+    ) {
+        return "Le RCCM est requis.";
+    }
+
+    if (
+        clientTypeRequiresField(
+            required,
+            "business_sector",
+            "secteur",
+            "secteur_activite"
+        ) &&
+        !(values.business_sector ?? "").trim()
+    ) {
+        return "Le secteur d'activité est requis.";
+    }
+
+    return null;
+}
+
 type ClientFormBase = {
     cancelHref: string;
 };
@@ -115,6 +187,11 @@ export function ClientForm(props: ClientFormProps) {
     const router = useRouter();
     const createMut = useCreateClient();
     const updateMut = useUpdateClient();
+    const {
+        data: clientTypes = [],
+        isPending: clientTypesPending,
+        isError: clientTypesError,
+    } = useTypeClient();
 
     const defaults =
         props.variant === "edit"
@@ -132,7 +209,55 @@ export function ClientForm(props: ClientFormProps) {
         defaultValue: defaults.client_type,
     });
 
+    const selectedTypeOption = useMemo(
+        () => clientTypes.find((item) => item.code === clientType),
+        [clientTypes, clientType]
+    );
+
+    const requiredFields = selectedTypeOption?.required_fields ?? [];
+    const showPersonalFields = clientTypeShowsPersonalFields(
+        clientType,
+        requiredFields
+    );
+    const showCompanyName = clientTypeShowsCompanyName(
+        clientType,
+        requiredFields
+    );
+    const showRccm = clientTypeShowsRccm(clientType, requiredFields);
+    const showBusinessSector = clientTypeShowsBusinessSector(
+        clientType,
+        requiredFields
+    );
+    const showCorporateLayout = clientTypeShowsCorporateLayout(
+        clientType,
+        requiredFields
+    );
+    const showCompanyBlock =
+        showCompanyName || showRccm || showBusinessSector;
+
+    useEffect(() => {
+        if (clientTypes.length === 0) return;
+
+        const current = form.getValues("client_type");
+        const exists = clientTypes.some((item) => item.code === current);
+        if (exists) return;
+
+        const fallback =
+            clientTypes.find((item) => item.is_default) ?? clientTypes[0];
+        if (fallback) {
+            form.setValue("client_type", fallback.code, {
+                shouldValidate: false,
+            });
+        }
+    }, [clientTypes, form]);
+
     const onSubmit = form.handleSubmit((values) => {
+        const typeError = validateRequiredTypeFields(values, selectedTypeOption);
+        if (typeError) {
+            toast.error(typeError);
+            return;
+        }
+
         const parsed = createClientSchema.safeParse(values);
         if (!parsed.success) {
             applyZodFieldErrors(form.setError, parsed.error.issues);
@@ -182,19 +307,37 @@ export function ClientForm(props: ClientFormProps) {
                     <NativeSelectField
                         id="client-type"
                         value={clientType}
-                        disabled={pending}
+                        disabled={
+                            pending ||
+                            clientTypesPending ||
+                            clientTypes.length === 0
+                        }
                         onChange={(value) =>
-                            form.setValue(
-                                "client_type",
-                                value as ClientType,
-                                { shouldValidate: true }
-                            )
+                            form.setValue("client_type", value as ClientType, {
+                                shouldValidate: true,
+                            })
                         }
                     >
-                        <option value="personal">Personne physique</option>
-                        <option value="pme">PME</option>
-                        <option value="corporate">Entreprise</option>
+                        <option value="" disabled>
+                            {clientTypesPending
+                                ? t("clientTypeLoading")
+                                : clientTypesError
+                                  ? t("clientTypeLoadError")
+                                  : clientTypes.length === 0
+                                    ? t("clientTypeEmpty")
+                                    : t("clientTypePlaceholder")}
+                        </option>
+                        {clientTypes.map((item) => (
+                            <option key={item.id} value={item.code}>
+                                {item.title}
+                            </option>
+                        ))}
                     </NativeSelectField>
+                    {clientTypesError ? (
+                        <p className="mt-2 text-sm font-medium text-red-500">
+                            {t("clientTypeLoadError")}
+                        </p>
+                    ) : null}
                 </div>
 
                 <div className="min-w-0">
@@ -248,7 +391,7 @@ export function ClientForm(props: ClientFormProps) {
                     />
                 </div>
 
-                {clientType === "personal" ? (
+                {showPersonalFields ? (
                     <>
                         <div className="min-w-0">
                             <FieldLabel>
@@ -281,62 +424,70 @@ export function ClientForm(props: ClientFormProps) {
                     </>
                 ) : null}
 
-                {clientType === "pme" || clientType === "corporate" ? (
+                {showCompanyBlock ? (
                     <>
-                        <div className="min-w-0">
-                            <FieldLabel>
-                                {t("nom")}{" "}
-                                <span className="text-red-500">*</span>
-                            </FieldLabel>
-                            <InputField
-                                value={form.watch("company_name")}
-                                onChange={(value) =>
-                                    form.setValue("company_name", value, {
-                                        shouldValidate: true,
-                                    })
-                                }
-                                error={errors.company_name?.message}
-                            />
-                        </div>
-                        <div className="min-w-0">
-                            <FieldLabel>{t("sousTitre")}</FieldLabel>
-                            <InputField
-                                value={form.watch("subtitle")}
-                                onChange={(value) =>
-                                    form.setValue("subtitle", value)
-                                }
-                            />
-                        </div>
-                        <div className="min-w-0">
-                            <FieldLabel>
-                                {t("rccm")}{" "}
-                                <span className="text-red-500">*</span>
-                            </FieldLabel>
-                            <InputField
-                                value={form.watch("rccm")}
-                                onChange={(value) =>
-                                    form.setValue("rccm", value, {
-                                        shouldValidate: true,
-                                    })
-                                }
-                                error={errors.rccm?.message}
-                            />
-                        </div>
-                        <div className="min-w-0">
-                            <FieldLabel>
-                                Secteur d&apos;activité{" "}
-                                <span className="text-red-500">*</span>
-                            </FieldLabel>
-                            <InputField
-                                value={form.watch("business_sector")}
-                                onChange={(value) =>
-                                    form.setValue("business_sector", value, {
-                                        shouldValidate: true,
-                                    })
-                                }
-                                error={errors.business_sector?.message}
-                            />
-                        </div>
+                        {showCompanyName ? (
+                            <>
+                                <div className="min-w-0">
+                                    <FieldLabel>
+                                        {t("nom")}{" "}
+                                        <span className="text-red-500">*</span>
+                                    </FieldLabel>
+                                    <InputField
+                                        value={form.watch("company_name")}
+                                        onChange={(value) =>
+                                            form.setValue("company_name", value, {
+                                                shouldValidate: true,
+                                            })
+                                        }
+                                        error={errors.company_name?.message}
+                                    />
+                                </div>
+                                <div className="min-w-0">
+                                    <FieldLabel>{t("sousTitre")}</FieldLabel>
+                                    <InputField
+                                        value={form.watch("subtitle")}
+                                        onChange={(value) =>
+                                            form.setValue("subtitle", value)
+                                        }
+                                    />
+                                </div>
+                            </>
+                        ) : null}
+                        {showRccm ? (
+                            <div className="min-w-0">
+                                <FieldLabel>
+                                    {t("rccm")}{" "}
+                                    <span className="text-red-500">*</span>
+                                </FieldLabel>
+                                <InputField
+                                    value={form.watch("rccm")}
+                                    onChange={(value) =>
+                                        form.setValue("rccm", value, {
+                                            shouldValidate: true,
+                                        })
+                                    }
+                                    error={errors.rccm?.message}
+                                />
+                            </div>
+                        ) : null}
+                        {showBusinessSector ? (
+                            <div className="min-w-0">
+                                <FieldLabel>
+                                    Secteur d&apos;activité{" "}
+                                    <span className="text-red-500">*</span>
+                                </FieldLabel>
+                                <InputField
+                                    value={form.watch("business_sector")}
+                                    onChange={(value) =>
+                                        form.setValue("business_sector", value, {
+                                            shouldValidate: true,
+                                        })
+                                    }
+                                    error={errors.business_sector?.message}
+                                />
+                            </div>
+                        ) : null}
                     </>
                 ) : null}
 
@@ -365,7 +516,7 @@ export function ClientForm(props: ClientFormProps) {
                     />
                 </div>
 
-                {clientType === "corporate" ? (
+                {showCorporateLayout ? (
                     <>
                         <div className="min-w-0">
                             <FieldLabel>Représentant légal</FieldLabel>

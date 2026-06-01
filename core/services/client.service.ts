@@ -25,41 +25,25 @@ export function clientPayloadForApi(input: CreateClientInput): Record<string, un
     const idnat = input.reference.trim();
     const phone = (input.phone ?? "").trim();
     const email = (input.email ?? "").trim();
+    const client_name =
+        input.company_name?.trim() ||
+        `${input.first_name ?? ""} ${input.last_name ?? ""}`.trim();
 
-    switch (input.client_type) {
-        case "personal":
-            return {
-                client_name: `${input.first_name} ${input.last_name}`.trim(),
-                client_type: "personal",
-                idnat,
-                phone,
-                email,
-            };
-        case "pme":
-            return {
-                client_name: input.company_name.trim(),
-                client_type: "pme",
-                nif: (input.nif ?? "").trim(),
-                rccm: input.rccm.trim(),
-                idnat,
-                phone,
-                email,
-            };
-        case "corporate":
-            return {
-                client_name: input.company_name.trim(),
-                client_type: "corporate",
-                nif: (input.nif ?? "").trim(),
-                rccm: input.rccm.trim(),
-                idnat,
-                phone,
-                email,
-            };
-        default: {
-            const _exhaustive: never = input;
-            return _exhaustive;
-        }
-    }
+    const payload: Record<string, unknown> = {
+        client_name,
+        client_type: input.client_type.trim(),
+        idnat,
+        phone,
+        email,
+    };
+
+    const nif = (input.nif ?? "").trim();
+    if (nif) payload.nif = nif;
+
+    const rccm = (input.rccm ?? "").trim();
+    if (rccm) payload.rccm = rccm;
+
+    return payload;
 }
 
 function extractListItemsAndMeta(

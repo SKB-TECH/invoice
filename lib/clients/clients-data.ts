@@ -94,9 +94,11 @@ export type ClientListRow = {
 };
 
 export function clientTypeLibelle(t: ClientType): string {
-    if (t === "personal") return "Personne physique";
-    if (t === "pme") return "PME";
-    return "Entreprise";
+    const key = t.trim().toLowerCase();
+    if (key === "personal" || key === "pp") return "Personne physique";
+    if (key === "pme") return "PME";
+    if (key === "corporate" || key === "pm") return "Personne morale";
+    return t.trim() || "—";
 }
 
 export function clientStatutToUi(s: ClientStatutForm): ClientStatutUi {
