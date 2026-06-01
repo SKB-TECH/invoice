@@ -13,7 +13,6 @@ import {
     TableRow,
 } from "@/components/ui/table";
 import { cn } from "@/lib/utils";
-import { ArticleStatusBadge } from "./article-status-badge";
 import type { ArticleTableRow } from "./types";
 
 const COLUMN_ORDER = [
@@ -23,7 +22,6 @@ const COLUMN_ORDER = [
     "taxGroup",
     "priceHt",
     "priceTtc",
-    "status",
     "period",
 ] as const satisfies readonly (keyof ArticleTableRow)[];
 
@@ -78,13 +76,7 @@ export function ArticlesTable({ rows, className }: ArticlesTableProps) {
                                         key === "code" && "font-semibold",
                                     )}
                                 >
-                                    {key === "status" ? (
-                                        <ArticleStatusBadge
-                                            status={row.status}
-                                        />
-                                    ) : (
-                                        row[key]
-                                    )}
+                                    {row[key]}
                                 </TableCell>
                             ))}
                             <TableCell className="px-4 py-3 text-right">
