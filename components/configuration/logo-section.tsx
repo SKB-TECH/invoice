@@ -1,13 +1,14 @@
 "use client";
 
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 
 import { SectionCard } from "@/components/configuration/section-card";
 import { FormActions } from "@/components/configuration/form-actions";
-import { useAuth } from "@/context/AuthContext";
+import { useAuthProfile } from "@/core/hooks/auth/useAuthQuery";
 import { useUploadAvatar } from "@/core/hooks/auth/useUploadAvatar";
+import type { AuthProfileData } from "@/core/types/auth";
 import { getAxiosErrorMessage } from "@/core/utils/axiosErrorMessage";
 import { resolvePublicFileUrl } from "@/core/utils/resolvePublicFileUrl";
 
@@ -27,12 +28,70 @@ function isAllowedImage(file: File): boolean {
     );
 }
 
-export function LogoSection() {
+function LogoSectionSkeleton() {
+    const t = useTranslations("configuration");
+
+    return (
+        <SectionCard title={t("logo.sectionTitle")}>
+            <div
+                role="status"
+                aria-busy="true"
+                aria-label={t("basicInfo.loading")}
+                className="grid animate-pulse gap-6 lg:grid-cols-[220px_1fr]"
+            >
+                <div className="min-h-[180px] border border-dashed border-slate-200 bg-slate-100" />
+                <div className="space-y-4">
+                    <div className="h-5 w-48 rounded bg-slate-200/90" />
+                    <div className="h-12 w-full max-w-xl rounded bg-slate-200/90" />
+                    <div className="h-9 w-36 rounded bg-slate-200/90" />
+                </div>
+            </div>
+        </SectionCard>
+    );
+}
+
+function LogoPreview({
+    src,
+    alt,
+    noLogoLabel,
+    formatsHint,
+}: {
+    src: string | null;
+    alt: string;
+    noLogoLabel: string;
+    formatsHint: string;
+}) {
+    const [failed, setFailed] = useState(false);
+
+    if (!src || failed) {
+        return (
+            <div className="text-center">
+                <p className="text-[14px] font-semibold text-slate-700">
+                    {noLogoLabel}
+                </p>
+                <p className="mt-1 text-[12px] text-slate-500">{formatsHint}</p>
+            </div>
+        );
+    }
+
+    return (
+        <img
+            src={src}
+            alt={alt}
+            className="max-h-[140px] max-w-[180px] object-contain"
+            onError={() => setFailed(true)}
+        />
+    );
+}
+
+function LogoSectionLoaded({ profile }: { profile: AuthProfileData }) {
     const t = useTranslations("configuration.logo");
-    const { user, profile } = useAuth();
     const uploadMutation = useUploadAvatar();
+    const fileInputRef = useRef<HTMLInputElement>(null);
 
     const [selectedLogo, setSelectedLogo] = useState<File | null>(null);
+
+    const isEditing = selectedLogo !== null;
 
     const previewObjectUrl = useMemo(() => {
         if (!selectedLogo) return null;
@@ -45,22 +104,18 @@ export function LogoSection() {
         };
     }, [previewObjectUrl]);
 
-    const profilePhoto =
-        profile &&
-        typeof profile === "object" &&
-        "Photo_16" in profile &&
-        typeof (profile as { Photo_16?: unknown }).Photo_16 === "string"
-            ? ((profile as { Photo_16: string }).Photo_16 as string)
-            : null;
-
-    const existingSrc = resolvePublicFileUrl(
-        user?.photo ?? profilePhoto ?? undefined,
-    );
+    const existingSrc = resolvePublicFileUrl(profile.avatar ?? undefined);
 
     const displaySrc =
-        previewObjectUrl ?? (existingSrc && existingSrc !== "" ? existingSrc : null);
+        previewObjectUrl ??
+        (existingSrc && existingSrc !== "" ? existingSrc : null);
+
+    const resetFileInput = () => {
+        if (fileInputRef.current) fileInputRef.current.value = "";
+    };
 
     const handlePickFile = (file: File | null) => {
+        resetFileInput();
         setSelectedLogo(null);
 
         if (!file) return;
@@ -79,6 +134,7 @@ export function LogoSection() {
     };
 
     const handleCancel = () => {
+        resetFileInput();
         setSelectedLogo(null);
     };
 
@@ -88,12 +144,11 @@ export function LogoSection() {
         uploadMutation.mutate(selectedLogo, {
             onSuccess: () => {
                 toast.success(t("toastSaved"));
+                resetFileInput();
                 setSelectedLogo(null);
             },
             onError: (err: unknown) => {
-                toast.error(
-                    getAxiosErrorMessage(err, t("toastError")),
-                );
+                toast.error(getAxiosErrorMessage(err, t("toastError")));
             },
         });
     };
@@ -103,32 +158,22 @@ export function LogoSection() {
             <SectionCard title={t("sectionTitle")}>
                 <div className="grid gap-6 lg:grid-cols-[220px_1fr]">
                     <div className="flex min-h-[180px] items-center justify-center border border-dashed border-slate-300 bg-slate-50">
-                        {displaySrc ? (
-                            
-                            <img
-                                src={displaySrc}
-                                alt={t("previewAlt")}
-                                className="max-h-[140px] max-w-[180px] object-contain"
-                            />
-                        ) : (
-                            <div className="text-center">
-                                <p className="text-[14px] font-semibold text-slate-700">
-                                    {t("noLogo")}
-                                </p>
-                                <p className="mt-1 text-[12px] text-slate-500">
-                                    {t("formatsHint")}
-                                </p>
-                            </div>
-                        )}
+                        <LogoPreview
+                            key={displaySrc ?? "empty"}
+                            src={displaySrc}
+                            alt={t("previewAlt")}
+                            noLogoLabel={t("noLogo")}
+                            formatsHint={t("formatsHint")}
+                        />
                     </div>
 
                     <div className="space-y-4">
                         <div>
                             <p className="text-[14px] font-semibold text-slate-800">
-                                {t("introTitle")}
+                                {isEditing ? t("introTitle") : t("currentLogoTitle")}
                             </p>
                             <p className="mt-1 max-w-xl text-[13px] leading-relaxed text-slate-500">
-                                {t("introBody")}{" "}
+                                {isEditing ? t("introBody") : t("currentLogoBody")}{" "}
                                 <span className="text-slate-600">
                                     {t("formatsHint")}
                                 </span>
@@ -136,8 +181,9 @@ export function LogoSection() {
                         </div>
 
                         <label className="inline-flex cursor-pointer items-center border border-slate-200 px-4 py-2 text-[13px] font-medium hover:bg-slate-50">
-                            {t("chooseFile")}
+                            {isEditing ? t("chooseFile") : t("changeLogo")}
                             <input
+                                ref={fileInputRef}
                                 type="file"
                                 accept={ACCEPT}
                                 className="hidden"
@@ -160,21 +206,51 @@ export function LogoSection() {
                 </div>
             </SectionCard>
 
-            <FormActions
-                onCancel={handleCancel}
-                onSubmit={() => {
-                    if (!selectedLogo) {
-                        toast.error(t("noFileSelected"));
-                        return;
+            {isEditing ? (
+                <FormActions
+                    onCancel={handleCancel}
+                    onSubmit={handleSubmit}
+                    cancelLabel={t("cancel")}
+                    submitLabel={
+                        uploadMutation.isPending ? t("saving") : t("save")
                     }
-                    handleSubmit();
-                }}
-                cancelLabel={t("cancel")}
-                submitLabel={
-                    uploadMutation.isPending ? t("saving") : t("save")
-                }
-                submitDisabled={uploadMutation.isPending || !selectedLogo}
-            />
+                    submitDisabled={uploadMutation.isPending}
+                />
+            ) : null}
         </>
+    );
+}
+
+export function LogoSection() {
+    const t = useTranslations("configuration");
+
+    const { data, isPending, isError, refetch, dataUpdatedAt } =
+        useAuthProfile();
+
+    if (isPending) {
+        return <LogoSectionSkeleton />;
+    }
+
+    if (isError || !data) {
+        return (
+            <SectionCard title={t("logo.sectionTitle")}>
+                <div className="flex min-h-[120px] flex-col items-center justify-center gap-3 text-center">
+                    <p className="text-[14px] text-red-600">
+                        {t("basicInfo.loadError")}
+                    </p>
+                    <button
+                        type="button"
+                        onClick={() => void refetch()}
+                        className="border border-slate-200 px-4 py-2 text-[13px] font-medium hover:bg-slate-50"
+                    >
+                        {t("basicInfo.retry")}
+                    </button>
+                </div>
+            </SectionCard>
+        );
+    }
+
+    return (
+        <LogoSectionLoaded key={dataUpdatedAt} profile={data} />
     );
 }

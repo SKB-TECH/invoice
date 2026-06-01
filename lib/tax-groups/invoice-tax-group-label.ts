@@ -12,7 +12,7 @@ export function formatTaxRatePercent(rate: number): string {
 export function formatInvoiceTaxGroupSelectLabel(
     group: Pick<InvoiceTaxGroup, "title" | "rate">,
 ): string {
-    return `${group.title.trim()} (${formatTaxRatePercent(group.rate)}${FR_PERCENT_SUFFIX})`;
+    return `${group.title.trim()} [${formatTaxRatePercent(group.rate)}${FR_PERCENT_SUFFIX}]`;
 }
 
 export function findInvoiceTaxGroupById(
