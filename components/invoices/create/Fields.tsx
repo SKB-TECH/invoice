@@ -17,6 +17,26 @@ export function FieldLabel({ children }: { children: ReactNode }) {
     );
 }
 
+export function SelectFieldSkeleton({
+    "aria-label": ariaLabel,
+    className,
+}: {
+    "aria-label"?: string;
+    className?: string;
+}) {
+    return (
+        <div
+            role="status"
+            aria-busy="true"
+            aria-label={ariaLabel}
+            className={cn(
+                "h-[50px] w-full animate-pulse rounded border border-slate-200 bg-slate-200/90",
+                className,
+            )}
+        />
+    );
+}
+
 export const readOnlyFieldClassName =
     "flex min-h-[50px] w-full items-center rounded border border-slate-300 bg-slate-50 px-5 text-[17px] font-medium text-slate-700";
 

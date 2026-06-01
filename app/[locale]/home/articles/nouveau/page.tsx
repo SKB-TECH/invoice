@@ -14,9 +14,11 @@ import {
     FieldLabel,
     InputField,
     NativeSelectField,
+    SelectFieldSkeleton,
     TextareaField,
 } from "@/components/invoices/create/Fields";
 import { useCreateFourniture } from "@/core/hooks/fournitures/useCreateFourniture";
+import { useItemTypes } from "@/core/hooks/fournitures/useItemTypes";
 import { getAxiosErrorMessage } from "@/core/utils/axiosErrorMessage";
 import type { ArticleDetailRecord } from "@/lib/fournitures/articles/articles-data";
 import {
@@ -63,6 +65,18 @@ export default function NouvelArticlePage() {
         refetch: refetchReferentials,
     } = useReferentielsCatalog(null);
 
+    const {
+        data: itemTypes = [],
+        isPending: itemTypesPending,
+        isError: itemTypesError,
+        refetch: refetchItemTypes,
+    } = useItemTypes();
+
+    const defaultItemTypeCode = useMemo(() => {
+        const defaultItem = itemTypes.find((item) => item.is_default);
+        return defaultItem?.code ?? itemTypes[0]?.code ?? "";
+    }, [itemTypes]);
+
     const createMutation = useCreateFourniture({
         onSuccess: (data) => {
             router.push(
@@ -82,6 +96,9 @@ export default function NouvelArticlePage() {
     const [prixHt, setPrixHt] = useState("");
     const [groupeTax, setGroupeTax] = useState("");
     const [referentialId, setReferentialId] = useState("");
+    const [codeOverride, setCodeOverride] = useState<string | null>(null);
+
+    const code = codeOverride ?? defaultItemTypeCode;
 
     const prixTtcAffiche = useMemo(() => {
         const ht = parseDecimalInput(prixHt);
@@ -132,7 +149,7 @@ export default function NouvelArticlePage() {
 
                     const fd = new FormData(e.currentTarget);
                     const name = String(fd.get("nom") ?? "").trim();
-                    const code = String(fd.get("code") ?? "").trim();
+                    const codeValue = String(fd.get("code") ?? code).trim();
                     const description = String(
                         fd.get("description") ?? "",
                     ).trim();
@@ -150,7 +167,7 @@ export default function NouvelArticlePage() {
 
                     const price_before = parseDecimalInput(prixHt);
 
-                    if (!name || !code || !devise || !groupeTaxTrim) {
+                    if (!name || !codeValue || !devise || !groupeTaxTrim) {
                         toast.error(tCreate("invalidForm"));
                         return;
                     }
@@ -189,7 +206,7 @@ export default function NouvelArticlePage() {
                     void createMutation.mutate({
                         name,
                         description: description || name,
-                        code,
+                        code: codeValue,
                         price_before,
                         price_after,
                         currency: devise,
@@ -227,11 +244,48 @@ export default function NouvelArticlePage() {
                                 {tCreate("fields.code")}
                                 {requiredStar}
                             </FieldLabel>
-                            <InputField
-                                id="code"
-                                name="code"
-                                required
-                            />
+                            {itemTypesPending ? (
+                                <SelectFieldSkeleton
+                                    aria-label={tCreate("fields.code")}
+                                />
+                            ) : (
+                                <NativeSelectField
+                                    id="code"
+                                    name="code"
+                                    required
+                                    value={code}
+                                    disabled={
+                                        itemTypesError ||
+                                        itemTypes.length === 0
+                                    }
+                                    onChange={setCodeOverride}
+                                    aria-label={tCreate("fields.code")}
+                                >
+                                    <option value="">
+                                        {tCreate("selectPlaceholder")}
+                                    </option>
+                                    {itemTypes.map((item) => (
+                                        <option
+                                            key={item.id}
+                                            value={item.code}
+                                        >
+                                            {item.code}
+                                        </option>
+                                    ))}
+                                </NativeSelectField>
+                            )}
+                            {itemTypesError ? (
+                                <div className="mt-2 flex flex-wrap items-center gap-2 text-sm font-medium text-red-500">
+                                    <span>{tCreate("itemTypeLoadError")}</span>
+                                    <button
+                                        type="button"
+                                        className="underline underline-offset-2 hover:text-red-600"
+                                        onClick={() => void refetchItemTypes()}
+                                    >
+                                        {tCreate("retryItemTypesFetch")}
+                                    </button>
+                                </div>
+                            ) : null}
                         </div>
 
                         <div className="lg:col-span-2">
@@ -239,35 +293,41 @@ export default function NouvelArticlePage() {
                                 {tCreate("fields.referential")}
                                 {requiredStar}
                             </FieldLabel>
-                            <NativeSelectField
-                                id="referentialId"
-                                name="referentialId"
-                                required
-                                value={referentialId}
-                                disabled={
-                                    referentialsPending ||
-                                    referentialsError ||
-                                    referentialRows.length === 0
-                                }
-                                onChange={setReferentialId}
-                                aria-label={tCreate("fields.referential")}
-                            >
-                                <option value="">
-                                    {referentialsPending
-                                        ? tCreate("referentialLoading")
-                                        : tCreate("referentialPlaceholder")}
-                                </option>
-                                {!referentialsPending &&
-                                    referentialRows.map((row) => (
+                            {referentialsPending ? (
+                                <SelectFieldSkeleton
+                                    aria-label={tCreate("fields.referential")}
+                                />
+                            ) : (
+                                <NativeSelectField
+                                    id="referentialId"
+                                    name="referentialId"
+                                    required
+                                    value={referentialId}
+                                    disabled={
+                                        referentialsError ||
+                                        referentialRows.length === 0
+                                    }
+                                    onChange={setReferentialId}
+                                    aria-label={tCreate("fields.referential")}
+                                >
+                                    <option value="">
+                                        {tCreate("referentialPlaceholder")}
+                                    </option>
+                                    {referentialRows.map((row) => (
                                         <option
                                             key={row.id}
                                             value={String(row.id)}
-                                            title={row.title.trim() || undefined}
+                                            title={
+                                                row.title.trim() || undefined
+                                            }
                                         >
-                                            {formatReferentielAxisCodeLabel(row)}
+                                            {formatReferentielAxisCodeLabel(
+                                                row,
+                                            )}
                                         </option>
                                     ))}
-                            </NativeSelectField>
+                                </NativeSelectField>
+                            )}
                             {referentialsError ? (
                                 <div className="mt-2 flex flex-wrap items-center gap-2 text-sm font-medium text-red-500">
                                     <span>
@@ -436,7 +496,11 @@ export default function NouvelArticlePage() {
                             createMutation.isPending ||
                             referentialsPending ||
                             referentialsError ||
-                            referentialRows.length === 0
+                            referentialRows.length === 0 ||
+                            itemTypesPending ||
+                            itemTypesError ||
+                            itemTypes.length === 0 ||
+                            !code.trim()
                         }
                         submitType="submit"
                     />
