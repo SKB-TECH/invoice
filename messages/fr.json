@@ -388,6 +388,10 @@
       "title": "Nouveau client",
       "form": {
         "reference": "IDNAT",
+        "clientTypePlaceholder": "Choisir un type",
+        "clientTypeLoading": "Chargement des types…",
+        "clientTypeLoadError": "Impossible de charger les types de client.",
+        "clientTypeEmpty": "Aucun type disponible",
         "nom": "Nom client",
         "sousTitre": "Sous titre",
         "nif": "Numéro impôt/NIF",

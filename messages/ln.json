@@ -388,6 +388,10 @@
       "title": "Kiliya ya sika",
       "form": {
         "reference": "IDNAT",
+        "clientTypePlaceholder": "Pona lolenge",
+        "clientTypeLoading": "Kotanga ba types…",
+        "clientTypeLoadError": "Ekoki te kotanga ba types ya kiliya.",
+        "clientTypeEmpty": "Type moko te",
         "nom": "Kombo ya kiliya",
         "sousTitre": "Motó ya nse",
         "nif": "Numelo ya NIF",

@@ -388,6 +388,10 @@
       "title": "New customer",
       "form": {
         "reference": "IDNAT",
+        "clientTypePlaceholder": "Choose a type",
+        "clientTypeLoading": "Loading types…",
+        "clientTypeLoadError": "Could not load customer types.",
+        "clientTypeEmpty": "No type available",
         "nom": "Customer name",
         "sousTitre": "Subtitle",
         "nif": "Tax ID Number (NIF)",
