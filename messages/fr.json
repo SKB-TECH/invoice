@@ -393,6 +393,7 @@
         "businessSector": "Secteur d'activité",
         "legalRepresentative": "Représentant légal",
         "countryHint": "Code numérique (ex. 243)",
+        "countryPlaceholder": "Rechercher un pays…",
         "clientTypePlaceholder": "Choisir un type",
         "clientTypeLoading": "Chargement des types…",
         "clientTypeLoadError": "Impossible de charger les types de client.",

@@ -393,6 +393,7 @@
         "businessSector": "Business sector",
         "legalRepresentative": "Legal representative",
         "countryHint": "Numeric code (e.g. 243)",
+        "countryPlaceholder": "Search for a country…",
         "clientTypePlaceholder": "Choose a type",
         "clientTypeLoading": "Loading types…",
         "clientTypeLoadError": "Could not load customer types.",
