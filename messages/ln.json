@@ -646,7 +646,10 @@
       "invalidReferential": "Pona référentiel ya malamu.",
       "itemTypeLoading": "Tozali koluka ba codes…",
       "itemTypeLoadError": "Impossible de koluka ba types ya article.",
-      "retryItemTypesFetch": "Meka lisusu"
+      "retryItemTypesFetch": "Meka lisusu",
+      "taxGroupsPlaceholder": "Pona etuluku ya taxe",
+      "taxGroupsLoadError": "Impossible ya kozwa bituluku ya taxe.",
+      "retryTaxGroupsFetch": "Meka lisusu"
     },
     "view": {
       "title": "Makambo matali eloko",
