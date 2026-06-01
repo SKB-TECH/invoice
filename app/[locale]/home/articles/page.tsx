@@ -90,7 +90,7 @@ export default function HomeFournituresArticlesPage() {
     );
 
     const showLoader = isLoading && !data;
-    const columnCount = 9;
+    const columnCount = 8;
 
     return (
         <main className="mx-auto w-full min-w-full py-4 text-foreground">
