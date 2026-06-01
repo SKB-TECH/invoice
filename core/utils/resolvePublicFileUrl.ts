@@ -5,7 +5,11 @@ export function resolvePublicFileUrl(
 ): string | undefined {
     if (!path?.trim()) return undefined;
     const p = path.trim();
-    if (p.startsWith("http://") || p.startsWith("https://")) return p;
+
+    if (p.startsWith("http://") || p.startsWith("https://")) {
+        return `/api/file?path=${encodeURIComponent(p)}`;
+    }
+
     const base = ENV.FILES_BASE_URL.replace(/\/$/, "");
     const segment = p.startsWith("/") ? p : `/${p}`;
     if (base) return `${base}${segment}`;
