@@ -5,10 +5,13 @@ import { useRouter } from "next/navigation";
 import { useEffect, useMemo } from "react";
 import { useForm, useWatch, type Path } from "react-hook-form";
 import { toast } from "sonner";
+import type { ZodIssue } from "zod";
 
 import type { ClientDetailRecord } from "@/lib/clients/clients-data";
-import { createClientSchema } from "@/core/schemas/client.schema";
-import type { ClientType } from "@/core/schemas/client.schema";
+import {
+    createClientSchema,
+    parseCountryForApi,
+} from "@/core/schemas/client.schema";
 import type { ClientStatutForm } from "@/lib/clients/clients-data";
 import {
     useCreateClient,
@@ -17,12 +20,8 @@ import {
 } from "@/core/hooks/client/useClient";
 import { useTypeClient } from "@/core/hooks/type-client/useTypeClient";
 import {
-    clientTypeRequiresField,
-    clientTypeShowsBusinessSector,
-    clientTypeShowsCompanyName,
-    clientTypeShowsCorporateLayout,
-    clientTypeShowsPersonalFields,
-    clientTypeShowsRccm,
+    clientTypeFieldIsRequired,
+    clientTypeShowsField,
     type ClientTypeOption,
 } from "@/core/schemas/type-client.schema";
 import {
@@ -31,21 +30,20 @@ import {
     NativeSelectField,
 } from "@/components/invoices/create/Fields";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import { useTranslations } from "next-intl";
 
 export type ClientFormValues = {
-    client_type: ClientType;
+    client_type_id: string;
+    client_name: string;
     reference: string;
+    reference_document: string;
     status: ClientStatutForm;
     phone: string;
     email: string;
     address: string;
     country: string;
     nif: string;
-    first_name: string;
-    last_name: string;
-    company_name: string;
-    subtitle: string;
     rccm: string;
     business_sector: string;
     legal_representative: string;
@@ -53,18 +51,16 @@ export type ClientFormValues = {
 
 function emptyCreateDefaults(): ClientFormValues {
     return {
-        client_type: "",
+        client_type_id: "",
+        client_name: "",
         reference: "",
+        reference_document: "",
         status: "actif",
         phone: "",
         email: "",
         address: "",
-        country: "",
+        country: "243",
         nif: "",
-        first_name: "",
-        last_name: "",
-        company_name: "",
-        subtitle: "",
         rccm: "",
         business_sector: "",
         legal_representative: "",
@@ -73,18 +69,16 @@ function emptyCreateDefaults(): ClientFormValues {
 
 function detailToFormValues(d: ClientDetailRecord): ClientFormValues {
     return {
-        client_type: d.client_type,
+        client_type_id: d.client_type_id,
+        client_name: d.nomClient,
         reference: d.reference,
+        reference_document: d.reference_document,
         status: d.statut,
         phone: d.telephone,
         email: d.email,
         address: d.adresse,
         country: d.pays,
         nif: d.nif,
-        first_name: d.first_name,
-        last_name: d.last_name,
-        company_name: d.client_type === "personal" ? "" : d.nomClient,
-        subtitle: d.sousTitre,
         rccm: d.rccm,
         business_sector: d.business_sector,
         legal_representative: d.legal_representative,
@@ -93,7 +87,7 @@ function detailToFormValues(d: ClientDetailRecord): ClientFormValues {
 
 function applyZodFieldErrors(
     setError: (name: Path<ClientFormValues>, err: { message: string }) => void,
-    issues: { path: (string | number)[]; message?: string }[]
+    issues: ZodIssue[]
 ) {
     for (const issue of issues) {
         const top = issue.path[0];
@@ -109,61 +103,90 @@ function validateRequiredTypeFields(
     values: ClientFormValues,
     typeOption: ClientTypeOption | undefined
 ): string | null {
-    const required = typeOption?.required_fields ?? [];
+    const checks: {
+        aliases: string[];
+        value: string;
+        message: string;
+        numericCountry?: boolean;
+    }[] = [
+        {
+            aliases: ["client_name"],
+            value: values.client_name,
+            message: "Le nom du client est requis.",
+        },
+        {
+            aliases: ["nif"],
+            value: values.nif,
+            message: "Le NIF est requis.",
+        },
+        {
+            aliases: ["rccm"],
+            value: values.rccm,
+            message: "Le RCCM est requis.",
+        },
+        {
+            aliases: ["idnat", "reference"],
+            value: values.reference,
+            message: "L'IDNAT est requis.",
+        },
+        {
+            aliases: ["reference_document"],
+            value: values.reference_document,
+            message: "Le document de référence est requis.",
+        },
+        {
+            aliases: ["business_sector", "secteur", "secteur_activite"],
+            value: values.business_sector,
+            message: "Le secteur d'activité est requis.",
+        },
+        {
+            aliases: ["legal_representative", "representant_legal"],
+            value: values.legal_representative,
+            message: "Le représentant légal est requis.",
+        },
+        {
+            aliases: ["phone", "telephone"],
+            value: values.phone,
+            message: "Le téléphone est requis.",
+        },
+        {
+            aliases: ["email"],
+            value: values.email,
+            message: "L'email est requis.",
+        },
+        {
+            aliases: ["country", "pays"],
+            value: values.country,
+            message: "Le pays est requis.",
+            numericCountry: true,
+        },
+        {
+            aliases: ["address", "adresse"],
+            value: values.address,
+            message: "L'adresse est requise.",
+        },
+    ];
 
-    if (
-        clientTypeRequiresField(required, "first_name", "prenom") &&
-        !(values.first_name ?? "").trim()
-    ) {
-        return "Le prénom est requis.";
-    }
+    for (const check of checks) {
+        if (!clientTypeFieldIsRequired(typeOption, ...check.aliases)) {
+            continue;
+        }
 
-    if (
-        clientTypeRequiresField(required, "last_name", "nom") &&
-        !(values.last_name ?? "").trim()
-    ) {
-        return "Le nom est requis.";
-    }
+        if (!(check.value ?? "").trim()) {
+            return check.message;
+        }
 
-    if (
-        clientTypeRequiresField(
-            required,
-            "denomination",
-            "company_name",
-            "raison_sociale"
-        ) &&
-        !(values.company_name ?? "").trim()
-    ) {
-        return "La dénomination est requise.";
-    }
-
-    if (
-        clientTypeRequiresField(required, "nif") &&
-        !(values.nif ?? "").trim()
-    ) {
-        return "Le NIF est requis.";
-    }
-
-    if (
-        clientTypeRequiresField(required, "rccm") &&
-        !(values.rccm ?? "").trim()
-    ) {
-        return "Le RCCM est requis.";
-    }
-
-    if (
-        clientTypeRequiresField(
-            required,
-            "business_sector",
-            "secteur",
-            "secteur_activite"
-        ) &&
-        !(values.business_sector ?? "").trim()
-    ) {
-        return "Le secteur d'activité est requis.";
+        if (check.numericCountry && !parseCountryForApi(check.value)) {
+            return "Le code pays doit être un nombre (ex. 243).";
+        }
     }
 
     return null;
+}
+
+function RequiredMark({ required }: { required: boolean }) {
+    if (!required) return null;
+    return <span className="text-red-500"> *</span>;
 }
 
 type ClientFormBase = {
@@ -203,49 +226,55 @@ export function ClientForm(props: ClientFormProps) {
         mode: "onSubmit",
     });
 
-    const clientType = useWatch({
+    const clientTypeId = useWatch({
         control: form.control,
-        name: "client_type",
-        defaultValue: defaults.client_type,
+        name: "client_type_id",
+        defaultValue: defaults.client_type_id,
     });
 
     const selectedTypeOption = useMemo(
-        () => clientTypes.find((item) => item.code === clientType),
-        [clientTypes, clientType]
+        () => clientTypes.find((item) => item.id === clientTypeId),
+        [clientTypes, clientTypeId]
     );
 
-    const requiredFields = selectedTypeOption?.required_fields ?? [];
-    const showPersonalFields = clientTypeShowsPersonalFields(
-        clientType,
-        requiredFields
+    const showNif = clientTypeShowsField(selectedTypeOption, "nif");
+    const showRccm = clientTypeShowsField(selectedTypeOption, "rccm");
+    const showIdnat = clientTypeShowsField(
+        selectedTypeOption,
+        "idnat",
+        "reference"
     );
-    const showCompanyName = clientTypeShowsCompanyName(
-        clientType,
-        requiredFields
+    const showReferenceDocument = clientTypeShowsField(
+        selectedTypeOption,
+        "reference_document"
     );
-    const showRccm = clientTypeShowsRccm(clientType, requiredFields);
-    const showBusinessSector = clientTypeShowsBusinessSector(
-        clientType,
-        requiredFields
+    const showBusinessSector = clientTypeShowsField(
+        selectedTypeOption,
+        "business_sector",
+        "secteur",
+        "secteur_activite"
     );
-    const showCorporateLayout = clientTypeShowsCorporateLayout(
-        clientType,
-        requiredFields
+    const showLegalRepresentative = clientTypeShowsField(
+        selectedTypeOption,
+        "legal_representative",
+        "representant_legal"
     );
-    const showCompanyBlock =
-        showCompanyName || showRccm || showBusinessSector;
+
+    const isPersonalType = clientTypeId === "1";
 
     useEffect(() => {
         if (clientTypes.length === 0) return;
 
-        const current = form.getValues("client_type");
-        const exists = clientTypes.some((item) => item.code === current);
+        const current = form.getValues("client_type_id");
+        const exists = clientTypes.some((item) => item.id === current);
         if (exists) return;
 
         const fallback =
-            clientTypes.find((item) => item.is_default) ?? clientTypes[0];
+            clientTypes.find((item) => item.is_default) ??
+            clientTypes.find((item) => item.id === "1") ??
+            clientTypes[0];
         if (fallback) {
-            form.setValue("client_type", fallback.code, {
+            form.setValue("client_type_id", fallback.id, {
                 shouldValidate: false,
             });
         }
@@ -265,8 +294,13 @@ export function ClientForm(props: ClientFormProps) {
             return;
         }
 
+        const mutationInput = {
+            payload: parsed.data,
+            typeOption: selectedTypeOption,
+        };
+
         if (props.variant === "create") {
-            createMut.mutate(parsed.data, {
+            createMut.mutate(mutationInput, {
                 onSuccess: (row) => {
                     toast.success("Client créé.");
                     router.push(`/home/clients/${encodeURIComponent(row.id)}`);
@@ -279,7 +313,7 @@ export function ClientForm(props: ClientFormProps) {
         }
 
         updateMut.mutate(
-            { id: props.initial.id, payload: parsed.data },
+            { id: props.initial.id, ...mutationInput },
             {
                 onSuccess: () => {
                     toast.success("Client mis à jour.");
@@ -302,18 +336,19 @@ export function ClientForm(props: ClientFormProps) {
             <div className="grid grid-cols-1 gap-x-14 gap-y-4 lg:grid-cols-2">
                 <div className="min-w-0">
                     <FieldLabel>
-                        Type de client <span className="text-red-500">*</span>
+                        {t("type.title")}
+                        <RequiredMark required />
                     </FieldLabel>
                     <NativeSelectField
                         id="client-type"
-                        value={clientType}
+                        value={clientTypeId}
                         disabled={
                             pending ||
                             clientTypesPending ||
                             clientTypes.length === 0
                         }
                         onChange={(value) =>
-                            form.setValue("client_type", value as ClientType, {
+                            form.setValue("client_type_id", value, {
                                 shouldValidate: true,
                             })
                         }
@@ -328,7 +363,7 @@ export function ClientForm(props: ClientFormProps) {
                                     : t("clientTypePlaceholder")}
                         </option>
                         {clientTypes.map((item) => (
-                            <option key={item.id} value={item.code}>
+                            <option key={item.id} value={item.id}>
                                 {item.title}
                             </option>
                         ))}
@@ -338,22 +373,6 @@ export function ClientForm(props: ClientFormProps) {
                             {t("clientTypeLoadError")}
                         </p>
                     ) : null}
-                </div>
-
-                <div className="min-w-0">
-                    <FieldLabel>
-                        {t("reference")} <span className="text-red-500">*</span>
-                    </FieldLabel>
-                    <InputField
-                        id="reference"
-                        value={form.watch("reference")}
-                        onChange={(value) =>
-                            form.setValue("reference", value, {
-                                shouldValidate: true,
-                            })
-                        }
-                        error={errors.reference?.message}
-                    />
                 </div>
 
                 <div className="min-w-0">
@@ -383,126 +402,237 @@ export function ClientForm(props: ClientFormProps) {
                 </div>
 
                 <div className="min-w-0">
-                    <FieldLabel>{t("nif")}</FieldLabel>
+                    <FieldLabel>
+                        {t("clientName")}
+                        <RequiredMark
+                            required={clientTypeFieldIsRequired(
+                                selectedTypeOption,
+                                "client_name"
+                            )}
+                        />
+                    </FieldLabel>
                     <InputField
-                        id="nif"
-                        value={form.watch("nif")}
-                        onChange={(value) => form.setValue("nif", value)}
+                        id="client-name"
+                        value={form.watch("client_name")}
+                        onChange={(value) =>
+                            form.setValue("client_name", value, {
+                                shouldValidate: true,
+                            })
+                        }
+                        error={errors.client_name?.message}
                     />
                 </div>
 
-                {showPersonalFields ? (
-                    <>
-                        <div className="min-w-0">
-                            <FieldLabel>
-                                Prénom <span className="text-red-500">*</span>
-                            </FieldLabel>
-                            <InputField
-                                value={form.watch("first_name")}
-                                onChange={(value) =>
-                                    form.setValue("first_name", value, {
-                                        shouldValidate: true,
-                                    })
-                                }
-                                error={errors.first_name?.message}
+                {isPersonalType ? (
+                    <div className="min-w-0">
+                        <FieldLabel>
+                            {t("tel")}
+                            <RequiredMark
+                                required={clientTypeFieldIsRequired(
+                                    selectedTypeOption,
+                                    "phone",
+                                    "telephone"
+                                )}
                             />
-                        </div>
-                        <div className="min-w-0">
-                            <FieldLabel>
-                                Nom <span className="text-red-500">*</span>
-                            </FieldLabel>
-                            <InputField
-                                value={form.watch("last_name")}
-                                onChange={(value) =>
-                                    form.setValue("last_name", value, {
-                                        shouldValidate: true,
-                                    })
-                                }
-                                error={errors.last_name?.message}
-                            />
-                        </div>
-                    </>
+                        </FieldLabel>
+                        <InputField
+                            id="telephone"
+                            type="tel"
+                            value={form.watch("phone")}
+                            onChange={(value) =>
+                                form.setValue("phone", value, {
+                                    shouldValidate: true,
+                                })
+                            }
+                            error={errors.phone?.message}
+                        />
+                    </div>
                 ) : null}
 
-                {showCompanyBlock ? (
-                    <>
-                        {showCompanyName ? (
-                            <>
-                                <div className="min-w-0">
-                                    <FieldLabel>
-                                        {t("nom")}{" "}
-                                        <span className="text-red-500">*</span>
-                                    </FieldLabel>
-                                    <InputField
-                                        value={form.watch("company_name")}
-                                        onChange={(value) =>
-                                            form.setValue("company_name", value, {
-                                                shouldValidate: true,
-                                            })
-                                        }
-                                        error={errors.company_name?.message}
-                                    />
-                                </div>
-                                <div className="min-w-0">
-                                    <FieldLabel>{t("sousTitre")}</FieldLabel>
-                                    <InputField
-                                        value={form.watch("subtitle")}
-                                        onChange={(value) =>
-                                            form.setValue("subtitle", value)
-                                        }
-                                    />
-                                </div>
-                            </>
-                        ) : null}
-                        {showRccm ? (
-                            <div className="min-w-0">
-                                <FieldLabel>
-                                    {t("rccm")}{" "}
-                                    <span className="text-red-500">*</span>
-                                </FieldLabel>
-                                <InputField
-                                    value={form.watch("rccm")}
-                                    onChange={(value) =>
-                                        form.setValue("rccm", value, {
-                                            shouldValidate: true,
-                                        })
-                                    }
-                                    error={errors.rccm?.message}
-                                />
-                            </div>
-                        ) : null}
-                        {showBusinessSector ? (
-                            <div className="min-w-0">
-                                <FieldLabel>
-                                    Secteur d&apos;activité{" "}
-                                    <span className="text-red-500">*</span>
-                                </FieldLabel>
-                                <InputField
-                                    value={form.watch("business_sector")}
-                                    onChange={(value) =>
-                                        form.setValue("business_sector", value, {
-                                            shouldValidate: true,
-                                        })
-                                    }
-                                    error={errors.business_sector?.message}
-                                />
-                            </div>
-                        ) : null}
-                    </>
+                {!isPersonalType && showNif ? (
+                    <div className="min-w-0">
+                        <FieldLabel>
+                            {t("nif")}
+                            <RequiredMark
+                                required={clientTypeFieldIsRequired(
+                                    selectedTypeOption,
+                                    "nif"
+                                )}
+                            />
+                        </FieldLabel>
+                        <InputField
+                            id="nif"
+                            value={form.watch("nif")}
+                            onChange={(value) =>
+                                form.setValue("nif", value, {
+                                    shouldValidate: true,
+                                })
+                            }
+                            error={errors.nif?.message}
+                        />
+                    </div>
+                ) : null}
+
+                {!isPersonalType && showRccm ? (
+                    <div className="min-w-0">
+                        <FieldLabel>
+                            {t("rccm")}
+                            <RequiredMark
+                                required={clientTypeFieldIsRequired(
+                                    selectedTypeOption,
+                                    "rccm"
+                                )}
+                            />
+                        </FieldLabel>
+                        <InputField
+                            id="rccm"
+                            value={form.watch("rccm")}
+                            onChange={(value) =>
+                                form.setValue("rccm", value, {
+                                    shouldValidate: true,
+                                })
+                            }
+                            error={errors.rccm?.message}
+                        />
+                    </div>
+                ) : null}
+
+                {!isPersonalType && showIdnat ? (
+                    <div className="min-w-0">
+                        <FieldLabel>
+                            {t("reference")}
+                            <RequiredMark
+                                required={clientTypeFieldIsRequired(
+                                    selectedTypeOption,
+                                    "idnat",
+                                    "reference"
+                                )}
+                            />
+                        </FieldLabel>
+                        <InputField
+                            id="reference"
+                            value={form.watch("reference")}
+                            onChange={(value) =>
+                                form.setValue("reference", value, {
+                                    shouldValidate: true,
+                                })
+                            }
+                            error={errors.reference?.message}
+                        />
+                    </div>
+                ) : null}
+
+                {!isPersonalType && showReferenceDocument ? (
+                    <div className="min-w-0">
+                        <FieldLabel>
+                            {t("referenceDocument")}
+                            <RequiredMark
+                                required={clientTypeFieldIsRequired(
+                                    selectedTypeOption,
+                                    "reference_document"
+                                )}
+                            />
+                        </FieldLabel>
+                        <InputField
+                            id="reference-document"
+                            value={form.watch("reference_document")}
+                            onChange={(value) =>
+                                form.setValue("reference_document", value, {
+                                    shouldValidate: true,
+                                })
+                            }
+                            error={errors.reference_document?.message}
+                        />
+                    </div>
+                ) : null}
+
+                {!isPersonalType && showBusinessSector ? (
+                    <div className="min-w-0">
+                        <FieldLabel>
+                            {t("businessSector")}
+                            <RequiredMark
+                                required={clientTypeFieldIsRequired(
+                                    selectedTypeOption,
+                                    "business_sector",
+                                    "secteur",
+                                    "secteur_activite"
+                                )}
+                            />
+                        </FieldLabel>
+                        <InputField
+                            id="business-sector"
+                            value={form.watch("business_sector")}
+                            onChange={(value) =>
+                                form.setValue("business_sector", value, {
+                                    shouldValidate: true,
+                                })
+                            }
+                            error={errors.business_sector?.message}
+                        />
+                    </div>
+                ) : null}
+
+                {!isPersonalType && showLegalRepresentative ? (
+                    <div className="min-w-0">
+                        <FieldLabel>
+                            {t("legalRepresentative")}
+                            <RequiredMark
+                                required={clientTypeFieldIsRequired(
+                                    selectedTypeOption,
+                                    "legal_representative",
+                                    "representant_legal"
+                                )}
+                            />
+                        </FieldLabel>
+                        <InputField
+                            id="legal-representative"
+                            value={form.watch("legal_representative")}
+                            onChange={(value) =>
+                                form.setValue("legal_representative", value, {
+                                    shouldValidate: true,
+                                })
+                            }
+                            error={errors.legal_representative?.message}
+                        />
+                    </div>
+                ) : null}
+
+                {!isPersonalType ? (
+                    <div className="min-w-0">
+                        <FieldLabel>
+                            {t("tel")}
+                            <RequiredMark
+                                required={clientTypeFieldIsRequired(
+                                    selectedTypeOption,
+                                    "phone",
+                                    "telephone"
+                                )}
+                            />
+                        </FieldLabel>
+                        <InputField
+                            id="telephone"
+                            type="tel"
+                            value={form.watch("phone")}
+                            onChange={(value) =>
+                                form.setValue("phone", value, {
+                                    shouldValidate: true,
+                                })
+                            }
+                            error={errors.phone?.message}
+                        />
+                    </div>
                 ) : null}
 
                 <div className="min-w-0">
-                    <FieldLabel>{t("tel")}</FieldLabel>
-                    <InputField
-                        id="telephone"
-                        type="tel"
-                        value={form.watch("phone")}
-                        onChange={(value) => form.setValue("phone", value)}
-                    />
-                </div>
-
-                <div className="min-w-0">
-                    <FieldLabel>{t("email")}</FieldLabel>
+                    <FieldLabel>
+                        {t("email")}
+                        <RequiredMark
+                            required={clientTypeFieldIsRequired(
+                                selectedTypeOption,
+                                "email"
+                            )}
+                        />
+                    </FieldLabel>
                     <InputField
                         id="email"
                         type="email"
@@ -516,64 +646,57 @@ export function ClientForm(props: ClientFormProps) {
                     />
                 </div>
 
-                {showCorporateLayout ? (
-                    <>
-                        <div className="min-w-0">
-                            <FieldLabel>Représentant légal</FieldLabel>
-                            <InputField
-                                value={form.watch("legal_representative")}
-                                onChange={(value) =>
-                                    form.setValue("legal_representative", value)
-                                }
-                            />
-                        </div>
-                        <div className="min-w-0">
-                            <FieldLabel>{t("pays")}</FieldLabel>
-                            <InputField
-                                id="pays"
-                                value={form.watch("country")}
-                                onChange={(value) =>
-                                    form.setValue("country", value)
-                                }
-                            />
-                        </div>
+                <div className="min-w-0">
+                    <FieldLabel>
+                        {t("pays")}
+                        <RequiredMark
+                            required={clientTypeFieldIsRequired(
+                                selectedTypeOption,
+                                "country",
+                                "pays"
+                            )}
+                        />
+                    </FieldLabel>
+                    <InputField
+                        id="pays"
+                        value={form.watch("country")}
+                        placeholder={t("countryHint")}
+                        onChange={(value) =>
+                            form.setValue("country", value, {
+                                shouldValidate: true,
+                            })
+                        }
+                        error={errors.country?.message}
+                    />
+                </div>
 
-                        <div className="min-w-0 lg:col-span-2">
-                            <FieldLabel>{t("adresse")}</FieldLabel>
-                            <InputField
-                                id="adresse"
-                                value={form.watch("address")}
-                                onChange={(value) =>
-                                    form.setValue("address", value)
-                                }
-                            />
-                        </div>
-                    </>
-                ) : (
-                    <>
-                        <div className="min-w-0">
-                            <FieldLabel>{t("pays")}</FieldLabel>
-                            <InputField
-                                id="pays"
-                                value={form.watch("country")}
-                                onChange={(value) =>
-                                    form.setValue("country", value)
-                                }
-                            />
-                        </div>
-
-                        <div className="min-w-0">
-                            <FieldLabel>{t("adresse")}</FieldLabel>
-                            <InputField
-                                id="adresse"
-                                value={form.watch("address")}
-                                onChange={(value) =>
-                                    form.setValue("address", value)
-                                }
-                            />
-                        </div>
-                    </>
-                )}
+                <div
+                    className={cn(
+                        "min-w-0",
+                        isPersonalType && "lg:col-span-2"
+                    )}
+                >
+                    <FieldLabel>
+                        {t("adresse")}
+                        <RequiredMark
+                            required={clientTypeFieldIsRequired(
+                                selectedTypeOption,
+                                "address",
+                                "adresse"
+                            )}
+                        />
+                    </FieldLabel>
+                    <InputField
+                        id="adresse"
+                        value={form.watch("address")}
+                        onChange={(value) =>
+                            form.setValue("address", value, {
+                                shouldValidate: true,
+                            })
+                        }
+                        error={errors.address?.message}
+                    />
+                </div>
             </div>
 
             <div className="mt-6 flex flex-wrap items-center justify-end gap-5">

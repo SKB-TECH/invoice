@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-/** Code renvoyé par GET /invoices/client-types (ex. PM, PP). */
+/** Identifiant renvoyé par GET /invoices/client-types. */
 export type ClientType = string;
 
 export const clientTypeEnum = z.enum(["personal", "pme", "corporate"]);
@@ -10,8 +10,8 @@ export const clientStatusEnum = z.enum(["actif", "suspendu", "complet"]);
 const trimmedString = z.string().trim();
 
 const sharedClientFields = {
-    client_type: trimmedString.min(1, "Le type de client est requis"),
-    reference: trimmedString.min(1, "La référence est requise"),
+    client_type_id: trimmedString.min(1, "Le type de client est requis"),
+    client_name: trimmedString.min(1, "Le nom du client est requis"),
     status: clientStatusEnum.optional().default("actif"),
     phone: trimmedString.optional().nullable(),
     email: z
@@ -20,37 +20,35 @@ const sharedClientFields = {
         .nullable(),
     address: trimmedString.optional().nullable(),
     country: trimmedString.optional().nullable(),
+    reference: trimmedString.optional().nullable(),
+    reference_document: trimmedString.optional().nullable(),
     nif: trimmedString.optional().nullable(),
+    rccm: trimmedString.optional().nullable(),
+    business_sector: trimmedString.optional().nullable(),
+    legal_representative: trimmedString.optional().nullable(),
+    /** Legacy — conservé pour l’édition */
+    client_type: trimmedString.optional().nullable(),
     first_name: trimmedString.optional().nullable(),
     last_name: trimmedString.optional().nullable(),
     company_name: trimmedString.optional().nullable(),
     subtitle: trimmedString.optional().nullable(),
-    rccm: trimmedString.optional().nullable(),
-    business_sector: trimmedString.optional().nullable(),
-    legal_representative: trimmedString.optional().nullable(),
 };
 
 export const createClientSchema = z.object(sharedClientFields);
 
 export const updateClientSchema = createClientSchema;
 
-/** @deprecated schémas legacy — conservés pour référence */
-export const personalClientFieldsSchema = z.object({
-    client_type: z.literal("personal"),
-    ...sharedClientFields,
-});
-
-export const pmeClientFieldsSchema = z.object({
-    client_type: z.literal("pme"),
-    ...sharedClientFields,
-});
-
-export const corporateClientFieldsSchema = z.object({
-    client_type: z.literal("corporate"),
-    ...sharedClientFields,
-});
-
 const idLike = z.union([z.string(), z.number()]).transform(String);
+
+function statusApiToForm(status: unknown): string {
+    if (status === 1 || status === "1") return "actif";
+    if (status === 2 || status === "2") return "suspendu";
+    if (status === 3 || status === "3") return "complet";
+    if (typeof status === "string" && status.trim()) {
+        return status.trim().toLowerCase();
+    }
+    return "actif";
+}
 
 /** Aligne les payloads Laravel / API sur le schéma attendu par l’UI. */
 export function normalizeClientResponseInput(raw: unknown): unknown {
@@ -85,30 +83,12 @@ export function normalizeClientResponseInput(raw: unknown): unknown {
         }
     }
 
+    if (r.client_type_id !== undefined && r.client_type_id !== null) {
+        r.client_type_id = String(r.client_type_id);
+    }
+
     const typeRaw = pickStr(r.client_type);
-    if (typeRaw) {
-        r.client_type = typeRaw;
-    } else {
-        r.client_type = "";
-    }
-
-    const isLegacyPersonal =
-        typeRaw?.toLowerCase() === "personal" ||
-        typeRaw?.toLowerCase() === "individual" ||
-        typeRaw?.toLowerCase() === "particulier";
-
-    if (isLegacyPersonal && clientName) {
-        if (!pickStr(r.first_name) && !pickStr(r.last_name)) {
-            const parts = clientName.split(/\s+/).filter(Boolean);
-            if (parts.length >= 2) {
-                r.first_name = parts[0];
-                r.last_name = parts.slice(1).join(" ");
-            } else {
-                r.first_name = clientName;
-                r.last_name = "";
-            }
-        }
-    }
+    r.client_type = typeRaw ?? "";
 
     if (!pickStr(r.reference)) {
         const alt =
@@ -125,11 +105,16 @@ export function normalizeClientResponseInput(raw: unknown): unknown {
         }
     }
 
-    const st = r.status ?? r.statut ?? (r as { state?: unknown }).state;
-    r.status =
-        st === null || st === undefined || st === ""
-            ? "actif"
-            : String(st).toLowerCase();
+    if (!pickStr(r.reference_document)) {
+        const doc = pickStr(
+            (r as { reference_document?: unknown }).reference_document
+        );
+        if (doc) {
+            r.reference_document = doc;
+        }
+    }
+
+    r.status = statusApiToForm(r.status ?? r.statut ?? (r as { state?: unknown }).state);
 
     const tel =
         r.phone ??
@@ -146,6 +131,10 @@ export function normalizeClientResponseInput(raw: unknown): unknown {
         r.address = addr === null ? null : String(addr);
     }
 
+    if (r.country !== undefined && r.country !== null && r.country !== "") {
+        r.country = String(r.country);
+    }
+
     if ((r.id === undefined || r.id === null || r.id === "") && pickStr(r.reference)) {
         r.id = r.reference as string;
     }
@@ -156,9 +145,11 @@ export function normalizeClientResponseInput(raw: unknown): unknown {
 const clientResponseShape = z
     .object({
         id: idLike,
-        client_type: z.string(),
+        client_type_id: z.string().optional().nullable(),
+        client_type: z.string().optional().nullable(),
         client_name: z.string().nullable().optional(),
         reference: z.string(),
+        reference_document: z.string().nullable().optional(),
         idnat: z.string().nullable().optional(),
         status: z.string(),
         first_name: z.string().nullable().optional(),
@@ -198,3 +189,21 @@ export const paginatedClientsSchema = z
 
 export type CreateClientInput = z.infer<typeof createClientSchema>;
 export type ClientResponse = z.infer<typeof clientResponseSchema>;
+
+export function statusFormToApi(status: z.infer<typeof clientStatusEnum>): number {
+    switch (status) {
+        case "suspendu":
+            return 2;
+        case "complet":
+            return 3;
+        default:
+            return 1;
+    }
+}
+
+export function parseCountryForApi(value: string | null | undefined): number | undefined {
+    const trimmed = (value ?? "").trim();
+    if (!trimmed) return undefined;
+    const n = Number(trimmed);
+    return Number.isFinite(n) ? n : undefined;
+}

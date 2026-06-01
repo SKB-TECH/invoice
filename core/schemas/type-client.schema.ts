@@ -11,6 +11,53 @@ function pickTruthyString(...vals: unknown[]): string | undefined {
     return undefined;
 }
 
+/** Champs attendus par type si l’API ne renvoie pas `required_fields`. */
+const FALLBACK_REQUIRED_FIELDS_BY_ID: Record<string, readonly string[]> = {
+    "1": ["client_name", "phone", "email", "country", "address"],
+    "2": [
+        "client_name",
+        "nif",
+        "rccm",
+        "idnat",
+        "business_sector",
+        "legal_representative",
+        "phone",
+        "email",
+        "country",
+        "address",
+    ],
+    "3": [
+        "client_name",
+        "nif",
+        "rccm",
+        "idnat",
+        "business_sector",
+        "phone",
+        "email",
+        "country",
+        "address",
+    ],
+    "4": [
+        "client_name",
+        "nif",
+        "idnat",
+        "business_sector",
+        "legal_representative",
+        "phone",
+        "email",
+        "country",
+        "address",
+    ],
+    "5": [
+        "client_name",
+        "reference_document",
+        "phone",
+        "email",
+        "country",
+        "address",
+    ],
+};
+
 export function normalizeClientTypeInput(raw: unknown): unknown {
     if (raw === null || typeof raw !== "object") {
         return raw;
@@ -76,6 +123,16 @@ export type ClientTypeOption = z.infer<typeof clientTypeOptionSchema>;
 
 export const clientTypesListSchema = z.array(clientTypeOptionSchema);
 
+export function getEffectiveRequiredFields(
+    typeOption: ClientTypeOption | undefined
+): readonly string[] {
+    if (!typeOption) return [];
+    if (typeOption.required_fields.length > 0) {
+        return typeOption.required_fields;
+    }
+    return FALLBACK_REQUIRED_FIELDS_BY_ID[typeOption.id] ?? [];
+}
+
 export function clientTypeRequiresField(
     requiredFields: readonly string[] | undefined,
     ...aliases: string[]
@@ -87,65 +144,16 @@ export function clientTypeRequiresField(
     return aliases.some((alias) => normalized.has(alias.trim().toLowerCase()));
 }
 
-export function clientTypeShowsPersonalFields(
-    clientTypeCode: string,
-    requiredFields: readonly string[] | undefined
+export function clientTypeShowsField(
+    typeOption: ClientTypeOption | undefined,
+    ...aliases: string[]
 ): boolean {
-    if (clientTypeCode === "personal") return true;
-    return (
-        clientTypeRequiresField(requiredFields, "first_name", "prenom") ||
-        clientTypeRequiresField(requiredFields, "last_name", "nom")
-    );
+    return clientTypeRequiresField(getEffectiveRequiredFields(typeOption), ...aliases);
 }
 
-export function clientTypeShowsCompanyName(
-    clientTypeCode: string,
-    requiredFields: readonly string[] | undefined
+export function clientTypeFieldIsRequired(
+    typeOption: ClientTypeOption | undefined,
+    ...aliases: string[]
 ): boolean {
-    if (clientTypeCode === "pme" || clientTypeCode === "corporate") {
-        return true;
-    }
-    return clientTypeRequiresField(
-        requiredFields,
-        "denomination",
-        "company_name",
-        "raison_sociale"
-    );
-}
-
-export function clientTypeShowsRccm(
-    clientTypeCode: string,
-    requiredFields: readonly string[] | undefined
-): boolean {
-    if (clientTypeCode === "pme" || clientTypeCode === "corporate") {
-        return true;
-    }
-    return clientTypeRequiresField(requiredFields, "rccm");
-}
-
-export function clientTypeShowsBusinessSector(
-    clientTypeCode: string,
-    requiredFields: readonly string[] | undefined
-): boolean {
-    if (clientTypeCode === "pme" || clientTypeCode === "corporate") {
-        return true;
-    }
-    return clientTypeRequiresField(
-        requiredFields,
-        "business_sector",
-        "secteur",
-        "secteur_activite"
-    );
-}
-
-export function clientTypeShowsCorporateLayout(
-    clientTypeCode: string,
-    requiredFields: readonly string[] | undefined
-): boolean {
-    if (clientTypeCode === "corporate") return true;
-    return clientTypeRequiresField(
-        requiredFields,
-        "legal_representative",
-        "representant_legal"
-    );
+    return clientTypeShowsField(typeOption, ...aliases);
 }

@@ -9,7 +9,9 @@ export type ClientStatutUi = "Suspendu" | "Actif" | "Complet";
 
 export type ClientDetailRecord = {
     id: string;
+    client_type_id: string;
     reference: string;
+    reference_document: string;
     nomClient: string;
     sousTitre: string;
     nif: string;
@@ -29,7 +31,9 @@ export type ClientDetailRecord = {
 const DETAILS: ClientDetailRecord[] = [
     {
         id: "1",
+        client_type_id: "2",
         reference: "1234567890",
+        reference_document: "",
         nomClient: "Rawbank",
         sousTitre: " siège social Kinshasa",
         nif: "1234567890",
@@ -47,7 +51,9 @@ const DETAILS: ClientDetailRecord[] = [
     },
     {
         id: "2",
+        client_type_id: "2",
         reference: "2345678901",
+        reference_document: "",
         nomClient: "Rawbank",
         sousTitre: " agence Lukunga",
         nif: "2345678901",
@@ -65,7 +71,9 @@ const DETAILS: ClientDetailRecord[] = [
     },
     {
         id: "3",
-        reference: "3456789012",
+        client_type_id: "1",
+        reference: "",
+        reference_document: "",
         nomClient: "Jean Dupont",
         sousTitre: "",
         nif: "",

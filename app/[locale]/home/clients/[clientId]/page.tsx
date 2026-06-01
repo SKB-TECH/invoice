@@ -14,11 +14,12 @@ import {
 import { cn } from "@/lib/utils";
 import {
     clientStatutToUi,
-    clientTypeLibelle,
     type ClientStatutUi,
 } from "@/lib/clients/clients-data";
 import { clientResponseToDetail } from "@/lib/clients/client-api-mapper";
 import { useClient } from "@/core/hooks/client/useClient";
+import { useTypeClient } from "@/core/hooks/type-client/useTypeClient";
+import { clientTypeShowsField } from "@/core/schemas/type-client.schema";
 
 function StatutBadge({ statut }: { statut: ClientStatutUi }) {
     const styles: Record<ClientStatutUi, string> = {
@@ -46,6 +47,7 @@ export default function VisualiserClientPage() {
     const tList = useTranslations("clients.listClients");
     const tNavbar = useTranslations("navbar");
     const { data, isPending, isError, refetch } = useClient(clientId);
+    const { data: clientTypes = [] } = useTypeClient();
 
     if (isPending) {
         return (
@@ -84,9 +86,39 @@ export default function VisualiserClientPage() {
     const client = clientResponseToDetail(data);
     const basePath = `/home/clients/${encodeURIComponent(client.id)}`;
     const statutUi = clientStatutToUi(client.statut);
-    const isPersonal = client.client_type === "personal";
-    const isCompany =
-        client.client_type === "pme" || client.client_type === "corporate";
+
+    const typeOption =
+        clientTypes.find((item) => item.id === client.client_type_id) ??
+        clientTypes.find((item) => item.code === client.client_type);
+
+    const typeTitle = typeOption?.title ?? client.client_type ?? "—";
+    const showNif = clientTypeShowsField(typeOption, "nif");
+    const showRccm = clientTypeShowsField(typeOption, "rccm");
+    const showIdnat = clientTypeShowsField(typeOption, "idnat", "reference");
+    const showReferenceDocument = clientTypeShowsField(
+        typeOption,
+        "reference_document"
+    );
+    const showBusinessSector = clientTypeShowsField(
+        typeOption,
+        "business_sector",
+        "secteur",
+        "secteur_activite"
+    );
+    const showLegalRepresentative = clientTypeShowsField(
+        typeOption,
+        "legal_representative",
+        "representant_legal"
+    );
+
+    const subtitleLabel = showReferenceDocument
+        ? t("fields.referenceDocument")
+        : showIdnat
+          ? t("fields.idnat")
+          : t("referenceLabel");
+    const subtitleValue = showReferenceDocument
+        ? client.reference_document || "—"
+        : client.reference || "—";
 
     return (
         <main className="relative w-full text-slate-700">
@@ -112,64 +144,73 @@ export default function VisualiserClientPage() {
                 {client.nomClient}
             </h1>
             <p className="mt-2 text-[17px] font-medium text-slate-500">
-                {t("fields.idnat")}
+                {subtitleLabel}
                 {"\u00a0"}
-                <span className="text-slate-700">{client.reference || "—"}</span>
+                <span className="text-slate-700">{subtitleValue}</span>
             </p>
 
             <div className="mt-4 bg-white p-8">
                 <div className="grid grid-cols-1 gap-x-14 gap-y-4 lg:grid-cols-2">
                     <div className="min-w-0">
                         <FieldLabel>{t("fields.clientType")}</FieldLabel>
-                        <ReadOnlyField>
-                            {clientTypeLibelle(client.client_type)}
-                        </ReadOnlyField>
+                        <ReadOnlyField>{typeTitle}</ReadOnlyField>
                     </div>
 
                     <div className="min-w-0">
-                        <FieldLabel>{t("fields.idnat")}</FieldLabel>
-                        <ReadOnlyField>{client.reference || "—"}</ReadOnlyField>
+                        <FieldLabel>{t("fields.displayName")}</FieldLabel>
+                        <ReadOnlyField>{client.nomClient || "—"}</ReadOnlyField>
                     </div>
 
-                    {isPersonal ? (
-                        <>
-                            <div className="min-w-0">
-                                <FieldLabel>{t("fields.firstName")}</FieldLabel>
-                                <ReadOnlyField>
-                                    {client.first_name || "—"}
-                                </ReadOnlyField>
-                            </div>
-                            <div className="min-w-0">
-                                <FieldLabel>{t("fields.lastName")}</FieldLabel>
-                                <ReadOnlyField>
-                                    {client.last_name || "—"}
-                                </ReadOnlyField>
-                            </div>
-                        </>
-                    ) : null}
-
-                    {isCompany ? (
-                        <div className="min-w-0 lg:col-span-2">
-                            <FieldLabel>{t("fields.displayName")}</FieldLabel>
-                            <ReadOnlyField>{client.nomClient}</ReadOnlyField>
+                    {showNif ? (
+                        <div className="min-w-0">
+                            <FieldLabel>{t("fields.nif")}</FieldLabel>
+                            <ReadOnlyField>{client.nif || "—"}</ReadOnlyField>
                         </div>
                     ) : null}
 
-                    {isCompany ? (
-                        <>
-                            <div className="min-w-0">
-                                <FieldLabel>{t("fields.nif")}</FieldLabel>
-                                <ReadOnlyField>
-                                    {client.nif || "—"}
-                                </ReadOnlyField>
-                            </div>
-                            <div className="min-w-0">
-                                <FieldLabel>{t("fields.rccm")}</FieldLabel>
-                                <ReadOnlyField>
-                                    {client.rccm || "—"}
-                                </ReadOnlyField>
-                            </div>
-                        </>
+                    {showRccm ? (
+                        <div className="min-w-0">
+                            <FieldLabel>{t("fields.rccm")}</FieldLabel>
+                            <ReadOnlyField>{client.rccm || "—"}</ReadOnlyField>
+                        </div>
+                    ) : null}
+
+                    {showIdnat ? (
+                        <div className="min-w-0">
+                            <FieldLabel>{t("fields.idnat")}</FieldLabel>
+                            <ReadOnlyField>
+                                {client.reference || "—"}
+                            </ReadOnlyField>
+                        </div>
+                    ) : null}
+
+                    {showReferenceDocument ? (
+                        <div className="min-w-0">
+                            <FieldLabel>{t("fields.referenceDocument")}</FieldLabel>
+                            <ReadOnlyField>
+                                {client.reference_document || "—"}
+                            </ReadOnlyField>
+                        </div>
+                    ) : null}
+
+                    {showBusinessSector ? (
+                        <div className="min-w-0">
+                            <FieldLabel>{t("fields.businessSector")}</FieldLabel>
+                            <ReadOnlyField>
+                                {client.business_sector || "—"}
+                            </ReadOnlyField>
+                        </div>
+                    ) : null}
+
+                    {showLegalRepresentative ? (
+                        <div className="min-w-0">
+                            <FieldLabel>
+                                {t("fields.legalRepresentative")}
+                            </FieldLabel>
+                            <ReadOnlyField>
+                                {client.legal_representative || "—"}
+                            </ReadOnlyField>
+                        </div>
                     ) : null}
 
                     <div className="min-w-0">
@@ -182,6 +223,16 @@ export default function VisualiserClientPage() {
                     <div className="min-w-0">
                         <FieldLabel>{t("fields.email")}</FieldLabel>
                         <ReadOnlyField>{client.email || "—"}</ReadOnlyField>
+                    </div>
+
+                    <div className="min-w-0">
+                        <FieldLabel>{t("fields.country")}</FieldLabel>
+                        <ReadOnlyField>{client.pays || "—"}</ReadOnlyField>
+                    </div>
+
+                    <div className="min-w-0">
+                        <FieldLabel>{t("fields.address")}</FieldLabel>
+                        <ReadOnlyField>{client.adresse || "—"}</ReadOnlyField>
                     </div>
 
                     <div className="min-w-0">

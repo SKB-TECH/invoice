@@ -2,8 +2,15 @@ import { api } from "@/core/services/api";
 import {
     clientResponseSchema,
     paginatedClientsSchema,
+    parseCountryForApi,
+    statusFormToApi,
     type CreateClientInput,
 } from "@/core/schemas/client.schema";
+import {
+    clientTypeRequiresField,
+    getEffectiveRequiredFields,
+    type ClientTypeOption,
+} from "@/core/schemas/type-client.schema";
 import { unwrapApiData } from "@/core/utils/apiResponse";
 import { z } from "zod";
 
@@ -20,28 +27,102 @@ export type ClientsListResult = {
     meta?: z.infer<typeof paginatedClientsSchema>["meta"];
 };
 
-/** Corps POST/PUT selon le contrat API par type de client. */
-export function clientPayloadForApi(input: CreateClientInput): Record<string, unknown> {
-    const idnat = input.reference.trim();
-    const phone = (input.phone ?? "").trim();
-    const email = (input.email ?? "").trim();
-    const client_name =
-        input.company_name?.trim() ||
-        `${input.first_name ?? ""} ${input.last_name ?? ""}`.trim();
+function appendIfPresent(
+    payload: Record<string, unknown>,
+    key: string,
+    value: string | undefined
+) {
+    const trimmed = (value ?? "").trim();
+    if (trimmed) {
+        payload[key] = trimmed;
+    }
+}
+
+/** Corps POST/PUT selon le contrat API (`client_type_id`, champs dynamiques). */
+export function clientPayloadForApi(
+    input: CreateClientInput,
+    typeOption?: ClientTypeOption
+): Record<string, unknown> {
+    const client_type_id = Number(input.client_type_id);
+    const required = getEffectiveRequiredFields(typeOption);
 
     const payload: Record<string, unknown> = {
-        client_name,
-        client_type: input.client_type.trim(),
-        idnat,
-        phone,
-        email,
+        client_type_id,
+        status: statusFormToApi(input.status ?? "actif"),
+        client_name: input.client_name.trim(),
     };
 
-    const nif = (input.nif ?? "").trim();
-    if (nif) payload.nif = nif;
+    appendIfPresent(payload, "phone", input.phone ?? undefined);
+    appendIfPresent(payload, "email", input.email ?? undefined);
+    appendIfPresent(payload, "address", input.address ?? undefined);
 
-    const rccm = (input.rccm ?? "").trim();
-    if (rccm) payload.rccm = rccm;
+    const country = parseCountryForApi(input.country);
+    if (country !== undefined) {
+        payload.country = country;
+    }
+
+    if (
+        clientTypeRequiresField(required, "nif") ||
+        (input.nif ?? "").trim()
+    ) {
+        appendIfPresent(payload, "nif", input.nif ?? undefined);
+    }
+
+    if (
+        clientTypeRequiresField(required, "rccm") ||
+        (input.rccm ?? "").trim()
+    ) {
+        appendIfPresent(payload, "rccm", input.rccm ?? undefined);
+    }
+
+    if (
+        clientTypeRequiresField(required, "idnat", "reference") ||
+        (input.reference ?? "").trim()
+    ) {
+        appendIfPresent(payload, "idnat", input.reference ?? undefined);
+    }
+
+    if (
+        clientTypeRequiresField(required, "reference_document") ||
+        (input.reference_document ?? "").trim()
+    ) {
+        appendIfPresent(
+            payload,
+            "reference_document",
+            input.reference_document ?? undefined
+        );
+    }
+
+    if (
+        clientTypeRequiresField(
+            required,
+            "business_sector",
+            "secteur",
+            "secteur_activite"
+        ) ||
+        (input.business_sector ?? "").trim()
+    ) {
+        appendIfPresent(
+            payload,
+            "business_sector",
+            input.business_sector ?? undefined
+        );
+    }
+
+    if (
+        clientTypeRequiresField(
+            required,
+            "legal_representative",
+            "representant_legal"
+        ) ||
+        (input.legal_representative ?? "").trim()
+    ) {
+        appendIfPresent(
+            payload,
+            "legal_representative",
+            input.legal_representative ?? undefined
+        );
+    }
 
     return payload;
 }
@@ -147,19 +228,26 @@ export const clientService = {
         return clientResponseSchema.parse(raw);
     },
 
-    async create(input: CreateClientInput): Promise<z.infer<typeof clientResponseSchema>> {
-        const res = await api.post(CLIENTS_PATH, clientPayloadForApi(input));
+    async create(
+        input: CreateClientInput,
+        typeOption?: ClientTypeOption
+    ): Promise<z.infer<typeof clientResponseSchema>> {
+        const res = await api.post(
+            CLIENTS_PATH,
+            clientPayloadForApi(input, typeOption)
+        );
         const raw = unwrapApiData<unknown>(res.data);
         return clientResponseSchema.parse(raw);
     },
 
     async update(
         id: string,
-        input: CreateClientInput
+        input: CreateClientInput,
+        typeOption?: ClientTypeOption
     ): Promise<z.infer<typeof clientResponseSchema>> {
         const res = await api.put(
             `${CLIENTS_PATH}/${encodeURIComponent(id)}`,
-            clientPayloadForApi(input)
+            clientPayloadForApi(input, typeOption)
         );
         const raw = unwrapApiData<unknown>(res.data);
         return clientResponseSchema.parse(raw);
