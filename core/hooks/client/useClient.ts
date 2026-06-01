@@ -10,7 +10,14 @@ import {
     type ListClientsParams,
 } from "@/core/services/client.service";
 import type { CreateClientInput } from "@/core/schemas/client.schema";
+import type { ClientTypeOption } from "@/core/schemas/type-client.schema";
 import { getAxiosErrorMessage } from "@/core/utils/apiResponse";
+
+export type ClientMutationInput = {
+    payload: CreateClientInput;
+    typeOption?: ClientTypeOption;
+    referenceDocumentFile?: File | null;
+};
 
 export const clientQueryKeys = {
     all: ["clients"] as const,
@@ -40,7 +47,8 @@ export function useCreateClient() {
     const qc = useQueryClient();
 
     return useMutation({
-        mutationFn: (payload: CreateClientInput) => clientService.create(payload),
+        mutationFn: ({ payload, typeOption, referenceDocumentFile }: ClientMutationInput) =>
+            clientService.create(payload, typeOption, referenceDocumentFile),
         onSuccess: async () => {
             await qc.invalidateQueries({ queryKey: clientQueryKeys.all });
         },
@@ -54,10 +62,20 @@ export function useUpdateClient() {
         mutationFn: ({
             id,
             payload,
+            typeOption,
+            referenceDocumentFile,
         }: {
             id: string;
             payload: CreateClientInput;
-        }) => clientService.update(id, payload),
+            typeOption?: ClientTypeOption;
+            referenceDocumentFile?: File | null;
+        }) =>
+            clientService.update(
+                id,
+                payload,
+                typeOption,
+                referenceDocumentFile
+            ),
         onSuccess: async (_data, variables) => {
             await qc.invalidateQueries({ queryKey: clientQueryKeys.all });
             await qc.invalidateQueries({
