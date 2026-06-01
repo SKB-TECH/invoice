@@ -1,13 +1,17 @@
 import { z } from "zod";
 
+/** Identifiant renvoyé par GET /invoices/client-types. */
+export type ClientType = string;
+
 export const clientTypeEnum = z.enum(["personal", "pme", "corporate"]);
 
 export const clientStatusEnum = z.enum(["actif", "suspendu", "complet"]);
 
 const trimmedString = z.string().trim();
 
-const baseFields = {
-    reference: trimmedString.min(1, "La référence est requise"),
+const sharedClientFields = {
+    client_type_id: trimmedString.min(1, "Le type de client est requis"),
+    client_name: trimmedString.min(1, "Le nom du client est requis"),
     status: clientStatusEnum.optional().default("actif"),
     phone: trimmedString.optional().nullable(),
     email: z
@@ -16,53 +20,35 @@ const baseFields = {
         .nullable(),
     address: trimmedString.optional().nullable(),
     country: trimmedString.optional().nullable(),
+    reference: trimmedString.optional().nullable(),
+    reference_document: trimmedString.optional().nullable(),
     nif: trimmedString.optional().nullable(),
-};
-
-export const personalClientFieldsSchema = z.object({
-    client_type: z.literal("personal"),
-    ...baseFields,
-    first_name: trimmedString.min(1, "Le prénom est requis"),
-    last_name: trimmedString.min(1, "Le nom est requis"),
-    /** Les personnes physiques n’ont pas de RCCM métier */
     rccm: trimmedString.optional().nullable(),
+    business_sector: trimmedString.optional().nullable(),
+    legal_representative: trimmedString.optional().nullable(),
+    /** Legacy — conservé pour l’édition */
+    client_type: trimmedString.optional().nullable(),
+    first_name: trimmedString.optional().nullable(),
+    last_name: trimmedString.optional().nullable(),
     company_name: trimmedString.optional().nullable(),
     subtitle: trimmedString.optional().nullable(),
-    business_sector: trimmedString.optional().nullable(),
-});
+};
 
-export const pmeClientFieldsSchema = z.object({
-    client_type: z.literal("pme"),
-    ...baseFields,
-    company_name: trimmedString.min(1, "La dénomination est requise"),
-    subtitle: trimmedString.optional().nullable(),
-    rccm: trimmedString.min(1, "Le RCCM est requis pour une PME"),
-    business_sector: trimmedString.min(1, "Le secteur d’activité est requis"),
-    first_name: trimmedString.optional().nullable(),
-    last_name: trimmedString.optional().nullable(),
-});
-
-export const corporateClientFieldsSchema = z.object({
-    client_type: z.literal("corporate"),
-    ...baseFields,
-    company_name: trimmedString.min(1, "La dénomination sociale est requise"),
-    subtitle: trimmedString.optional().nullable(),
-    rccm: trimmedString.min(1, "Le RCCM est requis"),
-    business_sector: trimmedString.min(1, "Le secteur d’activité est requis"),
-    legal_representative: trimmedString.optional().nullable(),
-    first_name: trimmedString.optional().nullable(),
-    last_name: trimmedString.optional().nullable(),
-});
-
-export const createClientSchema = z.discriminatedUnion("client_type", [
-    personalClientFieldsSchema,
-    pmeClientFieldsSchema,
-    corporateClientFieldsSchema,
-]);
+export const createClientSchema = z.object(sharedClientFields);
 
 export const updateClientSchema = createClientSchema;
 
 const idLike = z.union([z.string(), z.number()]).transform(String);
+
+function statusApiToForm(status: unknown): string {
+    if (status === 1 || status === "1") return "actif";
+    if (status === 2 || status === "2") return "suspendu";
+    if (status === 3 || status === "3") return "complet";
+    if (typeof status === "string" && status.trim()) {
+        return status.trim().toLowerCase();
+    }
+    return "actif";
+}
 
 /** Aligne les payloads Laravel / API sur le schéma attendu par l’UI. */
 export function normalizeClientResponseInput(raw: unknown): unknown {
@@ -97,25 +83,12 @@ export function normalizeClientResponseInput(raw: unknown): unknown {
         }
     }
 
-    const typeRaw = pickStr(r.client_type)?.toLowerCase();
-    const typeAliases: Record<string, z.infer<typeof clientTypeEnum>> = {
-        personal: "personal",
-        pme: "pme",
-        corporate: "corporate",
-        individual: "personal",
-        particulier: "personal",
-        person: "personal",
-        company: "corporate",
-        enterprise: "corporate",
-        sas: "corporate",
-    };
-    if (typeRaw) {
-        const mapped = typeAliases[typeRaw] ?? (typeRaw as z.infer<typeof clientTypeEnum>);
-        const allowed: z.infer<typeof clientTypeEnum>[] = ["personal", "pme", "corporate"];
-        r.client_type = allowed.includes(mapped) ? mapped : "pme";
-    } else {
-        r.client_type = "personal";
+    if (r.client_type_id !== undefined && r.client_type_id !== null) {
+        r.client_type_id = String(r.client_type_id);
     }
+
+    const typeRaw = pickStr(r.client_type);
+    r.client_type = typeRaw ?? "";
 
     if (!pickStr(r.reference)) {
         const alt =
@@ -132,24 +105,16 @@ export function normalizeClientResponseInput(raw: unknown): unknown {
         }
     }
 
-    const st = r.status ?? r.statut ?? (r as { state?: unknown }).state;
-    r.status =
-        st === null || st === undefined || st === ""
-            ? "actif"
-            : String(st).toLowerCase();
-
-    if (r.client_type === "personal" && clientName) {
-        if (!pickStr(r.first_name) && !pickStr(r.last_name)) {
-            const parts = clientName.split(/\s+/).filter(Boolean);
-            if (parts.length >= 2) {
-                r.first_name = parts[0];
-                r.last_name = parts.slice(1).join(" ");
-            } else {
-                r.first_name = clientName;
-                r.last_name = "";
-            }
+    if (!pickStr(r.reference_document)) {
+        const doc = pickStr(
+            (r as { reference_document?: unknown }).reference_document
+        );
+        if (doc) {
+            r.reference_document = doc;
         }
     }
+
+    r.status = statusApiToForm(r.status ?? r.statut ?? (r as { state?: unknown }).state);
 
     const tel =
         r.phone ??
@@ -166,6 +131,10 @@ export function normalizeClientResponseInput(raw: unknown): unknown {
         r.address = addr === null ? null : String(addr);
     }
 
+    if (r.country !== undefined && r.country !== null && r.country !== "") {
+        r.country = String(r.country);
+    }
+
     if ((r.id === undefined || r.id === null || r.id === "") && pickStr(r.reference)) {
         r.id = r.reference as string;
     }
@@ -176,9 +145,11 @@ export function normalizeClientResponseInput(raw: unknown): unknown {
 const clientResponseShape = z
     .object({
         id: idLike,
-        client_type: clientTypeEnum,
+        client_type_id: z.string().optional().nullable(),
+        client_type: z.string().optional().nullable(),
         client_name: z.string().nullable().optional(),
         reference: z.string(),
+        reference_document: z.string().nullable().optional(),
         idnat: z.string().nullable().optional(),
         status: z.string(),
         first_name: z.string().nullable().optional(),
@@ -218,4 +189,21 @@ export const paginatedClientsSchema = z
 
 export type CreateClientInput = z.infer<typeof createClientSchema>;
 export type ClientResponse = z.infer<typeof clientResponseSchema>;
-export type ClientType = z.infer<typeof clientTypeEnum>;
+
+export function statusFormToApi(status: z.infer<typeof clientStatusEnum>): number {
+    switch (status) {
+        case "suspendu":
+            return 2;
+        case "complet":
+            return 3;
+        default:
+            return 1;
+    }
+}
+
+export function parseCountryForApi(value: string | null | undefined): number | undefined {
+    const trimmed = (value ?? "").trim();
+    if (!trimmed) return undefined;
+    const n = Number(trimmed);
+    return Number.isFinite(n) ? n : undefined;
+}

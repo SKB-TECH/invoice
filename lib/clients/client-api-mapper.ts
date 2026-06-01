@@ -37,7 +37,7 @@ export function clientResponseToListRow(row: ClientResponse): ClientListRow {
         id: row.id,
         reference: clientReference(row),
         titre: clientDisplayName(row),
-        type: clientTypeLibelle(row.client_type),
+        type: clientTypeLibelle(row.client_type ?? ""),
         nif: row.nif ?? "",
         statut: clientStatutToUi(apiStatusToClientStatut(row.status)),
         telephone: row.phone ?? "",
@@ -49,7 +49,9 @@ export function clientResponseToDetail(row: ClientResponse): ClientDetailRecord 
 
     return {
         id: row.id,
+        client_type_id: row.client_type_id ?? "",
         reference: clientReference(row),
+        reference_document: row.reference_document ?? "",
         nomClient: nom,
         sousTitre: row.subtitle ?? "",
         nif: row.nif ?? "",
@@ -59,7 +61,7 @@ export function clientResponseToDetail(row: ClientResponse): ClientDetailRecord 
         adresse: row.address ?? "",
         pays: row.country ?? "",
         statut: apiStatusToClientStatut(row.status),
-        client_type: row.client_type,
+        client_type: row.client_type ?? "",
         business_sector: row.business_sector ?? "",
         first_name: row.first_name ?? "",
         last_name: row.last_name ?? "",

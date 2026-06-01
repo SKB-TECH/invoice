@@ -11,9 +11,11 @@ import {
     InputField,
     NativeSelectField,
     SelectField,
+    SelectFieldSkeleton,
     TextareaField,
 } from "@/components/invoices/create/Fields";
 import { useUpdateBillableService } from "@/core/hooks/billable-services/useBillableServices";
+import { useItemTypes } from "@/core/hooks/fournitures/useItemTypes";
 import { useInvoiceTaxGroups } from "@/core/hooks/invoices/useInvoiceTaxGroups";
 import type {
     BillableServiceItem,
@@ -26,6 +28,7 @@ import {
     formatPriceAfterTaxDisplay,
     pickDefaultInvoiceTaxGroupId,
 } from "@/lib/tax-groups/invoice-tax-group-label";
+import { buildItemTypeSelectOptions } from "@/lib/item-types/item-type-select-options";
 
 function parseDecimal(raw: string): number | null {
     const t = raw.trim().replace(/\s/g, "").replace(",", ".");
@@ -87,6 +90,18 @@ export function ModifierBillableServiceForm({ service }: Props) {
         isError: taxGroupsError,
         refetch: refetchTaxGroups,
     } = useInvoiceTaxGroups();
+
+    const {
+        data: itemTypes = [],
+        isPending: itemTypesPending,
+        isError: itemTypesError,
+        refetch: refetchItemTypes,
+    } = useItemTypes();
+
+    const itemTypeOptions = useMemo(
+        () => buildItemTypeSelectOptions(itemTypes, form.code),
+        [itemTypes, form.code],
+    );
 
     const updateMutation = useUpdateBillableService(service.id, {
         onSuccess: () => {
@@ -174,6 +189,8 @@ export function ModifierBillableServiceForm({ service }: Props) {
 
     const taxGroupsReady =
         !taxGroupsPending && !taxGroupsError && taxGroups.length > 0;
+    const itemTypesReady =
+        !itemTypesPending && !itemTypesError && itemTypeOptions.length > 0;
 
     const requiredStar = (
         <span className="text-red-500" aria-hidden>
@@ -206,11 +223,43 @@ export function ModifierBillableServiceForm({ service }: Props) {
                             {t("fields.code")}
                             {requiredStar}
                         </FieldLabel>
-                        <InputField
-                            value={form.code}
-                            onChange={(v) => updateField("code", v)}
-                            placeholder={t("placeholders.code")}
-                        />
+                        {itemTypesPending ? (
+                            <SelectFieldSkeleton
+                                aria-label={t("fields.code")}
+                            />
+                        ) : (
+                            <NativeSelectField
+                                required
+                                value={form.code}
+                                disabled={
+                                    itemTypesError ||
+                                    itemTypeOptions.length === 0
+                                }
+                                onChange={(v) => updateField("code", v)}
+                                aria-label={t("fields.code")}
+                            >
+                                <option value="">
+                                    {t("itemTypesPlaceholder")}
+                                </option>
+                                {itemTypeOptions.map((item) => (
+                                    <option key={item.id} value={item.code}>
+                                        {item.code}
+                                    </option>
+                                ))}
+                            </NativeSelectField>
+                        )}
+                        {itemTypesError ? (
+                            <div className="mt-2 flex flex-wrap gap-2 text-sm font-medium text-red-500">
+                                <span>{t("itemTypeLoadError")}</span>
+                                <button
+                                    type="button"
+                                    className="underline underline-offset-2 hover:text-red-600"
+                                    onClick={() => void refetchItemTypes()}
+                                >
+                                    {t("retryItemTypesFetch")}
+                                </button>
+                            </div>
+                        ) : null}
                     </div>
 
                     <div>
@@ -339,7 +388,9 @@ export function ModifierBillableServiceForm({ service }: Props) {
                     submitDisabled={
                         updateMutation.isPending ||
                         !taxGroupsReady ||
-                        !selectedTaxGroupId
+                        !itemTypesReady ||
+                        !selectedTaxGroupId ||
+                        !form.code.trim()
                     }
                 />
             </div>

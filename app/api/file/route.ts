@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { ENV } from '@/core/constants/env';
 
-const FILES_BASE_URL = ENV.NEXT_PUBLIC_FILES_BASE_URL || '';
+const FILES_BASE_URL = ENV.FILES_BASE_URL || '';
 
 export async function GET(req: Request) {
     const { searchParams } = new URL(req.url);
@@ -13,14 +13,16 @@ export async function GET(req: Request) {
 
     let url: string;
     if (path.startsWith('http://') || path.startsWith('https://')) {
-        try {
-            const targetHost = new URL(path).host;
-            const allowedHost = new URL(FILES_BASE_URL).host;
-            if (targetHost !== allowedHost) {
-                return NextResponse.json({ message: 'Forbidden' }, { status: 403 });
+        if (FILES_BASE_URL) {
+            try {
+                const targetHost = new URL(path).host;
+                const allowedHost = new URL(FILES_BASE_URL).host;
+                if (targetHost !== allowedHost) {
+                    return NextResponse.json({ message: 'Forbidden' }, { status: 403 });
+                }
+            } catch {
+                return NextResponse.json({ message: 'Invalid path' }, { status: 400 });
             }
-        } catch {
-            return NextResponse.json({ message: 'Invalid path' }, { status: 400 });
         }
         url = path;
     } else {

@@ -13,9 +13,11 @@ import {
     FieldLabel,
     InputField,
     NativeSelectField,
+    SelectFieldSkeleton,
     TextareaField,
 } from "@/components/invoices/create/Fields";
 import { useUpdateFourniture } from "@/core/hooks/fournitures/useUpdateFourniture";
+import { useItemTypes } from "@/core/hooks/fournitures/useItemTypes";
 import { useReferentielsCatalog } from "@/core/hooks/referentiels/useReferentielsCatalog";
 import type {
     CreateFourniturePayload,
@@ -28,6 +30,7 @@ import {
     taxGroupSlugToNumericId,
 } from "@/lib/fournitures/articles/fournitures-mappers";
 import { resolveTaxRateDecimal } from "@/lib/fournitures/articles/tax-rates";
+import { buildItemTypeSelectOptions } from "@/lib/item-types/item-type-select-options";
 import { formatReferentielOptionLabel } from "@/lib/referentials/referential-option-label";
 import { useRouter } from "@/i18n/routing";
 
@@ -64,6 +67,13 @@ export function ModifierArticleForm({
         isError: referentialsError,
         refetch: refetchReferentials,
     } = useReferentielsCatalog(null);
+
+    const {
+        data: itemTypes = [],
+        isPending: itemTypesPending,
+        isError: itemTypesError,
+        refetch: refetchItemTypes,
+    } = useItemTypes();
 
     const updateMutation = useUpdateFourniture({
         onSuccess: () => {
@@ -104,6 +114,11 @@ export function ModifierArticleForm({
     const [pieceUnite, setPieceUnite] = useState(initial.pieceUnite);
     const [unite, setUnite] = useState(initial.unite);
 
+    const itemTypeOptions = useMemo(
+        () => buildItemTypeSelectOptions(itemTypes, code),
+        [itemTypes, code],
+    );
+
     const referentialMissingFromCatalog =
         apiBaseline.category_id > 0 &&
         !referentialRows.some((r) => r.id === apiBaseline.category_id);
@@ -130,7 +145,12 @@ export function ModifierArticleForm({
         String(tEdit("referentialFallback", { id: apiBaseline.category_id }));
 
     const saveDisabledExternally =
-        referentialsPending || referentialsError || !canSubmitReferentials;
+        referentialsPending ||
+        referentialsError ||
+        !canSubmitReferentials ||
+        itemTypesPending ||
+        itemTypesError ||
+        !code.trim();
 
     return (
         <form
@@ -236,13 +256,45 @@ export function ModifierArticleForm({
                             {tCreate("fields.code")}
                             {requiredStar}
                         </FieldLabel>
-                        <InputField
-                            id="code"
-                            name="code"
-                            required
-                            value={code}
-                            onChange={setCode}
-                        />
+                        {itemTypesPending ? (
+                            <SelectFieldSkeleton
+                                aria-label={tCreate("fields.code")}
+                            />
+                        ) : (
+                            <NativeSelectField
+                                id="code"
+                                name="code"
+                                required
+                                value={code}
+                                disabled={
+                                    itemTypesError ||
+                                    itemTypeOptions.length === 0
+                                }
+                                onChange={setCode}
+                                aria-label={tCreate("fields.code")}
+                            >
+                                <option value="">
+                                    {tCreate("selectPlaceholder")}
+                                </option>
+                                {itemTypeOptions.map((item) => (
+                                    <option key={item.id} value={item.code}>
+                                        {item.code}
+                                    </option>
+                                ))}
+                            </NativeSelectField>
+                        )}
+                        {itemTypesError ? (
+                            <div className="mt-2 flex flex-wrap items-center gap-2 text-sm font-medium text-red-500">
+                                <span>{tCreate("itemTypeLoadError")}</span>
+                                <button
+                                    type="button"
+                                    className="underline underline-offset-2 hover:text-red-600"
+                                    onClick={() => void refetchItemTypes()}
+                                >
+                                    {tCreate("retryItemTypesFetch")}
+                                </button>
+                            </div>
+                        ) : null}
                     </div>
 
                     <div className="lg:col-span-2">

@@ -147,7 +147,7 @@ function resolveTaxGroupTableLabel(item: FournitureArticle): string {
 
     const pctStr = rateRaw !== undefined ? formatTaxRateForTable(rateRaw) : "";
     if (pctStr)
-        return `${title} (${pctStr}${FR_PERCENT_SUFFIX})`;
+        return `${title} [${pctStr}${FR_PERCENT_SUFFIX}]`;
     return title;
 }
 

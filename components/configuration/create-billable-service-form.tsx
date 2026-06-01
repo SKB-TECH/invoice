@@ -10,9 +10,11 @@ import {
     InputField,
     NativeSelectField,
     SelectField,
+    SelectFieldSkeleton,
     TextareaField,
 } from "@/components/invoices/create/Fields";
 import { useCreateBillableService } from "@/core/hooks/billable-services/useBillableServices";
+import { useItemTypes } from "@/core/hooks/fournitures/useItemTypes";
 import { useInvoiceTaxGroups } from "@/core/hooks/invoices/useInvoiceTaxGroups";
 import { useReferentielsCatalog } from "@/core/hooks/referentiels/useReferentielsCatalog";
 import { getAxiosErrorMessage } from "@/core/utils/axiosErrorMessage";
@@ -86,6 +88,20 @@ export function CreateBillableServiceForm({
         refetch: refetchTaxGroups,
     } = useInvoiceTaxGroups();
 
+    const {
+        data: itemTypes = [],
+        isPending: itemTypesPending,
+        isError: itemTypesError,
+        refetch: refetchItemTypes,
+    } = useItemTypes();
+
+    const defaultItemTypeCode = useMemo(() => {
+        const defaultItem = itemTypes.find((item) => item.is_default);
+        return defaultItem?.code ?? itemTypes[0]?.code ?? "";
+    }, [itemTypes]);
+
+    const selectedCode = form.code || defaultItemTypeCode;
+
     const createMutation = useCreateBillableService({
         onSuccess: () => {
             toast.success(t("toastCreated"));
@@ -145,7 +161,7 @@ export function CreateBillableServiceForm({
         }
 
         const service_name = form.service_name.trim();
-        const code = form.code.trim();
+        const code = selectedCode.trim();
         const business_sector = form.business_sector.trim();
         const unit_price = unitPriceParsed;
         const category_id = Number.parseInt(form.category_id.trim(), 10);
@@ -203,6 +219,8 @@ export function CreateBillableServiceForm({
         !referentialsPending && !referentialsError && referentialRows.length > 0;
     const taxGroupsReady =
         !taxGroupsPending && !taxGroupsError && taxGroups.length > 0;
+    const itemTypesReady =
+        !itemTypesPending && !itemTypesError && itemTypes.length > 0;
 
     const requiredStar = (
         <span className="text-red-500" aria-hidden>
@@ -231,11 +249,42 @@ export function CreateBillableServiceForm({
                             {t("fields.code")}
                             {requiredStar}
                         </FieldLabel>
-                        <InputField
-                            value={form.code}
-                            onChange={(v) => updateField("code", v)}
-                            placeholder={t("placeholders.code")}
-                        />
+                        {itemTypesPending ? (
+                            <SelectFieldSkeleton
+                                aria-label={t("fields.code")}
+                            />
+                        ) : (
+                            <NativeSelectField
+                                required
+                                value={selectedCode}
+                                disabled={
+                                    itemTypesError || itemTypes.length === 0
+                                }
+                                onChange={(v) => updateField("code", v)}
+                                aria-label={t("fields.code")}
+                            >
+                                <option value="">
+                                    {t("itemTypesPlaceholder")}
+                                </option>
+                                {itemTypes.map((item) => (
+                                    <option key={item.id} value={item.code}>
+                                        {item.code}
+                                    </option>
+                                ))}
+                            </NativeSelectField>
+                        )}
+                        {itemTypesError ? (
+                            <div className="mt-2 flex flex-wrap gap-2 text-sm font-medium text-red-500">
+                                <span>{t("itemTypeLoadError")}</span>
+                                <button
+                                    type="button"
+                                    className="underline underline-offset-2 hover:text-red-600"
+                                    onClick={() => void refetchItemTypes()}
+                                >
+                                    {t("retryItemTypesFetch")}
+                                </button>
+                            </div>
+                        ) : null}
                     </div>
 
                     <div>
@@ -268,24 +317,24 @@ export function CreateBillableServiceForm({
                             {t("fields.taxGroup")}
                             {requiredStar}
                         </FieldLabel>
-                        <NativeSelectField
-                            required
-                            value={selectedTaxGroupId}
-                            disabled={
-                                taxGroupsPending ||
-                                taxGroupsError ||
-                                taxGroups.length === 0
-                            }
-                            onChange={(v) => updateField("tax_group_id", v)}
-                            aria-label={t("fields.taxGroup")}
-                        >
-                            <option value="">
-                                {taxGroupsPending
-                                    ? t("taxGroupsLoading")
-                                    : t("taxGroupsPlaceholder")}
-                            </option>
-                            {!taxGroupsPending &&
-                                taxGroups.map((group) => (
+                        {taxGroupsPending ? (
+                            <SelectFieldSkeleton
+                                aria-label={t("fields.taxGroup")}
+                            />
+                        ) : (
+                            <NativeSelectField
+                                required
+                                value={selectedTaxGroupId}
+                                disabled={
+                                    taxGroupsError || taxGroups.length === 0
+                                }
+                                onChange={(v) => updateField("tax_group_id", v)}
+                                aria-label={t("fields.taxGroup")}
+                            >
+                                <option value="">
+                                    {t("taxGroupsPlaceholder")}
+                                </option>
+                                {taxGroups.map((group) => (
                                     <option
                                         key={group.id}
                                         value={String(group.id)}
@@ -293,7 +342,8 @@ export function CreateBillableServiceForm({
                                         {formatInvoiceTaxGroupSelectLabel(group)}
                                     </option>
                                 ))}
-                        </NativeSelectField>
+                            </NativeSelectField>
+                        )}
                         {taxGroupsError ? (
                             <div className="mt-2 flex flex-wrap gap-2 text-sm font-medium text-red-500">
                                 <span>{t("taxGroupsLoadError")}</span>
@@ -343,24 +393,25 @@ export function CreateBillableServiceForm({
                             {t("fields.categoryId")}
                             {requiredStar}
                         </FieldLabel>
-                        <NativeSelectField
-                            required
-                            value={form.category_id}
-                            disabled={
-                                referentialsPending ||
-                                referentialsError ||
-                                referentialRows.length === 0
-                            }
-                            onChange={(v) => updateField("category_id", v)}
-                            aria-label={t("fields.categoryId")}
-                        >
-                            <option value="">
-                                {referentialsPending
-                                    ? t("referentialsLoading")
-                                    : t("referentialsPlaceholder")}
-                            </option>
-                            {!referentialsPending &&
-                                referentialRows.map((row) => (
+                        {referentialsPending ? (
+                            <SelectFieldSkeleton
+                                aria-label={t("fields.categoryId")}
+                            />
+                        ) : (
+                            <NativeSelectField
+                                required
+                                value={form.category_id}
+                                disabled={
+                                    referentialsError ||
+                                    referentialRows.length === 0
+                                }
+                                onChange={(v) => updateField("category_id", v)}
+                                aria-label={t("fields.categoryId")}
+                            >
+                                <option value="">
+                                    {t("referentialsPlaceholder")}
+                                </option>
+                                {referentialRows.map((row) => (
                                     <option
                                         key={row.id}
                                         value={String(row.id)}
@@ -369,7 +420,8 @@ export function CreateBillableServiceForm({
                                         {formatReferentielAxisCodeLabel(row)}
                                     </option>
                                 ))}
-                        </NativeSelectField>
+                            </NativeSelectField>
+                        )}
                         {referentialsError ? (
                             <div className="mt-2 flex flex-wrap gap-2 text-sm font-medium text-red-500">
                                 <span>{t("referentialsLoadError")}</span>
@@ -433,7 +485,9 @@ export function CreateBillableServiceForm({
                         createMutation.isPending ||
                         !catalogReady ||
                         !taxGroupsReady ||
-                        !selectedTaxGroupId
+                        !itemTypesReady ||
+                        !selectedTaxGroupId ||
+                        !selectedCode.trim()
                     }
                 />
             </div>

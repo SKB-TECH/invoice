@@ -546,40 +546,45 @@ export const authService = {
         }
     },
 
-    async uploadAvatar(file: File): Promise<string> {
+    async uploadAvatar(file: File): Promise<AuthProfileData> {
         const fd = new FormData();
         fd.append("avatar", file);
 
         const { data } = await api.post<unknown>("/auth/avatar", fd);
+        const inner = unwrapApiData<unknown>(data);
+
+        try {
+            return parseAuthProfileResponse(inner);
+        } catch {
+            /* réponse sans objet profil complet */
+        }
 
         let url: string | undefined;
 
+        if (inner !== null && typeof inner === "object") {
+            const record = inner as Record<string, unknown>;
+            if (typeof record.url === "string") url = record.url;
+            if (!url && typeof record.avatar === "string") url = record.avatar;
+        }
+
         if (data !== null && typeof data === "object") {
             const d = data as Record<string, unknown>;
-            const inner = d.data;
-            if (
-                inner !== null &&
-                typeof inner === "object" &&
-                typeof (inner as { url?: unknown }).url === "string"
-            ) {
-                url = (inner as { url: string }).url;
-            }
-            if (!url && typeof d.url === "string") {
-                url = d.url;
-            }
+            if (!url && typeof d.url === "string") url = d.url;
+            if (!url && typeof d.avatar === "string") url = d.avatar;
         }
 
-        if (!url?.trim()) {
-            const msg =
-                data !== null &&
-                typeof data === "object" &&
-                typeof (data as { message?: unknown }).message === "string"
-                    ? (data as { message: string }).message
-                    : "Échec du téléversement.";
-            throw new Error(msg);
+        if (url?.trim()) {
+            const profile = await authService.getProfile();
+            return { ...profile, avatar: url.trim() };
         }
 
-        return url.trim();
+        const msg =
+            data !== null &&
+            typeof data === "object" &&
+            typeof (data as { message?: unknown }).message === "string"
+                ? (data as { message: string }).message
+                : "Échec du téléversement.";
+        throw new Error(msg);
     },
 
     async changePassword(

@@ -2,8 +2,16 @@ import { api } from "@/core/services/api";
 import {
     clientResponseSchema,
     paginatedClientsSchema,
+    parseCountryForApi,
+    statusFormToApi,
     type CreateClientInput,
 } from "@/core/schemas/client.schema";
+import {
+    clientTypeRequiresField,
+    getEffectiveRequiredFields,
+    resolveClientTypeOption,
+    type ClientTypeOption,
+} from "@/core/schemas/type-client.schema";
 import { unwrapApiData } from "@/core/utils/apiResponse";
 import { z } from "zod";
 
@@ -20,46 +28,130 @@ export type ClientsListResult = {
     meta?: z.infer<typeof paginatedClientsSchema>["meta"];
 };
 
-/** Corps POST/PUT selon le contrat API par type de client. */
-export function clientPayloadForApi(input: CreateClientInput): Record<string, unknown> {
-    const idnat = input.reference.trim();
-    const phone = (input.phone ?? "").trim();
-    const email = (input.email ?? "").trim();
-
-    switch (input.client_type) {
-        case "personal":
-            return {
-                client_name: `${input.first_name} ${input.last_name}`.trim(),
-                client_type: "personal",
-                idnat,
-                phone,
-                email,
-            };
-        case "pme":
-            return {
-                client_name: input.company_name.trim(),
-                client_type: "pme",
-                nif: (input.nif ?? "").trim(),
-                rccm: input.rccm.trim(),
-                idnat,
-                phone,
-                email,
-            };
-        case "corporate":
-            return {
-                client_name: input.company_name.trim(),
-                client_type: "corporate",
-                nif: (input.nif ?? "").trim(),
-                rccm: input.rccm.trim(),
-                idnat,
-                phone,
-                email,
-            };
-        default: {
-            const _exhaustive: never = input;
-            return _exhaustive;
-        }
+function appendIfPresent(
+    payload: Record<string, unknown>,
+    key: string,
+    value: string | undefined
+) {
+    const trimmed = (value ?? "").trim();
+    if (trimmed) {
+        payload[key] = trimmed;
     }
+}
+
+function appendClientFields(fd: FormData, payload: Record<string, unknown>) {
+    for (const [key, value] of Object.entries(payload)) {
+        if (value === undefined || value === null) continue;
+        if (value instanceof File) {
+            fd.append(key, value);
+            continue;
+        }
+        fd.append(key, String(value));
+    }
+}
+
+function clientPayloadToFormData(
+    payload: Record<string, unknown>
+): FormData {
+    const fd = new FormData();
+    appendClientFields(fd, payload);
+    return fd;
+}
+
+function resolveTypeOptionForPayload(
+    input: CreateClientInput,
+    typeOption?: ClientTypeOption
+): ClientTypeOption | undefined {
+    return (
+        typeOption ?? resolveClientTypeOption(input.client_type_id ?? "", [])
+    );
+}
+
+/** Corps POST/PUT selon le contrat API (`client_type_id`, champs dynamiques). */
+export function clientPayloadForApi(
+    input: CreateClientInput,
+    typeOption?: ClientTypeOption,
+    referenceDocumentFile?: File | null
+): Record<string, unknown> {
+    const resolvedType = resolveTypeOptionForPayload(input, typeOption);
+    const client_type_id = Number(input.client_type_id);
+    const required = getEffectiveRequiredFields(resolvedType);
+    const clientName = input.client_name.trim();
+
+    const payload: Record<string, unknown> = {
+        client_type_id,
+        status: statusFormToApi(input.status ?? "actif"),
+        client_name: clientName,
+        /** Alias Laravel éventuel pour le libellé « Nom ». */
+        nom: clientName,
+    };
+
+    appendIfPresent(payload, "phone", input.phone ?? undefined);
+    appendIfPresent(payload, "email", input.email ?? undefined);
+    appendIfPresent(payload, "address", input.address ?? undefined);
+
+    const country = parseCountryForApi(input.country);
+    if (country !== undefined) {
+        payload.country = country;
+    }
+
+    if (
+        clientTypeRequiresField(required, "nif") ||
+        (input.nif ?? "").trim()
+    ) {
+        appendIfPresent(payload, "nif", input.nif ?? undefined);
+    }
+
+    if (
+        clientTypeRequiresField(required, "rccm") ||
+        (input.rccm ?? "").trim()
+    ) {
+        appendIfPresent(payload, "rccm", input.rccm ?? undefined);
+    }
+
+    if (
+        clientTypeRequiresField(required, "idnat", "reference") ||
+        (input.reference ?? "").trim()
+    ) {
+        appendIfPresent(payload, "idnat", input.reference ?? undefined);
+    }
+
+    if (referenceDocumentFile instanceof File) {
+        payload.reference_document = referenceDocumentFile;
+    }
+
+    if (
+        clientTypeRequiresField(
+            required,
+            "business_sector",
+            "secteur",
+            "secteur_activite"
+        ) ||
+        (input.business_sector ?? "").trim()
+    ) {
+        appendIfPresent(
+            payload,
+            "business_sector",
+            input.business_sector ?? undefined
+        );
+    }
+
+    if (
+        clientTypeRequiresField(
+            required,
+            "legal_representative",
+            "representant_legal"
+        ) ||
+        (input.legal_representative ?? "").trim()
+    ) {
+        appendIfPresent(
+            payload,
+            "legal_representative",
+            input.legal_representative ?? undefined
+        );
+    }
+
+    return payload;
 }
 
 function extractListItemsAndMeta(
@@ -163,19 +255,38 @@ export const clientService = {
         return clientResponseSchema.parse(raw);
     },
 
-    async create(input: CreateClientInput): Promise<z.infer<typeof clientResponseSchema>> {
-        const res = await api.post(CLIENTS_PATH, clientPayloadForApi(input));
+    async create(
+        input: CreateClientInput,
+        typeOption?: ClientTypeOption,
+        referenceDocumentFile?: File | null
+    ): Promise<z.infer<typeof clientResponseSchema>> {
+        const payload = clientPayloadForApi(
+            input,
+            typeOption,
+            referenceDocumentFile
+        );
+        const res = await api.post(
+            CLIENTS_PATH,
+            clientPayloadToFormData(payload)
+        );
         const raw = unwrapApiData<unknown>(res.data);
         return clientResponseSchema.parse(raw);
     },
 
     async update(
         id: string,
-        input: CreateClientInput
+        input: CreateClientInput,
+        typeOption?: ClientTypeOption,
+        referenceDocumentFile?: File | null
     ): Promise<z.infer<typeof clientResponseSchema>> {
+        const payload = clientPayloadForApi(
+            input,
+            typeOption,
+            referenceDocumentFile
+        );
         const res = await api.put(
             `${CLIENTS_PATH}/${encodeURIComponent(id)}`,
-            clientPayloadForApi(input)
+            clientPayloadToFormData(payload)
         );
         const raw = unwrapApiData<unknown>(res.data);
         return clientResponseSchema.parse(raw);
