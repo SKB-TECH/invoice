@@ -394,6 +394,8 @@
         "legalRepresentative": "Représentant légal",
         "countryHint": "Code numérique (ex. 243)",
         "countryPlaceholder": "Rechercher un pays…",
+        "countryLoading": "Chargement des pays…",
+        "countryLoadError": "Impossible de charger les pays.",
         "clientTypePlaceholder": "Choisir un type",
         "clientTypeLoading": "Chargement des types…",
         "clientTypeLoadError": "Impossible de charger les types de client.",
