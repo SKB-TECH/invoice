@@ -634,7 +634,10 @@
       "invalidReferential": "Please choose a valid referential.",
       "itemTypeLoading": "Loading codes…",
       "itemTypeLoadError": "Unable to load item types.",
-      "retryItemTypesFetch": "Retry"
+      "retryItemTypesFetch": "Retry",
+      "taxGroupsPlaceholder": "Select a tax group",
+      "taxGroupsLoadError": "Unable to load tax groups.",
+      "retryTaxGroupsFetch": "Retry"
     },
     "view": {
       "title": "Article details",

@@ -634,7 +634,10 @@
       "invalidReferential": "Choisissez un référentiel valide.",
       "itemTypeLoading": "Chargement des codes…",
       "itemTypeLoadError": "Impossible de charger les types d'article.",
-      "retryItemTypesFetch": "Réessayer"
+      "retryItemTypesFetch": "Réessayer",
+      "taxGroupsPlaceholder": "Sélectionner un groupe de taxe",
+      "taxGroupsLoadError": "Impossible de charger les groupes de taxe.",
+      "retryTaxGroupsFetch": "Réessayer"
     },
     "view": {
       "title": "Détail de l'article",
