@@ -447,7 +447,7 @@
         "new": "New customer"
       },
       "search": {
-        "placeholder": "Search customer"
+        "placeholder": "Search by customer name"
       },
       "table": {
         "reference": "Reference number",

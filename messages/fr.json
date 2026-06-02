@@ -447,7 +447,7 @@
         "new": "Nouveau client"
       },
       "search": {
-        "placeholder": "Rechercher un client"
+        "placeholder": "Rechercher par nom du client"
       },
       "table": {
         "reference": "N° Référence",
