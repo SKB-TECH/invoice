@@ -451,6 +451,7 @@
       },
       "table": {
         "reference": "Reference number",
+        "code": "Code",
         "titre": "Title",
         "nif": "Tax ID Number (NIF)",
         "tel": "Phone number",

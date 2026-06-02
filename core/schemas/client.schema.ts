@@ -87,6 +87,10 @@ export function normalizeClientResponseInput(raw: unknown): unknown {
         r.client_type_id = String(r.client_type_id);
     }
 
+    if (r.client_type_code !== undefined && r.client_type_code !== null) {
+        r.client_type_code = String(r.client_type_code).trim();
+    }
+
     const typeRaw = pickStr(r.client_type);
     r.client_type = typeRaw ?? "";
 
@@ -165,6 +169,8 @@ const clientResponseShape = z
     .object({
         id: idLike,
         client_type_id: z.string().optional().nullable(),
+        client_type_code: z.string().optional().nullable(),
+        code: z.string().optional().nullable(),
         client_type: z.string().optional().nullable(),
         client_name: z.string().nullable().optional(),
         reference: z.string(),

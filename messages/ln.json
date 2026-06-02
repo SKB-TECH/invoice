@@ -451,6 +451,7 @@
       },
       "table": {
         "reference": "Numelo ya Reference",
+        "code": "Code",
         "titre": "Motó ya likambo",
         "nif": "Numelo ya NIF",
         "tel": "Telefɔ́ni",
