@@ -71,8 +71,8 @@ export function AppLauncher({ className }: { className?: string }) {
                 role="dialog"
                 aria-label="Applications"
                 className={cn(
-                    "absolute right-0 top-full mt-3 w-[340px] origin-top-right",
-                    "rounded-sm border border-slate-200 bg-white shadow-lg",
+                    "absolute right-0 top-full mt-3 w-[240px] origin-top-right",
+                    "rounded border border-slate-200 bg-white shadow-lg",
                     "transition duration-200 ease-out",
                     open
                         ? "pointer-events-auto scale-100 opacity-100"
@@ -102,7 +102,7 @@ export function AppLauncher({ className }: { className?: string }) {
                                     <app.Icon className="h-5 w-5 text-slate-700 transition group-hover:text-[#0073C5]" />
                                 </div>
 
-                                <div className="max-w-full truncate text-[13px] font-semibold text-slate-700 group-hover:text-slate-900">
+                                <div className="max-w-full truncate text-xs font-semibold text-slate-700 group-hover:text-slate-900">
                                     {app.name}
                                 </div>
                             </Link>
