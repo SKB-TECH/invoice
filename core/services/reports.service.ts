@@ -1,14 +1,15 @@
 import { api } from "@/core/services/api";
-import {
-    downloadBlob,
-    filenameFromContentDisposition,
-} from "@/core/utils/downloadBlob";
+import { fetchMockReportPdf } from "@/core/services/reports-mock";
+import { ENV } from "@/core/constants/env";
+import { buildReportPreviewDisplay } from "@/lib/reports/build-report-display";
+import { filenameFromContentDisposition } from "@/core/utils/downloadBlob";
 import type {
     InvoiceEditionReportFilters,
     InvoiceNormalizationReportFilters,
     InvoicePaymentsReportFilters,
     OrdinaryReportKind,
     ReportAFilters,
+    ReportBlobResult,
     ReportXDailyFilters,
     ReportXPeriodicFilters,
     ReportZFilters,
@@ -28,10 +29,10 @@ function stripUndefined<T extends Record<string, unknown>>(obj: T): Partial<T> {
     return out;
 }
 
-async function downloadBlobResponse(
+function blobFromResponse(
     response: { data: Blob; headers: Record<string, unknown> },
     fallbackFilename: string,
-): Promise<void> {
+): Pick<ReportBlobResult, "blob" | "filename"> {
     const disposition =
         typeof response.headers["content-disposition"] === "string"
             ? response.headers["content-disposition"]
@@ -41,7 +42,8 @@ async function downloadBlobResponse(
         disposition,
         fallbackFilename,
     );
-    downloadBlob(response.data, filename);
+
+    return { blob: response.data, filename };
 }
 
 const ORDINARY_PATHS: Record<OrdinaryReportKind, string> = {
@@ -59,8 +61,12 @@ const SPECIAL_PDF_PATHS: Record<SpecialPdfReportKind, string> = {
     a: `${REPORTS_BASE}/a`,
 };
 
+type FetchOptions = {
+    reportTitle: string;
+};
+
 export const reportsService = {
-    async downloadOrdinaryReport(
+    async fetchOrdinaryReport(
         kind: OrdinaryReportKind,
         filters:
             | InvoiceEditionReportFilters
@@ -69,16 +75,39 @@ export const reportsService = {
             | VatCollectionReportFilters
             | ToolUsageReportFilters,
         fallbackFilename: string,
-    ): Promise<void> {
+        options: FetchOptions,
+    ): Promise<ReportBlobResult> {
+        const params = stripUndefined(filters as Record<string, unknown>);
+
+        if (ENV.REPORTS_USE_MOCK) {
+            return fetchMockReportPdf(
+                options.reportTitle,
+                kind,
+                params,
+                fallbackFilename,
+            );
+        }
+
         const response = await api.get(ORDINARY_PATHS[kind], {
-            params: stripUndefined(filters as Record<string, unknown>),
+            params,
             responseType: "blob",
         });
 
-        await downloadBlobResponse(response, fallbackFilename);
+        const { blob, filename } = blobFromResponse(response, fallbackFilename);
+
+        return {
+            blob,
+            filename,
+            display: buildReportPreviewDisplay(
+                options.reportTitle,
+                kind,
+                params,
+                false,
+            ),
+        };
     },
 
-    async downloadSpecialPdfReport(
+    async fetchSpecialPdfReport(
         kind: SpecialPdfReportKind,
         body:
             | ReportXDailyFilters
@@ -86,13 +115,34 @@ export const reportsService = {
             | ReportXPeriodicFilters
             | ReportAFilters,
         fallbackFilename: string,
-    ): Promise<void> {
-        const response = await api.post(
-            SPECIAL_PDF_PATHS[kind],
-            stripUndefined(body as Record<string, unknown>),
-            { responseType: "blob" },
-        );
+        options: FetchOptions,
+    ): Promise<ReportBlobResult> {
+        const payload = stripUndefined(body as Record<string, unknown>);
 
-        await downloadBlobResponse(response, fallbackFilename);
+        if (ENV.REPORTS_USE_MOCK) {
+            return fetchMockReportPdf(
+                options.reportTitle,
+                kind,
+                payload,
+                fallbackFilename,
+            );
+        }
+
+        const response = await api.post(SPECIAL_PDF_PATHS[kind], payload, {
+            responseType: "blob",
+        });
+
+        const { blob, filename } = blobFromResponse(response, fallbackFilename);
+
+        return {
+            blob,
+            filename,
+            display: buildReportPreviewDisplay(
+                options.reportTitle,
+                kind,
+                payload,
+                false,
+            ),
+        };
     },
 };

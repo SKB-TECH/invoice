@@ -65,6 +65,13 @@ export const ENV = {
      * Environnement courant.
      */
     NODE_ENV: process.env.NODE_ENV ?? "development",
+
+    /**
+     * Rapports : aperçu PDF simulé côté client tant que l’API n’est pas prête.
+     * Mettre NEXT_PUBLIC_REPORTS_USE_MOCK=false pour appeler les vrais endpoints.
+     */
+    REPORTS_USE_MOCK:
+        process.env.NEXT_PUBLIC_REPORTS_USE_MOCK !== "false",
 } as const;
 
 export type EnvConfig = typeof ENV;

@@ -1132,11 +1132,18 @@
     },
     "actions": {
       "generate": "Bimisa rapport",
-      "generating": "Ezali kobimisa…"
+      "generating": "Ezali kobimisa…",
+      "download": "Télécharger rapport",
+      "back": "Zonga"
+    },
+    "preview": {
+      "title": "Aperçu ya rapport",
+      "subtitle": "Talá ba critères mpe contenu ya rapport liboso ya ko-télécharger.",
+      "simulatedNotice": "Aperçu simulé"
     },
     "toast": {
-      "generated": "Rapport ebimisami.",
-      "pdfGenerated": "Rapport PDF ebimisami.",
+      "previewReady": "Aperçu ya rapport ezali prêt.",
+      "downloaded": "Rapport PDF etéléchargé.",
       "generateError": "Rapport elongwaki te."
     },
     "ordinary": {

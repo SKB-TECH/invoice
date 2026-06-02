@@ -6,26 +6,35 @@ import { toast } from "sonner";
 
 import { SectionCard } from "@/components/configuration/section-card";
 import { ReportFiltersGrid } from "@/components/reports/report-filters-grid";
-import { ReportGenerateBar } from "@/components/reports/report-generate-bar";
+import { ReportActionsBar } from "@/components/reports/report-generate-bar";
+import { ReportPreviewSection } from "@/components/reports/report-preview-section";
 import {
     ReportIsfField,
     ReportPeriodFields,
     ReportPointOfSaleField,
 } from "@/components/reports/report-filter-fields";
-import { useSpecialPdfReportGenerate } from "@/core/hooks/reports/useReportGenerate";
+import { useSpecialPdfReportPreview } from "@/core/hooks/reports/useReportGenerate";
+import { useReportPreview } from "@/core/hooks/reports/useReportPreview";
 import type { ReportAFilters } from "@/core/types/reports";
 import { getAxiosErrorMessage } from "@/core/utils/axiosErrorMessage";
 
 export function SpecialAReportPanel() {
     const t = useTranslations("reports");
-    const generateMutation = useSpecialPdfReportGenerate();
+    const previewMutation = useSpecialPdfReportPreview();
+    const {
+        previewDisplay,
+        isShowingPreview,
+        applyPreview,
+        clearPreview,
+        downloadPreview,
+    } = useReportPreview();
 
     const [dateFrom, setDateFrom] = useState("");
     const [dateTo, setDateTo] = useState("");
     const [pointOfSale, setPointOfSale] = useState("");
     const [isf, setIsf] = useState("");
 
-    const handleGenerate = () => {
+    const handleGeneratePreview = () => {
         const filters: ReportAFilters = {
             date_from: dateFrom.trim() || undefined,
             date_to: dateTo.trim() || undefined,
@@ -33,14 +42,18 @@ export function SpecialAReportPanel() {
             isf: isf.trim() || undefined,
         };
 
-        generateMutation.mutate(
+        previewMutation.mutate(
             {
                 kind: "a",
                 filters,
                 filename: "rapport-a.pdf",
+                reportTitle: t("specialA.title"),
             },
             {
-                onSuccess: () => toast.success(t("toast.pdfGenerated")),
+                onSuccess: (result) => {
+                    applyPreview(result);
+                    toast.success(t("toast.previewReady"));
+                },
                 onError: (err) =>
                     toast.error(
                         getAxiosErrorMessage(err, t("toast.generateError")),
@@ -49,8 +62,22 @@ export function SpecialAReportPanel() {
         );
     };
 
+    const handleDownload = () => {
+        downloadPreview();
+        toast.success(t("toast.downloaded"));
+    };
+
     return (
         <SectionCard title={t("specialA.title")}>
+            {isShowingPreview && previewDisplay ? (
+                <ReportPreviewSection
+                    display={previewDisplay}
+                    onBack={clearPreview}
+                    onDownload={handleDownload}
+                    disabled={previewMutation.isPending}
+                />
+            ) : (
+                <>
             <p className="mb-3 max-w-3xl text-[13px] leading-relaxed text-slate-500">
                 {t("specialA.description")}
             </p>
@@ -74,10 +101,12 @@ export function SpecialAReportPanel() {
                 <ReportIsfField value={isf} onChange={setIsf} />
             </ReportFiltersGrid>
 
-            <ReportGenerateBar
-                onGenerate={handleGenerate}
-                isPending={generateMutation.isPending}
+            <ReportActionsBar
+                onGeneratePreview={handleGeneratePreview}
+                isPreviewPending={previewMutation.isPending}
             />
+                </>
+            )}
         </SectionCard>
     );
 }
