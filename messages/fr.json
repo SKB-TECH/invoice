@@ -1130,11 +1130,18 @@
     },
     "actions": {
       "generate": "Générer le rapport",
-      "generating": "Génération…"
+      "generating": "Génération…",
+      "download": "Télécharger le rapport",
+      "back": "Retour"
+    },
+    "preview": {
+      "title": "Aperçu du rapport",
+      "subtitle": "Vérifiez les critères et le contenu du rapport avant téléchargement.",
+      "simulatedNotice": "Aperçu simulé"
     },
     "toast": {
-      "generated": "Rapport généré.",
-      "pdfGenerated": "Rapport PDF généré.",
+      "previewReady": "Aperçu du rapport prêt.",
+      "downloaded": "Rapport PDF téléchargé.",
       "generateError": "Impossible de générer le rapport."
     },
     "ordinary": {

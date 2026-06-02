@@ -26,6 +26,7 @@ type OrdinaryPayload = {
         | VatCollectionReportFilters
         | ToolUsageReportFilters;
     filename: string;
+    reportTitle: string;
 };
 
 type SpecialPdfPayload = {
@@ -36,26 +37,29 @@ type SpecialPdfPayload = {
         | ReportXPeriodicFilters
         | ReportAFilters;
     filename: string;
+    reportTitle: string;
 };
 
-export function useOrdinaryReportGenerate() {
+export function useOrdinaryReportPreview() {
     return useMutation({
         mutationFn: (payload: OrdinaryPayload) =>
-            reportsService.downloadOrdinaryReport(
+            reportsService.fetchOrdinaryReport(
                 payload.kind,
                 payload.filters,
                 payload.filename,
+                { reportTitle: payload.reportTitle },
             ),
     });
 }
 
-export function useSpecialPdfReportGenerate() {
+export function useSpecialPdfReportPreview() {
     return useMutation({
         mutationFn: (payload: SpecialPdfPayload) =>
-            reportsService.downloadSpecialPdfReport(
+            reportsService.fetchSpecialPdfReport(
                 payload.kind,
                 payload.filters,
                 payload.filename,
+                { reportTitle: payload.reportTitle },
             ),
     });
 }

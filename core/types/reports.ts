@@ -58,3 +58,22 @@ export type SpecialPdfReportKind =
     | "z"
     | "x-periodic"
     | "a";
+
+export type ReportFilterRow = {
+    label: string;
+    value: string;
+};
+
+export type ReportPreviewDisplay = {
+    reportTitle: string;
+    reportKind: string;
+    generatedAt: string;
+    filterRows: ReportFilterRow[];
+    isSimulated: boolean;
+};
+
+export type ReportBlobResult = {
+    blob: Blob;
+    filename: string;
+    display: ReportPreviewDisplay;
+};
