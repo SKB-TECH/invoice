@@ -1,11 +1,13 @@
 import { api } from "@/core/services/api";
 import type {
+    AttachInvoicePdfPayload, AttachInvoicePdfResponse,
     CreateInvoiceResponse, CreateInvoiceSubmission,
     GetInvoiceContractsParams,
     GetInvoiceContractsResponse, GetInvoiceFournituresParams, GetInvoiceFournituresResponse,
     GetInvoicesParams,
     GetInvoicesResponse, GetInvoiceTypesResponse,
     InvoiceCreateRequest, InvoiceDetailResponse, NormalizeInvoicePayload, NormalizeInvoiceResponse,
+    UpdateInvoiceSubmission,
 } from "@/core/types/invoice";
 
 export const invoiceService = {
@@ -144,4 +146,57 @@ export const invoiceService = {
 
         return response.data;
     },
+    updateInvoice: async ({
+                              id,
+                              payload,
+                              pdfFile,
+                          }: UpdateInvoiceSubmission) => {
+        const formData = new FormData();
+
+        Object.entries(payload).forEach(([key, value]) => {
+            if (value === undefined || value === null) {
+                return;
+            }
+
+            if (typeof value === "object") {
+                formData.append(key, JSON.stringify(value));
+                return;
+            }
+
+            formData.append(key, String(value));
+        });
+
+        if (pdfFile) {
+            formData.append("pdf_file", pdfFile);
+        }
+
+        const response = await api.put(`/invoices/${id}`, formData, {
+            headers: {
+                "Content-Type": "multipart/form-data",
+            },
+        });
+
+        return response.data;
+    },
+    attachInvoicePdf: async ({
+                                 id,
+                                 pdfFile,
+                             }: AttachInvoicePdfPayload): Promise<AttachInvoicePdfResponse> => {
+        const formData = new FormData();
+
+        formData.append("pdf_file", pdfFile);
+
+        const response = await api.post<AttachInvoicePdfResponse>(
+            `/invoices/${id}/pdf`,
+            formData,
+            {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                },
+            }
+        );
+
+        return response.data;
+    },
 };
+

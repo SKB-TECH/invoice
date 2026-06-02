@@ -132,7 +132,8 @@
     "passwordPlaceholder": "********",
     "submit": "Kokota",
     "noAccount": "Ozali naino na compte te?",
-    "createAccount": "Finá awa mpo na kosala compte"
+    "createAccount": "Finá awa mpo na kosala compte",
+    "loading": "Ezali ko charger..."
   },
   "invoicesPage": {
     "breadcrumb": {
@@ -1062,7 +1063,8 @@
       "reference": "Ref",
       "amount": "Motango",
       "status": "Ezaleli",
-      "creation": "Esalemi na"
+      "creation": "Esalemi na",
+      "editInvoice": "Bongisa facture"
     },
     "status": {
       "paid": "Efutami",
@@ -1210,6 +1212,5 @@
   },
   "errors": {
     "loadingDashboard": "Impossible de charger les données du tableau de bord."
-  },
-  "editInvoice": "Bongisa facture"
+  }
 }

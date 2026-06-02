@@ -132,7 +132,8 @@
     "passwordPlaceholder": "********",
     "submit": "Se connecter",
     "noAccount": "Vous n'avez pas encore de compte ?",
-    "createAccount": "Cliquez ici pour créer votre compte"
+    "createAccount": "Cliquez ici pour créer votre compte",
+    "loading": "Chargement en cours..."
   },
   "invoicesPage": {
     "breadcrumb": {
@@ -1060,7 +1061,8 @@
       "reference": "Ref",
       "amount": "Montant",
       "status": "Statut",
-      "creation": "Création"
+      "creation": "Création",
+      "editInvoice": "Modifier la facture"
     },
     "status": {
       "paid": "Payée",
@@ -1211,6 +1213,5 @@
   },
   "errors": {
     "loadingDashboard": "Impossible de charger les données du tableau de bord."
-  },
-  "editInvoice": "Modifier la facture"
+  }
 }
