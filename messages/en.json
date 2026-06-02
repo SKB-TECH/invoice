@@ -118,6 +118,7 @@
     "NouveauContrat": "New contract",
     "NouveauReferentiel": "New referential entry",
     "Configuration": "Settings",
+    "Reports": "Reports",
     "Aide": "Help"
   },
   "login": {
@@ -447,10 +448,11 @@
         "new": "New customer"
       },
       "search": {
-        "placeholder": "Search customer"
+        "placeholder": "Search by customer name"
       },
       "table": {
         "reference": "Reference number",
+        "code": "Code",
         "titre": "Title",
         "nif": "Tax ID Number (NIF)",
         "tel": "Phone number",
@@ -1083,6 +1085,130 @@
       "oct": "Oct",
       "nov": "Nov",
       "dec": "Dec"
+    }
+  },
+  "reports": {
+    "pageTitle": "Reports",
+    "pageIntro": "Generate reports on invoices, VAT, payments and platform usage.",
+    "menu": {
+      "invoiceEdition": "Invoice editing",
+      "invoiceNormalization": "Invoice normalization",
+      "invoicePayments": "Invoice payments",
+      "vatCollection": "VAT collection",
+      "toolUsage": "Tool usage",
+      "reportXDaily": "Daily report",
+      "reportZ": "Closing report",
+      "reportXPeriodic": "Periodic report",
+      "reportA": "Articles report"
+    },
+    "filters": {
+      "all": "All",
+      "dateFrom": "Start date",
+      "dateTo": "End date",
+      "reportDate": "Report date",
+      "client": "Client",
+      "contract": "Contract",
+      "pointOfSale": "Point of sale",
+      "pointOfSalePlaceholder": "e.g. POS-01",
+      "isf": "ISF",
+      "isfPlaceholder": "Fiscal system identifier",
+      "invoiceType": "Invoice type",
+      "invoiceStatus": "Invoice status",
+      "paymentStatus": "Payment status",
+      "statuses": {
+        "brouillon": "Draft",
+        "enregistrer": "Recorded",
+        "valider": "Validated",
+        "normaliser": "Normalized",
+        "soumise": "Submitted",
+        "receptionner": "Received",
+        "payer": "Paid",
+        "classer": "Filed"
+      },
+      "paymentStatuses": {
+        "paid": "Paid",
+        "partial": "Partially paid",
+        "unpaid": "Unpaid"
+      }
+    },
+    "actions": {
+      "generate": "Generate report",
+      "generating": "Generating…",
+      "download": "Download report",
+      "back": "Back"
+    },
+    "preview": {
+      "title": "Report preview",
+      "subtitle": "Review the criteria and report content before downloading.",
+      "simulatedNotice": "Simulated preview"
+    },
+    "toast": {
+      "previewReady": "Report preview is ready.",
+      "downloaded": "PDF report downloaded.",
+      "generateError": "Could not generate the report."
+    },
+    "ordinary": {
+      "invoiceEdition": {
+        "title": "Invoice editing report",
+        "description": "Analysis of created or updated invoices. Filter by client, contract, period, point of sale and status."
+      },
+      "invoiceNormalization": {
+        "title": "Invoice normalization report",
+        "description": "Track normalized invoices. Filter by point of sale, type (FV, FA, …) and period."
+      },
+      "invoicePayments": {
+        "title": "Invoice payments report",
+        "description": "Summary of payments recorded over the period and by client."
+      },
+      "vatCollection": {
+        "title": "VAT collection report",
+        "description": "Collected VAT amounts. Filter by period, payment status, invoice type and client."
+      },
+      "toolUsage": {
+        "title": "Tool usage report",
+        "description": "User activity and feature usage over the selected period."
+      }
+    },
+    "specialXz": {
+      "reportXDaily": {
+        "title": "Daily report",
+        "description": "Summary since the last Z report. Accumulated values are not reset.",
+        "includes": [
+          "Trade name, tax ID, date and time",
+          "Total, taxable amounts and amounts per tax group",
+          "Invoice count by type, payment methods, discounts",
+          "Incomplete sales and daily sales"
+        ]
+      },
+      "reportZ": {
+        "title": "Closing report",
+        "description": "Closing summary since the last Z report. Resets accumulated values.",
+        "includes": [
+          "Trade name, tax ID, date and time",
+          "Total, taxable amounts and amounts per tax group",
+          "Invoice count by type, payment methods, discounts",
+          "Incomplete sales and daily sales"
+        ]
+      },
+      "reportXPeriodic": {
+        "title": "Periodic report",
+        "description": "Summary for the selected period. Does not reset accumulated values.",
+        "includes": [
+          "Trade name, tax ID, selected period",
+          "Total, taxable amounts and amounts per tax group",
+          "Invoice count by type, payment methods, discounts",
+          "Incomplete sales over the period"
+        ]
+      }
+    },
+    "specialA": {
+      "title": "Articles report",
+      "description": "Item summary since the last A report. Resets accumulated values.",
+      "includes": [
+        "Trade name, tax ID, date and time, period",
+        "Item code and name, unit price, tax rate",
+        "Quantities sold, returned and in stock"
+      ]
     }
   },
   "errors": {

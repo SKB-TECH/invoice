@@ -20,6 +20,7 @@ const CLIENTS_PATH = "/invoices/clients";
 export type ListClientsParams = {
     page?: number;
     per_page?: number;
+    name?: string;
     business_sector?: string;
 };
 
@@ -80,10 +81,14 @@ export function clientPayloadForApi(
 
     const payload: Record<string, unknown> = {
         client_type_id,
+        // API historique / Laravel
         status: statusFormToApi(input.status ?? "actif"),
         client_name: clientName,
         /** Alias Laravel éventuel pour le libellé « Nom ». */
         nom: clientName,
+        // API "ikwook" (payload vu: name/status_id)
+        name: clientName,
+        status_id: statusFormToApi(input.status ?? "actif"),
     };
 
     appendIfPresent(payload, "phone", input.phone ?? undefined);
@@ -93,6 +98,8 @@ export function clientPayloadForApi(
     const country = parseCountryForApi(input.country);
     if (country !== undefined) {
         payload.country = country;
+        // API "ikwook" (payload vu: country_id)
+        payload.country_id = country;
     }
 
     if (
@@ -243,6 +250,7 @@ export const clientService = {
             params: {
                 page: params?.page,
                 per_page: params?.per_page,
+                name: params?.name,
                 business_sector: params?.business_sector,
             },
         });
@@ -284,10 +292,11 @@ export const clientService = {
             typeOption,
             referenceDocumentFile
         );
-        const res = await api.put(
-            `${CLIENTS_PATH}/${encodeURIComponent(id)}`,
-            clientPayloadToFormData(payload)
-        );
+        const endpoint = `${CLIENTS_PATH}/${encodeURIComponent(id)}`;
+        const hasFile = referenceDocumentFile instanceof File;
+        const res = hasFile
+            ? await api.put(endpoint, clientPayloadToFormData(payload))
+            : await api.put(endpoint, payload);
         const raw = unwrapApiData<unknown>(res.data);
         return clientResponseSchema.parse(raw);
     },

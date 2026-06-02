@@ -10,6 +10,7 @@ export type ClientStatutUi = "Suspendu" | "Actif" | "Complet";
 export type ClientDetailRecord = {
     id: string;
     client_type_id: string;
+    code: string;
     reference: string;
     reference_document: string;
     nomClient: string;
@@ -32,6 +33,7 @@ const DETAILS: ClientDetailRecord[] = [
     {
         id: "1",
         client_type_id: "2",
+        code: "1234567890",
         reference: "1234567890",
         reference_document: "",
         nomClient: "Rawbank",
@@ -52,6 +54,7 @@ const DETAILS: ClientDetailRecord[] = [
     {
         id: "2",
         client_type_id: "2",
+        code: "2345678901",
         reference: "2345678901",
         reference_document: "",
         nomClient: "Rawbank",
@@ -72,6 +75,7 @@ const DETAILS: ClientDetailRecord[] = [
     {
         id: "3",
         client_type_id: "1",
+        code: "3456789012",
         reference: "",
         reference_document: "",
         nomClient: "Jean Dupont",
@@ -94,6 +98,7 @@ const DETAILS: ClientDetailRecord[] = [
 export type ClientListRow = {
     id: string;
     reference: string;
+    code: string;
     titre: string;
     type: string;
     nif: string;
@@ -119,6 +124,7 @@ export function detailToClientListRow(row: ClientDetailRecord): ClientListRow {
     return {
         id: row.id,
         reference: row.reference,
+        code: row.code,
         titre: row.nomClient,
         type: clientTypeLibelle(row.client_type),
         nif: row.nif,

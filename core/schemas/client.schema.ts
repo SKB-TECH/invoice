@@ -87,6 +87,10 @@ export function normalizeClientResponseInput(raw: unknown): unknown {
         r.client_type_id = String(r.client_type_id);
     }
 
+    if (r.client_type_code !== undefined && r.client_type_code !== null) {
+        r.client_type_code = String(r.client_type_code).trim();
+    }
+
     const typeRaw = pickStr(r.client_type);
     r.client_type = typeRaw ?? "";
 
@@ -131,8 +135,27 @@ export function normalizeClientResponseInput(raw: unknown): unknown {
         r.address = addr === null ? null : String(addr);
     }
 
-    if (r.country !== undefined && r.country !== null && r.country !== "") {
-        r.country = String(r.country);
+    const countryFallback =
+        pickStr((r as { country_id?: unknown }).country_id) ??
+        pickStr((r as { countryId?: unknown }).countryId);
+
+    let countryFromObject: string | undefined;
+    if (
+        r.country &&
+        typeof r.country === "object" &&
+        !Array.isArray(r.country)
+    ) {
+        const countryObject = r.country as Record<string, unknown>;
+        countryFromObject =
+            pickStr(countryObject.id) ??
+            pickStr(countryObject.code) ??
+            pickStr(countryObject.name);
+    }
+
+    const normalizedCountry =
+        countryFallback ?? countryFromObject ?? pickStr(r.country);
+    if (normalizedCountry) {
+        r.country = normalizedCountry;
     }
 
     if ((r.id === undefined || r.id === null || r.id === "") && pickStr(r.reference)) {
@@ -146,6 +169,8 @@ const clientResponseShape = z
     .object({
         id: idLike,
         client_type_id: z.string().optional().nullable(),
+        client_type_code: z.string().optional().nullable(),
+        code: z.string().optional().nullable(),
         client_type: z.string().optional().nullable(),
         client_name: z.string().nullable().optional(),
         reference: z.string(),

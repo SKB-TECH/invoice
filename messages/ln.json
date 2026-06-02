@@ -118,6 +118,7 @@
     "NouveauContrat": "Kontra ya sika",
     "NouveauReferentiel": "Entrée ya référentiel ya sika",
     "Configuration": "Bobongisi",
+    "Reports": "Ba rapports",
     "Aide": "Lisalisi"
   },
   "login": {
@@ -447,10 +448,11 @@
         "new": "Kiliya ya sika"
       },
       "search": {
-        "placeholder": "Luka mokiliya"
+        "placeholder": "Luka na nkombo ya mokiliya"
       },
       "table": {
         "reference": "Numelo ya Reference",
+        "code": "Code",
         "titre": "Motó ya likambo",
         "nif": "Numelo ya NIF",
         "tel": "Telefɔ́ni",
@@ -1085,6 +1087,127 @@
       "oct": "Ok",
       "nov": "No",
       "dec": "De"
+    }
+  },
+  "reports": {
+    "pageTitle": "Ba rapports",
+    "pageIntro": "Bimisa ba rapports na factures, TVA, ba paiements mpe utilisation ya plateforme.",
+    "menu": {
+      "invoiceEdition": "Édition ya ba factures",
+      "invoiceNormalization": "Normalisation ya ba factures",
+      "invoicePayments": "Ba paiements ya factures",
+      "vatCollection": "Collecte ya TVA",
+      "toolUsage": "Utilisation ya outil",
+      "reportXDaily": "Rapport quotidien",
+      "reportZ": "Rapport de clôture",
+      "reportXPeriodic": "Rapport périodique",
+      "reportA": "Rapport sur les articles"
+    },
+    "filters": {
+      "all": "Nionso",
+      "dateFrom": "Date ya ebandeli",
+      "dateTo": "Date ya nsuka",
+      "reportDate": "Date ya rapport",
+      "client": "Client",
+      "contract": "Contrat",
+      "pointOfSale": "Point ya vente",
+      "pointOfSalePlaceholder": "Soki PDV-01",
+      "isf": "ISF",
+      "isfPlaceholder": "Identifiant fiscal",
+      "invoiceType": "Type ya facture",
+      "invoiceStatus": "Statut ya facture",
+      "paymentStatus": "Statut ya paiement",
+      "statuses": {
+        "brouillon": "Brouillon",
+        "enregistrer": "Enregistrée",
+        "valider": "Validée",
+        "normaliser": "Normalisée",
+        "soumise": "Soumise",
+        "receptionner": "Réceptionnée",
+        "payer": "Payée",
+        "classer": "Classée"
+      },
+      "paymentStatuses": {
+        "paid": "Payé",
+        "partial": "Moke payé",
+        "unpaid": "Payé te"
+      }
+    },
+    "actions": {
+      "generate": "Bimisa rapport",
+      "generating": "Ezali kobimisa…",
+      "download": "Télécharger rapport",
+      "back": "Zonga"
+    },
+    "preview": {
+      "title": "Aperçu ya rapport",
+      "subtitle": "Talá ba critères mpe contenu ya rapport liboso ya ko-télécharger.",
+      "simulatedNotice": "Aperçu simulé"
+    },
+    "toast": {
+      "previewReady": "Aperçu ya rapport ezali prêt.",
+      "downloaded": "Rapport PDF etéléchargé.",
+      "generateError": "Rapport elongwaki te."
+    },
+    "ordinary": {
+      "invoiceEdition": {
+        "title": "Rapport ya édition ya ba factures",
+        "description": "Analyse ya ba factures. Filtre na client, contrat, période, point ya vente mpe statut."
+      },
+      "invoiceNormalization": {
+        "title": "Rapport ya normalisation",
+        "description": "Suivi ya ba factures normalisées. Filtre na point ya vente, type (FV, FA…) mpe période."
+      },
+      "invoicePayments": {
+        "title": "Rapport ya ba paiements",
+        "description": "Synthèse ya ba paiements na période mpe na client."
+      },
+      "vatCollection": {
+        "title": "Rapport ya collecte TVA",
+        "description": "Montants TVA. Filtre na période, statut paiement, type facture mpe client."
+      },
+      "toolUsage": {
+        "title": "Rapport ya utilisation",
+        "description": "Activité ya ba utilisateurs na période oyo oponi."
+      }
+    },
+    "specialXz": {
+      "reportXDaily": {
+        "title": "Lapolo ya mokolo na mokolo",
+        "description": "Récapitulatif banda rapport Z ya nsuka. Ba valeurs ebandi te.",
+        "includes": [
+          "Nom commercial, NIF, date mpe ngonga",
+          "Ba montants, taxes mpe modes ya paiement",
+          "Ba ventes oyo ezuami te mpe ya mokolo"
+        ]
+      },
+      "reportZ": {
+        "title": "Lapolo ya suka",
+        "description": "Récapitulatif ya clôture. Ebandi ba valeurs.",
+        "includes": [
+          "Nom commercial, NIF, date mpe ngonga",
+          "Ba montants, taxes mpe modes ya paiement",
+          "Ba ventes oyo ezuami te mpe ya mokolo"
+        ]
+      },
+      "reportXPeriodic": {
+        "title": "Lapolo ya ntango na ntango",
+        "description": "Récapitulatif na période oyo oponi. Ebandi te ba valeurs.",
+        "includes": [
+          "Nom commercial, NIF, période",
+          "Ba montants, taxes mpe modes ya paiement",
+          "Ba ventes oyo ezuami te"
+        ]
+      }
+    },
+    "specialA": {
+      "title": "Lapolo na ntina ya masolo",
+      "description": "Récapitulatif ya ba articles banda rapport A ya nsuka. Ebandi ba valeurs.",
+      "includes": [
+        "Nom commercial, NIF, date, période",
+        "Code mpe nom article, prix, taux impôt",
+        "Quantités vendues, retournées mpe stock"
+      ]
     }
   },
   "errors": {

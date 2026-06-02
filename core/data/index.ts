@@ -69,6 +69,10 @@ export const menuItems: MenuItem[] = [
         ],
     },
     {
+        title: "Reports",
+        href: "/home/reports",
+    },
+    {
         title: "Configuration",
         href: "/home/configuration",
     },

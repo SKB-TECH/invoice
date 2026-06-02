@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { ChevronRight, Eye, House } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
@@ -42,23 +42,35 @@ function StatutBadge({ statut }: { statut: ClientStatutUi }) {
 
 export default function ClientsPage() {
     const t = useTranslations("clients.listClients");
-    const [sector, setSector] = useState("");
-    const [appliedSector, setAppliedSector] = useState<string | undefined>();
+    const [search, setSearch] = useState("");
+    const [debouncedSearch, setDebouncedSearch] = useState("");
+
+    useEffect(() => {
+        const timeout = window.setTimeout(() => {
+            setDebouncedSearch(search.trim());
+        }, 400);
+
+        return () => window.clearTimeout(timeout);
+    }, [search]);
 
     const listParams = useMemo(
         () => ({
-            business_sector: appliedSector,
+            name: debouncedSearch || undefined,
             per_page: 50,
         }),
-        [appliedSector]
+        [debouncedSearch]
     );
 
     const { data, isPending, isError } = useClients(listParams);
 
-    const rows = useMemo(
-        () => data?.items.map(clientResponseToListRow) ?? [],
-        [data?.items]
-    );
+    const rows = useMemo(() => {
+        const mapped = data?.items.map(clientResponseToListRow) ?? [];
+        const q = debouncedSearch.trim().toLowerCase();
+
+        if (!q) return mapped;
+
+        return mapped.filter((row) => row.titre.toLowerCase().includes(q));
+    }, [data?.items, debouncedSearch]);
 
     return (
         <main className="mx-auto w-full min-w-full py-4 text-foreground">
@@ -71,41 +83,28 @@ export default function ClientsPage() {
                 <ChevronRight className="size-4 shrink-0" />
                 <span className="text-slate-800">{t("breadcrumb.Step2")}</span>
             </span>
-            <div className="mb-6 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
+            <div className="mb-6 flex items-center justify-between gap-4">
                 <h1 className="text-2xl font-bold tracking-tight text-slate-800 sm:text-3xl">
                     {t("title")}
                 </h1>
-                <Button
-                    size="lg"
-                    className="h-12 w-52 cursor-pointer rounded bg-[#0073C5] px-5 text-white"
-                    asChild
-                >
-                    <Link href="/home/clients/new">{t("btn.new")}</Link>
-                </Button>
-            </div>
-            <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-end">
-                <div className="flex flex-col gap-2">
-                    <label className="text-xs font-medium text-slate-600">
-                        Filtrer par secteur d&apos;activité
-                    </label>
-                    <Input
-                        type="text"
-                        value={sector}
-                        onChange={(e) => setSector(e.target.value)}
-                        placeholder={t("search.placeholder")}
-                        className="h-12 w-full rounded border-1 border-slate-200 bg-white sm:w-100"
-                    />
+                <div className="flex gap-3 items-center">
+                    <div className="flex flex-col gap-2">
+                        <Input
+                            type="text"
+                            value={search}
+                            onChange={(e) => setSearch(e.target.value)}
+                            placeholder={t("search.placeholder")}
+                            className="h-12 w-full rounded border-1 border-slate-200 bg-white sm:w-100"
+                        />
+                    </div>
+                    <Button
+                        size="lg"
+                        className="h-12 w-52 cursor-pointer rounded bg-[#0073C5] px-5 text-white"
+                        asChild
+                    >
+                        <Link href="/home/clients/new">{t("btn.new")}</Link>
+                    </Button>
                 </div>
-                <Button
-                    type="button"
-                    variant="secondary"
-                    className="h-12 w-40 rounded"
-                    onClick={() =>
-                        setAppliedSector(sector.trim() === "" ? undefined : sector.trim())
-                    }
-                >
-                    Appliquer
-                </Button>
             </div>
 
             {isError ? (
@@ -120,6 +119,9 @@ export default function ClientsPage() {
                         <TableRow className="border-slate-200 bg-[#F4F4F4BB] hover:bg-transparent">
                             <TableHead className="h-11 bg-slate-100 px-4 text-left text-sm font-semibold text-slate-700">
                                 {t("table.reference")}
+                            </TableHead>
+                            <TableHead className="h-11 bg-slate-100 px-4 text-left text-sm font-semibold text-slate-700">
+                                {t("table.code")}
                             </TableHead>
                             <TableHead className="h-11 bg-slate-100 px-4 text-left text-sm font-semibold text-slate-700">
                                 {t("table.titre")}
@@ -168,6 +170,9 @@ export default function ClientsPage() {
                                 >
                                     <TableCell className="px-4 py-3 text-sm text-slate-800">
                                         {row.reference}
+                                    </TableCell>
+                                    <TableCell className="px-4 py-3 text-sm text-slate-800">
+                                        {row.code}
                                     </TableCell>
                                     <TableCell className="px-4 py-3 text-sm text-slate-800">
                                         {row.titre}

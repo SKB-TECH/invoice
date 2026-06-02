@@ -1,15 +1,12 @@
 "use client";
 
-import { ChevronDown } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
 
 import Loader from "@/components/loader/Loader";
-import { ArticleTaxGroupSelect } from "@/components/articles/article-tax-group-select";
 import {
     CreateFormFooter,
-    createFormSelectClassName,
     FieldLabel,
     InputField,
     NativeSelectField,
@@ -18,6 +15,7 @@ import {
 } from "@/components/invoices/create/Fields";
 import { useUpdateFourniture } from "@/core/hooks/fournitures/useUpdateFourniture";
 import { useItemTypes } from "@/core/hooks/fournitures/useItemTypes";
+import { useInvoiceTaxGroups } from "@/core/hooks/invoices/useInvoiceTaxGroups";
 import { useReferentielsCatalog } from "@/core/hooks/referentiels/useReferentielsCatalog";
 import type {
     CreateFourniturePayload,
@@ -25,13 +23,13 @@ import type {
 } from "@/core/types/fourniture";
 import { getAxiosErrorMessage } from "@/core/utils/axiosErrorMessage";
 import type { ArticleDetailRecord } from "@/lib/fournitures/articles/articles-data";
-import {
-    detailPieceUniteToUnitId,
-    taxGroupSlugToNumericId,
-} from "@/lib/fournitures/articles/fournitures-mappers";
-import { resolveTaxRateDecimal } from "@/lib/fournitures/articles/tax-rates";
+import { detailPieceUniteToUnitId } from "@/lib/fournitures/articles/fournitures-mappers";
 import { buildItemTypeSelectOptions } from "@/lib/item-types/item-type-select-options";
 import { formatReferentielOptionLabel } from "@/lib/referentials/referential-option-label";
+import {
+    formatInvoiceTaxGroupSelectLabel,
+    pickDefaultInvoiceTaxGroupId,
+} from "@/lib/tax-groups/invoice-tax-group-label";
 import { useRouter } from "@/i18n/routing";
 
 function formatMoneyFr(n: number): string {
@@ -46,6 +44,14 @@ function parseMoneyInput(s: string): number | null {
     if (t === "") return null;
     const n = Number(t);
     return Number.isFinite(n) ? n : null;
+}
+
+function resolveInitialTaxGroupId(article: FournitureArticle): string {
+    const id = article.tax_group_info?.id ?? article.tax_group;
+    if (typeof id === "number" && Number.isFinite(id) && id > 0) {
+        return String(id);
+    }
+    return "";
 }
 
 type ModifierArticleFormProps = {
@@ -75,6 +81,18 @@ export function ModifierArticleForm({
         refetch: refetchItemTypes,
     } = useItemTypes();
 
+    const {
+        data: taxGroups = [],
+        isPending: taxGroupsPending,
+        isError: taxGroupsError,
+        refetch: refetchTaxGroups,
+    } = useInvoiceTaxGroups();
+
+    const initialTaxGroupId = useMemo(
+        () => resolveInitialTaxGroupId(apiBaseline),
+        [apiBaseline],
+    );
+
     const updateMutation = useUpdateFourniture({
         onSuccess: () => {
             toast.success(tEdit("toastSaved"));
@@ -100,12 +118,27 @@ export function ModifierArticleForm({
     );
 
     const [prixHt, setPrixHt] = useState(formatMoneyFr(initial.prixHt));
-    const [groupeTax, setGroupeTax] = useState(initial.groupeTax);
+    const [taxGroupIdOverride, setTaxGroupIdOverride] = useState<string | null>(
+        null,
+    );
+
+    const selectedTaxGroupId =
+        taxGroupIdOverride ??
+        (initialTaxGroupId || pickDefaultInvoiceTaxGroupId(taxGroups));
+
+    const selectedTaxGroup = useMemo(
+        () =>
+            taxGroups.find(
+                (group) => String(group.id) === selectedTaxGroupId.trim(),
+            ),
+        [taxGroups, selectedTaxGroupId],
+    );
+
     const prixTtcAffiche = useMemo(() => {
         const ht = parseMoneyInput(prixHt);
-        if (ht === null || !groupeTax.trim()) return "";
-        return formatMoneyFr(ht * (1 + resolveTaxRateDecimal(groupeTax)));
-    }, [prixHt, groupeTax]);
+        if (ht === null || !selectedTaxGroup) return "";
+        return formatMoneyFr(ht * (1 + selectedTaxGroup.rate / 100));
+    }, [prixHt, selectedTaxGroup]);
 
     const [devise, setDevise] = useState(initial.devise);
     const [prixSpecial, setPrixSpecial] = useState(
@@ -150,7 +183,10 @@ export function ModifierArticleForm({
         !canSubmitReferentials ||
         itemTypesPending ||
         itemTypesError ||
-        !code.trim();
+        taxGroupsPending ||
+        taxGroupsError ||
+        !code.trim() ||
+        !selectedTaxGroupId.trim();
 
     return (
         <form
@@ -167,13 +203,13 @@ export function ModifierArticleForm({
                 }
 
                 const price_before = parseMoneyInput(prixHt);
-                if (price_before === null || !groupeTax.trim()) {
+                if (price_before === null || !selectedTaxGroup) {
                     toast.error(tCreate("invalidForm"));
                     return;
                 }
 
                 const price_after =
-                    price_before * (1 + resolveTaxRateDecimal(groupeTax));
+                    price_before * (1 + selectedTaxGroup.rate / 100);
 
                 if (Number.isNaN(price_after)) {
                     toast.error(tCreate("invalidForm"));
@@ -208,7 +244,7 @@ export function ModifierArticleForm({
                     price_before,
                     price_after,
                     currency: devise.toUpperCase(),
-                    tax_group: taxGroupSlugToNumericId(groupeTax),
+                    tax_group: selectedTaxGroup.id,
                     special_price,
                     category_id,
                     group_id: apiBaseline.group_id,
@@ -407,18 +443,47 @@ export function ModifierArticleForm({
                             {tCreate("fields.taxGroup")}
                             {requiredStar}
                         </FieldLabel>
-                        <div className="relative">
-                            <ArticleTaxGroupSelect
+                        {taxGroupsPending ? (
+                            <SelectFieldSkeleton
+                                aria-label={tCreate("fields.taxGroup")}
+                            />
+                        ) : (
+                            <NativeSelectField
                                 id="groupe-tax"
                                 name="groupeTax"
                                 required
-                                className={createFormSelectClassName}
-                                value={groupeTax}
-                                onValueChange={setGroupeTax}
-                                includeInactiveIds={[initial.groupeTax]}
-                            />
-                            <ChevronDown className="pointer-events-none absolute right-4 top-1/2 size-4 -translate-y-1/2 text-slate-600" />
-                        </div>
+                                value={selectedTaxGroupId}
+                                disabled={
+                                    taxGroupsError || taxGroups.length === 0
+                                }
+                                onChange={setTaxGroupIdOverride}
+                                aria-label={tCreate("fields.taxGroup")}
+                            >
+                                <option value="">
+                                    {tCreate("taxGroupsPlaceholder")}
+                                </option>
+                                {taxGroups.map((group) => (
+                                    <option
+                                        key={group.id}
+                                        value={String(group.id)}
+                                    >
+                                        {formatInvoiceTaxGroupSelectLabel(group)}
+                                    </option>
+                                ))}
+                            </NativeSelectField>
+                        )}
+                        {taxGroupsError ? (
+                            <div className="mt-2 flex flex-wrap items-center gap-2 text-sm font-medium text-red-500">
+                                <span>{tCreate("taxGroupsLoadError")}</span>
+                                <button
+                                    type="button"
+                                    className="underline underline-offset-2 hover:text-red-600"
+                                    onClick={() => void refetchTaxGroups()}
+                                >
+                                    {tCreate("retryTaxGroupsFetch")}
+                                </button>
+                            </div>
+                        ) : null}
                     </div>
 
                     <div>
@@ -433,7 +498,7 @@ export function ModifierArticleForm({
                             required
                             value={prixTtcAffiche}
                             placeholder={
-                                groupeTax && prixHt ? undefined : "—"
+                                selectedTaxGroup && prixHt ? undefined : "—"
                             }
                         />
                     </div>
