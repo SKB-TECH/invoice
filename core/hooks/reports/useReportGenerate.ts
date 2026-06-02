@@ -63,3 +63,25 @@ export function useSpecialPdfReportPreview() {
             ),
     });
 }
+
+export function useOrdinaryReportGenerate() {
+    return useMutation({
+        mutationFn: (payload: OrdinaryPayload) =>
+            reportsService.downloadOrdinaryReport(
+                payload.kind,
+                payload.filters,
+                payload.filename,
+            ),
+    });
+}
+
+export function useSpecialPdfReportGenerate() {
+    return useMutation({
+        mutationFn: (payload: SpecialPdfPayload) =>
+            reportsService.downloadSpecialPdfReport(
+                payload.kind,
+                payload.filters,
+                payload.filename,
+            ),
+    });
+}

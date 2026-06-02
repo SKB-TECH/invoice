@@ -1142,6 +1142,8 @@
     "toast": {
       "previewReady": "Aperçu du rapport prêt.",
       "downloaded": "Rapport PDF téléchargé.",
+      "generated": "Rapport généré.",
+      "pdfGenerated": "Rapport PDF généré.",
       "generateError": "Impossible de générer le rapport."
     },
     "ordinary": {
