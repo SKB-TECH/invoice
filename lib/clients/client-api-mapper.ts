@@ -33,9 +33,13 @@ function clientReference(row: ClientResponse): string {
 }
 
 export function clientResponseToListRow(row: ClientResponse): ClientListRow {
+    const code =
+        row.client_type_code?.trim() || row.code?.trim() || "";
+
     return {
         id: row.id,
         reference: clientReference(row),
+        code,
         titre: clientDisplayName(row),
         type: clientTypeLibelle(row.client_type ?? ""),
         nif: row.nif ?? "",
@@ -50,6 +54,7 @@ export function clientResponseToDetail(row: ClientResponse): ClientDetailRecord 
     return {
         id: row.id,
         client_type_id: row.client_type_id ?? "",
+        code: row.client_type_code?.trim() || row.code?.trim() || "",
         reference: clientReference(row),
         reference_document: row.reference_document ?? "",
         nomClient: nom,

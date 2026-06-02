@@ -122,6 +122,9 @@ export default function ClientsPage() {
                                 {t("table.reference")}
                             </TableHead>
                             <TableHead className="h-11 bg-slate-100 px-4 text-left text-sm font-semibold text-slate-700">
+                                {t("table.code")}
+                            </TableHead>
+                            <TableHead className="h-11 bg-slate-100 px-4 text-left text-sm font-semibold text-slate-700">
                                 {t("table.titre")}
                             </TableHead>
                             <TableHead className="h-11 bg-slate-100 px-4 text-left text-sm font-semibold text-slate-700">
@@ -168,6 +171,9 @@ export default function ClientsPage() {
                                 >
                                     <TableCell className="px-4 py-3 text-sm text-slate-800">
                                         {row.reference}
+                                    </TableCell>
+                                    <TableCell className="px-4 py-3 text-sm text-slate-800">
+                                        {row.code}
                                     </TableCell>
                                     <TableCell className="px-4 py-3 text-sm text-slate-800">
                                         {row.titre}
