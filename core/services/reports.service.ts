@@ -2,10 +2,7 @@ import { api } from "@/core/services/api";
 import { fetchMockReportPdf } from "@/core/services/reports-mock";
 import { ENV } from "@/core/constants/env";
 import { buildReportPreviewDisplay } from "@/lib/reports/build-report-display";
-import {
-    downloadBlob,
-    filenameFromContentDisposition,
-} from "@/core/utils/downloadBlob";
+import { filenameFromContentDisposition } from "@/core/utils/downloadBlob";
 import type {
     InvoiceEditionReportFilters,
     InvoiceNormalizationReportFilters,
@@ -47,14 +44,6 @@ function blobFromResponse(
     );
 
     return { blob: response.data, filename };
-}
-
-function downloadBlobFromResponse(
-    response: { data: Blob; headers: Record<string, unknown> },
-    fallbackFilename: string,
-): void {
-    const { blob, filename } = blobFromResponse(response, fallbackFilename);
-    downloadBlob(blob, filename);
 }
 
 const ORDINARY_PATHS: Record<OrdinaryReportKind, string> = {
@@ -155,41 +144,5 @@ export const reportsService = {
                 false,
             ),
         };
-    },
-
-    async downloadOrdinaryReport(
-        kind: OrdinaryReportKind,
-        filters:
-            | InvoiceEditionReportFilters
-            | InvoiceNormalizationReportFilters
-            | InvoicePaymentsReportFilters
-            | VatCollectionReportFilters
-            | ToolUsageReportFilters,
-        fallbackFilename: string,
-    ): Promise<void> {
-        const response = await api.get(ORDINARY_PATHS[kind], {
-            params: stripUndefined(filters as Record<string, unknown>),
-            responseType: "blob",
-        });
-
-        downloadBlobFromResponse(response, fallbackFilename);
-    },
-
-    async downloadSpecialPdfReport(
-        kind: SpecialPdfReportKind,
-        body:
-            | ReportXDailyFilters
-            | ReportZFilters
-            | ReportXPeriodicFilters
-            | ReportAFilters,
-        fallbackFilename: string,
-    ): Promise<void> {
-        const response = await api.post(
-            SPECIAL_PDF_PATHS[kind],
-            stripUndefined(body as Record<string, unknown>),
-            { responseType: "blob" },
-        );
-
-        downloadBlobFromResponse(response, fallbackFilename);
     },
 };

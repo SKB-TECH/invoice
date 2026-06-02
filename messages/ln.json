@@ -1144,8 +1144,6 @@
     "toast": {
       "previewReady": "Aperçu ya rapport ezali prêt.",
       "downloaded": "Rapport PDF etéléchargé.",
-      "generated": "Rapport ebimisami.",
-      "pdfGenerated": "Rapport PDF ebimisami.",
       "generateError": "Rapport elongwaki te."
     },
     "ordinary": {

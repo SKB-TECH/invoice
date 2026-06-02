@@ -1142,8 +1142,6 @@
     "toast": {
       "previewReady": "Report preview is ready.",
       "downloaded": "PDF report downloaded.",
-      "generated": "Report generated.",
-      "pdfGenerated": "PDF report generated.",
       "generateError": "Could not generate the report."
     },
     "ordinary": {
