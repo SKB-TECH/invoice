@@ -63,10 +63,14 @@ export default function ClientsPage() {
 
     const { data, isPending, isError } = useClients(listParams);
 
-    const rows = useMemo(
-        () => data?.items.map(clientResponseToListRow) ?? [],
-        [data?.items]
-    );
+    const rows = useMemo(() => {
+        const mapped = data?.items.map(clientResponseToListRow) ?? [];
+        const q = debouncedSearch.trim().toLowerCase();
+
+        if (!q) return mapped;
+
+        return mapped.filter((row) => row.titre.toLowerCase().includes(q));
+    }, [data?.items, debouncedSearch]);
 
     return (
         <main className="mx-auto w-full min-w-full py-4 text-foreground">
