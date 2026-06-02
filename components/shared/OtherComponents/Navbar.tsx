@@ -110,10 +110,10 @@ export function Navbar() {
                             <Grid3X3 className="h-5 w-5" />
                         </button>
 
-                        <button className="relative hidden text-white/90 transition hover:text-white md:inline-flex">
+                        {/* <button className="relative hidden text-white/90 transition hover:text-white md:inline-flex">
                             <WalletCards className="h-5 w-5" />
                             <span className="absolute -right-1.5 -top-1.5 h-2.5 w-2.5 rounded-full bg-red-500 ring-2 ring-[#0073C5]" />
-                        </button>
+                        </button> */}
 
                         <button className="relative text-white/90 transition hover:text-white">
                             <Bell className="h-5 w-5" />
