@@ -16,14 +16,13 @@ import {
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import {
-    Bell,
     ChevronRight,
-    Grid3X3,
     Menu,
-    WalletCards,
 } from "lucide-react";
 import { menuItems } from "@/core/data";
 import LanguageSwitcher from "@/components/shared/OtherComponents/LanguageSwitcher";
+import { AppLauncher } from "@/components/shared/OtherComponents/AppLauncher";
+import { NotificationsDropdown } from "@/components/shared/OtherComponents/NotificationsDropdown";
 
 export function Navbar() {
     const t = useTranslations("navbar");
@@ -106,19 +105,14 @@ export function Navbar() {
                     </div>
 
                     <div className="ml-auto flex min-h-full items-center gap-4 pr-4 md:pr-8">
-                        <button className="hidden text-white/90 transition hover:text-white md:inline-flex">
-                            <Grid3X3 className="h-5 w-5" />
-                        </button>
+                        <AppLauncher className="hidden md:inline-flex" />
 
-                        <button className="relative hidden text-white/90 transition hover:text-white md:inline-flex">
+                        {/* <button className="relative hidden text-white/90 transition hover:text-white md:inline-flex">
                             <WalletCards className="h-5 w-5" />
                             <span className="absolute -right-1.5 -top-1.5 h-2.5 w-2.5 rounded-full bg-red-500 ring-2 ring-[#0073C5]" />
-                        </button>
+                        </button> */}
 
-                        <button className="relative text-white/90 transition hover:text-white">
-                            <Bell className="h-5 w-5" />
-                            <span className="absolute -right-1.5 -top-1.5 h-2.5 w-2.5 rounded-full bg-red-500 ring-2 ring-[#0073C5]" />
-                        </button>
+                        <NotificationsDropdown />
 
                         <LanguageSwitcher />
 
