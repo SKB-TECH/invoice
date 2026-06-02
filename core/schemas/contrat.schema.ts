@@ -272,6 +272,7 @@ export const contractResponseSchema = z
                 email: z.string().optional(),
             })
             .passthrough()
+            .nullable()
             .optional(),
         type: z
             .union([z.number(), z.string()])

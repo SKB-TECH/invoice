@@ -20,6 +20,7 @@ const CLIENTS_PATH = "/invoices/clients";
 export type ListClientsParams = {
     page?: number;
     per_page?: number;
+    name?: string;
     business_sector?: string;
 };
 
@@ -249,6 +250,7 @@ export const clientService = {
             params: {
                 page: params?.page,
                 per_page: params?.per_page,
+                name: params?.name,
                 business_sector: params?.business_sector,
             },
         });
