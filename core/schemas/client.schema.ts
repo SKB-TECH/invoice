@@ -131,8 +131,27 @@ export function normalizeClientResponseInput(raw: unknown): unknown {
         r.address = addr === null ? null : String(addr);
     }
 
-    if (r.country !== undefined && r.country !== null && r.country !== "") {
-        r.country = String(r.country);
+    const countryFallback =
+        pickStr((r as { country_id?: unknown }).country_id) ??
+        pickStr((r as { countryId?: unknown }).countryId);
+
+    let countryFromObject: string | undefined;
+    if (
+        r.country &&
+        typeof r.country === "object" &&
+        !Array.isArray(r.country)
+    ) {
+        const countryObject = r.country as Record<string, unknown>;
+        countryFromObject =
+            pickStr(countryObject.id) ??
+            pickStr(countryObject.code) ??
+            pickStr(countryObject.name);
+    }
+
+    const normalizedCountry =
+        countryFallback ?? countryFromObject ?? pickStr(r.country);
+    if (normalizedCountry) {
+        r.country = normalizedCountry;
     }
 
     if ((r.id === undefined || r.id === null || r.id === "") && pickStr(r.reference)) {
