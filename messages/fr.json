@@ -118,6 +118,7 @@
     "NouveauContrat": "Nouveau contrat",
     "NouveauReferentiel": "Nouvelle entrée référentielle",
     "Configuration": "Configuration",
+    "Reports": "Rapports",
     "Aide": "Aide"
   },
   "login": {
@@ -1081,6 +1082,123 @@
       "oct": "Oct",
       "nov": "Nov",
       "dec": "Dec"
+    }
+  },
+  "reports": {
+    "pageTitle": "Rapports",
+    "pageIntro": "Générez des rapports sur les factures, la TVA, les paiements et l’utilisation de la plateforme.",
+    "menu": {
+      "invoiceEdition": "Édition des factures",
+      "invoiceNormalization": "Normalisation des factures",
+      "invoicePayments": "Paiements des factures",
+      "vatCollection": "Collecte de la TVA",
+      "toolUsage": "Utilisation de l’outil",
+      "reportXDaily": "Rapport quotidien",
+      "reportZ": "Rapport de clôture",
+      "reportXPeriodic": "Rapport périodique",
+      "reportA": "Rapport sur les articles"
+    },
+    "filters": {
+      "all": "Tous",
+      "dateFrom": "Date de début",
+      "dateTo": "Date de fin",
+      "reportDate": "Date du rapport",
+      "client": "Client",
+      "contract": "Contrat",
+      "pointOfSale": "Point de vente",
+      "pointOfSalePlaceholder": "Ex. PDV-01",
+      "isf": "ISF",
+      "isfPlaceholder": "Identifiant système fiscal",
+      "invoiceType": "Type de facture",
+      "invoiceStatus": "Statut de la facture",
+      "paymentStatus": "Statut du paiement",
+      "statuses": {
+        "brouillon": "Brouillon",
+        "enregistrer": "Enregistrée",
+        "valider": "Validée",
+        "normaliser": "Normalisée",
+        "soumise": "Soumise",
+        "receptionner": "Réceptionnée",
+        "payer": "Payée",
+        "classer": "Classée"
+      },
+      "paymentStatuses": {
+        "paid": "Payé",
+        "partial": "Partiellement payé",
+        "unpaid": "Non payé"
+      }
+    },
+    "actions": {
+      "generate": "Générer le rapport",
+      "generating": "Génération…"
+    },
+    "toast": {
+      "generated": "Rapport généré.",
+      "pdfGenerated": "Rapport PDF généré.",
+      "generateError": "Impossible de générer le rapport."
+    },
+    "ordinary": {
+      "invoiceEdition": {
+        "title": "Rapport sur l’édition des factures",
+        "description": "Analyse des factures créées ou modifiées. Filtrez par client, contrat, période, point de vente et statut."
+      },
+      "invoiceNormalization": {
+        "title": "Rapport sur la normalisation des factures",
+        "description": "Suivi des factures normalisées. Filtrez par point de vente, type (FV, FA, …) et période."
+      },
+      "invoicePayments": {
+        "title": "Rapport sur les paiements de factures",
+        "description": "Synthèse des paiements enregistrés sur la période et par client."
+      },
+      "vatCollection": {
+        "title": "Rapport sur la collecte de la TVA",
+        "description": "Montants de TVA collectés. Filtrez par période, statut de paiement, type de facture et client."
+      },
+      "toolUsage": {
+        "title": "Rapport sur l’utilisation de l’outil",
+        "description": "Activité des utilisateurs et usage des fonctionnalités sur la période choisie."
+      }
+    },
+    "specialXz": {
+      "reportXDaily": {
+        "title": "Rapport quotidien",
+        "description": "Récapitulatif depuis le dernier rapport Z. Les valeurs accumulées ne sont pas réinitialisées.",
+        "includes": [
+          "Dénomination commerciale, NIF, date et heure",
+          "Montants totaux, taxables et par groupe de taxation",
+          "Nombre de factures par type, modes de paiement, réductions",
+          "Ventes incomplètes et ventes de la journée"
+        ]
+      },
+      "reportZ": {
+        "title": "Rapport de clôture",
+        "description": "Récapitulatif de clôture depuis le dernier rapport Z. Réinitialise les valeurs accumulées.",
+        "includes": [
+          "Dénomination commerciale, NIF, date et heure",
+          "Montants totaux, taxables et par groupe de taxation",
+          "Nombre de factures par type, modes de paiement, réductions",
+          "Ventes incomplètes et ventes de la journée"
+        ]
+      },
+      "reportXPeriodic": {
+        "title": "Rapport périodique",
+        "description": "Récapitulatif pour la période sélectionnée. Ne réinitialise pas les valeurs accumulées.",
+        "includes": [
+          "Dénomination commerciale, NIF, période sélectionnée",
+          "Montants totaux, taxables et par groupe de taxation",
+          "Nombre de factures par type, modes de paiement, réductions",
+          "Ventes incomplètes sur la période"
+        ]
+      }
+    },
+    "specialA": {
+      "title": "Rapport sur les articles",
+      "description": "Récapitulatif relatif aux articles depuis le dernier rapport A. Réinitialise les valeurs accumulées.",
+      "includes": [
+        "Dénomination commerciale, NIF, date et heure, période",
+        "Code et nom de l’article, prix unitaire, taux d’impôt",
+        "Quantités vendues, retournées et en stock"
+      ]
     }
   },
   "errors": {
