@@ -1,13 +1,17 @@
 import React from "react";
-import Link from "next/link";
+import { Link } from "@/i18n/routing";
+import { NotificationDetailsClient } from "@/components/shared/OtherComponents/NotificationDetailsClient";
 
 type Props = {
-    params: {
+    params: Promise<{
         id: string;
-    };
+    }>;
 };
 
-export default function NotificationDetailsPage({ params }: Props) {
+export default async function NotificationDetailsPage({ params }: Props) {
+    const resolvedParams = await params;
+    const id = String(resolvedParams?.id ?? "").trim();
+
     return (
         <div className="min-h-full w-full text-[#4E5866]">
             <div className="border border-[#E2E5E9] bg-white">
@@ -25,14 +29,7 @@ export default function NotificationDetailsPage({ params }: Props) {
                 </div>
 
                 <div className="px-5 py-5">
-                    <div className="text-[14px] font-semibold text-slate-700">
-                        ID: {params.id}
-                    </div>
-                    <p className="mt-2 text-[13px] font-medium text-slate-500">
-                        Cette page est prête à être branchée sur les vraies données de
-                        notifications (API / store). Pour l’instant, elle sert de détail
-                        simple et cohérent avec l’UI existante.
-                    </p>
+                    <NotificationDetailsClient id={id} />
                 </div>
             </div>
         </div>

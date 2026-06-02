@@ -1,6 +1,6 @@
 import * as React from "react";
-import Link from "next/link";
 import { cn } from "@/lib/utils";
+import { Link } from "@/i18n/routing";
 
 export type NotificationItem = {
     id: string;
@@ -14,14 +14,12 @@ export type NotificationItem = {
 type Props = {
     notifications: readonly NotificationItem[];
     className?: string;
-    onItemClick?: () => void;
     emptyLabel?: string;
 };
 
 export function NotificationsList({
     notifications,
     className,
-    onItemClick,
     emptyLabel = "Aucune notification",
 }: Props) {
     if (!notifications.length) {
@@ -46,7 +44,6 @@ export function NotificationsList({
                     <Link
                         key={n.id}
                         href={href}
-                        onClick={onItemClick}
                         className={cn(
                             "group flex w-full gap-3 px-4 py-3 outline-none transition hover:bg-slate-50",
                             "focus-visible:ring-2 focus-visible:ring-[#0073C5]/40"
