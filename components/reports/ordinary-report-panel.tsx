@@ -6,7 +6,8 @@ import { toast } from "sonner";
 
 import { SectionCard } from "@/components/configuration/section-card";
 import { ReportFiltersGrid } from "@/components/reports/report-filters-grid";
-import { ReportGenerateBar } from "@/components/reports/report-generate-bar";
+import { ReportActionsBar } from "@/components/reports/report-generate-bar";
+import { ReportPreviewSection } from "@/components/reports/report-preview-section";
 import {
     ReportClientSelect,
     ReportContractSelect,
@@ -16,7 +17,8 @@ import {
     ReportPointOfSaleField,
     ReportWorkflowStatusSelect,
 } from "@/components/reports/report-filter-fields";
-import { useOrdinaryReportGenerate } from "@/core/hooks/reports/useReportGenerate";
+import { useOrdinaryReportPreview } from "@/core/hooks/reports/useReportGenerate";
+import { useReportPreview } from "@/core/hooks/reports/useReportPreview";
 import type {
     InvoiceEditionReportFilters,
     InvoiceNormalizationReportFilters,
@@ -54,7 +56,14 @@ function parseOptionalId(raw: string): number | undefined {
 export function OrdinaryReportPanel({ panelId }: Props) {
     const t = useTranslations("reports");
     const kind = PANEL_TO_KIND[panelId];
-    const generateMutation = useOrdinaryReportGenerate();
+    const previewMutation = useOrdinaryReportPreview();
+    const {
+        previewDisplay,
+        isShowingPreview,
+        applyPreview,
+        clearPreview,
+        downloadPreview,
+    } = useReportPreview();
 
     const [dateFrom, setDateFrom] = useState("");
     const [dateTo, setDateTo] = useState("");
@@ -109,15 +118,19 @@ export function OrdinaryReportPanel({ panelId }: Props) {
         }
     };
 
-    const handleGenerate = () => {
-        generateMutation.mutate(
+    const handleGeneratePreview = () => {
+        previewMutation.mutate(
             {
                 kind,
                 filters: buildFilters(),
                 filename: `${kind}.pdf`,
+                reportTitle: t(`ordinary.${panelId}.title`),
             },
             {
-                onSuccess: () => toast.success(t("toast.generated")),
+                onSuccess: (result) => {
+                    applyPreview(result);
+                    toast.success(t("toast.previewReady"));
+                },
                 onError: (err) =>
                     toast.error(
                         getAxiosErrorMessage(err, t("toast.generateError")),
@@ -126,8 +139,22 @@ export function OrdinaryReportPanel({ panelId }: Props) {
         );
     };
 
+    const handleDownload = () => {
+        downloadPreview();
+        toast.success(t("toast.downloaded"));
+    };
+
     return (
         <SectionCard title={t(`ordinary.${panelId}.title`)}>
+            {isShowingPreview && previewDisplay ? (
+                <ReportPreviewSection
+                    display={previewDisplay}
+                    onBack={clearPreview}
+                    onDownload={handleDownload}
+                    disabled={previewMutation.isPending}
+                />
+            ) : (
+                <>
             <p className="mb-5 max-w-3xl text-[13px] leading-relaxed text-slate-500">
                 {t(`ordinary.${panelId}.description`)}
             </p>
@@ -206,10 +233,12 @@ export function OrdinaryReportPanel({ panelId }: Props) {
                 ) : null}
             </ReportFiltersGrid>
 
-            <ReportGenerateBar
-                onGenerate={handleGenerate}
-                isPending={generateMutation.isPending}
+            <ReportActionsBar
+                onGeneratePreview={handleGeneratePreview}
+                isPreviewPending={previewMutation.isPending}
             />
+                </>
+            )}
         </SectionCard>
     );
 }

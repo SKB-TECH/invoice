@@ -1130,11 +1130,18 @@
     },
     "actions": {
       "generate": "Generate report",
-      "generating": "Generating…"
+      "generating": "Generating…",
+      "download": "Download report",
+      "back": "Back"
+    },
+    "preview": {
+      "title": "Report preview",
+      "subtitle": "Review the criteria and report content before downloading.",
+      "simulatedNotice": "Simulated preview"
     },
     "toast": {
-      "generated": "Report generated.",
-      "pdfGenerated": "PDF report generated.",
+      "previewReady": "Report preview is ready.",
+      "downloaded": "PDF report downloaded.",
       "generateError": "Could not generate the report."
     },
     "ordinary": {
