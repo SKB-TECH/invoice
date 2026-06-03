@@ -587,6 +587,10 @@
       "loadErrorDetail": "Could not load this article.",
       "retry": "Retry",
       "empty": "No articles match your search.",
+      "totalCount": "{count} article(s)",
+      "pageOfTotal": "Page {page} of {totalPages}",
+      "paginationPrev": "Previous page",
+      "paginationNext": "Next page",
       "columns": {
         "code": "Code",
         "title": "Title",
@@ -723,7 +727,7 @@
       "filterReset": "Show all",
       "refresh": "Refresh",
       "refreshAria": "Refresh service list",
-      "totalCount": "{count} row(s)",
+      "totalCount": "{count} service(s)",
       "columns": {
         "id": "ID",
         "code": "Code",

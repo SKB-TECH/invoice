@@ -587,6 +587,10 @@
       "loadErrorDetail": "Impossible de charger cet article.",
       "retry": "Réessayer",
       "empty": "Aucun article ne correspond à votre recherche.",
+      "totalCount": "{count} article(s)",
+      "pageOfTotal": "Page {page} sur {totalPages}",
+      "paginationPrev": "Page précédente",
+      "paginationNext": "Page suivante",
       "columns": {
         "code": "Code",
         "title": "Titre",
@@ -723,7 +727,7 @@
       "filterReset": "Tout afficher",
       "refresh": "Actualiser",
       "refreshAria": "Actualiser la liste des services",
-      "totalCount": "{count} entrée(s)",
+      "totalCount": "{count} service(s)",
       "columns": {
         "id": "ID",
         "code": "Code",

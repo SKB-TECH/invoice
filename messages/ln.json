@@ -588,6 +588,10 @@
       "loadErrorDetail": "Telemisi ya article oyo ewuti te.",
       "retry": "Meka lisusu",
       "empty": "Eloko moko te ezali na recherche na yo.",
+      "totalCount": "{count} article(s)",
+      "pageOfTotal": "Page {page} / {totalPages}",
+      "paginationPrev": "Page ya liboso",
+      "paginationNext": "Page ya nsima",
       "columns": {
         "code": "Code",
         "title": "Motó ya likambo",
@@ -724,7 +728,7 @@
       "filterReset": "Komona nyonso",
       "refresh": "Bongisa",
       "refreshAria": "Bongisa liste ya services",
-      "totalCount": "{count} entrée(s)",
+      "totalCount": "{count} service(s)",
       "columns": {
         "id": "ID",
         "code": "Code",
