@@ -12,6 +12,7 @@ export type ClientDetailRecord = {
     client_type_id: string;
     code: string;
     reference: string;
+    idnat: string;
     reference_document: string;
     nomClient: string;
     sousTitre: string;
@@ -35,6 +36,7 @@ const DETAILS: ClientDetailRecord[] = [
         client_type_id: "2",
         code: "1234567890",
         reference: "1234567890",
+        idnat: "1234567890",
         reference_document: "",
         nomClient: "Rawbank",
         sousTitre: " siège social Kinshasa",
@@ -56,6 +58,7 @@ const DETAILS: ClientDetailRecord[] = [
         client_type_id: "2",
         code: "2345678901",
         reference: "2345678901",
+        idnat: "2345678901",
         reference_document: "",
         nomClient: "Rawbank",
         sousTitre: " agence Lukunga",
@@ -77,6 +80,7 @@ const DETAILS: ClientDetailRecord[] = [
         client_type_id: "1",
         code: "3456789012",
         reference: "",
+        idnat: "",
         reference_document: "",
         nomClient: "Jean Dupont",
         sousTitre: "",
@@ -108,6 +112,11 @@ export type ClientListRow = {
 
 export function clientTypeLibelle(t: ClientType): string {
     const key = t.trim().toLowerCase();
+    if (key === "1") return "Personne physique";
+    if (key === "2") return "Personne morale";
+    if (key === "3") return "Personne physique commerciale";
+    if (key === "4") return "Personne libérale";
+    if (key === "5") return "Ambassade / Organisation internationale";
     if (key === "personal" || key === "pp") return "Personne physique";
     if (key === "pme") return "PME";
     if (key === "corporate" || key === "pm") return "Personne morale";

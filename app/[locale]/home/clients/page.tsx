@@ -118,9 +118,6 @@ export default function ClientsPage() {
                     <TableHeader className="bg-[#F4F4F4BB]">
                         <TableRow className="border-slate-200 bg-[#F4F4F4BB] hover:bg-transparent">
                             <TableHead className="h-11 bg-slate-100 px-4 text-left text-sm font-semibold text-slate-700">
-                                {t("table.reference")}
-                            </TableHead>
-                            <TableHead className="h-11 bg-slate-100 px-4 text-left text-sm font-semibold text-slate-700">
                                 {t("table.code")}
                             </TableHead>
                             <TableHead className="h-11 bg-slate-100 px-4 text-left text-sm font-semibold text-slate-700">
@@ -168,9 +165,6 @@ export default function ClientsPage() {
                                     key={row.id}
                                     className="border-slate-200 hover:bg-slate-50/80"
                                 >
-                                    <TableCell className="px-4 py-3 text-sm text-slate-800">
-                                        {row.reference}
-                                    </TableCell>
                                     <TableCell className="px-4 py-3 text-sm text-slate-800">
                                         {row.code}
                                     </TableCell>

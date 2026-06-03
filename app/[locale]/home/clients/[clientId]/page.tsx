@@ -97,7 +97,7 @@ export default function VisualiserClientPage() {
     const typeTitle = typeOption?.title ?? client.client_type ?? "—";
     const showNif = clientTypeShowsField(typeOption, "nif");
     const showRccm = clientTypeShowsField(typeOption, "rccm");
-    const showIdnat = clientTypeShowsField(typeOption, "idnat", "reference");
+    const showIdnat = clientTypeShowsField(typeOption, "idnat");
     const showReferenceDocument = clientTypeShowsField(
         typeOption,
         "reference_document"
@@ -121,7 +121,7 @@ export default function VisualiserClientPage() {
           : t("referenceLabel");
     const subtitleValue = showReferenceDocument
         ? client.reference_document || "—"
-        : client.reference || "—";
+        : client.idnat || "—";
 
     return (
         <main className="relative w-full text-slate-700">
@@ -182,7 +182,7 @@ export default function VisualiserClientPage() {
                         <div className="min-w-0">
                             <FieldLabel>{t("fields.idnat")}</FieldLabel>
                             <ReadOnlyField>
-                                {client.reference || "—"}
+                                {client.idnat || "—"}
                             </ReadOnlyField>
                         </div>
                     ) : null}
