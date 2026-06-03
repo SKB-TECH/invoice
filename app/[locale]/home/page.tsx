@@ -28,6 +28,7 @@ import {useInvoiceDashboardOverview} from "@/core/hooks/useInvoiceDashboard";
 import {DashboardSkeleton} from "@/components/dashboard/DashboardResponse";
 import {useRouter} from "next/navigation";
 import Link from "next/link";
+import {useGetMe} from "@/core/hooks/auth/useGetMe";
 
 
 ChartJS.register(
@@ -65,6 +66,9 @@ export default function InvoiceDashboard() {
     const t = useTranslations("invoiceDashboard");
     const [view, setView] = React.useState(true);
     const router = useRouter();
+    const { data, isLoading:loading, isError:Error } = useGetMe();
+
+    console.log("user***:",data)
     const {
         data: dashboardResponse,
         isLoading,
@@ -82,8 +86,6 @@ export default function InvoiceDashboard() {
             </div>
         );
     }
-
-    console.log(dashboardResponse?.data);
     const dashboard = dashboardResponse.data;
 
     const reminder = dashboard.rappel;

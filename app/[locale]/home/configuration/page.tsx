@@ -27,7 +27,6 @@ type ConfigMenuId =
     | "roles"
     | "permissions"
     | "language"
-    | "modelFactures";
 
 const MENU_IDS: ConfigMenuId[] = [
     "basicInfo",
@@ -39,7 +38,6 @@ const MENU_IDS: ConfigMenuId[] = [
     "roles",
     "permissions",
     "language",
-    "modelFactures",
 ];
 
 function isConfigMenuId(v: string | null): v is ConfigMenuId {
@@ -137,9 +135,6 @@ function ConfigurationPageInner() {
                             <PermissionsSection />
                         )}
                         {activeMenu === "language" && <LanguageSection />}
-                        {activeMenu === "modelFactures" && (
-                            <InvoiceModelsSection />
-                        )}
                     </section>
                 </div>
             </div>
