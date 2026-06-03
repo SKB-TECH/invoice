@@ -1,9 +1,11 @@
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
+import { useQuery } from "@tanstack/react-query";
 
 import {
     useInvoiceContracts,
     useInvoices,
+    useOutstandingInvoices,
 } from "@/core/hooks/invoices/useInvoices";
 import {
     useCreatePayment,
@@ -17,6 +19,8 @@ import {
     invoiceListClientDisplayName,
     pickTruthyString,
 } from "@/components/payments/payments-utils";
+import type { InvoiceItem } from "@/core/types/invoice";
+import { invoiceService } from "@/core/services/invoice.service";
 
 const PER_PAGE = 20;
 
@@ -40,19 +44,75 @@ export function usePaymentsPageState(t: TranslateFn) {
     const [collectorStr, setCollectorStr] = useState("");
     const [drawerStr, setDrawerStr] = useState("");
     const [formError, setFormError] = useState("");
+    const [invoiceSearchQuery, setInvoiceSearchQuery] = useState("");
+    const [amountValidationInput, setAmountValidationInput] = useState("");
+    const [selectedInvoiceSnapshot, setSelectedInvoiceSnapshot] =
+        useState<InvoiceItem | null>(null);
 
     const { data, isLoading, isError, isFetching } = usePayments({
         page,
         perPage: PER_PAGE,
     });
 
-    const {
-        data: invoicesData,
-        isPending: invoicesPending,
-        isError: invoicesError,
-    } = useInvoices({
+    const { data: invoicesData } = useInvoices({
         page: 1,
         perPage: 100,
+    });
+
+    const outstandingFilters = useMemo(() => {
+        const raw = invoiceSearchQuery.trim();
+        const querySource = raw.includes("?")
+            ? raw.slice(raw.indexOf("?") + 1)
+            : raw;
+        const parts = querySource
+            .split("&")
+            .map((p) => p.trim())
+            .filter(Boolean);
+
+        const parsed: {
+            client_id?: number;
+            workflow_status?: string;
+            type?: number;
+        } = {};
+
+        for (const part of parts) {
+            const [rawKey, ...rawValueParts] = part.split("=");
+            const key = rawKey?.trim();
+            const value = rawValueParts.join("=").trim();
+            if (!key || !value) continue;
+
+            if (key === "client_id") {
+                const clientId = Number(value);
+                if (Number.isInteger(clientId) && clientId > 0) {
+                    parsed.client_id = clientId;
+                }
+                continue;
+            }
+
+            if (key === "workflow_status") {
+                parsed.workflow_status = value;
+                continue;
+            }
+
+            if (key === "type") {
+                const type = Number(value);
+                if (Number.isInteger(type) && type > 0) {
+                    parsed.type = type;
+                }
+            }
+        }
+
+        return parsed;
+    }, [invoiceSearchQuery]);
+
+    const {
+        data: outstandingInvoicesData,
+        isPending: outstandingInvoicesPending,
+        isError: outstandingInvoicesError,
+    } = useOutstandingInvoices({
+        page: 1,
+        perPage: 20,
+        ...outstandingFilters,
     });
 
     const invoiceLabelById = useMemo(() => {
@@ -70,8 +130,12 @@ export function usePaymentsPageState(t: TranslateFn) {
     const selectedInvoice = useMemo(() => {
         const id = Number(invoiceIdStr);
         if (!invoiceIdStr.trim() || Number.isNaN(id)) return null;
-        return (invoicesData?.items ?? []).find((inv) => inv.id === id) ?? null;
-    }, [invoiceIdStr, invoicesData?.items]);
+        const fromOutstanding =
+            (outstandingInvoicesData?.items ?? []).find((inv) => inv.id === id) ?? null;
+        if (fromOutstanding) return fromOutstanding;
+        if (selectedInvoiceSnapshot?.id === id) return selectedInvoiceSnapshot;
+        return null;
+    }, [invoiceIdStr, outstandingInvoicesData?.items, selectedInvoiceSnapshot]);
 
     const selectedInvoiceDisplayLabel = useMemo(() => {
         if (!selectedInvoice) return "";
@@ -114,6 +178,7 @@ export function usePaymentsPageState(t: TranslateFn) {
         setInvoiceIdStr("");
         setContractIdStr("");
         setAmountStr("");
+        setAmountValidationInput("");
         setCurrencyStr("USD");
         setChannelIdStr("");
         setMethodIdStr("");
@@ -121,6 +186,8 @@ export function usePaymentsPageState(t: TranslateFn) {
         setCollectorStr("");
         setDrawerStr("");
         setFormError("");
+        setInvoiceSearchQuery("");
+        setSelectedInvoiceSnapshot(null);
     }, []);
 
     const exitCreateMode = useCallback(() => {
@@ -158,8 +225,20 @@ export function usePaymentsPageState(t: TranslateFn) {
         setPage((p) => Math.min(totalPages, p + 1));
     }, [totalPages]);
 
-    const selectedInvoiceTotal = useMemo(() => {
+    const selectedInvoiceBalance = useMemo(() => {
         if (!selectedInvoice) return undefined;
+        const withBalance = selectedInvoice as { balance?: number; total_amount?: number };
+        const balance = withBalance.balance;
+        if (typeof balance === "number" && !Number.isNaN(balance)) {
+            return balance;
+        }
+        const fallbackTotalAmount = withBalance.total_amount;
+        if (
+            typeof fallbackTotalAmount === "number" &&
+            !Number.isNaN(fallbackTotalAmount)
+        ) {
+            return fallbackTotalAmount;
+        }
         const total = selectedInvoice.total;
         return typeof total === "number" && !Number.isNaN(total)
             ? total
@@ -177,29 +256,98 @@ export function usePaymentsPageState(t: TranslateFn) {
         return Number.isFinite(amount) ? amount : undefined;
     }, [amountStr]);
 
+    const [debouncedAmountValidationInput, setDebouncedAmountValidationInput] =
+        useState("");
+
+    useEffect(() => {
+        const timeoutId = window.setTimeout(() => {
+            setDebouncedAmountValidationInput(amountValidationInput.trim());
+        }, 300);
+        return () => {
+            window.clearTimeout(timeoutId);
+        };
+    }, [amountValidationInput]);
+
+    const parsedValidationAmount = useMemo(() => {
+        if (!debouncedAmountValidationInput) return undefined;
+        const value = Number(debouncedAmountValidationInput.replace(",", "."));
+        return Number.isFinite(value) ? value : undefined;
+    }, [debouncedAmountValidationInput]);
+
+    const {
+        data: amountValidationData,
+        isFetching: isAmountValidationChecking,
+    } = useQuery({
+        queryKey: [
+            "payment-amount-validation",
+            selectedInvoice?.id,
+            debouncedAmountValidationInput,
+        ],
+        queryFn: async () => {
+            if (!selectedInvoice?.id || parsedValidationAmount === undefined) {
+                return null;
+            }
+            const response = await invoiceService.getOutstandingInvoices({
+                page: 1,
+                perPage: 100,
+            });
+            const invoice = response.items.find((item) => item.id === selectedInvoice.id);
+            if (!invoice) return null;
+            const ext = invoice as { balance?: number; total_amount?: number; total?: number };
+            const remaining =
+                typeof ext.balance === "number"
+                    ? ext.balance
+                    : typeof ext.total_amount === "number"
+                      ? ext.total_amount
+                      : typeof ext.total === "number"
+                        ? ext.total
+                        : undefined;
+            if (remaining === undefined) return null;
+            return {
+                remaining,
+                isValid: parsedValidationAmount <= remaining,
+            };
+        },
+        enabled:
+            Boolean(selectedInvoice?.id) &&
+            parsedValidationAmount !== undefined &&
+            parsedValidationAmount > 0,
+        staleTime: 0,
+        retry: false,
+    });
+
     const amountExceedsInvoice = useMemo(
         () =>
-            selectedInvoiceTotal !== undefined &&
+            selectedInvoiceBalance !== undefined &&
             parsedAmount !== undefined &&
-            parsedAmount > selectedInvoiceTotal,
-        [parsedAmount, selectedInvoiceTotal],
+            parsedAmount > selectedInvoiceBalance,
+        [parsedAmount, selectedInvoiceBalance],
     );
 
     const amountExceedsMessage = useMemo(() => {
-        if (!amountExceedsInvoice || selectedInvoiceTotal === undefined) return "";
+        if (!amountExceedsInvoice || selectedInvoiceBalance === undefined) return "";
         return t("validation.amountExceedsInvoice", {
             max: formatAmount(
-                selectedInvoiceTotal,
+                selectedInvoiceBalance,
                 selectedInvoiceCurrency ?? currencyStr,
             ),
         });
     }, [
         amountExceedsInvoice,
         selectedInvoiceCurrency,
-        selectedInvoiceTotal,
+        selectedInvoiceBalance,
         currencyStr,
         t,
     ]);
+
+    const amountValidationSuccessMessage = useMemo(() => {
+        if (!amountValidationData?.isValid || amountValidationData.remaining === undefined) {
+            return "";
+        }
+        return t("validation.amountWithinBalance", {
+            max: formatAmount(amountValidationData.remaining, selectedInvoiceCurrency ?? currencyStr),
+        });
+    }, [amountValidationData, currencyStr, selectedInvoiceCurrency, t]);
 
     const validateForm = useCallback((): boolean => {
         if (!selectedInvoice || resolvedClientId === undefined) {
@@ -229,11 +377,11 @@ export function usePaymentsPageState(t: TranslateFn) {
             return;
         }
 
-        if (selectedInvoiceTotal !== undefined && amount > selectedInvoiceTotal) {
+        if (selectedInvoiceBalance !== undefined && amount > selectedInvoiceBalance) {
             setFormError(
                 t("validation.amountExceedsInvoice", {
                     max: formatAmount(
-                        selectedInvoiceTotal,
+                        selectedInvoiceBalance,
                         selectedInvoiceCurrency ?? currency,
                     ),
                 }),
@@ -291,7 +439,7 @@ export function usePaymentsPageState(t: TranslateFn) {
         resolvedContractIdStr,
         selectedInvoice,
         selectedInvoiceCurrency,
-        selectedInvoiceTotal,
+        selectedInvoiceBalance,
         t,
         validateForm,
     ]);
@@ -317,7 +465,7 @@ export function usePaymentsPageState(t: TranslateFn) {
 
     const invoiceSearchOptions = useMemo(
         () =>
-            (invoicesData?.items ?? []).map((inv) => {
+            (outstandingInvoicesData?.items ?? []).map((inv) => {
                 const ext = inv as { invoice_ref?: string };
                 const primary =
                     pickTruthyString(ext.invoice_ref, inv.invoice_number) ??
@@ -330,7 +478,7 @@ export function usePaymentsPageState(t: TranslateFn) {
                 }
                 return { id: inv.id, primary, secondary: secondaryParts.join(" · ") };
             }),
-        [invoicesData?.items],
+        [outstandingInvoicesData?.items],
     );
 
     const contractOptions = contracts.map((c) => ({
@@ -374,17 +522,30 @@ export function usePaymentsPageState(t: TranslateFn) {
         exitCreateMode,
         isProcessing: createPayment.isPending,
         formError,
-        invoiceIdStr,
         selectedInvoiceDisplayLabel,
         invoiceSearchOptions,
-        invoicesPending,
-        invoicesError,
+        invoicesPending: outstandingInvoicesPending,
+        invoicesError: outstandingInvoicesError,
+        invoiceSearchQuery,
+        onInvoiceSearchQueryChange: (value: string) => {
+            setInvoiceSearchQuery(value);
+            setFormError("");
+        },
         onSelectInvoice: (id: number) => {
             setInvoiceIdStr(String(id));
             setFormError("");
-            const inv = (invoicesData?.items ?? []).find(
+            setAmountValidationInput("");
+            const inv = (outstandingInvoicesData?.items ?? []).find(
                 (invItem) => invItem.id === id,
             );
+            setSelectedInvoiceSnapshot(inv ?? null);
+            const ext = inv as { invoice_ref?: string } | undefined;
+            const selectedLabel = inv
+                ? pickTruthyString(ext?.invoice_ref, inv.invoice_number) ?? `#${inv.id}`
+                : "";
+            if (selectedLabel) {
+                setInvoiceSearchQuery(selectedLabel);
+            }
             if (inv?.currency?.trim()) {
                 setCurrencyStr(inv.currency.trim().toUpperCase());
             }
@@ -405,11 +566,17 @@ export function usePaymentsPageState(t: TranslateFn) {
         },
         amountStr,
         currencyStr,
-        selectedInvoiceTotal,
+        selectedInvoiceTotal: selectedInvoiceBalance,
         selectedInvoiceCurrency,
         amountExceedsInvoice,
         amountExceedsMessage,
-        onAmountChange: setAmountStr,
+        amountValidationSuccessMessage,
+        isAmountValidationChecking,
+        onAmountChange: (value: string) => {
+            setAmountStr(value);
+            setAmountValidationInput(value);
+            setFormError("");
+        },
         exchangeRateStr,
         onExchangeRateChange: setExchangeRateStr,
         channelPlaceHolder,

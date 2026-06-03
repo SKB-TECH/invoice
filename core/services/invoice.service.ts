@@ -5,7 +5,7 @@ import type {
     GetInvoiceContractsParams,
     GetInvoiceContractsResponse, GetInvoiceFournituresParams, GetInvoiceFournituresResponse,
     GetInvoicesParams,
-    GetInvoicesResponse, GetInvoiceTypesResponse,
+    GetInvoicesResponse, GetInvoiceTypesResponse, GetOutstandingInvoicesParams,
     InvoiceCreateRequest, InvoiceDetailResponse, NormalizeInvoicePayload, NormalizeInvoiceResponse,
     UpdateInvoiceSubmission,
 } from "@/core/types/invoice";
@@ -19,6 +19,22 @@ export const invoiceService = {
                 page: params?.page,
                 perPage: params?.perPage,
                 status: params?.status || undefined,
+            },
+        });
+
+        return response.data;
+    },
+
+    getOutstandingInvoices: async (
+        params?: GetOutstandingInvoicesParams
+    ): Promise<GetInvoicesResponse> => {
+        const response = await api.get<GetInvoicesResponse>("/invoices/outstanding", {
+            params: {
+                page: params?.page,
+                perPage: params?.perPage,
+                client_id: params?.client_id ?? undefined,
+                workflow_status: params?.workflow_status?.trim() || undefined,
+                type: params?.type ?? undefined,
             },
         });
 

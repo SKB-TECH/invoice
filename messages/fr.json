@@ -249,13 +249,15 @@
       "submit": "Valider le paiement",
       "submitting": "Envoi…",
       "submitErrorFallback": "Échec de l’enregistrement du paiement.",
-      "invoiceTotalHint": "Montant de la facture : {amount}"
+      "invoiceTotalHint": "Balance restante de la facture : {amount}"
     },
     "validation": {
       "invoiceRequired": "Veuillez sélectionner une facture.",
       "contractRequired": "Veuillez sélectionner un contrat.",
       "amountInvalid": "Montant invalide.",
-      "amountExceedsInvoice": "Le montant ne peut pas dépasser celui de la facture ({max}).",
+      "amountExceedsInvoice": "Le montant ne peut pas dépasser la balance restante ({max}).",
+      "amountWithinBalance": "Le montant est valide (balance restante : {max}).",
+      "amountChecking": "Vérification du montant…",
       "currencyRequired": "La devise est requise.",
       "channelRequired": "Veuillez sélectionner un canal.",
       "methodRequired": "Veuillez sélectionner une méthode.",
