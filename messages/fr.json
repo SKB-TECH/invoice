@@ -644,6 +644,7 @@
         "save": "Enregistrer"
       },
       "creating": "Création de l’article…",
+      "toastCreated": "Article créé.",
       "invalidForm": "Vérifiez les champs obligatoires et les montants.",
       "referentialPlaceholder": "Sélectionner un référentiel",
       "referentialLoading": "Chargement des référentiels…",

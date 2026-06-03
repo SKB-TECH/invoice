@@ -644,6 +644,7 @@
         "save": "Save"
       },
       "creating": "Creating article…",
+      "toastCreated": "Article created.",
       "invalidForm": "Please check required fields and amounts.",
       "referentialPlaceholder": "Select a referential",
       "referentialLoading": "Loading referentials…",

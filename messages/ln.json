@@ -645,6 +645,7 @@
         "save": "Bomba"
       },
       "creating": "Kozala na kobakala article…",
+      "toastCreated": "Article ebakisami.",
       "invalidForm": "Talá ba champs oyo esengeli mpe ntalo.",
       "referentialPlaceholder": "Pona référentiel",
       "referentialLoading": "Kotia ba référentiels…",
