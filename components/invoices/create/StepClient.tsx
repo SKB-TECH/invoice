@@ -57,12 +57,6 @@ export function StepClient({
     } = useInvoiceTypes();
 
     const invoiceTypes = invoiceTypesData?.items ?? [];
-
-    /**
-     * Les contrats sont récupérés directement par ID du client.
-     * Exemple :
-     * GET /invoices/contracts?page=1&perPage=100&client_id=2
-     */
     const {
         data: contractsData,
         isLoading: isLoadingContracts,
