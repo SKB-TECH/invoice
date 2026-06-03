@@ -1,6 +1,7 @@
 import { api } from "@/core/services/api";
 import { fetchMockReportPdf } from "@/core/services/reports-mock";
 import { ENV } from "@/core/constants/env";
+import { buildReportAPreviewDisplay } from "@/lib/reports/build-report-a-display";
 import { buildReportPreviewDisplay } from "@/lib/reports/build-report-display";
 import { filenameFromContentDisposition } from "@/core/utils/downloadBlob";
 import type {
@@ -102,7 +103,6 @@ export const reportsService = {
                 options.reportTitle,
                 kind,
                 params,
-                false,
             ),
         };
     },
@@ -134,15 +134,15 @@ export const reportsService = {
 
         const { blob, filename } = blobFromResponse(response, fallbackFilename);
 
-        return {
-            blob,
-            filename,
-            display: buildReportPreviewDisplay(
-                options.reportTitle,
-                kind,
-                payload,
-                false,
-            ),
-        };
+        const display =
+            kind === "a"
+                ? buildReportAPreviewDisplay(body)
+                : buildReportPreviewDisplay(
+                      options.reportTitle,
+                      kind,
+                      payload,
+                  );
+
+        return { blob, filename, display };
     },
 };

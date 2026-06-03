@@ -64,13 +64,46 @@ export type ReportFilterRow = {
     value: string;
 };
 
-export type ReportPreviewDisplay = {
-    reportTitle: string;
-    reportKind: string;
-    generatedAt: string;
-    filterRows: ReportFilterRow[];
-    isSimulated: boolean;
+export type ReportACurrency = "USD" | "CDF";
+
+export type ReportALineItem = {
+    code: string;
+    designation: string;
+    unitPrice: number;
+    currency: ReportACurrency;
+    tax: string;
+    qtySold: number;
+    qtyReturned: number;
+    fiscalStock: number;
 };
+
+export type ReportAPreviewContent = {
+    generatedAt: string;
+    dateFrom: string;
+    dateTo: string;
+    isf: string;
+    companyName: string;
+    nif: string;
+    lineItems: ReportALineItem[];
+    totals: {
+        qtySold: number;
+        qtyReturned: number;
+        fiscalStock: number;
+    };
+};
+
+export type ReportPreviewDisplay =
+    | {
+          variant: "generic";
+          reportTitle: string;
+          reportKind: string;
+          generatedAt: string;
+          filterRows: ReportFilterRow[];
+      }
+    | {
+          variant: "a";
+          content: ReportAPreviewContent;
+      };
 
 export type ReportBlobResult = {
     blob: Blob;

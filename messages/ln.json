@@ -1209,7 +1209,37 @@
         "Nom commercial, NIF, date, période",
         "Code mpe nom article, prix, taux impôt",
         "Quantités vendues, retournées mpe stock"
-      ]
+      ],
+      "preview": {
+        "reportCode": "RAPPORT",
+        "emitter": "ÉMETTEUR",
+        "equipment": "ÉQUIPEMENT",
+        "periodSection": "PÉRIODE & RESTITUTION",
+        "company": "Société",
+        "nif": "NIF",
+        "terminalId": "ID Terminal (ISF)",
+        "generatedAt": "Généré le",
+        "dateFrom": "Date Début",
+        "dateTo": "Date Fin",
+        "tableTitle": "INVENTAIRE & FLUX DES ARTICLES (PÉRIODIQUE)",
+        "columns": {
+          "code": "CODE",
+          "designation": "DÉSIGNATION",
+          "unitPrice": "PRIX UNITAIRE",
+          "tax": "TVA",
+          "qtySold": "QUANTITÉ VENDUE",
+          "qtyReturned": "QUANTITÉ RETOURNÉE",
+          "fiscalStock": "QUANTITÉ EN STOCK"
+        },
+        "total": "TOTAL",
+        "closureTitle": "IMPORTANT :",
+        "closureBody": "Rapport oyo ecompile ba mouvements ya ba articles banda clôture ya nsuka. Ko-imprimer to ko-valider ebandi ba valeurs accumulées.",
+        "preparedBy": "Préparé par :",
+        "preparedRole": "Gestionnaire Back-Office",
+        "approval": "Visa Direction / Approbation :",
+        "approvalHint": "Signature & Cachet",
+        "page": "Page {current} sur {total}"
+      }
     }
   },
   "errors": {
