@@ -83,7 +83,7 @@ export default function ModifierClientPage() {
             <p className="mt-2 text-[17px] font-medium text-slate-500">
                 {t("idnatLabel")}
                 {"\u00a0"}
-                <span className="text-slate-700">{client.reference || "—"}</span>
+                <span className="text-slate-700">{client.idnat || "—"}</span>
             </p>
 
             <ClientForm variant="edit" initial={client} cancelHref={basePath} />

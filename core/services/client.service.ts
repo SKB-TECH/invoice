@@ -7,9 +7,6 @@ import {
     type CreateClientInput,
 } from "@/core/schemas/client.schema";
 import {
-    clientTypeRequiresField,
-    getEffectiveRequiredFields,
-    resolveClientTypeOption,
     type ClientTypeOption,
 } from "@/core/schemas/type-client.schema";
 import { unwrapApiData } from "@/core/utils/apiResponse";
@@ -59,36 +56,19 @@ function clientPayloadToFormData(
     return fd;
 }
 
-function resolveTypeOptionForPayload(
-    input: CreateClientInput,
-    typeOption?: ClientTypeOption
-): ClientTypeOption | undefined {
-    return (
-        typeOption ?? resolveClientTypeOption(input.client_type_id ?? "", [])
-    );
-}
-
 /** Corps POST/PUT selon le contrat API (`client_type_id`, champs dynamiques). */
 export function clientPayloadForApi(
     input: CreateClientInput,
-    typeOption?: ClientTypeOption,
+    _typeOption?: ClientTypeOption,
     referenceDocumentFile?: File | null
 ): Record<string, unknown> {
-    const resolvedType = resolveTypeOptionForPayload(input, typeOption);
     const client_type_id = Number(input.client_type_id);
-    const required = getEffectiveRequiredFields(resolvedType);
     const clientName = input.client_name.trim();
 
     const payload: Record<string, unknown> = {
         client_type_id,
-        // API historique / Laravel
         status: statusFormToApi(input.status ?? "actif"),
         client_name: clientName,
-        /** Alias Laravel éventuel pour le libellé « Nom ». */
-        nom: clientName,
-        // API "ikwook" (payload vu: name/status_id)
-        name: clientName,
-        status_id: statusFormToApi(input.status ?? "actif"),
     };
 
     appendIfPresent(payload, "phone", input.phone ?? undefined);
@@ -98,64 +78,69 @@ export function clientPayloadForApi(
     const country = parseCountryForApi(input.country);
     if (country !== undefined) {
         payload.country = country;
-        // API "ikwook" (payload vu: country_id)
-        payload.country_id = country;
     }
 
-    if (
-        clientTypeRequiresField(required, "nif") ||
-        (input.nif ?? "").trim()
-    ) {
+    // Payload strict par type (demande métier)
+    if (client_type_id === 1) {
+        return payload;
+    }
+
+    if (client_type_id === 2) {
         appendIfPresent(payload, "nif", input.nif ?? undefined);
-    }
-
-    if (
-        clientTypeRequiresField(required, "rccm") ||
-        (input.rccm ?? "").trim()
-    ) {
         appendIfPresent(payload, "rccm", input.rccm ?? undefined);
-    }
-
-    if (
-        clientTypeRequiresField(required, "idnat", "reference") ||
-        (input.reference ?? "").trim()
-    ) {
-        appendIfPresent(payload, "idnat", input.reference ?? undefined);
-    }
-
-    if (referenceDocumentFile instanceof File) {
-        payload.reference_document = referenceDocumentFile;
-    }
-
-    if (
-        clientTypeRequiresField(
-            required,
-            "business_sector",
-            "secteur",
-            "secteur_activite"
-        ) ||
-        (input.business_sector ?? "").trim()
-    ) {
+        appendIfPresent(payload, "idnat", input.idnat ?? undefined);
         appendIfPresent(
             payload,
             "business_sector",
             input.business_sector ?? undefined
         );
-    }
-
-    if (
-        clientTypeRequiresField(
-            required,
-            "legal_representative",
-            "representant_legal"
-        ) ||
-        (input.legal_representative ?? "").trim()
-    ) {
         appendIfPresent(
             payload,
             "legal_representative",
             input.legal_representative ?? undefined
         );
+        return payload;
+    }
+
+    if (client_type_id === 3) {
+        appendIfPresent(payload, "nif", input.nif ?? undefined);
+        appendIfPresent(payload, "rccm", input.rccm ?? undefined);
+        appendIfPresent(payload, "idnat", input.idnat ?? undefined);
+        appendIfPresent(
+            payload,
+            "business_sector",
+            input.business_sector ?? undefined
+        );
+        return payload;
+    }
+
+    if (client_type_id === 4) {
+        appendIfPresent(payload, "nif", input.nif ?? undefined);
+        appendIfPresent(payload, "idnat", input.idnat ?? undefined);
+        appendIfPresent(
+            payload,
+            "business_sector",
+            input.business_sector ?? undefined
+        );
+        appendIfPresent(
+            payload,
+            "legal_representative",
+            input.legal_representative ?? undefined
+        );
+        return payload;
+    }
+
+    if (client_type_id === 5) {
+        if (referenceDocumentFile instanceof File) {
+            payload.reference_document = referenceDocumentFile;
+        } else {
+            appendIfPresent(
+                payload,
+                "reference_document",
+                input.reference_document ?? undefined
+            );
+        }
+        return payload;
     }
 
     return payload;
