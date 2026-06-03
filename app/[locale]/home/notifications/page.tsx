@@ -62,12 +62,12 @@ export default function NotificationsPage() {
                             emptyLabel="Vous n’avez aucune notification pour le moment."
                         />
 
-                        <div className="flex items-center justify-between border-t border-[#E7EBEF] px-5 py-4">
+                        <div className="flex items-center justify-end gap-2 border-t border-[#E7EBEF] px-5 py-4">
                             <button
                                 type="button"
                                 onClick={() => setPage((p) => Math.max(1, p - 1))}
                                 disabled={page <= 1}
-                                className="text-[13px] font-semibold text-slate-700 disabled:opacity-50"
+                                className="text-[13px] bg-[#0073C5] text-white font-semibold disabled:opacity-50 cursor-pointer px-4 py-2 rounded"
                             >
                                 Précédent
                             </button>
@@ -82,7 +82,7 @@ export default function NotificationsPage() {
                                     setPage((p) => Math.min(totalPages, p + 1))
                                 }
                                 disabled={page >= totalPages}
-                                className="text-[13px] font-semibold text-slate-700 disabled:opacity-50"
+                                className="text-[13px] bg-[#0073C5] text-white font-semibold disabled:opacity-50 cursor-pointer px-4 py-2 rounded"
                             >
                                 Suivant
                             </button>
