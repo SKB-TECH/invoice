@@ -53,17 +53,17 @@ export type AuthSession = {
     raw: unknown;
 };
 
-type LorasLoginSuccessResponse = {
-    status: string;
-    message: string;
+type LoginSuccessResponse = {
+    mfaRequired: false;
+    token: string;
+    refreshToken: string | null;
     user: AuthUser;
-    access_token: string;
-    refresh_token?: string;
-    expires_in?: number;
-    role?: ApiRole | null;
-    branch?: ApiBranch | null;
-    till?: unknown | null;
-    profile?: ApiProfile | null;
+    profile: ApiProfile | null;
+    role: ApiRole | null;
+    branch: ApiBranch | null;
+    till: unknown | null;
+    expiresIn?: number;
+    raw: unknown;
 };
 
 function normalizePermission(value?: string | null): string[] {
@@ -80,6 +80,7 @@ function isLoginSuccessResponse(
     const data = response as Record<string, unknown>;
 
     return (
+        data.mfaRequired === false &&
         typeof data.token === "string" &&
         !!data.user &&
         typeof data.user === "object"
@@ -149,9 +150,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             )
             : [];
 
-        const userRolePermissions = Array.isArray(
-            authUser?.role?.permissions
-        )
+        const userRolePermissions = Array.isArray(authUser?.role?.permissions)
             ? authUser.role.permissions.flatMap((item) => [
                 ...normalizePermission(item.longCode),
                 ...normalizePermission(item.shortCode),
@@ -227,12 +226,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         identifier: string,
         password: string
     ): Promise<AuthSession> => {
-        const response = await loginMutation.mutateAsync({
+        const result = await loginMutation.mutateAsync({
             identifier,
             password,
         });
 
+        const response = "data" in (result as any)
+            ? (result as any).data
+            : result;
+
         if (!isLoginSuccessResponse(response)) {
+            console.log("LOGIN RESPONSE INVALID:", response);
             throw new Error("Réponse de connexion invalide.");
         }
 
@@ -244,7 +248,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             role: response.role ?? null,
             branch: response.branch ?? null,
             till: response.till ?? null,
-            raw: response.raw ?? response,
+            raw: response,
         };
 
         authService.saveSession(

@@ -294,6 +294,13 @@ function parseAuthProfileResponse(inner: unknown): AuthProfileData {
 }
 
 export const authService = {
+    async me() {
+        const response = await api.get("/auth/me", {
+            withCredentials: true,
+        });
+
+        return response.data;
+    },
     async register(payload: RegisterPayload): Promise<RegisterResponse> {
         const formData = new FormData();
 
