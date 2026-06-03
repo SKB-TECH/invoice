@@ -20,6 +20,7 @@ const sharedClientFields = {
         .nullable(),
     address: trimmedString.optional().nullable(),
     country: trimmedString.optional().nullable(),
+    idnat: trimmedString.optional().nullable(),
     reference: trimmedString.optional().nullable(),
     reference_document: trimmedString.optional().nullable(),
     nif: trimmedString.optional().nullable(),

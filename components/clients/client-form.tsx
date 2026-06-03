@@ -44,8 +44,8 @@ import { useTranslations } from "next-intl";
 export type ClientFormValues = {
     client_type_id: string;
     client_name: string;
-    reference: string;
-    reference_document_existing: string;
+    idnat: string;
+    reference_document: string;
     status: ClientStatutForm;
     phone: string;
     email: string;
@@ -61,8 +61,8 @@ function emptyCreateDefaults(): ClientFormValues {
     return {
         client_type_id: "",
         client_name: "",
-        reference: "",
-        reference_document_existing: "",
+        idnat: "",
+        reference_document: "",
         status: "actif",
         phone: "",
         email: "",
@@ -79,8 +79,8 @@ function detailToFormValues(d: ClientDetailRecord): ClientFormValues {
     return {
         client_type_id: d.client_type_id,
         client_name: d.nomClient,
-        reference: d.reference,
-        reference_document_existing: d.reference_document,
+        idnat: d.idnat,
+        reference_document: d.reference_document,
         status: d.statut,
         phone: d.telephone,
         email: d.email,
@@ -134,8 +134,8 @@ function validateRequiredTypeFields(
             message: "Le RCCM est requis.",
         },
         {
-            aliases: ["idnat", "reference"],
-            value: values.reference,
+            aliases: ["idnat"],
+            value: values.idnat,
             message: "L'IDNAT est requis.",
         },
         {
@@ -188,7 +188,7 @@ function validateRequiredTypeFields(
     if (
         clientTypeFieldIsRequired(typeOption, "reference_document") &&
         !referenceDocumentFile &&
-        !(values.reference_document_existing ?? "").trim()
+        !(values.reference_document ?? "").trim()
     ) {
         return "Le document de référence est requis.";
     }
@@ -260,8 +260,7 @@ export function ClientForm(props: ClientFormProps) {
     const showRccm = clientTypeShowsField(selectedTypeOption, "rccm");
     const showIdnat = clientTypeShowsField(
         selectedTypeOption,
-        "idnat",
-        "reference"
+        "idnat"
     );
     const showReferenceDocument = clientTypeShowsField(
         selectedTypeOption,
@@ -329,8 +328,13 @@ export function ClientForm(props: ClientFormProps) {
             return;
         }
 
-        const { reference_document_existing: _existingDoc, ...apiValues } =
-            values;
+        const apiValues = {
+            ...values,
+            reference_document:
+                referenceDocumentFile instanceof File
+                    ? undefined
+                    : values.reference_document,
+        };
         const parsed = createClientSchema.safeParse(apiValues);
         if (!parsed.success) {
             applyZodFieldErrors(form.setError, parsed.error.issues);
@@ -549,20 +553,19 @@ export function ClientForm(props: ClientFormProps) {
                             <RequiredMark
                                 required={clientTypeFieldIsRequired(
                                     selectedTypeOption,
-                                    "idnat",
-                                    "reference"
+                                    "idnat"
                                 )}
                             />
                         </FieldLabel>
                         <InputField
                             id="reference"
-                            value={form.watch("reference")}
+                            value={form.watch("idnat")}
                             onChange={(value) =>
-                                form.setValue("reference", value, {
+                                form.setValue("idnat", value, {
                                     shouldValidate: true,
                                 })
                             }
-                            error={errors.reference?.message}
+                            error={errors.idnat?.message}
                         />
                     </div>
                 ) : null}
@@ -580,14 +583,14 @@ export function ClientForm(props: ClientFormProps) {
                         </FieldLabel>
                         <ClientReferenceDocumentField
                             file={referenceDocumentFile}
-                            existingLabel={form.watch("reference_document_existing")}
+                            existingLabel={form.watch("reference_document")}
                             disabled={pending}
                             onChange={setReferenceDocumentFile}
                             error={
                                 referenceDocumentFile ||
-                                form.watch("reference_document_existing")
+                                form.watch("reference_document")
                                     ? undefined
-                                    : errors.reference_document_existing?.message
+                                    : errors.reference_document?.message
                             }
                         />
                     </div>

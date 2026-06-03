@@ -146,7 +146,6 @@ export function normalizeRequiredFieldKey(field: string): string {
         case "pays":
             return "country";
         case "idnat":
-        case "reference":
             return "idnat";
         default:
             return key;

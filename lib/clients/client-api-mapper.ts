@@ -56,6 +56,7 @@ export function clientResponseToDetail(row: ClientResponse): ClientDetailRecord 
         client_type_id: row.client_type_id ?? "",
         code: row.client_type_code?.trim() || row.code?.trim() || "",
         reference: clientReference(row),
+        idnat: row.idnat?.trim() || row.reference || "",
         reference_document: row.reference_document ?? "",
         nomClient: nom,
         sousTitre: row.subtitle ?? "",
