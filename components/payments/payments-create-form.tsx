@@ -25,11 +25,12 @@ type InvoiceSearchOption = {
 type Props = {
     formError: string;
     isProcessing: boolean;
-    invoiceIdStr: string;
     selectedInvoiceDisplayLabel: string;
     invoiceSearchOptions: InvoiceSearchOption[];
     invoicesPending: boolean;
     invoicesError: boolean;
+    invoiceSearchQuery: string;
+    onInvoiceSearchQueryChange: (value: string) => void;
     onSelectInvoice: (id: number) => void;
     clientDisplay: string;
     resolvedContractIdStr: string;
@@ -44,6 +45,8 @@ type Props = {
     selectedInvoiceCurrency?: string;
     amountExceedsInvoice: boolean;
     amountExceedsMessage: string;
+    amountValidationSuccessMessage: string;
+    isAmountValidationChecking: boolean;
     onAmountChange: (value: string) => void;
     exchangeRateStr: string;
     onExchangeRateChange: (value: string) => void;
@@ -68,11 +71,12 @@ export function PaymentsCreateForm(props: Props) {
     const {
         formError,
         isProcessing,
-        invoiceIdStr,
         selectedInvoiceDisplayLabel,
         invoiceSearchOptions,
         invoicesPending,
         invoicesError,
+        invoiceSearchQuery,
+        onInvoiceSearchQueryChange,
         onSelectInvoice,
         clientDisplay,
         resolvedContractIdStr,
@@ -87,6 +91,8 @@ export function PaymentsCreateForm(props: Props) {
         selectedInvoiceCurrency,
         amountExceedsInvoice,
         amountExceedsMessage,
+        amountValidationSuccessMessage,
+        isAmountValidationChecking,
         onAmountChange,
         exchangeRateStr,
         onExchangeRateChange,
@@ -135,21 +141,14 @@ export function PaymentsCreateForm(props: Props) {
                     <div>
                         <FieldLabel>{t("form.invoice")}</FieldLabel>
                         <InvoiceSearchSelect
-                            key={
-                                invoiceIdStr.trim() === "" ||
-                                Number.isNaN(Number(invoiceIdStr))
-                                    ? "invoice-none"
-                                    : `invoice-${invoiceIdStr}`
-                            }
                             options={invoiceSearchOptions}
-                            value={selectedInvoiceDisplayLabel}
-                            placeholder={
-                                invoicesPending
-                                    ? t("form.loadingInvoices")
-                                    : t("form.invoiceSearchPlaceholder")
-                            }
+                            placeholder={t("form.invoiceSearchPlaceholder")}
                             emptyLabel={t("form.invoiceSearchEmpty")}
-                            disabled={invoicesPending || invoicesError}
+                            loadingLabel={t("form.loadingInvoices")}
+                            disabled={invoicesError}
+                            loading={invoicesPending}
+                            value={invoiceSearchQuery || selectedInvoiceDisplayLabel}
+                            onSearchChange={onInvoiceSearchQueryChange}
                             onSelect={onSelectInvoice}
                         />
 
@@ -226,6 +225,16 @@ export function PaymentsCreateForm(props: Props) {
                         {amountExceedsInvoice ? (
                             <p className="mt-1 text-sm font-medium text-amber-600">
                                 {amountExceedsMessage}
+                            </p>
+                        ) : null}
+                        {!amountExceedsInvoice && amountValidationSuccessMessage ? (
+                            <p className="mt-1 text-sm font-medium text-emerald-600">
+                                {amountValidationSuccessMessage}
+                            </p>
+                        ) : null}
+                        {isAmountValidationChecking ? (
+                            <p className="mt-1 text-xs font-medium text-slate-400">
+                                {t("validation.amountChecking")}
                             </p>
                         ) : null}
                     </div>

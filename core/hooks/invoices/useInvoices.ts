@@ -12,7 +12,7 @@ import type {
     CreateInvoiceResponse, CreateInvoiceSubmission,
     GetInvoiceContractsParams,
     GetInvoiceFournituresParams,
-    GetInvoicesParams,
+    GetInvoicesParams, GetOutstandingInvoicesParams,
     InvoiceCreateRequest, InvoiceDetailResponse, NormalizeInvoicePayload, NormalizeInvoiceResponse,
     UpdateInvoiceSubmission,
 } from "@/core/types/invoice";
@@ -21,6 +21,14 @@ export function useInvoices(params?: GetInvoicesParams) {
     return useQuery({
         queryKey: ["invoices", params],
         queryFn: () => invoiceService.getInvoices(params),
+        retry: false,
+    });
+}
+
+export function useOutstandingInvoices(params?: GetOutstandingInvoicesParams) {
+    return useQuery({
+        queryKey: ["invoices-outstanding", params],
+        queryFn: () => invoiceService.getOutstandingInvoices(params),
         retry: false,
     });
 }

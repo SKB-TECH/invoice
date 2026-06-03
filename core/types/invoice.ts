@@ -28,6 +28,7 @@ export interface InvoiceLineItem {
 export interface InvoiceItem {
     id: number;
     invoice_number: string;
+    invoice_ref?: string;
     account_id: number;
     client_id: number;
     issuer: InvoiceIssuer;
@@ -36,6 +37,9 @@ export interface InvoiceItem {
     subtotal: number;
     tax_total: number;
     total: number;
+    total_amount?: number;
+    paid_amount?: number;
+    balance?: number;
     currency: string;
     status: InvoiceStatus;
     invoice_date: string;
@@ -60,6 +64,14 @@ export interface GetInvoicesParams {
     perPage?: number;
     status?: InvoiceStatus;
 }
+
+export type GetOutstandingInvoicesParams = {
+    page?: number;
+    perPage?: number;
+    client_id?: number;
+    workflow_status?: string;
+    type?: number;
+};
 
 /* ================================
    Création facture

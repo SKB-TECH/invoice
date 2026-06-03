@@ -249,13 +249,15 @@
       "submit": "Valider le paiement",
       "submitting": "Envoi…",
       "submitErrorFallback": "Échec de l’enregistrement du paiement.",
-      "invoiceTotalHint": "Montant de la facture : {amount}"
+      "invoiceTotalHint": "Balance restante de la facture : {amount}"
     },
     "validation": {
       "invoiceRequired": "Veuillez sélectionner une facture.",
       "contractRequired": "Veuillez sélectionner un contrat.",
       "amountInvalid": "Montant invalide.",
-      "amountExceedsInvoice": "Le montant ne peut pas dépasser celui de la facture ({max}).",
+      "amountExceedsInvoice": "Le montant ne peut pas dépasser la balance restante ({max}).",
+      "amountWithinBalance": "Le montant est valide (balance restante : {max}).",
+      "amountChecking": "Vérification du montant…",
       "currencyRequired": "La devise est requise.",
       "channelRequired": "Veuillez sélectionner un canal.",
       "methodRequired": "Veuillez sélectionner une méthode.",
@@ -1209,7 +1211,37 @@
         "Dénomination commerciale, NIF, date et heure, période",
         "Code et nom de l’article, prix unitaire, taux d’impôt",
         "Quantités vendues, retournées et en stock"
-      ]
+      ],
+      "preview": {
+        "reportCode": "RAPPORT",
+        "emitter": "ÉMETTEUR",
+        "equipment": "ÉQUIPEMENT",
+        "periodSection": "PÉRIODE & RESTITUTION",
+        "company": "Société",
+        "nif": "NIF",
+        "terminalId": "ID Terminal (ISF)",
+        "generatedAt": "Généré le",
+        "dateFrom": "Date Début",
+        "dateTo": "Date Fin",
+        "tableTitle": "INVENTAIRE & FLUX DES ARTICLES (PÉRIODIQUE)",
+        "columns": {
+          "code": "CODE",
+          "designation": "DÉSIGNATION",
+          "unitPrice": "PRIX UNITAIRE",
+          "tax": "TVA",
+          "qtySold": "QUANTITÉ VENDUE",
+          "qtyReturned": "QUANTITÉ RETOURNÉE",
+          "fiscalStock": "QUANTITÉ EN STOCK"
+        },
+        "total": "TOTAL",
+        "closureTitle": "IMPORTANT :",
+        "closureBody": "Ce rapport compile les mouvements des articles depuis la dernière clôture. L'impression ou la validation de ce document réinitialisera les valeurs accumulées pour la période suivante.",
+        "preparedBy": "Préparé par :",
+        "preparedRole": "Gestionnaire Back-Office",
+        "approval": "Visa Direction / Approbation :",
+        "approvalHint": "Signature & Cachet",
+        "page": "Page {current} sur {total}"
+      }
     }
   },
   "errors": {
