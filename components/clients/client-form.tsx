@@ -279,6 +279,8 @@ export function ClientForm(props: ClientFormProps) {
     );
 
     const isPersonalType = clientTypeId === "1";
+    const addressFullWidth =
+        clientTypeId === "1" || clientTypeId === "3" || clientTypeId === "4";
 
     useEffect(() => {
         if (clientTypes.length === 0) return;
@@ -729,7 +731,7 @@ export function ClientForm(props: ClientFormProps) {
                 <div
                     className={cn(
                         "min-w-0",
-                        isPersonalType && "lg:col-span-2"
+                        addressFullWidth && "lg:col-span-2"
                     )}
                 >
                     <FieldLabel>

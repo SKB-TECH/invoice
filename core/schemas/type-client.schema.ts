@@ -178,13 +178,10 @@ export function getEffectiveRequiredFields(
     typeOption: ClientTypeOption | undefined
 ): readonly string[] {
     if (!typeOption) return [];
-
-    const raw =
-        typeOption.required_fields.length > 0
-            ? typeOption.required_fields
-            : (FALLBACK_REQUIRED_FIELDS_BY_ID[typeOption.id] ?? []);
-
-    return raw.map(normalizeRequiredFieldKey);
+    const fallback = FALLBACK_REQUIRED_FIELDS_BY_ID[typeOption.id] ?? [];
+    const fromApi = typeOption.required_fields ?? [];
+    const merged = [...fallback, ...fromApi].map(normalizeRequiredFieldKey);
+    return Array.from(new Set(merged));
 }
 
 export function clientTypeRequiresField(
