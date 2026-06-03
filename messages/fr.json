@@ -321,7 +321,8 @@
     },
     "steps": {
       "client": "Informations client",
-      "preview": "Prévisualisation"
+      "preview": "Prévisualisation",
+      "comment": "Commentaire"
     },
     "kind": {
       "article": "Article",

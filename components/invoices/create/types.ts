@@ -1,6 +1,7 @@
 import type { Dispatch, SetStateAction } from "react";
+import {InvoiceDgiComments} from "@/core/types/invoice-comment";
 
-export type Step = 1 | 2 | 3;
+export type Step = 1 | 2 | 3 | 4;
 export type ItemKind = "Article" | "Service";
 export type InvoiceTemplateId = 1 | 2;
 
@@ -45,16 +46,15 @@ export type InvoiceForm = {
     address: string;
     phone: string;
     email: string;
-
-    contractId: number | null;
-    contractReference: string;
-
     invoiceType: string;
     itemKind: ItemKind;
-
     currency: "CDF" | "USD";
     dueDate: string;
-    templateId: InvoiceTemplateId | null;
+    contractId: number | null;
+    contractReference: string;
+    templateId: number | null;
+
+    comments: InvoiceDgiComments;
 };
 
 export type InvoiceFormErrors = {
