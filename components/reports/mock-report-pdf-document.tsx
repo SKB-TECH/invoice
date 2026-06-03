@@ -13,17 +13,6 @@ const styles = StyleSheet.create({
         color: "#1e293b",
         fontFamily: "Helvetica",
     },
-    badge: {
-        marginBottom: 20,
-        padding: 8,
-        backgroundColor: "#eff6ff",
-        borderWidth: 1,
-        borderColor: "#0073C5",
-    },
-    badgeText: {
-        fontSize: 9,
-        color: "#0073C5",
-    },
     title: {
         fontSize: 18,
         fontWeight: 700,
@@ -82,10 +71,6 @@ export function MockReportPdfDocument({
     return (
         <Document>
             <Page size="A4" style={styles.page}>
-                <View style={styles.badge}>
-                    <Text style={styles.badgeText}>APERÇU SIMULÉ</Text>
-                </View>
-
                 <Text style={styles.title}>{reportTitle}</Text>
                 <Text style={styles.subtitle}>
                     Type : {reportKind} · Généré le {generatedAt}

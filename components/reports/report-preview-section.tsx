@@ -2,6 +2,7 @@
 
 import { useTranslations } from "next-intl";
 
+import { ReportAPreview } from "@/components/reports/report-a-preview";
 import { ReportDocumentPreview } from "@/components/reports/report-document-preview";
 import type { ReportPreviewDisplay } from "@/core/types/reports";
 
@@ -31,13 +32,11 @@ export function ReportPreviewSection({
                 </p>
             </div>
 
-            {display.isSimulated ? (
-                <p className="mb-4 rounded border border-[#0879bd]/20 bg-[#eff6ff] px-4 py-2.5 text-[13px] font-medium text-[#0879bd]">
-                    {t("preview.simulatedNotice")}
-                </p>
-            ) : null}
-
-            <ReportDocumentPreview display={display} />
+            {display.variant === "a" ? (
+                <ReportAPreview content={display.content} />
+            ) : (
+                <ReportDocumentPreview display={display} />
+            )}
 
             <div className="mt-6 flex flex-wrap justify-end gap-4">
                 <button

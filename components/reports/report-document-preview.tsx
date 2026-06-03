@@ -1,12 +1,11 @@
 import type { ReportPreviewDisplay } from "@/core/types/reports";
 
 type Props = {
-    display: ReportPreviewDisplay;
+    display: Extract<ReportPreviewDisplay, { variant: "generic" }>;
 };
 
 export function ReportDocumentPreview({ display }: Props) {
-    const { reportTitle, reportKind, generatedAt, filterRows, isSimulated } =
-        display;
+    const { reportTitle, reportKind, generatedAt, filterRows } = display;
 
     return (
         <div className="w-full rounded border border-slate-300 bg-white p-10">
@@ -25,17 +24,11 @@ export function ReportDocumentPreview({ display }: Props) {
                 </h2>
             </div>
 
-            <div className="mb-5 flex flex-wrap items-end justify-between gap-4 border-b-2 border-black pb-2">
+            <div className="mb-5 border-b-2 border-black pb-2">
                 <div className="text-sm font-bold uppercase leading-5 text-black">
                     <p>Généré le : {generatedAt}</p>
                     <p>Type : {reportKind}</p>
                 </div>
-
-                {isSimulated ? (
-                    <p className="rounded border border-[#0879bd]/30 bg-[#eff6ff] px-3 py-1 text-xs font-bold uppercase text-[#0879bd]">
-                        Aperçu simulé
-                    </p>
-                ) : null}
             </div>
 
             <div className="mb-10">
@@ -71,13 +64,11 @@ export function ReportDocumentPreview({ display }: Props) {
                 )}
             </div>
 
-            {!isSimulated ? (
-                <div className="mt-10 border-t border-black pt-6">
-                    <p className="text-sm leading-5 text-slate-600">
-                        Document généré selon les critères ci-dessus.
-                    </p>
-                </div>
-            ) : null}
+            <div className="mt-10 border-t border-black pt-6">
+                <p className="text-sm leading-5 text-slate-600">
+                    Document généré selon les critères ci-dessus.
+                </p>
+            </div>
         </div>
     );
 }
