@@ -38,13 +38,12 @@ export function buildReportPreviewDisplay(
     reportTitle: string,
     reportKind: string,
     filters: Record<string, unknown>,
-    isSimulated: boolean,
 ): ReportPreviewDisplay {
     return {
+        variant: "generic",
         reportTitle,
         reportKind,
         generatedAt: formatReportGeneratedAt(),
         filterRows: buildFilterRows(filters),
-        isSimulated,
     };
 }

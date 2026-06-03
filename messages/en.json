@@ -1208,7 +1208,37 @@
         "Trade name, tax ID, date and time, period",
         "Item code and name, unit price, tax rate",
         "Quantities sold, returned and in stock"
-      ]
+      ],
+      "preview": {
+        "reportCode": "REPORT",
+        "emitter": "ISSUER",
+        "equipment": "EQUIPMENT",
+        "periodSection": "PERIOD & RESTITUTION",
+        "company": "Company",
+        "nif": "Tax ID",
+        "terminalId": "Terminal ID (ISF)",
+        "generatedAt": "Generated on",
+        "dateFrom": "Start date",
+        "dateTo": "End date",
+        "tableTitle": "INVENTORY & ITEM FLOW (PERIODIC)",
+        "columns": {
+          "code": "CODE",
+          "designation": "DESCRIPTION",
+          "unitPrice": "UNIT PRICE",
+          "tax": "TVA",
+          "qtySold": "QUANTITY SOLD",
+          "qtyReturned": "QUANTITY RETURNED",
+          "fiscalStock": "QUANTITY IN STOCK"
+        },
+        "total": "TOTAL",
+        "closureTitle": "IMPORTANT :",
+        "closureBody": "This report compiles item movements since the last closing. Printing or validating this document will reset accumulated values for the next period.",
+        "preparedBy": "Prepared by:",
+        "preparedRole": "Back-Office Manager",
+        "approval": "Management approval:",
+        "approvalHint": "Signature & stamp",
+        "page": "Page {current} of {total}"
+      }
     }
   },
   "errors": {
