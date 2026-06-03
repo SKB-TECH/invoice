@@ -249,13 +249,15 @@
       "submit": "Tinda botosi",
       "submitting": "Ezali kotinda…",
       "submitErrorFallback": "Ekoki te kobakisa botosi.",
-      "invoiceTotalHint": "Motuya ya faktire : {amount}"
+      "invoiceTotalHint": "Balance etikali na faktire : {amount}"
     },
     "validation": {
       "invoiceRequired": "Pona faktire.",
       "contractRequired": "Pona kotrati.",
       "amountInvalid": "Motuya ezali malamu te.",
-      "amountExceedsInvoice": "Motuya ekoki koleka te oyo ya faktire ({max}).",
+      "amountExceedsInvoice": "Motuya ekoki koleka te balance etikali ({max}).",
+      "amountWithinBalance": "Motuya ezali malamu (balance etikali : {max}).",
+      "amountChecking": "Kotalela motuya…",
       "currencyRequired": "Moné ezali na lisungi.",
       "channelRequired": "Pona canal.",
       "methodRequired": "Pona méthode.",

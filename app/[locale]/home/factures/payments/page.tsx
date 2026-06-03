@@ -33,11 +33,12 @@ export default function PaymentsPage() {
         exitCreateMode,
         isProcessing,
         formError,
-        invoiceIdStr,
         selectedInvoiceDisplayLabel,
         invoiceSearchOptions,
         invoicesPending,
         invoicesError,
+        invoiceSearchQuery,
+        onInvoiceSearchQueryChange,
         onSelectInvoice,
         clientDisplay,
         resolvedContractIdStr,
@@ -52,6 +53,8 @@ export default function PaymentsPage() {
         selectedInvoiceCurrency,
         amountExceedsInvoice,
         amountExceedsMessage,
+        amountValidationSuccessMessage,
+        isAmountValidationChecking,
         onAmountChange,
         exchangeRateStr,
         onExchangeRateChange,
@@ -75,11 +78,12 @@ export default function PaymentsPage() {
             <PaymentsCreateForm
                 formError={formError}
                 isProcessing={isProcessing}
-                invoiceIdStr={invoiceIdStr}
                 selectedInvoiceDisplayLabel={selectedInvoiceDisplayLabel}
                 invoiceSearchOptions={invoiceSearchOptions}
                 invoicesPending={invoicesPending}
                 invoicesError={invoicesError}
+                invoiceSearchQuery={invoiceSearchQuery}
+                onInvoiceSearchQueryChange={onInvoiceSearchQueryChange}
                 onSelectInvoice={onSelectInvoice}
                 clientDisplay={clientDisplay}
                 resolvedContractIdStr={resolvedContractIdStr}
@@ -94,6 +98,8 @@ export default function PaymentsPage() {
                 selectedInvoiceCurrency={selectedInvoiceCurrency}
                 amountExceedsInvoice={amountExceedsInvoice}
                 amountExceedsMessage={amountExceedsMessage}
+                amountValidationSuccessMessage={amountValidationSuccessMessage}
+                isAmountValidationChecking={isAmountValidationChecking}
                 onAmountChange={onAmountChange}
                 exchangeRateStr={exchangeRateStr}
                 onExchangeRateChange={onExchangeRateChange}

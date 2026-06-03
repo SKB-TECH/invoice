@@ -249,13 +249,15 @@
       "submit": "Submit payment",
       "submitting": "Sending…",
       "submitErrorFallback": "Could not record the payment.",
-      "invoiceTotalHint": "Invoice amount: {amount}"
+      "invoiceTotalHint": "Remaining invoice balance: {amount}"
     },
     "validation": {
       "invoiceRequired": "Please select an invoice.",
       "contractRequired": "Please select a contract.",
       "amountInvalid": "Invalid amount.",
-      "amountExceedsInvoice": "Amount cannot exceed the invoice total ({max}).",
+      "amountExceedsInvoice": "Amount cannot exceed the remaining balance ({max}).",
+      "amountWithinBalance": "Amount is valid (remaining balance: {max}).",
+      "amountChecking": "Checking amount…",
       "currencyRequired": "Currency is required.",
       "channelRequired": "Please select a channel.",
       "methodRequired": "Please select a method.",

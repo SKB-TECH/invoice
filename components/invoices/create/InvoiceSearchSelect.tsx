@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Search } from "lucide-react";
 
 import { FieldError } from "./Fields";
@@ -17,24 +17,35 @@ export function InvoiceSearchSelect({
     error,
     placeholder,
     emptyLabel,
+    loadingLabel,
     disabled,
+    loading,
     onSelect,
+    onSearchChange,
 }: {
     options: InvoiceSearchOption[];
     value: string;
     error?: string;
     placeholder: string;
     emptyLabel: string;
+    loadingLabel?: string;
     disabled?: boolean;
+    loading?: boolean;
     onSelect: (id: number) => void;
+    onSearchChange?: (value: string) => void;
 }) {
     const [open, setOpen] = useState(false);
     const [search, setSearch] = useState(value);
+
+    useEffect(() => {
+        setSearch(value);
+    }, [value]);
 
     const filtered = useMemo(() => {
         const q = search.trim().toLowerCase();
 
         if (!q) return options;
+        if (q.includes("=") || q.includes("&")) return options;
 
         return options.filter((opt) => {
             return (
@@ -61,8 +72,10 @@ export function InvoiceSearchSelect({
                             if (!disabled) setOpen(true);
                         }}
                         onChange={(event) => {
-                            setSearch(event.target.value);
+                            const next = event.target.value;
+                            setSearch(next);
                             setOpen(true);
+                            onSearchChange?.(next);
                         }}
                         placeholder={placeholder}
                         className={[
@@ -81,7 +94,11 @@ export function InvoiceSearchSelect({
 
                 {open && !disabled ? (
                     <div className="absolute left-0 right-0 top-[56px] z-30 max-h-[260px] overflow-y-auto border border-slate-200 bg-white shadow-lg">
-                        {filtered.length === 0 ? (
+                        {loading ? (
+                            <div className="px-5 py-4 text-sm font-medium text-slate-500">
+                                {loadingLabel ?? "Loading..."}
+                            </div>
+                        ) : filtered.length === 0 ? (
                             <div className="px-5 py-4 text-sm font-medium text-slate-500">
                                 {emptyLabel}
                             </div>
