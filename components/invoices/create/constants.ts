@@ -126,6 +126,16 @@ export const initialForm: InvoiceForm = {
     currency: "CDF",
     dueDate: "",
     templateId: null,
+    comments: {
+        A: "",
+        B: "",
+        C: "",
+        D: "",
+        E: "",
+        F: "",
+        G: "",
+        H: "",
+    },
 };
 
 export const initialItems: InvoiceItem[] = [];

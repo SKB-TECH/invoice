@@ -25,6 +25,11 @@ export function InvoiceStepper({
         },
         {
             id: 3,
+            label: t("steps.comment"),
+        },
+
+        {
+            id: 4,
             label: t("steps.preview"),
         },
     ];

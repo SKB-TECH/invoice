@@ -7,6 +7,7 @@ import { initialForm, initialItems } from "@/components/invoices/create/constant
 import { InvoiceStepper } from "@/components/invoices/create/InvoiceStepper";
 import { StepCatalog } from "@/components/invoices/create/StepCatalog";
 import { StepClient } from "@/components/invoices/create/StepClient";
+import { StepInvoiceComments } from "@/components/invoices/create/StepInvoiceComments";
 import { StepPreview } from "@/components/invoices/create/StepPreview";
 import {
     hasErrors,
@@ -60,6 +61,12 @@ export default function CreateInvoicePage() {
 
             setErrors({});
             setCurrentStep(3);
+            return;
+        }
+
+        if (currentStep === 3) {
+            setErrors({});
+            setCurrentStep(4);
         }
     };
 
@@ -67,8 +74,6 @@ export default function CreateInvoicePage() {
         setErrors({});
         setCurrentStep((prev) => Math.max(prev - 1, 1) as Step);
     };
-
-    console.log(form,"data")
 
     return (
         <main className="w-full text-slate-700">
@@ -110,6 +115,15 @@ export default function CreateInvoicePage() {
                 )}
 
                 {currentStep === 3 && (
+                    <StepInvoiceComments
+                        form={form}
+                        errors={errors}
+                        setForm={setForm}
+                        setErrors={setErrors}
+                    />
+                )}
+
+                {currentStep === 4 && (
                     <StepPreview
                         form={form}
                         setForm={setForm}
@@ -121,7 +135,7 @@ export default function CreateInvoicePage() {
                 )}
             </div>
 
-            {currentStep !== 3 && (
+            {currentStep !== 4 && (
                 <div className="mt-0 flex justify-end gap-5 bg-white px-3 py-3">
                     <button
                         type="button"

@@ -18,7 +18,6 @@ import {
     MessageSquareText,
     Printer,
     Send,
-    Share2,
     Sparkles,
 } from "lucide-react";
 
@@ -68,6 +67,7 @@ type InvoiceCommentViewModel = {
 
 type InvoiceLine = {
     id: string;
+    code: string;
     designation: string;
     quantity: number;
     unitPrice: number;
@@ -87,12 +87,23 @@ type InvoiceViewModel = {
     id: string;
     invoice: string;
     number: string;
+
+    invoiceTypeCode: string;
+    invoiceTypeTitle: string;
+    fiscalRegime: string;
+    isDuplicate: boolean;
+    isf: string;
+    defMcf: string;
+
     client: string;
+    clientType: string;
     clientAddress: string;
     clientEmail: string;
     clientPhone: string;
     clientNif: string;
     clientRccm: string;
+    clientIdnat: string;
+
     senderName: string;
     senderLegalName: string;
     senderAddress: string;
@@ -100,6 +111,8 @@ type InvoiceViewModel = {
     senderEmail: string;
     senderNif: string;
     senderRccm: string;
+    senderIdnat: string;
+
     amountHT: number;
     taxAmount: number;
     totalAmount: number;
@@ -169,6 +182,24 @@ function formatApiDate(value?: string | null) {
     return date.toLocaleDateString("fr-FR");
 }
 
+function formatApiDateTime(value?: string | null) {
+    if (!value) return "—";
+
+    const date = new Date(value);
+
+    if (Number.isNaN(date.getTime())) {
+        return value;
+    }
+
+    return date.toLocaleString("fr-FR", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+    });
+}
+
 function formatCommentDate(value?: string | null) {
     if (!value) return "—";
 
@@ -224,6 +255,10 @@ function mapWorkflowStatusToUiStatus(
         default:
             return "Brouillon";
     }
+}
+
+function getInvoiceTypeLabel(invoice: InvoiceViewModel) {
+    return `${invoice.invoiceTypeCode} - ${invoice.invoiceTypeTitle}`;
 }
 
 function StatutBadge({ statut }: { statut: InvoiceStatus }) {
@@ -317,6 +352,88 @@ function getTaxGroups(lines: InvoiceLine[]): TaxGroup[] {
     return Array.from(groups.values()).sort((a, b) => b.rate - a.rate);
 }
 
+function DgiSecurityBlock({ invoice }: { invoice: InvoiceViewModel }) {
+    const isNormalized = invoice.statut === "Normalisée";
+
+    return (
+        <div className="mt-8 border border-slate-300 bg-slate-50 p-4 text-xs leading-5 text-slate-700">
+            <p className="font-black uppercase text-black">
+                Éléments de sécurité / Facture normalisée
+            </p>
+
+            <div className="mt-2 grid grid-cols-1 gap-2 md:grid-cols-2">
+                <div>
+                    <p>Type facture : {getInvoiceTypeLabel(invoice)}</p>
+                    <p>Régime facture : {invoice.fiscalRegime}</p>
+                    <p>ISF : {invoice.isf}</p>
+                    <p>DEF / MCF : {invoice.defMcf}</p>
+                </div>
+
+                <div>
+                    <p>QR Code DGI : À générer après normalisation</p>
+                    <p>Duplicata : {invoice.isDuplicate ? "OUI" : "NON"}</p>
+                    <p>Date émission : {invoice.createdAt}</p>
+                    <p>N° série facture : {invoice.invoice}</p>
+                </div>
+            </div>
+
+            <p
+                className={cn(
+                    "mt-3 italic",
+                    isNormalized ? "text-emerald-600" : "text-red-600"
+                )}
+            >
+                {isNormalized
+                    ? "La facture est normalisée."
+                    : "Cette facture devient normalisée uniquement après validation par le dispositif fiscal agréé DGI."}
+            </p>
+        </div>
+    );
+}
+
+function InvoiceCommentsBlock() {
+    const rows = [
+        ["A", "Réf. Exo.", ""],
+        ["B", "Réf. Paiement", ""],
+        ["C", "Réf. Contrat", ""],
+        ["D", "Réf. Bon commande", ""],
+        ["E", "Réf. Livraison", ""],
+        ["F", "Note interne", ""],
+        ["G", "Observation", ""],
+        ["H", "Autre commentaire", ""],
+    ];
+
+    return (
+        <div className="mt-8">
+            <p className="mb-2 text-sm font-black uppercase text-black">
+                Lignes de commentaires facture
+            </p>
+
+            <div className="grid grid-cols-[60px_180px_1fr] border border-slate-400 text-xs">
+                <div className="bg-slate-200 p-2 font-black">Code</div>
+                <div className="bg-slate-200 p-2 font-black">Étiqueté</div>
+                <div className="bg-slate-200 p-2 font-black">Contenu</div>
+
+                {rows.map(([code, label, value]) => (
+                    <div key={code} className="contents">
+                        <div className="border-t border-slate-300 p-2">
+                            {code}
+                        </div>
+
+                        <div className="border-t border-slate-300 p-2">
+                            {label}
+                        </div>
+
+                        <div className="border-t border-slate-300 p-2">
+                            {value || "-"}
+                        </div>
+                    </div>
+                ))}
+            </div>
+        </div>
+    );
+}
+
 function TemplateAPreview({
                               invoice,
                               taxGroups,
@@ -344,15 +461,23 @@ function TemplateAPreview({
                     </div>
                 </div>
 
-                <h2 className="text-5xl font-black uppercase tracking-tight text-black">
-                    FACTURE
-                </h2>
+                <div className="text-right">
+                    <h2 className="text-5xl font-black uppercase tracking-tight text-black">
+                        FACTURE
+                    </h2>
+
+                    <p className="mt-2 text-sm font-black uppercase text-black">
+                        {getInvoiceTypeLabel(invoice)}
+                    </p>
+                </div>
             </div>
 
             <div className="mb-5 flex items-end justify-between border-b-2 border-black pb-2">
                 <div className="text-sm font-bold uppercase leading-5 text-black">
                     <p>Date : {invoice.createdAt}</p>
                     <p>Échéance : {invoice.dueDate}</p>
+                    <p>Régime : {invoice.fiscalRegime}</p>
+                    <p>Duplicata : {invoice.isDuplicate ? "OUI" : "NON"}</p>
                 </div>
 
                 <div className="text-right">
@@ -374,6 +499,12 @@ function TemplateAPreview({
                     <p className="text-sm font-bold leading-5 text-black">
                         {invoice.senderLegalName || invoice.senderName}
                         <br />
+                        NIF : {invoice.senderNif}
+                        <br />
+                        RCCM : {invoice.senderRccm}
+                        <br />
+                        ID Nat : {invoice.senderIdnat}
+                        <br />
                         {invoice.senderEmail}
                         <br />
                         {invoice.senderPhone}
@@ -388,7 +519,15 @@ function TemplateAPreview({
                     </p>
 
                     <p className="text-sm font-bold leading-5 text-black">
+                        Type : {invoice.clientType}
+                        <br />
                         {invoice.client}
+                        <br />
+                        NIF : {invoice.clientNif}
+                        <br />
+                        RCCM : {invoice.clientRccm}
+                        <br />
+                        ID Nat : {invoice.clientIdnat}
                         <br />
                         {invoice.clientEmail}
                         <br />
@@ -399,9 +538,10 @@ function TemplateAPreview({
                 </div>
             </div>
 
-            <div className="overflow-x-auto">
-                <div className="grid min-w-[900px] grid-cols-[60px_1fr_140px_100px_120px_160px] border-b-2 border-black pb-3 text-sm font-black text-black">
+            <div>
+                <div className="grid min-w-[1000px] grid-cols-[60px_100px_1fr_140px_100px_120px_160px] border-b-2 border-black pb-3 text-sm font-black text-black">
                     <div>#</div>
+                    <div>Code</div>
                     <div>Désignation</div>
                     <div className="text-right">Prix HT</div>
                     <div className="text-right">Qté</div>
@@ -412,9 +552,10 @@ function TemplateAPreview({
                 {invoice.lines.map((line, index) => (
                     <div
                         key={line.id}
-                        className="grid min-w-[900px] grid-cols-[60px_1fr_140px_100px_120px_160px] border-b border-slate-300 py-4 text-sm font-semibold text-slate-700"
+                        className="grid min-w-[1000px] grid-cols-[60px_100px_1fr_140px_100px_120px_160px] border-b border-slate-300 py-4 text-sm font-semibold text-slate-700"
                     >
                         <div>{index + 1}</div>
+                        <div>{line.code}</div>
                         <div>{line.designation}</div>
                         <div className="text-right">
                             {formatSimpleAmount(line.unitPrice)}
@@ -477,6 +618,9 @@ function TemplateAPreview({
                     </div>
                 </div>
             </div>
+
+            <DgiSecurityBlock invoice={invoice} />
+            <InvoiceCommentsBlock />
         </div>
     );
 }
@@ -500,6 +644,7 @@ function TemplateBPreview({
 
                     <p>NIF : {invoice.senderNif}</p>
                     <p>RCCM : {invoice.senderRccm}</p>
+                    <p>ID Nat : {invoice.senderIdnat}</p>
                     <p>{invoice.senderAddress}</p>
                     <p>{invoice.senderPhone}</p>
                     <p>{invoice.senderEmail}</p>
@@ -511,35 +656,49 @@ function TemplateBPreview({
                     </div>
 
                     <div className="space-y-2 px-4 py-3 text-sm">
-                        <div className="grid grid-cols-[90px_1fr]">
+                        <div className="grid grid-cols-[110px_1fr]">
+                            <span className="italic">Type</span>
+                            <span className="font-semibold">
+                                {invoice.clientType}
+                            </span>
+                        </div>
+
+                        <div className="grid grid-cols-[110px_1fr]">
                             <span className="italic">Nom</span>
                             <span className="font-semibold">
                                 {invoice.client}
                             </span>
                         </div>
 
-                        <div className="grid grid-cols-[90px_1fr]">
+                        <div className="grid grid-cols-[110px_1fr]">
                             <span className="italic">NIF</span>
                             <span className="font-semibold">
                                 {invoice.clientNif}
                             </span>
                         </div>
 
-                        <div className="grid grid-cols-[90px_1fr]">
+                        <div className="grid grid-cols-[110px_1fr]">
                             <span className="italic">RCCM</span>
                             <span className="font-semibold">
                                 {invoice.clientRccm}
                             </span>
                         </div>
 
-                        <div className="grid grid-cols-[90px_1fr]">
+                        <div className="grid grid-cols-[110px_1fr]">
+                            <span className="italic">ID Nat</span>
+                            <span className="font-semibold">
+                                {invoice.clientIdnat}
+                            </span>
+                        </div>
+
+                        <div className="grid grid-cols-[110px_1fr]">
                             <span className="italic">Adresse</span>
                             <span className="font-semibold">
                                 {invoice.clientAddress}
                             </span>
                         </div>
 
-                        <div className="grid grid-cols-[90px_1fr]">
+                        <div className="grid grid-cols-[110px_1fr]">
                             <span className="italic">Contact</span>
                             <span className="font-semibold">
                                 {invoice.clientPhone}
@@ -550,15 +709,25 @@ function TemplateBPreview({
             </div>
 
             <div className="mb-8 text-center">
-                <h2 className="text-2xl font-black">FACTURE DE VENTE</h2>
+                <h2 className="text-2xl font-black">
+                    {getInvoiceTypeLabel(invoice)}
+                </h2>
                 <p className="mt-1 text-base">Facture n° {invoice.invoice}</p>
+                <p className="mt-1 text-sm">
+                    Date : {invoice.createdAt} | Échéance : {invoice.dueDate}
+                </p>
+                <p className="mt-1 text-sm font-semibold">
+                    Régime : {invoice.fiscalRegime} | Duplicata :{" "}
+                    {invoice.isDuplicate ? "OUI" : "NON"}
+                </p>
             </div>
 
             <p className="mb-3 text-sm">Merci pour la confiance !</p>
 
-            <div className="overflow-x-auto border-y border-slate-400">
-                <div className="grid min-w-[860px] grid-cols-[60px_1fr_170px_110px_150px_150px] bg-slate-200 px-3 py-2 text-sm font-black">
+            <div className="border-y border-slate-400">
+                <div className="grid  grid-cols-[60px_100px_1fr_170px_110px_150px_150px] bg-slate-200 px-3 py-2 text-sm font-black">
                     <div>#</div>
+                    <div>Code</div>
                     <div>Désignation</div>
                     <div className="text-right">Prix unitaire HT</div>
                     <div className="text-right">Quantité</div>
@@ -569,9 +738,10 @@ function TemplateBPreview({
                 {invoice.lines.map((line, index) => (
                     <div
                         key={line.id}
-                        className="grid min-w-[860px] grid-cols-[60px_1fr_170px_110px_150px_150px] border-t border-slate-300 px-3 py-2 text-sm"
+                        className="grid  grid-cols-[60px_100px_1fr_170px_110px_150px_150px] border-t border-slate-300 px-3 py-2 text-sm"
                     >
                         <div>{index + 1}</div>
+                        <div>{line.code}</div>
                         <div>{line.designation}</div>
                         <div className="text-right">
                             {formatSimpleAmount(line.unitPrice)}
@@ -587,7 +757,7 @@ function TemplateBPreview({
 
             <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-[1fr_1.4fr_1fr]">
                 <div className="text-sm font-semibold">
-                    <p>Nombre d’articles : {invoice.lines.length}</p>
+                    <p>Nombre de lignes : {invoice.lines.length}</p>
                     <p className="mt-2">
                         Contrat : {invoice.contractReference}
                     </p>
@@ -603,7 +773,9 @@ function TemplateBPreview({
 
                             <div className="flex justify-between">
                                 <span>TVA Taxable {group.rate}%</span>
-                                <span>{formatSimpleAmount(group.taxAmount)}</span>
+                                <span>
+                                    {formatSimpleAmount(group.taxAmount)}
+                                </span>
                             </div>
                         </div>
                     ))}
@@ -628,13 +800,7 @@ function TemplateBPreview({
                 </p>
             </div>
 
-            <div className="mt-8 flex justify-between border-t border-slate-300 pt-2 text-xs italic">
-                <span>
-                    --- ÉLÉMENTS DE SÉCURITÉ DE LA FACTURE NORMALISÉE ---
-                </span>
-
-                <span className="font-black not-italic">ISF: DGI-RDC-01</span>
-            </div>
+            <DgiSecurityBlock invoice={invoice} />
 
             <div
                 className={cn(
@@ -655,6 +821,8 @@ function TemplateBPreview({
                         : "La facture n’est pas normalisée !"}
                 </p>
             </div>
+
+            <InvoiceCommentsBlock />
         </div>
     );
 }
@@ -749,6 +917,8 @@ export default function InvoiceViewerPage() {
             (invoiceData.client_info ?? {}) as Record<string, unknown>;
         const paymentInfo =
             (invoiceData.payment_info ?? {}) as Record<string, unknown>;
+        const typeInfo =
+            (invoiceData.type_info ?? {}) as Record<string, unknown>;
 
         const contract =
             "contract" in invoiceData
@@ -756,17 +926,31 @@ export default function InvoiceViewerPage() {
                 : null;
 
         const lines: InvoiceLine[] = (invoiceData.items ?? []).map(
-            (item, index) => ({
-                id: `${invoiceData.id}-${index}`,
-                designation: safeText(item.description),
-                quantity: Number(item.quantity ?? 0),
-                unitPrice: Number(item.unit_price ?? 0),
-                taxRate: Number(item.tax_rate ?? 0),
-                subtotal: Number(item.subtotal ?? 0),
-                taxAmount: Number(item.tax_amount ?? 0),
-                lineTotal: Number(item.line_total ?? 0),
-            })
+            (item, index) => {
+                const lineRecord = item as Record<string, unknown>;
+
+                return {
+                    id: `${invoiceData.id}-${index}`,
+                    code: safeText(
+                        lineRecord.code ??
+                        lineRecord.article_code ??
+                        lineRecord.item_code ??
+                        lineRecord.type_code,
+                        "BIE"
+                    ),
+                    designation: safeText(item.description),
+                    quantity: Number(item.quantity ?? 0),
+                    unitPrice: Number(item.unit_price ?? 0),
+                    taxRate: Number(item.tax_rate ?? 0),
+                    subtotal: Number(item.subtotal ?? 0),
+                    taxAmount: Number(item.tax_amount ?? 0),
+                    lineTotal: Number(item.line_total ?? 0),
+                };
+            }
         );
+
+        const invoiceTypeCode = safeText(typeInfo.code, "FV");
+        const invoiceTypeTitle = safeText(typeInfo.title, "Facture de vente");
 
         return {
             id: String(invoiceData.id),
@@ -777,11 +961,27 @@ export default function InvoiceViewerPage() {
                 `Facture #${invoiceData.id}`
             ),
             number: safeText(invoiceData.number, ""),
+
+            invoiceTypeCode,
+            invoiceTypeTitle,
+            fiscalRegime: "TTC",
+            isDuplicate: false,
+            isf:
+                mapWorkflowStatusToUiStatus(
+                    "workflow_status" in invoiceData
+                        ? String(invoiceData.workflow_status ?? "")
+                        : undefined
+                ) === "Normalisée"
+                    ? "DGI-RDC-01"
+                    : "En attente DGI",
+            defMcf: "En attente de normalisation",
+
             client:
                 safeText(receiverInfo.legal_name, "") ||
                 safeText(receiverInfo.name, "") ||
                 safeText(clientInfo.legal_name, "") ||
                 safeText(clientInfo.name, "—"),
+            clientType: safeText(clientInfo.client_type, "PM - Personne Morale"),
             clientAddress:
                 safeText(receiverInfo.address, "") ||
                 safeText(clientInfo.address, "—"),
@@ -799,6 +999,10 @@ export default function InvoiceViewerPage() {
                 safeText(receiverInfo.rccm, "") ||
                 safeText(clientInfo.rccm, "") ||
                 safeText(clientInfo.registration_id, "—"),
+            clientIdnat:
+                safeText(receiverInfo.idnat, "") ||
+                safeText(clientInfo.idnat, "—"),
+
             senderName: safeText(senderInfo.name),
             senderLegalName: safeText(senderInfo.legal_name, ""),
             senderAddress: safeText(senderInfo.address),
@@ -806,6 +1010,8 @@ export default function InvoiceViewerPage() {
             senderEmail: safeText(senderInfo.email),
             senderNif: safeText(senderInfo.nif),
             senderRccm: safeText(senderInfo.rccm),
+            senderIdnat: safeText(senderInfo.idnat),
+
             amountHT: Number(invoiceData.invoice_amount ?? 0),
             taxAmount: Number(invoiceData.tax_amount ?? 0),
             totalAmount: Number(invoiceData.total_amount ?? 0),
@@ -817,7 +1023,7 @@ export default function InvoiceViewerPage() {
                     ? String(invoiceData.workflow_status ?? "")
                     : undefined
             ),
-            createdAt: formatApiDate(invoiceData.created_at),
+            createdAt: formatApiDateTime(invoiceData.created_at),
             dueDate: formatApiDate(invoiceData.due_date),
             templateId:
                 "template_id" in invoiceData

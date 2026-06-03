@@ -323,7 +323,8 @@
     },
     "steps": {
       "client": "Ba informations ya kiliya",
-      "preview": "Komona liboso"
+      "preview": "Komona liboso",
+      "comment": "Commentaire"
     },
     "kind": {
       "article": "Eloko",

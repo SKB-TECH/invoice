@@ -323,7 +323,8 @@
     },
     "steps": {
       "client": "Client information",
-      "preview": "Preview"
+      "preview": "Preview",
+      "comment": "comment"
     },
     "kind": {
       "article": "Item",

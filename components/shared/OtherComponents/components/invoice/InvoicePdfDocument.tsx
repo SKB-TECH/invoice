@@ -9,9 +9,22 @@ import {
 
 type InvoicePdfLine = {
     id: string;
+    code?: string;
     designation: string;
     quantity: number;
     unitPrice: number;
+    taxRate?: number;
+};
+
+type InvoicePdfComments = {
+    A?: string;
+    B?: string;
+    C?: string;
+    D?: string;
+    E?: string;
+    F?: string;
+    G?: string;
+    H?: string;
 };
 
 type InvoicePdfData = {
@@ -23,6 +36,18 @@ type InvoicePdfData = {
     createdAt: string;
     dueDate: string;
     lines: InvoicePdfLine[];
+
+    clientType?: string;
+    clientNif?: string;
+    clientRccm?: string;
+    clientIdnat?: string;
+    invoiceTypeCode?: string;
+    invoiceTypeTitle?: string;
+    fiscalRegime?: string;
+    isDuplicate?: boolean;
+    isf?: string;
+    defMcf?: string;
+    comments?: InvoicePdfComments;
 };
 
 function formatAmount(amount: number, currency: string) {
@@ -40,13 +65,24 @@ function formatAmount(amount: number, currency: string) {
         .replace(/\s/g, ".")}`;
 }
 
+const COMMENT_FIELDS = [
+    ["A", "Réf. Exo."],
+    ["B", "Réf. Paiement"],
+    ["C", "Réf. Contrat"],
+    ["D", "Réf. Bon commande"],
+    ["E", "Réf. Livraison"],
+    ["F", "Note interne"],
+    ["G", "Observation"],
+    ["H", "Autre commentaire"],
+] as const;
+
 const styles = StyleSheet.create({
     page: {
-        paddingTop: 52,
-        paddingBottom: 42,
-        paddingHorizontal: 54,
+        paddingTop: 42,
+        paddingBottom: 36,
+        paddingHorizontal: 42,
         fontFamily: "Helvetica",
-        fontSize: 10,
+        fontSize: 9,
         color: "#111111",
         backgroundColor: "#ffffff",
         position: "relative",
@@ -78,7 +114,7 @@ const styles = StyleSheet.create({
     header: {
         flexDirection: "row",
         justifyContent: "space-between",
-        marginBottom: 44,
+        marginBottom: 28,
     },
     logoRow: {
         flexDirection: "row",
@@ -107,8 +143,17 @@ const styles = StyleSheet.create({
         letterSpacing: 2,
         textTransform: "uppercase",
     },
+    titleBox: {
+        alignItems: "flex-end",
+    },
     title: {
-        fontSize: 48,
+        fontSize: 38,
+        fontWeight: 900,
+        textTransform: "uppercase",
+    },
+    invoiceType: {
+        marginTop: 4,
+        fontSize: 9,
         fontWeight: 900,
         textTransform: "uppercase",
     },
@@ -118,16 +163,16 @@ const styles = StyleSheet.create({
         borderBottomWidth: 1.5,
         borderBottomColor: "#111111",
         paddingBottom: 8,
-        marginBottom: 18,
+        marginBottom: 14,
     },
     metaText: {
-        fontSize: 10,
+        fontSize: 9,
         fontWeight: 800,
         lineHeight: 1.4,
         textTransform: "uppercase",
     },
     invoiceNumber: {
-        fontSize: 13,
+        fontSize: 12,
         fontWeight: 900,
         textTransform: "uppercase",
     },
@@ -135,23 +180,23 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         justifyContent: "space-between",
         marginTop: 14,
-        marginBottom: 72,
+        marginBottom: 34,
     },
     partyLeft: {
-        width: "42%",
+        width: "44%",
     },
     partyRight: {
-        width: "42%",
+        width: "44%",
         textAlign: "right",
     },
     partyTitle: {
-        fontSize: 11,
+        fontSize: 10,
         fontWeight: 900,
-        marginBottom: 12,
+        marginBottom: 8,
         textTransform: "uppercase",
     },
     partyText: {
-        fontSize: 10,
+        fontSize: 9,
         fontWeight: 700,
         lineHeight: 1.35,
     },
@@ -165,47 +210,57 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         borderBottomWidth: 0.8,
         borderBottomColor: "#333333",
-        paddingVertical: 11,
+        paddingVertical: 8,
+    },
+    numCol: {
+        width: "7%",
+    },
+    codeCol: {
+        width: "11%",
     },
     descriptionCol: {
-        width: "45%",
+        width: "34%",
     },
     unitCol: {
-        width: "22%",
-        textAlign: "right",
-    },
-    qtyCol: {
-        width: "15%",
-        textAlign: "right",
-    },
-    totalCol: {
         width: "18%",
         textAlign: "right",
     },
+    qtyCol: {
+        width: "10%",
+        textAlign: "right",
+    },
+    taxCol: {
+        width: "9%",
+        textAlign: "right",
+    },
+    totalCol: {
+        width: "11%",
+        textAlign: "right",
+    },
     th: {
-        fontSize: 9,
+        fontSize: 8,
         fontWeight: 900,
     },
     cell: {
-        fontSize: 11,
+        fontSize: 9,
     },
     footer: {
         flexDirection: "row",
         justifyContent: "space-between",
-        marginTop: 22,
+        marginTop: 18,
     },
     payment: {
-        width: "44%",
-        marginTop: 42,
+        width: "42%",
+        marginTop: 26,
     },
     paymentTitle: {
-        fontSize: 14,
+        fontSize: 12,
         fontWeight: 900,
-        marginBottom: 16,
+        marginBottom: 10,
         textTransform: "uppercase",
     },
     paymentText: {
-        fontSize: 10,
+        fontSize: 9,
         lineHeight: 1.35,
     },
     totals: {
@@ -214,26 +269,80 @@ const styles = StyleSheet.create({
     totalRow: {
         flexDirection: "row",
         justifyContent: "space-between",
-        marginBottom: 9,
+        marginBottom: 7,
     },
     totalLabel: {
-        fontSize: 13,
+        fontSize: 10,
         fontWeight: 900,
     },
     totalValue: {
-        fontSize: 13,
+        fontSize: 10,
         fontWeight: 900,
     },
-    notes: {
-        position: "absolute",
-        left: 54,
-        bottom: 58,
-        width: 310,
+    securityBlock: {
+        marginTop: 18,
+        borderWidth: 1,
+        borderColor: "#cbd5e1",
+        backgroundColor: "#f8fafc",
+        padding: 9,
     },
-    note: {
+    securityTitle: {
+        fontSize: 9,
+        fontWeight: 900,
+        textTransform: "uppercase",
+        marginBottom: 6,
+    },
+    securityGrid: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+    },
+    securityCol: {
+        width: "48%",
+    },
+    securityText: {
+        fontSize: 8,
+        lineHeight: 1.35,
+    },
+    warningText: {
+        marginTop: 6,
+        fontSize: 8,
+        color: "#dc2626",
+        fontStyle: "italic",
+    },
+    commentsBlock: {
+        marginTop: 14,
+        borderWidth: 1,
+        borderColor: "#94a3b8",
+    },
+    commentsTitle: {
+        marginBottom: 5,
+        fontSize: 9,
+        fontWeight: 900,
+        textTransform: "uppercase",
+    },
+    commentsRow: {
+        flexDirection: "row",
+        borderBottomWidth: 0.6,
+        borderBottomColor: "#cbd5e1",
+    },
+    commentsHeader: {
+        backgroundColor: "#e2e8f0",
+        fontWeight: 900,
+    },
+    commentCode: {
+        width: "12%",
+        padding: 4,
         fontSize: 7,
-        lineHeight: 1.4,
-        marginBottom: 16,
+    },
+    commentLabel: {
+        width: "30%",
+        padding: 4,
+        fontSize: 7,
+    },
+    commentValue: {
+        width: "58%",
+        padding: 4,
+        fontSize: 7,
     },
 });
 
@@ -243,8 +352,19 @@ export function InvoicePdfDocument({ invoice }: { invoice: InvoicePdfData }) {
         0
     );
 
-    const tax = Math.round(subtotal * 0.16);
+    const tax = invoice.lines.reduce((sum, line) => {
+        const rate = Number(line.taxRate ?? 16);
+        return sum + line.quantity * line.unitPrice * (rate / 100);
+    }, 0);
+
     const total = subtotal + tax;
+
+    const invoiceTypeCode = invoice.invoiceTypeCode || "FV";
+    const invoiceTypeTitle = invoice.invoiceTypeTitle || "FACTURE DE VENTE";
+    const fiscalRegime = invoice.fiscalRegime || "TTC";
+    const isf = invoice.isf || "En attente DGI";
+    const defMcf = invoice.defMcf || "En attente de normalisation";
+    const clientType = invoice.clientType || "PM - Personne Morale";
 
     return (
         <Document>
@@ -264,13 +384,22 @@ export function InvoicePdfDocument({ invoice }: { invoice: InvoicePdfData }) {
                         </View>
                     </View>
 
-                    <Text style={styles.title}>FACTURE</Text>
+                    <View style={styles.titleBox}>
+                        <Text style={styles.title}>FACTURE</Text>
+                        <Text style={styles.invoiceType}>
+                            {invoiceTypeCode} - {invoiceTypeTitle}
+                        </Text>
+                    </View>
                 </View>
 
                 <View style={styles.meta}>
                     <View>
                         <Text style={styles.metaText}>DATE : {invoice.createdAt}</Text>
                         <Text style={styles.metaText}>ÉCHÉANCE : {invoice.dueDate}</Text>
+                        <Text style={styles.metaText}>RÉGIME : {fiscalRegime}</Text>
+                        <Text style={styles.metaText}>
+                            DUPLICATA : {invoice.isDuplicate ? "OUI" : "NON"}
+                        </Text>
                     </View>
 
                     <Text style={styles.invoiceNumber}>
@@ -283,6 +412,8 @@ export function InvoicePdfDocument({ invoice }: { invoice: InvoicePdfData }) {
                         <Text style={styles.partyTitle}>Émetteur :</Text>
                         <Text style={styles.partyText}>
                             iKwook Sarl{"\n"}
+                            NIF : A1801326M{"\n"}
+                            RCCM : CD/KIN/RCCM/XX-X-XXXXX{"\n"}
                             contact@ikwook.cd{"\n"}
                             +243 822 204 012{"\n"}
                             Kinshasa, RDC
@@ -292,7 +423,11 @@ export function InvoicePdfDocument({ invoice }: { invoice: InvoicePdfData }) {
                     <View style={styles.partyRight}>
                         <Text style={styles.partyTitle}>Destinataire :</Text>
                         <Text style={styles.partyText}>
+                            Type : {clientType}{"\n"}
                             {invoice.client}{"\n"}
+                            NIF : {invoice.clientNif || "-"}{"\n"}
+                            RCCM : {invoice.clientRccm || "-"}{"\n"}
+                            ID Nat : {invoice.clientIdnat || "-"}{"\n"}
                             {invoice.telephone}{"\n"}
                             {invoice.clientAddress}
                         </Text>
@@ -301,50 +436,56 @@ export function InvoicePdfDocument({ invoice }: { invoice: InvoicePdfData }) {
 
                 <View>
                     <View style={styles.tableHeader}>
+                        <Text style={[styles.numCol, styles.th]}>#</Text>
+                        <Text style={[styles.codeCol, styles.th]}>Code</Text>
                         <Text style={[styles.descriptionCol, styles.th]}>
-                            Description :
+                            Désignation
                         </Text>
                         <Text style={[styles.unitCol, styles.th]}>
-                            Prix Unitaire :
+                            Prix HT
                         </Text>
                         <Text style={[styles.qtyCol, styles.th]}>
-                            Quantité :
+                            Qté
+                        </Text>
+                        <Text style={[styles.taxCol, styles.th]}>
+                            TVA
                         </Text>
                         <Text style={[styles.totalCol, styles.th]}>
-                            Total :
+                            Total
                         </Text>
                     </View>
 
-                    {invoice.lines.map((line) => (
-                        <View key={line.id} style={styles.tableRow}>
-                            <Text style={[styles.descriptionCol, styles.cell]}>
-                                {line.designation}
-                            </Text>
-                            <Text style={[styles.unitCol, styles.cell]}>
-                                {formatAmount(line.unitPrice, invoice.currency)}
-                            </Text>
-                            <Text style={[styles.qtyCol, styles.cell]}>
-                                {line.quantity}
-                            </Text>
-                            <Text style={[styles.totalCol, styles.cell]}>
-                                {formatAmount(
-                                    line.quantity * line.unitPrice,
-                                    invoice.currency
-                                )}
-                            </Text>
-                        </View>
-                    ))}
+                    {invoice.lines.map((line, index) => {
+                        const rate = Number(line.taxRate ?? 16);
+                        const lineTotal =
+                            line.quantity * line.unitPrice * (1 + rate / 100);
 
-                    {Array.from({
-                        length: Math.max(0, 5 - invoice.lines.length),
-                    }).map((_, index) => (
-                        <View key={`empty-${index}`} style={styles.tableRow}>
-                            <Text style={[styles.descriptionCol, styles.cell]}>-</Text>
-                            <Text style={[styles.unitCol, styles.cell]}>-</Text>
-                            <Text style={[styles.qtyCol, styles.cell]}>-</Text>
-                            <Text style={[styles.totalCol, styles.cell]}>-</Text>
-                        </View>
-                    ))}
+                        return (
+                            <View key={line.id} style={styles.tableRow}>
+                                <Text style={[styles.numCol, styles.cell]}>
+                                    {index + 1}
+                                </Text>
+                                <Text style={[styles.codeCol, styles.cell]}>
+                                    {line.code || "BIE"}
+                                </Text>
+                                <Text style={[styles.descriptionCol, styles.cell]}>
+                                    {line.designation}
+                                </Text>
+                                <Text style={[styles.unitCol, styles.cell]}>
+                                    {formatAmount(line.unitPrice, invoice.currency)}
+                                </Text>
+                                <Text style={[styles.qtyCol, styles.cell]}>
+                                    {line.quantity}
+                                </Text>
+                                <Text style={[styles.taxCol, styles.cell]}>
+                                    {rate}%
+                                </Text>
+                                <Text style={[styles.totalCol, styles.cell]}>
+                                    {formatAmount(lineTotal, invoice.currency)}
+                                </Text>
+                            </View>
+                        );
+                    })}
                 </View>
 
                 <View style={styles.footer}>
@@ -366,7 +507,7 @@ export function InvoicePdfDocument({ invoice }: { invoice: InvoicePdfData }) {
                         </View>
 
                         <View style={styles.totalRow}>
-                            <Text style={styles.totalLabel}>TVA 16% :</Text>
+                            <Text style={styles.totalLabel}>TOTAL TVA :</Text>
                             <Text style={styles.totalValue}>
                                 {formatAmount(tax, invoice.currency)}
                             </Text>
@@ -386,16 +527,64 @@ export function InvoicePdfDocument({ invoice }: { invoice: InvoicePdfData }) {
                     </View>
                 </View>
 
-                <View style={styles.notes}>
-                    <Text style={styles.note}>
-                        En cas de retard de paiement, une indemnité de retard peut être
-                        appliquée conformément aux conditions générales.
+                <View style={styles.securityBlock}>
+                    <Text style={styles.securityTitle}>
+                        Éléments de sécurité / Facture normalisée
                     </Text>
 
-                    <Text style={styles.note}>
-                        Conditions générales de vente consultables sur le site :
-                        www.ikwook.cd
+                    <View style={styles.securityGrid}>
+                        <View style={styles.securityCol}>
+                            <Text style={styles.securityText}>
+                                Type facture : {invoiceTypeCode} - {invoiceTypeTitle}
+                            </Text>
+                            <Text style={styles.securityText}>
+                                Régime facture : {fiscalRegime}
+                            </Text>
+                            <Text style={styles.securityText}>ISF : {isf}</Text>
+                            <Text style={styles.securityText}>DEF / MCF : {defMcf}</Text>
+                        </View>
+
+                        <View style={styles.securityCol}>
+                            <Text style={styles.securityText}>
+                                QR Code DGI : À générer après normalisation
+                            </Text>
+                            <Text style={styles.securityText}>
+                                Duplicata : {invoice.isDuplicate ? "OUI" : "NON"}
+                            </Text>
+                            <Text style={styles.securityText}>
+                                Date émission : {invoice.createdAt}
+                            </Text>
+                            <Text style={styles.securityText}>
+                                N° série facture : {invoice.invoice}
+                            </Text>
+                        </View>
+                    </View>
+
+                    <Text style={styles.warningText}>
+                        Cette facture devient normalisée uniquement après validation par le dispositif fiscal agréé DGI.
                     </Text>
+                </View>
+
+                <Text style={styles.commentsTitle}>
+                    Lignes de commentaires facture
+                </Text>
+
+                <View style={styles.commentsBlock}>
+                    <View style={[styles.commentsRow, styles.commentsHeader]}>
+                        <Text style={styles.commentCode}>Code</Text>
+                        <Text style={styles.commentLabel}>Étiqueté</Text>
+                        <Text style={styles.commentValue}>Contenu</Text>
+                    </View>
+
+                    {COMMENT_FIELDS.map(([code, label]) => (
+                        <View key={code} style={styles.commentsRow}>
+                            <Text style={styles.commentCode}>{code}</Text>
+                            <Text style={styles.commentLabel}>{label}</Text>
+                            <Text style={styles.commentValue}>
+                                {invoice.comments?.[code] || "-"}
+                            </Text>
+                        </View>
+                    ))}
                 </View>
             </Page>
         </Document>

@@ -5,13 +5,10 @@ import { Search, X } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 import { useInvoiceFournitures } from "@/core/hooks/invoices/useInvoices";
+import { useFournituresList } from "@/core/hooks/fournitures/useFournituresList";
 
 import { FieldError } from "./Fields";
-import {
-    formatMoney,
-    getLineSubtotal,
-    getLineTotal,
-} from "./utils";
+import { formatMoney, getLineSubtotal, getLineTotal } from "./utils";
 import type {
     CatalogItem,
     InvoiceFormErrors,
@@ -36,22 +33,40 @@ export function StepCatalog({
 }) {
     const t = useTranslations("createInvoice");
 
+    const isArticle = itemKind === "Article";
+
     const [search, setSearch] = useState("");
     const [isOpen, setIsOpen] = useState(false);
-    const [selectedItem, setSelectedItem] =
-        useState<CatalogItem | null>(null);
+    const [selectedItem, setSelectedItem] = useState<CatalogItem | null>(null);
 
     const {
         data: fournituresData,
-        isLoading,
-        isError,
+        isLoading: isLoadingFournitures,
+        isError: isErrorFournitures,
     } = useInvoiceFournitures({
         page: 1,
         perPage: 100,
     });
 
+    const {
+        data: services,
+        isLoading: isLoadingServices,
+        isError: isErrorServices,
+    } = useFournituresList();
+
+    const isLoading = isArticle ? isLoadingFournitures : isLoadingServices;
+    const isError = isArticle ? isErrorFournitures : isErrorServices;
+
+    const currentItems = useMemo(() => {
+        return items.filter((item) => item.type === itemKind);
+    }, [items, itemKind]);
+
     const catalogItems: CatalogItem[] = useMemo(() => {
-        return (fournituresData?.items ?? []).map((item) => ({
+        const sourceItems = isArticle
+            ? fournituresData?.items ?? []
+            : services?.items ?? [];
+
+        return sourceItems.map((item: any) => ({
             id: item.id,
             name: item.name,
             description: item.description,
@@ -66,14 +81,12 @@ export function StepCatalog({
             priceTTC: Number(item.price_after ?? 0),
             currency: item.currency === "USD" ? "USD" : "CDF",
         }));
-    }, [fournituresData?.items, itemKind]);
+    }, [fournituresData?.items, services?.items, isArticle, itemKind]);
 
     const suggestions = useMemo(() => {
         const q = search.trim().toLowerCase();
 
-        if (!q) {
-            return catalogItems;
-        }
+        if (!q) return catalogItems;
 
         return catalogItems.filter((item) => {
             return (
@@ -84,40 +97,7 @@ export function StepCatalog({
         });
     }, [catalogItems, search]);
 
-    const removeItem = (id: number) => {
-        setItems((prev) => prev.filter((item) => item.id !== id));
-    };
-
-    const addItem = () => {
-        if (!selectedItem) return;
-
-        const newItem: InvoiceItem = {
-            id: Date.now(),
-            catalogId: selectedItem.id,
-            name: selectedItem.name,
-            type: selectedItem.type,
-            quantity: 1,
-
-            tax: selectedItem.tax,
-            taxGroupId: selectedItem.taxGroupId,
-            taxGroupCode: selectedItem.taxGroupCode,
-            taxGroupTitle: selectedItem.taxGroupTitle,
-            taxGroupMention: selectedItem.taxGroupMention,
-
-            priceHT: selectedItem.priceHT,
-            priceTTC: selectedItem.priceTTC,
-            currency: selectedItem.currency,
-
-            men: selectedItem.type === "Service" ? 1 : undefined,
-            days: selectedItem.type === "Service" ? 1 : undefined,
-            dailyPrice:
-                selectedItem.type === "Service"
-                    ? selectedItem.priceHT || 10000
-                    : undefined,
-        };
-
-        setItems((prev) => [...prev, newItem]);
-
+    const resetSelection = () => {
         setSelectedItem(null);
         setSearch("");
         setIsOpen(false);
@@ -128,19 +108,90 @@ export function StepCatalog({
         }));
     };
 
+    const removeItem = (id: number) => {
+        setItems((prev) =>
+            prev.filter((item) => item.type === itemKind && item.id !== id)
+        );
+    };
+
+    const addItem = () => {
+        if (!selectedItem) return;
+
+        setItems((prev) => {
+            const sameKindItems = prev.filter((item) => item.type === itemKind);
+            const selectedName = selectedItem.name.trim().toLowerCase();
+
+            const existingItem = sameKindItems.find(
+                (item) => item.name.trim().toLowerCase() === selectedName
+            );
+
+            if (existingItem) {
+                return sameKindItems.map((item) => {
+                    if (item.id !== existingItem.id) return item;
+
+                    if (item.type === "Article") {
+                        return {
+                            ...item,
+                            quantity: (item.quantity ?? 1) + 1,
+                            code: item.code ?? selectedItem.code,
+                        };
+                    }
+
+                    return {
+                        ...item,
+                        men: (item.men ?? 1) + 1,
+                        code: item.code ?? selectedItem.code,
+                    };
+                });
+            }
+
+            const newItem: InvoiceItem = {
+                id: Date.now(),
+                catalogId: selectedItem.id,
+                code: selectedItem.code,
+                name: selectedItem.name,
+                type: itemKind,
+                quantity: 1,
+
+                tax: selectedItem.tax,
+                taxGroupId: selectedItem.taxGroupId,
+                taxGroupCode: selectedItem.taxGroupCode,
+                taxGroupTitle: selectedItem.taxGroupTitle,
+                taxGroupMention: selectedItem.taxGroupMention,
+
+                priceHT: selectedItem.priceHT,
+                priceTTC: selectedItem.priceTTC,
+                currency: selectedItem.currency,
+
+                men: itemKind === "Service" ? 1 : undefined,
+                days: itemKind === "Service" ? 1 : undefined,
+                dailyPrice:
+                    itemKind === "Service"
+                        ? selectedItem.priceHT || 10000
+                        : undefined,
+            };
+
+            return [...sameKindItems, newItem];
+        });
+
+        resetSelection();
+    };
+
     const updateArticleQuantity = (id: number, quantity: number) => {
         setItems((prev) =>
-            prev.map((item) =>
-                item.id === id
-                    ? {
-                        ...item,
-                        quantity:
-                            quantity < 1 || Number.isNaN(quantity)
-                                ? 1
-                                : quantity,
-                    }
-                    : item
-            )
+            prev
+                .filter((item) => item.type === itemKind)
+                .map((item) =>
+                    item.id === id
+                        ? {
+                            ...item,
+                            quantity:
+                                quantity < 1 || Number.isNaN(quantity)
+                                    ? 1
+                                    : quantity,
+                        }
+                        : item
+                )
         );
 
         setErrors((prev) => ({
@@ -155,15 +206,19 @@ export function StepCatalog({
         value: number
     ) => {
         setItems((prev) =>
-            prev.map((item) =>
-                item.id === id
-                    ? {
-                        ...item,
-                        [field]:
-                            value < 1 || Number.isNaN(value) ? 1 : value,
-                    }
-                    : item
-            )
+            prev
+                .filter((item) => item.type === itemKind)
+                .map((item) =>
+                    item.id === id
+                        ? {
+                            ...item,
+                            [field]:
+                                value < 1 || Number.isNaN(value)
+                                    ? 1
+                                    : value,
+                        }
+                        : item
+                )
         );
 
         setErrors((prev) => ({
@@ -172,15 +227,13 @@ export function StepCatalog({
         }));
     };
 
-    const isArticle = itemKind === "Article";
-
     return (
-        <div className="bg-white p-8">
-            <h2 className="mb-4 text-[20px] font-semibold text-slate-700">
+        <div className="bg-white">
+            <h2 className="p-4 text-[20px] font-semibold text-slate-700">
                 {isArticle ? t("kind.article") : t("kind.service")}
             </h2>
 
-            <div className="flex gap-4">
+            <div className="flex gap-4 p-4">
                 <div className="relative flex-1">
                     <input
                         value={search}
@@ -195,7 +248,7 @@ export function StepCatalog({
                                 ? t("catalog.searchArticle")
                                 : t("catalog.searchService")
                         }
-                        className="h-12 w-full rounded border border-slate-300 px-5 pr-14 text-[18px] font-medium text-slate-700 outline-none placeholder:text-slate-400 focus:border-[#0879bd]"
+                        className="h-12 w-full border border-slate-300 px-5 pr-14 text-[18px] font-medium text-slate-700 outline-none placeholder:text-slate-400 focus:border-[#0879bd]"
                     />
 
                     <Search className="absolute right-5 top-1/2 size-5 -translate-y-1/2 text-slate-700" />
@@ -208,7 +261,9 @@ export function StepCatalog({
                                 </div>
                             ) : isError ? (
                                 <div className="px-5 py-3 text-sm font-medium text-red-500">
-                                    Impossible de charger les fournitures.
+                                    {isArticle
+                                        ? "Impossible de charger les articles."
+                                        : "Impossible de charger les services."}
                                 </div>
                             ) : suggestions.length === 0 ? (
                                 <div className="px-5 py-3 text-sm font-medium text-slate-500">
@@ -217,7 +272,7 @@ export function StepCatalog({
                             ) : (
                                 suggestions.map((item) => (
                                     <button
-                                        key={item.id}
+                                        key={`${item.type}-${item.id}-${item.code}`}
                                         type="button"
                                         onClick={() => {
                                             setSearch(item.name);
@@ -243,7 +298,8 @@ export function StepCatalog({
                                         </span>
 
                                         <span className="ml-4 shrink-0 text-xs font-semibold text-slate-400">
-                                            {item.taxGroupMention || `TVA ${item.tax}%`}
+                                            {item.taxGroupMention ||
+                                                `TVA ${item.tax}%`}
                                         </span>
                                     </button>
                                 ))
@@ -256,7 +312,7 @@ export function StepCatalog({
                     type="button"
                     onClick={addItem}
                     disabled={!selectedItem}
-                    className="h-12 w-52 rounded bg-[#0879bd] text-[14px] font-semibold text-white hover:bg-[#076ca8] disabled:cursor-not-allowed disabled:bg-slate-300"
+                    className="h-12 w-52 bg-[#0879bd] text-[14px] font-semibold text-white hover:bg-[#076ca8] disabled:bg-slate-300 disabled:cursor-not-allowed"
                 >
                     {t("common.add")}
                 </button>
@@ -264,32 +320,32 @@ export function StepCatalog({
 
             <FieldError message={errors.items} />
 
-            <div className="mt-16 overflow-x-auto">
+            <div className="mt-2 p-4">
                 {isArticle ? (
                     <>
-                        <div className="grid min-w-[1040px] grid-cols-[90px_1fr_130px_130px_150px_170px_170px_40px] bg-slate-100 px-6 py-3 text-[17px] font-semibold text-slate-400">
+                        <div className="grid min-w-[1160px] grid-cols-[70px_140px_1fr_130px_130px_150px_150px_170px_40px] bg-slate-100 px-6 py-3 text-[17px] font-semibold text-slate-400">
                             <div>{t("table.number")}</div>
+                            <div>Code</div>
                             <div>{t("kind.article")}</div>
                             <div>{t("table.quantity")}</div>
                             <div>{t("table.tax")}</div>
                             <div>{t("table.priceHT")}</div>
-                            <div>Devise</div>
                             <div>Total TTC</div>
                             <div />
                         </div>
 
-                        {items.length === 0 ? (
-                            <div className="min-w-[1040px] px-6 py-10 text-center text-sm font-medium text-slate-400">
+                        {currentItems.length === 0 ? (
+                            <div className="min-w-[1160px] px-6 py-10 text-center text-sm font-medium text-slate-400">
                                 {t("catalog.noArticle")}
                             </div>
                         ) : (
-                            items.map((item, index) => (
+                            currentItems.map((item, index) => (
                                 <div
                                     key={item.id}
-                                    className="grid min-w-[1040px] grid-cols-[90px_1fr_130px_130px_150px_170px_170px_40px] items-center px-6 py-5 text-[17px] font-semibold text-slate-700"
+                                    className="grid min-w-[1160px] grid-cols-[70px_140px_1fr_130px_130px_150px_150px_170px_40px] items-center px-6 py-5 text-[17px] font-semibold text-slate-700"
                                 >
                                     <div>{index + 1}</div>
-
+                                    <div>{item.code || "-"}</div>
                                     <div>{item.name}</div>
 
                                     <div>
@@ -303,26 +359,20 @@ export function StepCatalog({
                                                     Number(event.target.value)
                                                 )
                                             }
-                                            className="h-11 w-24 rounded border border-slate-300 px-3 text-center text-[16px] font-semibold outline-none focus:border-[#0879bd]"
+                                            className="h-11 w-24 border border-slate-300 px-3 text-center text-[16px] font-semibold outline-none focus:border-[#0879bd]"
                                         />
                                     </div>
 
                                     <div>{item.tax}%</div>
-
                                     <div>{formatMoney(item.priceHT)}</div>
-
-                                    <div>{item.currency}</div>
-
-                                    <div>
-                                        {formatMoney(getLineTotal(item))}
-                                    </div>
+                                    <div>{formatMoney(getLineTotal(item))}</div>
 
                                     <button
                                         type="button"
                                         onClick={() => removeItem(item.id)}
-                                        className="flex size-8 items-center justify-center text-slate-600 hover:bg-slate-100"
+                                        className="flex size-8 items-center justify-center text-red-600 hover:bg-slate-100"
                                     >
-                                        <X className="size-4" />
+                                        <X className="size-4" color="red" />
                                     </button>
                                 </div>
                             ))
@@ -330,8 +380,9 @@ export function StepCatalog({
                     </>
                 ) : (
                     <>
-                        <div className="grid min-w-[1300px] grid-cols-[70px_1fr_130px_130px_180px_130px_150px_150px_170px_40px] bg-slate-100 px-6 py-3 text-[16px] font-semibold text-slate-400">
+                        <div className="grid min-w-[1400px] grid-cols-[70px_140px_1fr_130px_130px_180px_130px_150px_150px_170px_40px] bg-slate-100 px-6 py-3 text-[16px] font-semibold text-slate-400">
                             <div>{t("table.number")}</div>
+                            <div>Code</div>
                             <div>{t("kind.service")}</div>
                             <div>{t("table.men")}</div>
                             <div>{t("table.days")}</div>
@@ -343,18 +394,18 @@ export function StepCatalog({
                             <div />
                         </div>
 
-                        {items.length === 0 ? (
-                            <div className="min-w-[1300px] px-6 py-10 text-center text-sm font-medium text-slate-400">
+                        {currentItems.length === 0 ? (
+                            <div className="min-w-[1420px] px-6 py-10 text-center text-sm font-medium text-slate-400">
                                 {t("catalog.noService")}
                             </div>
                         ) : (
-                            items.map((item, index) => (
+                            currentItems.map((item, index) => (
                                 <div
                                     key={item.id}
-                                    className="grid min-w-[1300px] grid-cols-[70px_1fr_130px_130px_180px_130px_150px_150px_170px_40px] items-center px-6 py-5 text-[16px] font-semibold text-slate-700"
+                                    className="grid min-w-[1420px] grid-cols-[70px_140px_1fr_130px_130px_180px_130px_150px_150px_170px_40px] items-center px-6 py-5 text-[16px] font-semibold text-slate-700"
                                 >
                                     <div>{index + 1}</div>
-
+                                    <div>{item.code || "-"}</div>
                                     <div>{item.name}</div>
 
                                     <div>
@@ -369,7 +420,7 @@ export function StepCatalog({
                                                     Number(event.target.value)
                                                 )
                                             }
-                                            className="h-11 w-24 rounded border border-slate-300 px-3 text-center text-[16px] font-semibold outline-none focus:border-[#0879bd]"
+                                            className="h-11 w-24 border border-slate-300 px-3 text-center text-[16px] font-semibold outline-none focus:border-[#0879bd]"
                                         />
                                     </div>
 
@@ -385,7 +436,7 @@ export function StepCatalog({
                                                     Number(event.target.value)
                                                 )
                                             }
-                                            className="h-11 w-24 rounded border border-slate-300 px-3 text-center text-[16px] font-semibold outline-none focus:border-[#0879bd]"
+                                            className="h-11 w-24 border border-slate-300 px-3 text-center text-[16px] font-semibold outline-none focus:border-[#0879bd]"
                                         />
                                     </div>
 
@@ -401,28 +452,21 @@ export function StepCatalog({
                                                     Number(event.target.value)
                                                 )
                                             }
-                                            className="h-11 w-36 rounded border border-slate-300 px-3 text-center text-[16px] font-semibold outline-none focus:border-[#0879bd]"
+                                            className="h-11 w-36 border border-slate-300 px-3 text-center text-[16px] font-semibold outline-none focus:border-[#0879bd]"
                                         />
                                     </div>
 
                                     <div>{item.tax}%</div>
-
-                                    <div>
-                                        {formatMoney(getLineSubtotal(item))}
-                                    </div>
-
+                                    <div>{formatMoney(getLineSubtotal(item))}</div>
                                     <div>{item.currency}</div>
-
-                                    <div>
-                                        {formatMoney(getLineTotal(item))}
-                                    </div>
+                                    <div>{formatMoney(getLineTotal(item))}</div>
 
                                     <button
                                         type="button"
                                         onClick={() => removeItem(item.id)}
-                                        className="flex size-8 items-center justify-center text-slate-600 hover:bg-slate-100"
+                                        className="flex size-8 items-center justify-center text-red-600 hover:bg-slate-100"
                                     >
-                                        <X className="size-4" />
+                                        <X className="size-4" color="red" />
                                     </button>
                                 </div>
                             ))
