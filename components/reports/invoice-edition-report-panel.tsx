@@ -4,11 +4,11 @@ import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 
 import { SectionCard } from "@/components/configuration/section-card";
-import { XzReportGeneratePanel } from "@/components/reports/xz-report-generate-panel";
-import { XzReportListPanel } from "@/components/reports/xz-report-list-panel";
+import { InvoiceEditionGeneratePanel } from "@/components/reports/invoice-edition-generate-panel";
+import { InvoiceEditionReportListPanel } from "@/components/reports/invoice-edition-report-list-panel";
 import { usePathname, useRouter } from "@/i18n/routing";
 
-export function SpecialXzReportPanel() {
+export function InvoiceEditionReportPanel() {
     const t = useTranslations("reports");
     const router = useRouter();
     const pathname = usePathname();
@@ -18,25 +18,25 @@ export function SpecialXzReportPanel() {
 
     const goToGenerate = () => {
         const q = new URLSearchParams(searchParams.toString());
-        q.set("menu", "reportXDaily");
+        q.set("menu", "invoiceEdition");
         q.set("generate", "1");
         router.push(`${pathname}?${q.toString()}`);
     };
 
     const goToList = () => {
         const q = new URLSearchParams(searchParams.toString());
-        q.set("menu", "reportXDaily");
+        q.set("menu", "invoiceEdition");
         q.delete("generate");
         const suffix = q.toString();
         router.replace(suffix ? `${pathname}?${suffix}` : pathname);
     };
 
     return (
-        <SectionCard title={t("specialXz.title")}>
+        <SectionCard title={t("ordinary.invoiceEdition.title")}>
             {isGenerateView ? (
-                <XzReportGeneratePanel onBack={goToList} />
+                <InvoiceEditionGeneratePanel onBack={goToList} />
             ) : (
-                <XzReportListPanel onGenerate={goToGenerate} />
+                <InvoiceEditionReportListPanel onGenerate={goToGenerate} />
             )}
         </SectionCard>
     );

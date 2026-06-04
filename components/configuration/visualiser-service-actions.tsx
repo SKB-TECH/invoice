@@ -3,6 +3,7 @@
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { useDeleteBillableService } from "@/core/hooks/billable-services/useBillableServices";
 import { getAxiosErrorMessage } from "@/core/utils/axiosErrorMessage";
 import { useRouter } from "@/i18n/routing";
@@ -26,9 +27,7 @@ export function VisualiserServiceActions({
     const buttonClass =
         "inline-flex h-[50px] w-52 items-center justify-center rounded text-[14px] font-semibold leading-none disabled:cursor-not-allowed disabled:opacity-60";
 
-    const handleDelete = () => {
-        if (!window.confirm(t("deleteConfirm"))) return;
-
+    const handleConfirmDelete = () => {
         deleteMutation.mutate(serviceId, {
             onSuccess: () => {
                 toast.success(t("deleteSuccess"));
@@ -51,14 +50,22 @@ export function VisualiserServiceActions({
             >
                 {t("backToList")}
             </button>
-            <button
-                type="button"
-                disabled={deleteMutation.isPending}
-                onClick={handleDelete}
-                className={`${buttonClass} bg-red-600 text-white hover:bg-red-700`}
+            <ConfirmDialog
+                message={t("deleteConfirm")}
+                cancelLabel={t("cancel")}
+                confirmLabel={t("delete")}
+                loadingText={t("deleting")}
+                onConfirm={handleConfirmDelete}
+                pending={deleteMutation.isPending}
             >
-                {t("delete")}
-            </button>
+                <button
+                    type="button"
+                    disabled={deleteMutation.isPending}
+                    className={`${buttonClass} bg-red-600 text-white hover:bg-red-700`}
+                >
+                    {t("delete")}
+                </button>
+            </ConfirmDialog>
             <button
                 type="button"
                 onClick={() => router.push(modifierPath)}

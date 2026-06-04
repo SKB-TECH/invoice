@@ -588,6 +588,10 @@
       "loadErrorDetail": "Telemisi ya article oyo ewuti te.",
       "retry": "Meka lisusu",
       "empty": "Eloko moko te ezali na recherche na yo.",
+      "totalCount": "{count} article(s)",
+      "pageOfTotal": "Page {page} / {totalPages}",
+      "paginationPrev": "Page ya liboso",
+      "paginationNext": "Page ya nsima",
       "columns": {
         "code": "Code",
         "title": "Motó ya likambo",
@@ -645,6 +649,7 @@
         "save": "Bomba"
       },
       "creating": "Kozala na kobakala article…",
+      "toastCreated": "Article ebakisami.",
       "invalidForm": "Talá ba champs oyo esengeli mpe ntalo.",
       "referentialPlaceholder": "Pona référentiel",
       "referentialLoading": "Kotia ba référentiels…",
@@ -672,7 +677,9 @@
       },
       "actions": {
         "backToList": "Kozonga na liste",
+        "cancel": "Kotika",
         "delete": "Kolongola",
+        "deleting": "Kolongolami ezali kosala...",
         "deleteConfirm": "Kolongola eloko oyo mpo na libela ?",
         "deleteSuccess": "Eloko elongolami.",
         "deleteError": "Kolongola eloko elongwaki te.",
@@ -723,7 +730,7 @@
       "filterReset": "Komona nyonso",
       "refresh": "Bongisa",
       "refreshAria": "Bongisa liste ya services",
-      "totalCount": "{count} entrée(s)",
+      "totalCount": "{count} service(s)",
       "columns": {
         "id": "ID",
         "code": "Code",
@@ -779,6 +786,7 @@
       "itemTypeLoading": "Tozali koluka ba codes…",
       "itemTypeLoadError": "Impossible de koluka ba types ya article.",
       "retryItemTypesFetch": "Meka lisusu",
+      "creating": "Kozala na kokela service…",
       "toastCreated": "Service ebakisami.",
       "toastCreateErrorFallback": "Kokela service elongwaki te.",
       "invalidForm": "Tála ba champs mpe nimero malamu.",
@@ -807,7 +815,9 @@
         },
         "actions": {
           "backToList": "Kozonga na liste",
+          "cancel": "Kotika",
           "delete": "Kolongola",
+          "deleting": "Kolongolami ezali kosala...",
           "deleteConfirm": "Kolongola service oyo mpo na libela ?",
           "deleteSuccess": "Service elongolami.",
           "deleteError": "Kolongola service elongwaki te.",
@@ -1112,7 +1122,17 @@
       "dateTo": "Date ya nsuka",
       "reportDate": "Date ya rapport",
       "client": "Client",
+      "clientPlaceholder": "Luka client…",
+      "clientLoading": "Ezali ko charger ba clients…",
+      "clientEmpty": "Client moko ezwami te",
+      "clientLoadError": "Ekoki te ko charger ba clients.",
       "contract": "Contrat",
+      "contractPlaceholder": "Luka contrat…",
+      "contractSelectClientFirst": "Pona client liboso",
+      "contractLoading": "Ezali ko charger ba contrats…",
+      "contractEmpty": "Contrat moko ezali te",
+      "contractSearchEmpty": "Contrat moko ezwami te",
+      "contractLoadError": "Ekoki te ko charger ba contrats.",
       "pointOfSale": "Point ya vente",
       "pointOfSalePlaceholder": "Soki PDV-01",
       "isf": "ISF",
@@ -1120,6 +1140,25 @@
       "invoiceType": "Type ya facture",
       "invoiceStatus": "Statut ya facture",
       "paymentStatus": "Statut ya paiement",
+      "period": "Période",
+      "user": "Utilisateur",
+      "userPlaceholder": "Ex. benjamin",
+      "actionType": "Type d’action",
+      "periodOptions": {
+        "day": "Na mokolo",
+        "month": "Na sanza",
+        "quarter": "Na trimestre"
+      },
+      "vatPeriodOptions": {
+        "monthly": "Mensuelle",
+        "quarterly": "Trimestrielle"
+      },
+      "actionTypes": {
+        "create": "Création",
+        "update": "Modification",
+        "delete": "Suppression",
+        "validate": "Validation"
+      },
       "statuses": {
         "brouillon": "Brouillon",
         "enregistrer": "Enregistrée",
@@ -1145,7 +1184,22 @@
     "preview": {
       "title": "Aperçu ya rapport",
       "subtitle": "Talá ba critères mpe contenu ya rapport liboso ya ko-télécharger.",
-      "simulatedNotice": "Aperçu simulé"
+      "simulatedNotice": "Aperçu simulé",
+      "ordinary": {
+        "reportCode": "RAPPORT",
+        "metaSection": "MÉTADONNÉES",
+        "generatedAt": "Généré le",
+        "reportType": "Type",
+        "objectSection": "OBJET",
+        "reportTitle": "Titre",
+        "tableTitle": "CRITÈRES APPLIQUÉS",
+        "columns": {
+          "criteria": "Critère",
+          "value": "Valeur"
+        },
+        "empty": "Filtre ezali te. Données nyonso ezali incluses.",
+        "page": "Page {current} sur {total}"
+      }
     },
     "toast": {
       "previewReady": "Aperçu ya rapport ezali prêt.",
@@ -1174,7 +1228,37 @@
         "description": "Activité ya ba utilisateurs na période oyo oponi."
       }
     },
+    "invoiceEditionFlow": {
+      "list": {
+        "intro": "Historique ya ba rapports ordinaires oyo esalemi deja. Finá na bouton mpo na kobimisa rapport ya sika.",
+        "loading": "Kozwa ba rapports…",
+        "loadError": "Liste ya ba rapports elongwaki te.",
+        "retry": "Meka lisusu",
+        "empty": "Rapport moko te esalemi nanu.",
+        "totalCount": "{count} rapport(s)",
+        "generateButton": "Kosala rapport",
+        "columns": {
+          "generatedAt": "Esalemi le",
+          "dateFrom": "Date début",
+          "dateTo": "Date fin",
+          "isf": "ISF",
+          "pointOfSale": "Point de vente"
+        }
+      },
+      "generate": {
+        "intro": "Pona type ya rapport mpe kotia ba filtres avant kobimisa aperçu.",
+        "radioTitle": "Type ya rapport ordinaire"
+      },
+      "reportKinds": {
+        "invoiceEdition": "Édition ya ba factures",
+        "invoiceNormalization": "Normalisation ya ba factures",
+        "vatCollection": "Collecte ya TVA",
+        "invoicePayments": "Ba paiements ya factures",
+        "toolUsage": "Utilisation ya outil"
+      }
+    },
     "specialXz": {
+      "title": "Ba rapports X-Z",
       "reportXDaily": {
         "title": "Lapolo ya mokolo na mokolo",
         "description": "Récapitulatif banda rapport Z ya nsuka. Ba valeurs ebandi te.",
@@ -1203,9 +1287,52 @@
         ]
       }
     },
+    "xzFlow": {
+      "list": {
+        "intro": "Historique ya ba rapports X-Z oyo esalemi deja.",
+        "loading": "Kozwa ba rapports…",
+        "loadError": "Liste ya ba rapports elongwaki te.",
+        "retry": "Meka lisusu",
+        "empty": "Rapport moko te esalemi nanu.",
+        "totalCount": "{count} rapport(s)",
+        "generateButton": "Kosala rapport",
+        "columns": {
+          "generatedAt": "Esalemi le",
+          "dateFrom": "Date début",
+          "dateTo": "Date fin",
+          "isf": "ISF",
+          "pointOfSale": "Point de vente"
+        }
+      },
+      "generate": {
+        "intro": "Pona type ya rapport X-Z oyo okosala.",
+        "radioTitle": "Type ya rapport"
+      },
+      "reportKinds": {
+        "reportXDaily": "Rapport X ya mokolo",
+        "reportZ": "Rapport Z",
+        "reportXPeriodic": "Rapport X ya période"
+      }
+    },
     "specialA": {
       "title": "Lapolo na ntina ya masolo",
-      "description": "Récapitulatif ya ba articles banda rapport A ya nsuka. Ebandi ba valeurs.",
+      "list": {
+        "intro": "Liste ya ba rapports sur type A oyo esalemi déjà.",
+        "loading": "Kozwa ba rapports…",
+        "loadError": "Kozwa liste ya ba rapports elongwaki te.",
+        "retry": "Meka lisusu",
+        "empty": "Rapport moko te esalemi nanu.",
+        "totalCount": "{count} rapport(s)",
+        "generateButton": "Kosala rapport",
+        "columns": {
+          "generatedAt": "Esalemi le",
+          "dateFrom": "Date début",
+          "dateTo": "Date fin",
+          "isf": "ISF",
+          "pointOfSale": "Point de vente"
+        }
+      },
+      "description": "Récapitulatif ya ba type A banda rapport A ya nsuka. Ebandi ba valeurs.",
       "includes": [
         "Nom commercial, NIF, date, période",
         "Code mpe nom article, prix, taux impôt",
@@ -1214,11 +1341,10 @@
       "preview": {
         "reportCode": "RAPPORT",
         "emitter": "ÉMETTEUR",
-        "equipment": "ÉQUIPEMENT",
         "periodSection": "PÉRIODE & RESTITUTION",
         "company": "Société",
         "nif": "NIF",
-        "terminalId": "ID Terminal (ISF)",
+        "isf": "ISF",
         "generatedAt": "Généré le",
         "dateFrom": "Date Début",
         "dateTo": "Date Fin",
@@ -1233,12 +1359,6 @@
           "fiscalStock": "QUANTITÉ EN STOCK"
         },
         "total": "TOTAL",
-        "closureTitle": "IMPORTANT :",
-        "closureBody": "Rapport oyo ecompile ba mouvements ya ba articles banda clôture ya nsuka. Ko-imprimer to ko-valider ebandi ba valeurs accumulées.",
-        "preparedBy": "Préparé par :",
-        "preparedRole": "Gestionnaire Back-Office",
-        "approval": "Visa Direction / Approbation :",
-        "approvalHint": "Signature & Cachet",
         "page": "Page {current} sur {total}"
       }
     }

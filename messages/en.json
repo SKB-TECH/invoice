@@ -587,6 +587,10 @@
       "loadErrorDetail": "Could not load this article.",
       "retry": "Retry",
       "empty": "No articles match your search.",
+      "totalCount": "{count} article(s)",
+      "pageOfTotal": "Page {page} of {totalPages}",
+      "paginationPrev": "Previous page",
+      "paginationNext": "Next page",
       "columns": {
         "code": "Code",
         "title": "Title",
@@ -644,6 +648,7 @@
         "save": "Save"
       },
       "creating": "Creating article…",
+      "toastCreated": "Article created.",
       "invalidForm": "Please check required fields and amounts.",
       "referentialPlaceholder": "Select a referential",
       "referentialLoading": "Loading referentials…",
@@ -671,8 +676,10 @@
       },
       "actions": {
         "backToList": "Back to list",
+        "cancel": "Cancel",
         "delete": "Delete",
-        "deleteConfirm": "Permanently delete this article?",
+        "deleting": "Deleting...",
+        "deleteConfirm": "Do you want to permanently delete this article?",
         "deleteSuccess": "Article deleted.",
         "deleteError": "Could not delete article.",
         "edit": "Edit"
@@ -722,7 +729,7 @@
       "filterReset": "Show all",
       "refresh": "Refresh",
       "refreshAria": "Refresh service list",
-      "totalCount": "{count} row(s)",
+      "totalCount": "{count} service(s)",
       "columns": {
         "id": "ID",
         "code": "Code",
@@ -778,6 +785,7 @@
       "itemTypeLoading": "Loading codes…",
       "itemTypeLoadError": "Unable to load item types.",
       "retryItemTypesFetch": "Retry",
+      "creating": "Creating service…",
       "toastCreated": "Service created.",
       "toastCreateErrorFallback": "Could not create service.",
       "invalidForm": "Fill required fields; use valid numbers for IDs and monetary fields.",
@@ -806,8 +814,10 @@
         },
         "actions": {
           "backToList": "Back to list",
+          "cancel": "Cancel",
           "delete": "Delete",
-          "deleteConfirm": "Permanently delete this service?",
+          "deleting": "Deleting...",
+          "deleteConfirm": "Do you want to permanently delete this service?",
           "deleteSuccess": "Service deleted.",
           "deleteError": "Could not delete service.",
           "edit": "Edit"
@@ -1094,15 +1104,9 @@
     "pageTitle": "Reports",
     "pageIntro": "Generate reports on invoices, VAT, payments and platform usage.",
     "menu": {
-      "invoiceEdition": "Invoice editing",
-      "invoiceNormalization": "Invoice normalization",
-      "invoicePayments": "Invoice payments",
-      "vatCollection": "VAT collection",
-      "toolUsage": "Tool usage",
-      "reportXDaily": "Daily report",
-      "reportZ": "Closing report",
-      "reportXPeriodic": "Periodic report",
-      "reportA": "Articles report"
+      "invoiceEdition": "Ordinary reports",
+      "reportXDaily": "X-Z reports",
+      "reportA": "Type A report"
     },
     "filters": {
       "all": "All",
@@ -1110,7 +1114,17 @@
       "dateTo": "End date",
       "reportDate": "Report date",
       "client": "Client",
+      "clientPlaceholder": "Search for a client…",
+      "clientLoading": "Loading clients…",
+      "clientEmpty": "No client found",
+      "clientLoadError": "Unable to load clients.",
       "contract": "Contract",
+      "contractPlaceholder": "Search for a contract…",
+      "contractSelectClientFirst": "Select a client first",
+      "contractLoading": "Loading contracts…",
+      "contractEmpty": "No contract available",
+      "contractSearchEmpty": "No contract found",
+      "contractLoadError": "Unable to load contracts.",
       "pointOfSale": "Point of sale",
       "pointOfSalePlaceholder": "e.g. POS-01",
       "isf": "ISF",
@@ -1118,6 +1132,25 @@
       "invoiceType": "Invoice type",
       "invoiceStatus": "Invoice status",
       "paymentStatus": "Payment status",
+      "period": "Period",
+      "user": "User",
+      "userPlaceholder": "e.g. benjamin",
+      "actionType": "Action type",
+      "periodOptions": {
+        "day": "By day",
+        "month": "By month",
+        "quarter": "By quarter"
+      },
+      "vatPeriodOptions": {
+        "monthly": "Monthly",
+        "quarterly": "Quarterly"
+      },
+      "actionTypes": {
+        "create": "Create",
+        "update": "Update",
+        "delete": "Delete",
+        "validate": "Validate"
+      },
       "statuses": {
         "brouillon": "Draft",
         "enregistrer": "Recorded",
@@ -1143,7 +1176,22 @@
     "preview": {
       "title": "Report preview",
       "subtitle": "Review the criteria and report content before downloading.",
-      "simulatedNotice": "Simulated preview"
+      "simulatedNotice": "Simulated preview",
+      "ordinary": {
+        "reportCode": "REPORT",
+        "metaSection": "METADATA",
+        "generatedAt": "Generated on",
+        "reportType": "Type",
+        "objectSection": "SUBJECT",
+        "reportTitle": "Title",
+        "tableTitle": "APPLIED CRITERIA",
+        "columns": {
+          "criteria": "Criteria",
+          "value": "Value"
+        },
+        "empty": "No filters selected. All available data is included.",
+        "page": "Page {current} of {total}"
+      }
     },
     "toast": {
       "previewReady": "Report preview is ready.",
@@ -1172,7 +1220,37 @@
         "description": "User activity and feature usage over the selected period."
       }
     },
+    "invoiceEditionFlow": {
+      "list": {
+        "intro": "History of generated ordinary reports. Click the button below to generate a new one.",
+        "loading": "Loading reports…",
+        "loadError": "Could not load the report list.",
+        "retry": "Retry",
+        "empty": "No report generated yet.",
+        "totalCount": "{count} report(s)",
+        "generateButton": "Generate a report",
+        "columns": {
+          "generatedAt": "Generated on",
+          "dateFrom": "Start date",
+          "dateTo": "End date",
+          "isf": "ISF",
+          "pointOfSale": "Point of sale"
+        }
+      },
+      "generate": {
+        "intro": "Choose the report type and fill in the available filters before generating the preview.",
+        "radioTitle": "Ordinary report type"
+      },
+      "reportKinds": {
+        "invoiceEdition": "Invoice editing",
+        "invoiceNormalization": "Invoice normalization",
+        "vatCollection": "VAT collection",
+        "invoicePayments": "Invoice payments",
+        "toolUsage": "Tool usage"
+      }
+    },
     "specialXz": {
+      "title": "X-Z reports",
       "reportXDaily": {
         "title": "Daily report",
         "description": "Summary since the last Z report. Accumulated values are not reset.",
@@ -1204,8 +1282,51 @@
         ]
       }
     },
+    "xzFlow": {
+      "list": {
+        "intro": "History of generated X-Z reports.",
+        "loading": "Loading reports…",
+        "loadError": "Could not load the report list.",
+        "retry": "Retry",
+        "empty": "No report generated yet.",
+        "totalCount": "{count} report(s)",
+        "generateButton": "Generate a report",
+        "columns": {
+          "generatedAt": "Generated on",
+          "dateFrom": "Start date",
+          "dateTo": "End date",
+          "isf": "ISF",
+          "pointOfSale": "Point of sale"
+        }
+      },
+      "generate": {
+        "intro": "Choose the X-Z report type to generate.",
+        "radioTitle": "Report type"
+      },
+      "reportKinds": {
+        "reportXDaily": "Daily X report",
+        "reportZ": "Z report",
+        "reportXPeriodic": "Periodic X report"
+      }
+    },
     "specialA": {
-      "title": "Articles report",
+      "title": "Type A report",
+      "list": {
+        "intro": "History of generated type A reports.",
+        "loading": "Loading reports…",
+        "loadError": "Could not load the report list.",
+        "retry": "Retry",
+        "empty": "No reports generated yet.",
+        "totalCount": "{count} report(s)",
+        "generateButton": "Generate a report",
+        "columns": {
+          "generatedAt": "Generated on",
+          "dateFrom": "Start date",
+          "dateTo": "End date",
+          "isf": "ISF",
+          "pointOfSale": "Point of sale"
+        }
+      },
       "description": "Item summary since the last A report. Resets accumulated values.",
       "includes": [
         "Trade name, tax ID, date and time, period",
@@ -1215,11 +1336,10 @@
       "preview": {
         "reportCode": "REPORT",
         "emitter": "ISSUER",
-        "equipment": "EQUIPMENT",
         "periodSection": "PERIOD & RESTITUTION",
         "company": "Company",
         "nif": "Tax ID",
-        "terminalId": "Terminal ID (ISF)",
+        "isf": "ISF",
         "generatedAt": "Generated on",
         "dateFrom": "Start date",
         "dateTo": "End date",
@@ -1234,12 +1354,6 @@
           "fiscalStock": "QUANTITY IN STOCK"
         },
         "total": "TOTAL",
-        "closureTitle": "IMPORTANT :",
-        "closureBody": "This report compiles item movements since the last closing. Printing or validating this document will reset accumulated values for the next period.",
-        "preparedBy": "Prepared by:",
-        "preparedRole": "Back-Office Manager",
-        "approval": "Management approval:",
-        "approvalHint": "Signature & stamp",
         "page": "Page {current} of {total}"
       }
     }

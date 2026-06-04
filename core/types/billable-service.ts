@@ -75,7 +75,7 @@ export type CreateBillableServicePayload = {
 export type UpdateBillableServicePayload = {
     service_name: string;
     description: string;
-    code: string;
+    code?: string;
     business_sector: string;
     unit_price: number;
     tax_rate: number;

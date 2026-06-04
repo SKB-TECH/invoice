@@ -3,7 +3,7 @@
 import { Link, useRouter } from "@/i18n/routing";
 import { useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
-import { ChevronRight, House, Search } from "lucide-react";
+import { ChevronLeft, ChevronRight, House, Search } from "lucide-react";
 import { ArticlesTable } from "@/components/articles/articles-table";
 import { ArticlesTableSkeleton } from "@/components/articles/articles-table-skeleton";
 import { Button } from "@/components/ui/button";
@@ -21,6 +21,8 @@ import type {
 import { useFournituresList } from "@/core/hooks/fournitures/useFournituresList";
 import { useReferentielsCatalog } from "@/core/hooks/referentiels/useReferentielsCatalog";
 import { mapFournitureToTableRow } from "@/lib/fournitures/articles/fournitures-mappers";
+
+const LIMIT = 10;
 
 function matchesArticleSearch(
     row: ArticleTableRow,
@@ -50,10 +52,19 @@ export default function HomeFournituresArticlesPage() {
     const router = useRouter();
     const t = useTranslations("articles.list");
     const tNavbar = useTranslations("navbar");
+    const [page, setPage] = useState(1);
     const [search, setSearch] = useState("");
 
-    const { data, isLoading, isError, error, refetch, isFetching } =
-        useFournituresList(1);
+    const listParams = useMemo(
+        () => ({
+            page,
+            perPage: LIMIT,
+        }),
+        [page],
+    );
+
+    const { data, isError, error, refetch, isFetching } =
+        useFournituresList(listParams);
 
     const { items: referentialRows } = useReferentielsCatalog(null);
 
@@ -89,7 +100,9 @@ export default function HomeFournituresArticlesPage() {
         [tableRows, search, suspenduLabel, actifLabel, completLabel],
     );
 
-    const showLoader = isLoading && !data;
+    const total = data?.meta.total ?? data?.items?.length ?? 0;
+    const totalPages = Math.max(1, Math.ceil(total / LIMIT));
+    const showLoader = isFetching && data === undefined;
     const columnCount = 8;
 
     return (
@@ -186,7 +199,7 @@ export default function HomeFournituresArticlesPage() {
                     </div>
                 ) : (
                     <>
-                        {isFetching && !isLoading ? (
+                        {isFetching && data !== undefined ? (
                             <p className="mb-2 text-sm text-slate-500">
                                 {t("refreshing")}
                             </p>
@@ -198,6 +211,51 @@ export default function HomeFournituresArticlesPage() {
                     </>
                 )}
             </div>
+
+            {!showLoader && !isError ? (
+                <div className="mt-5 flex flex-col items-center justify-between gap-4 sm:flex-row">
+                    <p className="text-sm text-slate-500">
+                        {t("totalCount", { count: total })}
+                    </p>
+
+                    <div className="flex items-center gap-2">
+                        <Button
+                            type="button"
+                            variant="outline"
+                            size="icon"
+                            onClick={() => setPage((p) => Math.max(1, p - 1))}
+                            disabled={page <= 1 || isFetching}
+                            className="h-10 w-10 rounded"
+                            aria-label={t("paginationPrev")}
+                        >
+                            <ChevronLeft className="size-4" />
+                        </Button>
+
+                        <div className="flex h-10 min-w-32 items-center justify-center border border-slate-200 px-4 text-sm font-medium text-slate-700">
+                            {t("pageOfTotal", {
+                                page,
+                                totalPages,
+                            })}
+                        </div>
+
+                        <Button
+                            type="button"
+                            variant="outline"
+                            size="icon"
+                            onClick={() =>
+                                setPage((p) => Math.min(totalPages, p + 1))
+                            }
+                            disabled={
+                                page >= totalPages || isFetching || total === 0
+                            }
+                            className="h-10 w-10 rounded"
+                            aria-label={t("paginationNext")}
+                        >
+                            <ChevronRight className="size-4" />
+                        </Button>
+                    </div>
+                </div>
+            ) : null}
         </main>
     );
 }

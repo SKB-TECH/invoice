@@ -87,10 +87,9 @@ export default function NouvelArticlePage() {
     const defaultTaxGroupId = pickDefaultInvoiceTaxGroupId(taxGroups);
 
     const createMutation = useCreateFourniture({
-        onSuccess: (data) => {
-            router.push(
-                `/home/articles/${encodeURIComponent(String(data.id))}/visualiser`,
-            );
+        onSuccess: () => {
+            toast.success(tCreate("toastCreated"));
+            router.push("/home/articles");
         },
         onError: (error) => {
             toast.error(

@@ -36,6 +36,24 @@ function sumField(items: ReportALineItem[], key: keyof ReportALineItem): number 
     return items.reduce((sum, item) => sum + Number(item[key]), 0);
 }
 
+export function toReportAFilters(
+    filters: Record<string, unknown>,
+): ReportAFilters {
+    return {
+        date_from:
+            typeof filters.date_from === "string"
+                ? filters.date_from
+                : undefined,
+        date_to:
+            typeof filters.date_to === "string" ? filters.date_to : undefined,
+        point_of_sale:
+            typeof filters.point_of_sale === "string"
+                ? filters.point_of_sale
+                : undefined,
+        isf: typeof filters.isf === "string" ? filters.isf : undefined,
+    };
+}
+
 export function buildReportAPreviewDisplay(
     filters: ReportAFilters,
 ): ReportPreviewDisplay {

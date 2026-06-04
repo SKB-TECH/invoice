@@ -180,7 +180,7 @@
     "createTitle": "Nouveau paiement",
     "backToList": "Retour à la liste",
     "backToInvoices": "Retour aux factures",
-    "recordPayment": "Enregistrer un paiement",
+    "recordPayment": "Effectuer un paiement",
     "loading": "Chargement des paiements…",
     "loadError": "Impossible de charger les paiements.",
     "empty": "Aucun paiement pour le moment.",
@@ -587,6 +587,10 @@
       "loadErrorDetail": "Impossible de charger cet article.",
       "retry": "Réessayer",
       "empty": "Aucun article ne correspond à votre recherche.",
+      "totalCount": "{count} article(s)",
+      "pageOfTotal": "Page {page} sur {totalPages}",
+      "paginationPrev": "Page précédente",
+      "paginationNext": "Page suivante",
       "columns": {
         "code": "Code",
         "title": "Titre",
@@ -644,6 +648,7 @@
         "save": "Enregistrer"
       },
       "creating": "Création de l’article…",
+      "toastCreated": "Article créé.",
       "invalidForm": "Vérifiez les champs obligatoires et les montants.",
       "referentialPlaceholder": "Sélectionner un référentiel",
       "referentialLoading": "Chargement des référentiels…",
@@ -671,8 +676,10 @@
       },
       "actions": {
         "backToList": "Retour à la liste",
+        "cancel": "Annuler",
         "delete": "Supprimer",
-        "deleteConfirm": "Supprimer définitivement cet article ?",
+        "deleting": "Suppression en cours...",
+        "deleteConfirm": "Voulez-vous supprimer définitivement cet article ?",
         "deleteSuccess": "Article supprimé.",
         "deleteError": "Impossible de supprimer l'article.",
         "edit": "Modifier"
@@ -722,7 +729,7 @@
       "filterReset": "Tout afficher",
       "refresh": "Actualiser",
       "refreshAria": "Actualiser la liste des services",
-      "totalCount": "{count} entrée(s)",
+      "totalCount": "{count} service(s)",
       "columns": {
         "id": "ID",
         "code": "Code",
@@ -778,6 +785,7 @@
       "itemTypeLoading": "Chargement des codes…",
       "itemTypeLoadError": "Impossible de charger les types d'article.",
       "retryItemTypesFetch": "Réessayer",
+      "creating": "Création du service…",
       "toastCreated": "Service créé.",
       "toastCreateErrorFallback": "Création du service impossible.",
       "invalidForm": "Complétez tous les champs obligatoires (nombres entiers positifs où requis pour groupe fiscal et référentiel).",
@@ -806,8 +814,10 @@
         },
         "actions": {
           "backToList": "Retour à la liste",
+          "cancel": "Annuler",
           "delete": "Supprimer",
-          "deleteConfirm": "Supprimer définitivement ce service ?",
+          "deleting": "Suppression en cours...",
+          "deleteConfirm": "Voulez-vous supprimer définitivement ce service ?",
           "deleteSuccess": "Service supprimé.",
           "deleteError": "Impossible de supprimer le service.",
           "edit": "Modifier"
@@ -1094,15 +1104,9 @@
     "pageTitle": "Rapports",
     "pageIntro": "Générez des rapports sur les factures, la TVA, les paiements et l’utilisation de la plateforme.",
     "menu": {
-      "invoiceEdition": "Édition des factures",
-      "invoiceNormalization": "Normalisation des factures",
-      "invoicePayments": "Paiements des factures",
-      "vatCollection": "Collecte de la TVA",
-      "toolUsage": "Utilisation de l’outil",
-      "reportXDaily": "Rapport quotidien",
-      "reportZ": "Rapport de clôture",
-      "reportXPeriodic": "Rapport périodique",
-      "reportA": "Rapport sur les articles"
+      "invoiceEdition": "Rapports Ordinaries",
+      "reportXDaily": "Rapports X-Z",
+      "reportA": "Rapport type A"
     },
     "filters": {
       "all": "Tous",
@@ -1110,7 +1114,17 @@
       "dateTo": "Date de fin",
       "reportDate": "Date du rapport",
       "client": "Client",
+      "clientPlaceholder": "Rechercher un client…",
+      "clientLoading": "Chargement des clients…",
+      "clientEmpty": "Aucun client trouvé",
+      "clientLoadError": "Impossible de charger les clients.",
       "contract": "Contrat",
+      "contractPlaceholder": "Rechercher un contrat…",
+      "contractSelectClientFirst": "Choisissez d’abord un client",
+      "contractLoading": "Chargement des contrats…",
+      "contractEmpty": "Aucun contrat disponible",
+      "contractSearchEmpty": "Aucun contrat trouvé",
+      "contractLoadError": "Impossible de charger les contrats.",
       "pointOfSale": "Point de vente",
       "pointOfSalePlaceholder": "Ex. PDV-01",
       "isf": "ISF",
@@ -1118,6 +1132,25 @@
       "invoiceType": "Type de facture",
       "invoiceStatus": "Statut de la facture",
       "paymentStatus": "Statut du paiement",
+      "period": "Période",
+      "user": "Utilisateur",
+      "userPlaceholder": "Ex. benjamin",
+      "actionType": "Type d’action",
+      "periodOptions": {
+        "day": "Par jour",
+        "month": "Par mois",
+        "quarter": "Par trimestre"
+      },
+      "vatPeriodOptions": {
+        "monthly": "Mensuelle",
+        "quarterly": "Trimestrielle"
+      },
+      "actionTypes": {
+        "create": "Création",
+        "update": "Modification",
+        "delete": "Suppression",
+        "validate": "Validation"
+      },
       "statuses": {
         "brouillon": "Brouillon",
         "enregistrer": "Enregistrée",
@@ -1143,7 +1176,22 @@
     "preview": {
       "title": "Aperçu du rapport",
       "subtitle": "Vérifiez les critères et le contenu du rapport avant téléchargement.",
-      "simulatedNotice": "Aperçu simulé"
+      "simulatedNotice": "Aperçu simulé",
+      "ordinary": {
+        "reportCode": "RAPPORT",
+        "metaSection": "MÉTADONNÉES",
+        "generatedAt": "Généré le",
+        "reportType": "Type",
+        "objectSection": "OBJET",
+        "reportTitle": "Titre",
+        "tableTitle": "CRITÈRES APPLIQUÉS",
+        "columns": {
+          "criteria": "Critère",
+          "value": "Valeur"
+        },
+        "empty": "Aucun filtre. Toutes les données disponibles sont incluses.",
+        "page": "Page {current} sur {total}"
+      }
     },
     "toast": {
       "previewReady": "Aperçu du rapport prêt.",
@@ -1152,27 +1200,41 @@
     },
     "ordinary": {
       "invoiceEdition": {
-        "title": "Rapport sur l’édition des factures",
-        "description": "Analyse des factures créées ou modifiées. Filtrez par client, contrat, période, point de vente et statut."
+        "title": "Liste des rapports ordinaires",
+        "description": "Liste des rapports ordinaires générés. Cliquez sur le bouton pour lancer une nouvelle génération."
+      }
+    },
+    "invoiceEditionFlow": {
+      "list": {
+        "intro": "Historique des rapports ordinaires générés.",
+        "loading": "Chargement des rapports…",
+        "loadError": "Impossible de charger la liste des rapports.",
+        "retry": "Réessayer",
+        "empty": "Aucun rapport généré pour le moment.",
+        "totalCount": "{count} rapport(s)",
+        "generateButton": "Générer un rapport",
+        "columns": {
+          "generatedAt": "Généré le",
+          "dateFrom": "Date début",
+          "dateTo": "Date fin",
+          "isf": "ISF",
+          "pointOfSale": "Point de vente"
+        }
       },
-      "invoiceNormalization": {
-        "title": "Rapport sur la normalisation des factures",
-        "description": "Suivi des factures normalisées. Filtrez par point de vente, type (FV, FA, …) et période."
+      "generate": {
+        "intro": "",
+        "radioTitle": "Type de rapport à générer"
       },
-      "invoicePayments": {
-        "title": "Rapport sur les paiements de factures",
-        "description": "Synthèse des paiements enregistrés sur la période et par client."
-      },
-      "vatCollection": {
-        "title": "Rapport sur la collecte de la TVA",
-        "description": "Montants de TVA collectés. Filtrez par période, statut de paiement, type de facture et client."
-      },
-      "toolUsage": {
-        "title": "Rapport sur l’utilisation de l’outil",
-        "description": "Activité des utilisateurs et usage des fonctionnalités sur la période choisie."
+      "reportKinds": {
+        "invoiceEdition": "Édition des factures",
+        "invoiceNormalization": "Normalisation des factures",
+        "vatCollection": "Collecte de la TVA",
+        "invoicePayments": "Paiements de factures",
+        "toolUsage": "Utilisation de l’outil"
       }
     },
     "specialXz": {
+      "title": "Rapports X-Z",
       "reportXDaily": {
         "title": "Rapport quotidien",
         "description": "Récapitulatif depuis le dernier rapport Z. Les valeurs accumulées ne sont pas réinitialisées.",
@@ -1204,8 +1266,51 @@
         ]
       }
     },
+    "xzFlow": {
+      "list": {
+        "intro": "Historique des rapports X-Z déjà générés.",
+        "loading": "Chargement des rapports…",
+        "loadError": "Impossible de charger la liste des rapports.",
+        "retry": "Réessayer",
+        "empty": "Aucun rapport généré pour le moment.",
+        "totalCount": "{count} rapport(s)",
+        "generateButton": "Générer un rapport",
+        "columns": {
+          "generatedAt": "Généré le",
+          "dateFrom": "Date début",
+          "dateTo": "Date fin",
+          "isf": "ISF",
+          "pointOfSale": "Point de vente"
+        }
+      },
+      "generate": {
+        "intro": "Choisissez le type de rapport X-Z à générer.",
+        "radioTitle": "Type de rapport à générer"
+      },
+      "reportKinds": {
+        "reportXDaily": "Rapport X quotidien",
+        "reportZ": "Rapport Z",
+        "reportXPeriodic": "Rapport X périodique"
+      }
+    },
     "specialA": {
-      "title": "Rapport sur les articles",
+      "title": "Rapport type A",
+      "list": {
+        "intro": "Historique des rapports de type A déjà générés.",
+        "loading": "Chargement des rapports…",
+        "loadError": "Impossible de charger la liste des rapports.",
+        "retry": "Réessayer",
+        "empty": "Aucun rapport généré pour le moment.",
+        "totalCount": "{count} rapport(s)",
+        "generateButton": "Générer un rapport",
+        "columns": {
+          "generatedAt": "Généré le",
+          "dateFrom": "Date début",
+          "dateTo": "Date fin",
+          "isf": "ISF",
+          "pointOfSale": "Point de vente"
+        }
+      },
       "description": "Récapitulatif relatif aux articles depuis le dernier rapport A. Réinitialise les valeurs accumulées.",
       "includes": [
         "Dénomination commerciale, NIF, date et heure, période",
@@ -1215,11 +1320,10 @@
       "preview": {
         "reportCode": "RAPPORT",
         "emitter": "ÉMETTEUR",
-        "equipment": "ÉQUIPEMENT",
         "periodSection": "PÉRIODE & RESTITUTION",
         "company": "Société",
         "nif": "NIF",
-        "terminalId": "ID Terminal (ISF)",
+        "isf": "ISF",
         "generatedAt": "Généré le",
         "dateFrom": "Date Début",
         "dateTo": "Date Fin",
@@ -1234,12 +1338,6 @@
           "fiscalStock": "QUANTITÉ EN STOCK"
         },
         "total": "TOTAL",
-        "closureTitle": "IMPORTANT :",
-        "closureBody": "Ce rapport compile les mouvements des articles depuis la dernière clôture. L'impression ou la validation de ce document réinitialisera les valeurs accumulées pour la période suivante.",
-        "preparedBy": "Préparé par :",
-        "preparedRole": "Gestionnaire Back-Office",
-        "approval": "Visa Direction / Approbation :",
-        "approvalHint": "Signature & Cachet",
         "page": "Page {current} sur {total}"
       }
     }

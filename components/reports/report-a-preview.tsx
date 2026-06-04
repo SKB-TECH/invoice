@@ -53,16 +53,13 @@ export function ReportAPreview({ content }: Props) {
                             </span>{" "}
                             {p.nif}
                         </p>
+                        <p>
+                            <span className="font-black text-black">
+                                {t("isf")} :
+                            </span>{" "}
+                            {p.isf}
+                        </p>
                     </div>
-                    <p className="mb-3 mt-6 text-sm font-black uppercase text-black">
-                        {t("equipment")}
-                    </p>
-                    <p className="text-sm font-semibold text-slate-800">
-                        <span className="font-black text-black">
-                            {t("terminalId")} :
-                        </span>{" "}
-                        {p.isf}
-                    </p>
                 </div>
 
                 <div className="md:text-right">
@@ -146,36 +143,6 @@ export function ReportAPreview({ content }: Props) {
                     <div className="text-right">{p.totals.qtySold}</div>
                     <div className="text-right">{p.totals.qtyReturned}</div>
                     <div className="text-right">{p.totals.fiscalStock}</div>
-                </div>
-            </div>
-
-            <div className="mt-8 border-l-4 border-amber-500 bg-amber-50 px-4 py-4">
-                <p className="text-sm font-black uppercase text-amber-800">
-                    {t("closureTitle")}
-                </p>
-                <p className="mt-2 text-sm leading-relaxed text-amber-900">
-                    {t("closureBody")}
-                </p>
-            </div>
-
-            <div className="mt-10 grid grid-cols-1 gap-10 md:grid-cols-2">
-                <div>
-                    <p className="text-sm font-black text-black">
-                        {t("preparedBy")}
-                    </p>
-                    <div className="mt-8 border-b border-dotted border-slate-400" />
-                    <p className="mt-2 text-xs font-semibold text-slate-600">
-                        {t("preparedRole")}
-                    </p>
-                </div>
-                <div>
-                    <p className="text-sm font-black text-black">
-                        {t("approval")}
-                    </p>
-                    <div className="mt-8 border-b border-dotted border-slate-400" />
-                    <p className="mt-2 text-xs font-semibold text-slate-600">
-                        {t("approvalHint")}
-                    </p>
                 </div>
             </div>
 

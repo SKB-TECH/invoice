@@ -129,33 +129,6 @@ const styles = StyleSheet.create({
         paddingVertical: 6,
         paddingHorizontal: 4,
     },
-    notice: {
-        marginTop: 16,
-        borderLeftWidth: 3,
-        borderLeftColor: "#f59e0b",
-        backgroundColor: "#fffbeb",
-        padding: 10,
-    },
-    noticeTitle: {
-        fontSize: 8,
-        fontWeight: 700,
-        color: "#92400e",
-        marginBottom: 4,
-    },
-    noticeBody: { fontSize: 8, color: "#78350f", lineHeight: 1.4 },
-    signatures: {
-        flexDirection: "row",
-        justifyContent: "space-between",
-        marginTop: 24,
-    },
-    signCol: { width: "45%" },
-    signLine: {
-        borderBottomWidth: 1,
-        borderBottomColor: "#94a3b8",
-        borderStyle: "dotted",
-        marginTop: 28,
-        marginBottom: 4,
-    },
     footer: {
         position: "absolute",
         bottom: 28,
@@ -168,11 +141,10 @@ const styles = StyleSheet.create({
 type Labels = {
     reportCode: string;
     emitter: string;
-    equipment: string;
     periodSection: string;
     company: string;
     nif: string;
-    terminalId: string;
+    isf: string;
     generatedAt: string;
     dateFrom: string;
     dateTo: string;
@@ -187,12 +159,6 @@ type Labels = {
         fiscalStock: string;
     };
     total: string;
-    closureTitle: string;
-    closureBody: string;
-    preparedBy: string;
-    preparedRole: string;
-    approval: string;
-    approvalHint: string;
     page: string;
 };
 
@@ -287,11 +253,8 @@ export function ReportAPdfDocument({ content, labels }: Props) {
                         <Text style={styles.metaLine}>
                             {labels.nif} : {p.nif}
                         </Text>
-                        <Text style={[styles.sectionLabel, { marginTop: 12 }]}>
-                            {labels.equipment}
-                        </Text>
                         <Text style={styles.metaLine}>
-                            {labels.terminalId} : {p.isf}
+                            {labels.isf} : {p.isf}
                         </Text>
                     </View>
                     <View style={styles.metaCol}>
@@ -373,24 +336,6 @@ export function ReportAPdfDocument({ content, labels }: Props) {
                     >
                         {String(p.totals.fiscalStock)}
                     </TableCell>
-                </View>
-
-                <View style={styles.notice}>
-                    <Text style={styles.noticeTitle}>{labels.closureTitle}</Text>
-                    <Text style={styles.noticeBody}>{labels.closureBody}</Text>
-                </View>
-
-                <View style={styles.signatures}>
-                    <View style={styles.signCol}>
-                        <Text style={styles.sectionLabel}>{labels.preparedBy}</Text>
-                        <View style={styles.signLine} />
-                        <Text style={styles.metaLine}>{labels.preparedRole}</Text>
-                    </View>
-                    <View style={styles.signCol}>
-                        <Text style={styles.sectionLabel}>{labels.approval}</Text>
-                        <View style={styles.signLine} />
-                        <Text style={styles.metaLine}>{labels.approvalHint}</Text>
-                    </View>
                 </View>
 
                 <Text style={styles.footer}>{labels.page}</Text>
