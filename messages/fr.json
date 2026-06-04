@@ -1216,6 +1216,22 @@
     },
     "specialA": {
       "title": "Rapport sur les articles",
+      "list": {
+        "intro": "Historique des rapports sur les articles déjà générés.",
+        "loading": "Chargement des rapports…",
+        "loadError": "Impossible de charger la liste des rapports.",
+        "retry": "Réessayer",
+        "empty": "Aucun rapport généré pour le moment.",
+        "totalCount": "{count} rapport(s)",
+        "generateButton": "Générer un rapport",
+        "columns": {
+          "generatedAt": "Généré le",
+          "dateFrom": "Date début",
+          "dateTo": "Date fin",
+          "isf": "ISF",
+          "pointOfSale": "Point de vente"
+        }
+      },
       "description": "Récapitulatif relatif aux articles depuis le dernier rapport A. Réinitialise les valeurs accumulées.",
       "includes": [
         "Dénomination commerciale, NIF, date et heure, période",
@@ -1225,11 +1241,10 @@
       "preview": {
         "reportCode": "RAPPORT",
         "emitter": "ÉMETTEUR",
-        "equipment": "ÉQUIPEMENT",
         "periodSection": "PÉRIODE & RESTITUTION",
         "company": "Société",
         "nif": "NIF",
-        "terminalId": "ID Terminal (ISF)",
+        "isf": "ISF",
         "generatedAt": "Généré le",
         "dateFrom": "Date Début",
         "dateTo": "Date Fin",
@@ -1244,12 +1259,6 @@
           "fiscalStock": "QUANTITÉ EN STOCK"
         },
         "total": "TOTAL",
-        "closureTitle": "IMPORTANT :",
-        "closureBody": "Ce rapport compile les mouvements des articles depuis la dernière clôture. L'impression ou la validation de ce document réinitialisera les valeurs accumulées pour la période suivante.",
-        "preparedBy": "Préparé par :",
-        "preparedRole": "Gestionnaire Back-Office",
-        "approval": "Visa Direction / Approbation :",
-        "approvalHint": "Signature & Cachet",
         "page": "Page {current} sur {total}"
       }
     }

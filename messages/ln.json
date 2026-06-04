@@ -1215,6 +1215,22 @@
     },
     "specialA": {
       "title": "Lapolo na ntina ya masolo",
+      "list": {
+        "intro": "Liste ya ba rapports sur articles oyo esalemi déjà.",
+        "loading": "Kozwa ba rapports…",
+        "loadError": "Kozwa liste ya ba rapports elongwaki te.",
+        "retry": "Meka lisusu",
+        "empty": "Rapport moko te esalemi nanu.",
+        "totalCount": "{count} rapport(s)",
+        "generateButton": "Kosala rapport",
+        "columns": {
+          "generatedAt": "Esalemi le",
+          "dateFrom": "Date début",
+          "dateTo": "Date fin",
+          "isf": "ISF",
+          "pointOfSale": "Point de vente"
+        }
+      },
       "description": "Récapitulatif ya ba articles banda rapport A ya nsuka. Ebandi ba valeurs.",
       "includes": [
         "Nom commercial, NIF, date, période",
@@ -1224,11 +1240,10 @@
       "preview": {
         "reportCode": "RAPPORT",
         "emitter": "ÉMETTEUR",
-        "equipment": "ÉQUIPEMENT",
         "periodSection": "PÉRIODE & RESTITUTION",
         "company": "Société",
         "nif": "NIF",
-        "terminalId": "ID Terminal (ISF)",
+        "isf": "ISF",
         "generatedAt": "Généré le",
         "dateFrom": "Date Début",
         "dateTo": "Date Fin",
@@ -1243,12 +1258,6 @@
           "fiscalStock": "QUANTITÉ EN STOCK"
         },
         "total": "TOTAL",
-        "closureTitle": "IMPORTANT :",
-        "closureBody": "Rapport oyo ecompile ba mouvements ya ba articles banda clôture ya nsuka. Ko-imprimer to ko-valider ebandi ba valeurs accumulées.",
-        "preparedBy": "Préparé par :",
-        "preparedRole": "Gestionnaire Back-Office",
-        "approval": "Visa Direction / Approbation :",
-        "approvalHint": "Signature & Cachet",
         "page": "Page {current} sur {total}"
       }
     }
