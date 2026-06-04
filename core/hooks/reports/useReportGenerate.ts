@@ -2,6 +2,8 @@
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
+import { useAuth } from "@/context/AuthContext";
+import { useClients } from "@/core/hooks/client/useClient";
 import { reportAListKeys } from "@/core/hooks/reports/useReportAList";
 import { reportsService } from "@/core/services/reports.service";
 import type {
@@ -43,13 +45,38 @@ type SpecialPdfPayload = {
 
 export function useOrdinaryReportPreview() {
     return useMutation({
-        mutationFn: (payload: OrdinaryPayload) =>
-            reportsService.fetchOrdinaryReport(
+        mutationFn: (payload: OrdinaryPayload) => {
+            if (payload.kind === "invoice-payments") {
+                throw new Error(
+                    "Use useInvoicePaymentsReportPreview for invoice payments reports.",
+                );
+            }
+
+            return reportsService.fetchOrdinaryReport(
                 payload.kind,
                 payload.filters,
                 payload.filename,
                 { reportTitle: payload.reportTitle },
-            ),
+            );
+        },
+    });
+}
+
+type InvoicePaymentsPayload = {
+    filters: InvoicePaymentsReportFilters;
+};
+
+export function useInvoicePaymentsReportPreview() {
+    const { profile, user } = useAuth();
+    const { data: clientsData } = useClients({ per_page: 200 });
+
+    return useMutation({
+        mutationFn: (payload: InvoicePaymentsPayload) =>
+            reportsService.fetchInvoicePaymentsReport(payload.filters, {
+                profile,
+                user: user as Record<string, unknown> | null,
+                clients: clientsData?.items ?? [],
+            }),
     });
 }
 

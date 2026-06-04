@@ -1191,6 +1191,27 @@
         },
         "empty": "No filters selected. All available data is included.",
         "page": "Page {current} of {total}"
+      },
+      "payments": {
+        "reportCode": "REPORT",
+        "emitter": "ISSUER",
+        "periodSection": "PERIOD & RESTITUTION",
+        "company": "Company",
+        "nif": "NIF",
+        "isf": "ISF",
+        "generatedAt": "Generated on",
+        "dateFrom": "Start date",
+        "dateTo": "End date",
+        "tableTitle": "INVOICE PAYMENTS",
+        "columns": {
+          "reference": "Reference",
+          "clientName": "Client name",
+          "contractName": "Contract name",
+          "amount": "Amount",
+          "date": "Date"
+        },
+        "empty": "No payments found for the selected criteria.",
+        "page": "Page {current} of {total}"
       }
     },
     "toast": {

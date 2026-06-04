@@ -5,12 +5,16 @@ import {
     buildReportAPreviewDisplay,
     toReportAFilters,
 } from "@/lib/reports/build-report-a-display";
+import { buildInvoicePaymentsPreviewDisplay } from "@/lib/reports/build-invoice-payments-display";
 import { buildReportPreviewDisplay } from "@/lib/reports/build-report-display";
+import { filterInvoicePaymentsRows } from "@/lib/reports/filter-invoice-payments-rows";
+import { MOCK_INVOICE_PAYMENTS_ROWS } from "@/lib/reports/mock-invoice-payments-data";
 import { filenameFromContentDisposition } from "@/core/utils/downloadBlob";
 import { MOCK_REPORT_A_HISTORY } from "@/lib/reports/report-a-mock-history";
 import type {
     InvoiceEditionReportFilters,
     InvoiceNormalizationReportFilters,
+    InvoicePaymentReportApiRow,
     InvoicePaymentsReportFilters,
     OrdinaryReportKind,
     ReportAFilters,
@@ -57,7 +61,7 @@ function blobFromResponse(
 const ORDINARY_PATHS: Record<OrdinaryReportKind, string> = {
     "invoice-edition": `${REPORTS_BASE}/invoice-edition`,
     "invoice-normalization": `${REPORTS_BASE}/invoice-normalization`,
-    "invoice-payments": `${REPORTS_BASE}/invoice-payments`,
+    "invoice-payments": `${REPORTS_BASE}/payments`,
     "vat-collection": `${REPORTS_BASE}/vat-collection`,
     "tool-usage": `${REPORTS_BASE}/tool-usage`,
 };
@@ -72,6 +76,63 @@ const SPECIAL_PDF_PATHS: Record<SpecialPdfReportKind, string> = {
 type FetchOptions = {
     reportTitle: string;
 };
+
+type InvoicePaymentsFetchContext = {
+    profile?: Record<string, unknown> | null;
+    user?: Record<string, unknown> | null;
+    clients?: Array<{
+        id: number | string;
+        client_id?: number | string | null;
+        client_name?: string | null;
+        company_name?: string | null;
+        legal_name?: string | null;
+        name?: string | null;
+    }>;
+};
+
+function normalizeInvoicePaymentRow(
+    row: unknown,
+): InvoicePaymentReportApiRow | null {
+    if (!row || typeof row !== "object") return null;
+    const o = row as Record<string, unknown>;
+
+    const id = Number(o.id);
+    if (!Number.isFinite(id)) return null;
+
+    return {
+        id,
+        date: typeof o.date === "string" ? o.date : String(o.date ?? "—"),
+        status: String(o.status ?? "—"),
+        invoice_id: Number(o.invoice_id) || 0,
+        client_id: Number(o.client_id) || 0,
+        amount: Number(o.amount) || 0,
+        currency: typeof o.currency === "string" ? o.currency : "USD",
+        reference: typeof o.reference === "string" ? o.reference : "—",
+        channel_id: Number(o.channel_id) || 0,
+        method_id: Number(o.method_id) || 0,
+        exchange_rate: Number(o.exchange_rate) || 0,
+        base_currency:
+            typeof o.base_currency === "string" ? o.base_currency : "",
+        confirmed: Boolean(o.confirmed),
+    };
+}
+
+function parseInvoicePaymentsRows(raw: unknown): InvoicePaymentReportApiRow[] {
+    const body = unwrapApiData<unknown>(raw) ?? raw;
+    let rows: unknown[] = [];
+
+    if (Array.isArray(body)) {
+        rows = body;
+    } else if (body && typeof body === "object") {
+        const o = body as Record<string, unknown>;
+        if (Array.isArray(o.items)) rows = o.items;
+        else if (Array.isArray(o.data)) rows = o.data;
+    }
+
+    return rows
+        .map(normalizeInvoicePaymentRow)
+        .filter((item): item is InvoicePaymentReportApiRow => item !== null);
+}
 
 function normalizeReportAHistoryItem(row: unknown): ReportAHistoryItem | null {
     if (!row || typeof row !== "object") return null;
@@ -149,6 +210,12 @@ export const reportsService = {
         fallbackFilename: string,
         options: FetchOptions,
     ): Promise<ReportBlobResult> {
+        if (kind === "invoice-payments") {
+            throw new Error(
+                "Use fetchInvoicePaymentsReport for invoice payments reports.",
+            );
+        }
+
         const params = stripUndefined(filters as Record<string, unknown>);
 
         if (ENV.REPORTS_USE_MOCK) {
@@ -171,6 +238,41 @@ export const reportsService = {
             blob,
             filename,
             display: buildReportAPreviewDisplay(toReportAFilters(params)),
+        };
+    },
+
+    async fetchInvoicePaymentsReport(
+        filters: InvoicePaymentsReportFilters,
+        context: InvoicePaymentsFetchContext,
+    ): Promise<ReportBlobResult> {
+        const params = stripUndefined(filters as Record<string, unknown>);
+
+        const rows = filterInvoicePaymentsRows(
+            ENV.REPORTS_USE_MOCK
+                ? MOCK_INVOICE_PAYMENTS_ROWS
+                : parseInvoicePaymentsRows(
+                      (
+                          await api.get<unknown>(
+                              ORDINARY_PATHS["invoice-payments"],
+                              { params },
+                          )
+                      ).data,
+                  ),
+            filters,
+        );
+
+        const display = buildInvoicePaymentsPreviewDisplay({
+            filters,
+            rows,
+            profile: context.profile,
+            user: context.user,
+            clients: context.clients,
+        });
+
+        return {
+            blob: new Blob([], { type: "application/pdf" }),
+            filename: "invoice-payments.pdf",
+            display,
         };
     },
 

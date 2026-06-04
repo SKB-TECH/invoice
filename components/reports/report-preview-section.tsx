@@ -4,6 +4,7 @@ import { useTranslations } from "next-intl";
 
 import { ReportAPreview } from "@/components/reports/report-a-preview";
 import { ReportDocumentPreview } from "@/components/reports/report-document-preview";
+import { ReportPaymentsPreview } from "@/components/reports/report-payments-preview";
 import type { ReportPreviewDisplay } from "@/core/types/reports";
 
 type Props = {
@@ -34,6 +35,8 @@ export function ReportPreviewSection({
 
             {display.variant === "a" ? (
                 <ReportAPreview content={display.content} />
+            ) : display.variant === "payments" ? (
+                <ReportPaymentsPreview content={display.content} />
             ) : (
                 <ReportDocumentPreview display={display} />
             )}
@@ -47,14 +50,16 @@ export function ReportPreviewSection({
                 >
                     {t("actions.back")}
                 </button>
-                <button
-                    type="button"
-                    disabled={disabled}
-                    onClick={onDownload}
-                    className="h-12 w-52 rounded bg-[#0879bd] text-sm font-semibold text-white hover:bg-[#076ca8] disabled:cursor-not-allowed disabled:bg-slate-300"
-                >
-                    {t("actions.download")}
-                </button>
+                {display.variant !== "payments" ? (
+                    <button
+                        type="button"
+                        disabled={disabled}
+                        onClick={onDownload}
+                        className="h-12 w-52 rounded bg-[#0879bd] text-sm font-semibold text-white hover:bg-[#076ca8] disabled:cursor-not-allowed disabled:bg-slate-300"
+                    >
+                        {t("actions.download")}
+                    </button>
+                ) : null}
             </div>
         </section>
     );
