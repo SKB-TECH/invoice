@@ -16,10 +16,11 @@ export type InvoiceNormalizationReportFilters = ReportPeriodFilter & {
     period_type?: string;
 };
 
-export type InvoicePaymentsReportFilters = ReportPeriodFilter & {
+export type InvoicePaymentsReportFilters = {
     client_id?: number;
-    payment_status?: string;
-    period_type?: string;
+    contract_id?: number;
+    period_start?: string;
+    period_end?: string;
 };
 
 export type VatCollectionReportFilters = ReportPeriodFilter & {
@@ -113,6 +114,39 @@ export type ReportAPreviewContent = {
     };
 };
 
+export type InvoicePaymentReportApiRow = {
+    id: number;
+    date: string;
+    status: string;
+    invoice_id: number;
+    client_id: number;
+    amount: number;
+    currency: string;
+    reference: string;
+    channel_id: number;
+    method_id: number;
+    exchange_rate: number;
+    base_currency: string;
+    confirmed: boolean;
+};
+
+export type InvoicePaymentsReportLineItem = {
+    reference: string;
+    clientName: string;
+    amount: string;
+    date: string;
+};
+
+export type InvoicePaymentsPreviewContent = {
+    generatedAt: string;
+    dateFrom: string;
+    dateTo: string;
+    companyName: string;
+    nif: string;
+    isf: string;
+    lineItems: InvoicePaymentsReportLineItem[];
+};
+
 export type ReportPreviewDisplay =
     | {
           variant: "generic";
@@ -124,6 +158,10 @@ export type ReportPreviewDisplay =
     | {
           variant: "a";
           content: ReportAPreviewContent;
+      }
+    | {
+          variant: "payments";
+          content: InvoicePaymentsPreviewContent;
       };
 
 export type ReportBlobResult = {

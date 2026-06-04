@@ -158,7 +158,13 @@ export function ReportClientAutocomplete({
     const clients: Client[] = useMemo(() => {
         return (data?.items ?? []).map((client) => ({
             id: Number(client.id),
-            name: String(client.legal_name || client.name || ""),
+            name: String(
+                client.client_name ||
+                    client.company_name ||
+                    client.legal_name ||
+                    client.name ||
+                    "",
+            ),
             nif: String(client.nif || client.vat_num || ""),
             rccm: String(client.rccm || client.registration_id || ""),
             idNat: String(client.idnat || ""),

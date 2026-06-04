@@ -21,7 +21,7 @@ import {
     ReportVatPeriodSelect,
     ReportWorkflowStatusSelect,
 } from "@/components/reports/report-filter-fields";
-import { useOrdinaryReportPreview } from "@/core/hooks/reports/useReportGenerate";
+import { useOrdinaryReportPreview, useInvoicePaymentsReportPreview } from "@/core/hooks/reports/useReportGenerate";
 import { useReportPreview } from "@/core/hooks/reports/useReportPreview";
 import type {
     InvoiceEditionReportFilters,
@@ -61,6 +61,7 @@ export function InvoiceEditionGeneratePanel({ onBack }: Props) {
     const t = useTranslations("reports");
     const tFlow = useTranslations("reports.invoiceEditionFlow");
     const previewMutation = useOrdinaryReportPreview();
+    const paymentsPreviewMutation = useInvoicePaymentsReportPreview();
     const {
         previewDisplay,
         isShowingPreview,
@@ -112,8 +113,9 @@ export function InvoiceEditionGeneratePanel({ onBack }: Props) {
                 };
             case "invoicePayments":
                 return {
-                    period_type: periodType.trim() || undefined,
-                    payment_status: paymentStatus.trim() || undefined,
+                    client_id: parseOptionalId(clientId),
+                    period_start: dateFrom.trim() || undefined,
+                    period_end: dateTo.trim() || undefined,
                 };
             case "toolUsage":
                 return {
@@ -130,6 +132,25 @@ export function InvoiceEditionGeneratePanel({ onBack }: Props) {
     };
 
     const handleGeneratePreview = () => {
+        if (kind === "invoicePayments") {
+            paymentsPreviewMutation.mutate(
+                {
+                    filters: buildFilters() as InvoicePaymentsReportFilters,
+                },
+                {
+                    onSuccess: (result) => {
+                        applyPreview(result);
+                        toast.success(t("toast.previewReady"));
+                    },
+                    onError: (err) =>
+                        toast.error(
+                            getAxiosErrorMessage(err, t("toast.generateError")),
+                        ),
+                },
+            );
+            return;
+        }
+
         previewMutation.mutate(
             {
                 kind: KIND_TO_ORDINARY[kind],
@@ -155,13 +176,16 @@ export function InvoiceEditionGeneratePanel({ onBack }: Props) {
         toast.success(t("toast.downloaded"));
     };
 
+    const isGenerating =
+        previewMutation.isPending || paymentsPreviewMutation.isPending;
+
     if (isShowingPreview && previewDisplay) {
         return (
             <ReportPreviewSection
                 display={previewDisplay}
                 onBack={clearPreview}
                 onDownload={handleDownload}
-                disabled={previewMutation.isPending}
+                disabled={isGenerating}
             />
         );
     }
@@ -268,16 +292,18 @@ export function InvoiceEditionGeneratePanel({ onBack }: Props) {
                 ) : null}
 
                 {kind === "invoicePayments" ? (
-                    <ReportFiltersGrid>
-                        <ReportPeriodTypeSelect
-                            value={periodType}
-                            onChange={setPeriodType}
+                    <div className="grid gap-5 md:grid-cols-3">
+                        <ReportClientAutocomplete
+                            value={clientId}
+                            onChange={handleClientChange}
                         />
-                        <ReportPaymentStatusSelect
-                            value={paymentStatus}
-                            onChange={setPaymentStatus}
+                        <ReportPeriodFields
+                            dateFrom={dateFrom}
+                            dateTo={dateTo}
+                            onDateFromChange={setDateFrom}
+                            onDateToChange={setDateTo}
                         />
-                    </ReportFiltersGrid>
+                    </div>
                 ) : null}
 
                 {kind === "toolUsage" ? (
@@ -301,7 +327,7 @@ export function InvoiceEditionGeneratePanel({ onBack }: Props) {
             <div className="mt-6 flex flex-wrap items-center justify-end gap-4 border-t border-slate-100 pt-5">
                 <button
                     type="button"
-                    disabled={previewMutation.isPending}
+                    disabled={isGenerating}
                     onClick={onBack}
                     className="h-12 w-52 rounded border border-slate-300 bg-white text-sm font-semibold text-slate-700 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60"
                 >
@@ -309,11 +335,11 @@ export function InvoiceEditionGeneratePanel({ onBack }: Props) {
                 </button>
                 <button
                     type="button"
-                    disabled={previewMutation.isPending}
+                    disabled={isGenerating}
                     onClick={handleGeneratePreview}
                     className="h-12 w-52 rounded bg-[#0879bd] text-sm font-semibold text-white hover:bg-[#076ca8] disabled:cursor-not-allowed disabled:bg-slate-300"
                 >
-                    {previewMutation.isPending ? (
+                    {isGenerating ? (
                         <span className="inline-flex items-center justify-center gap-2">
                             <Loader2 className="size-4 animate-spin" aria-hidden />
                             {t("actions.generating")}

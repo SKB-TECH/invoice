@@ -1199,6 +1199,27 @@
         },
         "empty": "Filtre ezali te. Données nyonso ezali incluses.",
         "page": "Page {current} sur {total}"
+      },
+      "payments": {
+        "reportCode": "RAPPORT",
+        "emitter": "ÉMETTEUR",
+        "periodSection": "PÉRIODE & RESTITUTION",
+        "company": "Société",
+        "nif": "NIF",
+        "isf": "ISF",
+        "generatedAt": "Généré le",
+        "dateFrom": "Date Début",
+        "dateTo": "Date Fin",
+        "tableTitle": "BA PAIEMENTS YA BA FACTURES",
+        "columns": {
+          "reference": "Référence",
+          "clientName": "Nkombo client",
+          "contractName": "Nkombo contrat",
+          "amount": "Montant",
+          "date": "Date"
+        },
+        "empty": "Paiement moko te ezwami na ba critères oyo.",
+        "page": "Page {current} sur {total}"
       }
     },
     "toast": {
