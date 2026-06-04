@@ -1,11 +1,10 @@
 export const REPORT_A_PDF_LABELS = {
     reportCode: "RAPPORT",
     emitter: "ÉMETTEUR",
-    equipment: "ÉQUIPEMENT",
     periodSection: "PÉRIODE & RESTITUTION",
     company: "Société",
     nif: "NIF",
-    terminalId: "ID Terminal (ISF)",
+    isf: "ISF",
     generatedAt: "Généré le",
     dateFrom: "Date Début",
     dateTo: "Date Fin",
@@ -20,12 +19,5 @@ export const REPORT_A_PDF_LABELS = {
         fiscalStock: "QUANTITÉ EN STOCK",
     },
     total: "TOTAL",
-    closureTitle: "IMPORTANT :",
-    closureBody:
-        "Ce rapport compile les mouvements des articles depuis la dernière clôture. L'impression ou la validation de ce document réinitialisera les valeurs accumulées pour la période suivante.",
-    preparedBy: "Préparé par :",
-    preparedRole: "Gestionnaire Back-Office",
-    approval: "Visa Direction / Approbation :",
-    approvalHint: "Signature & Cachet",
     page: "Page 1 sur 1",
 } as const;
