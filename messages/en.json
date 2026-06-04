@@ -1120,7 +1120,17 @@
       "dateTo": "End date",
       "reportDate": "Report date",
       "client": "Client",
+      "clientPlaceholder": "Search for a client…",
+      "clientLoading": "Loading clients…",
+      "clientEmpty": "No client found",
+      "clientLoadError": "Unable to load clients.",
       "contract": "Contract",
+      "contractPlaceholder": "Search for a contract…",
+      "contractSelectClientFirst": "Select a client first",
+      "contractLoading": "Loading contracts…",
+      "contractEmpty": "No contract available",
+      "contractSearchEmpty": "No contract found",
+      "contractLoadError": "Unable to load contracts.",
       "pointOfSale": "Point of sale",
       "pointOfSalePlaceholder": "e.g. POS-01",
       "isf": "ISF",
@@ -1128,6 +1138,25 @@
       "invoiceType": "Invoice type",
       "invoiceStatus": "Invoice status",
       "paymentStatus": "Payment status",
+      "period": "Period",
+      "user": "User",
+      "userPlaceholder": "e.g. benjamin",
+      "actionType": "Action type",
+      "periodOptions": {
+        "day": "By day",
+        "month": "By month",
+        "quarter": "By quarter"
+      },
+      "vatPeriodOptions": {
+        "monthly": "Monthly",
+        "quarterly": "Quarterly"
+      },
+      "actionTypes": {
+        "create": "Create",
+        "update": "Update",
+        "delete": "Delete",
+        "validate": "Validate"
+      },
       "statuses": {
         "brouillon": "Draft",
         "enregistrer": "Recorded",
@@ -1153,7 +1182,22 @@
     "preview": {
       "title": "Report preview",
       "subtitle": "Review the criteria and report content before downloading.",
-      "simulatedNotice": "Simulated preview"
+      "simulatedNotice": "Simulated preview",
+      "ordinary": {
+        "reportCode": "REPORT",
+        "metaSection": "METADATA",
+        "generatedAt": "Generated on",
+        "reportType": "Type",
+        "objectSection": "SUBJECT",
+        "reportTitle": "Title",
+        "tableTitle": "APPLIED CRITERIA",
+        "columns": {
+          "criteria": "Criteria",
+          "value": "Value"
+        },
+        "empty": "No filters selected. All available data is included.",
+        "page": "Page {current} of {total}"
+      }
     },
     "toast": {
       "previewReady": "Report preview is ready.",
@@ -1180,6 +1224,35 @@
       "toolUsage": {
         "title": "Tool usage report",
         "description": "User activity and feature usage over the selected period."
+      }
+    },
+    "invoiceEditionFlow": {
+      "list": {
+        "intro": "History of generated ordinary reports. Click the button below to generate a new one.",
+        "loading": "Loading reports…",
+        "loadError": "Could not load the report list.",
+        "retry": "Retry",
+        "empty": "No report generated yet.",
+        "totalCount": "{count} report(s)",
+        "generateButton": "Generate a report",
+        "columns": {
+          "generatedAt": "Generated on",
+          "dateFrom": "Start date",
+          "dateTo": "End date",
+          "isf": "ISF",
+          "pointOfSale": "Point of sale"
+        }
+      },
+      "generate": {
+        "intro": "Choose the report type and fill in the available filters before generating the preview.",
+        "radioTitle": "Ordinary report type"
+      },
+      "reportKinds": {
+        "invoiceEdition": "Invoice editing",
+        "invoiceNormalization": "Invoice normalization",
+        "vatCollection": "VAT collection",
+        "invoicePayments": "Invoice payments",
+        "toolUsage": "Tool usage"
       }
     },
     "specialXz": {

@@ -1104,11 +1104,7 @@
     "pageTitle": "Rapports",
     "pageIntro": "Générez des rapports sur les factures, la TVA, les paiements et l’utilisation de la plateforme.",
     "menu": {
-      "invoiceEdition": "Édition des factures",
-      "invoiceNormalization": "Normalisation des factures",
-      "invoicePayments": "Paiements des factures",
-      "vatCollection": "Collecte de la TVA",
-      "toolUsage": "Utilisation de l’outil",
+      "invoiceEdition": "Rapports Ordinaries",
       "reportXDaily": "Rapport quotidien",
       "reportZ": "Rapport de clôture",
       "reportXPeriodic": "Rapport périodique",
@@ -1120,7 +1116,17 @@
       "dateTo": "Date de fin",
       "reportDate": "Date du rapport",
       "client": "Client",
+      "clientPlaceholder": "Rechercher un client…",
+      "clientLoading": "Chargement des clients…",
+      "clientEmpty": "Aucun client trouvé",
+      "clientLoadError": "Impossible de charger les clients.",
       "contract": "Contrat",
+      "contractPlaceholder": "Rechercher un contrat…",
+      "contractSelectClientFirst": "Choisissez d’abord un client",
+      "contractLoading": "Chargement des contrats…",
+      "contractEmpty": "Aucun contrat disponible",
+      "contractSearchEmpty": "Aucun contrat trouvé",
+      "contractLoadError": "Impossible de charger les contrats.",
       "pointOfSale": "Point de vente",
       "pointOfSalePlaceholder": "Ex. PDV-01",
       "isf": "ISF",
@@ -1128,6 +1134,25 @@
       "invoiceType": "Type de facture",
       "invoiceStatus": "Statut de la facture",
       "paymentStatus": "Statut du paiement",
+      "period": "Période",
+      "user": "Utilisateur",
+      "userPlaceholder": "Ex. benjamin",
+      "actionType": "Type d’action",
+      "periodOptions": {
+        "day": "Par jour",
+        "month": "Par mois",
+        "quarter": "Par trimestre"
+      },
+      "vatPeriodOptions": {
+        "monthly": "Mensuelle",
+        "quarterly": "Trimestrielle"
+      },
+      "actionTypes": {
+        "create": "Création",
+        "update": "Modification",
+        "delete": "Suppression",
+        "validate": "Validation"
+      },
       "statuses": {
         "brouillon": "Brouillon",
         "enregistrer": "Enregistrée",
@@ -1153,7 +1178,22 @@
     "preview": {
       "title": "Aperçu du rapport",
       "subtitle": "Vérifiez les critères et le contenu du rapport avant téléchargement.",
-      "simulatedNotice": "Aperçu simulé"
+      "simulatedNotice": "Aperçu simulé",
+      "ordinary": {
+        "reportCode": "RAPPORT",
+        "metaSection": "MÉTADONNÉES",
+        "generatedAt": "Généré le",
+        "reportType": "Type",
+        "objectSection": "OBJET",
+        "reportTitle": "Titre",
+        "tableTitle": "CRITÈRES APPLIQUÉS",
+        "columns": {
+          "criteria": "Critère",
+          "value": "Valeur"
+        },
+        "empty": "Aucun filtre. Toutes les données disponibles sont incluses.",
+        "page": "Page {current} sur {total}"
+      }
     },
     "toast": {
       "previewReady": "Aperçu du rapport prêt.",
@@ -1162,24 +1202,37 @@
     },
     "ordinary": {
       "invoiceEdition": {
-        "title": "Rapport sur l’édition des factures",
-        "description": "Analyse des factures créées ou modifiées. Filtrez par client, contrat, période, point de vente et statut."
+        "title": "Liste des rapports ordinaires",
+        "description": "Liste des rapports ordinaires générés. Cliquez sur le bouton pour lancer une nouvelle génération."
+      }
+    },
+    "invoiceEditionFlow": {
+      "list": {
+        "intro": "Historique des rapports ordinaires générés.",
+        "loading": "Chargement des rapports…",
+        "loadError": "Impossible de charger la liste des rapports.",
+        "retry": "Réessayer",
+        "empty": "Aucun rapport généré pour le moment.",
+        "totalCount": "{count} rapport(s)",
+        "generateButton": "Générer un rapport",
+        "columns": {
+          "generatedAt": "Généré le",
+          "dateFrom": "Date début",
+          "dateTo": "Date fin",
+          "isf": "ISF",
+          "pointOfSale": "Point de vente"
+        }
       },
-      "invoiceNormalization": {
-        "title": "Rapport sur la normalisation des factures",
-        "description": "Suivi des factures normalisées. Filtrez par point de vente, type (FV, FA, …) et période."
+      "generate": {
+        "intro": "",
+        "radioTitle": "Type de rapport à générer"
       },
-      "invoicePayments": {
-        "title": "Rapport sur les paiements de factures",
-        "description": "Synthèse des paiements enregistrés sur la période et par client."
-      },
-      "vatCollection": {
-        "title": "Rapport sur la collecte de la TVA",
-        "description": "Montants de TVA collectés. Filtrez par période, statut de paiement, type de facture et client."
-      },
-      "toolUsage": {
-        "title": "Rapport sur l’utilisation de l’outil",
-        "description": "Activité des utilisateurs et usage des fonctionnalités sur la période choisie."
+      "reportKinds": {
+        "invoiceEdition": "Édition des factures",
+        "invoiceNormalization": "Normalisation des factures",
+        "vatCollection": "Collecte de la TVA",
+        "invoicePayments": "Paiements de factures",
+        "toolUsage": "Utilisation de l’outil"
       }
     },
     "specialXz": {
