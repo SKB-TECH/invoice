@@ -1105,9 +1105,7 @@
     "pageIntro": "Générez des rapports sur les factures, la TVA, les paiements et l’utilisation de la plateforme.",
     "menu": {
       "invoiceEdition": "Rapports Ordinaries",
-      "reportXDaily": "Rapport quotidien",
-      "reportZ": "Rapport de clôture",
-      "reportXPeriodic": "Rapport périodique",
+      "reportXDaily": "Rapports X-Z",
       "reportA": "Rapport type A"
     },
     "filters": {
@@ -1236,6 +1234,7 @@
       }
     },
     "specialXz": {
+      "title": "Rapports X-Z",
       "reportXDaily": {
         "title": "Rapport quotidien",
         "description": "Récapitulatif depuis le dernier rapport Z. Les valeurs accumulées ne sont pas réinitialisées.",
@@ -1265,6 +1264,33 @@
           "Nombre de factures par type, modes de paiement, réductions",
           "Ventes incomplètes sur la période"
         ]
+      }
+    },
+    "xzFlow": {
+      "list": {
+        "intro": "Historique des rapports X-Z déjà générés.",
+        "loading": "Chargement des rapports…",
+        "loadError": "Impossible de charger la liste des rapports.",
+        "retry": "Réessayer",
+        "empty": "Aucun rapport généré pour le moment.",
+        "totalCount": "{count} rapport(s)",
+        "generateButton": "Générer un rapport",
+        "columns": {
+          "generatedAt": "Généré le",
+          "dateFrom": "Date début",
+          "dateTo": "Date fin",
+          "isf": "ISF",
+          "pointOfSale": "Point de vente"
+        }
+      },
+      "generate": {
+        "intro": "Choisissez le type de rapport X-Z à générer.",
+        "radioTitle": "Type de rapport à générer"
+      },
+      "reportKinds": {
+        "reportXDaily": "Rapport X quotidien",
+        "reportZ": "Rapport Z",
+        "reportXPeriodic": "Rapport X périodique"
       }
     },
     "specialA": {

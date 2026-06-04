@@ -1258,6 +1258,7 @@
       }
     },
     "specialXz": {
+      "title": "Ba rapports X-Z",
       "reportXDaily": {
         "title": "Lapolo ya mokolo na mokolo",
         "description": "Récapitulatif banda rapport Z ya nsuka. Ba valeurs ebandi te.",
@@ -1284,6 +1285,33 @@
           "Ba montants, taxes mpe modes ya paiement",
           "Ba ventes oyo ezuami te"
         ]
+      }
+    },
+    "xzFlow": {
+      "list": {
+        "intro": "Historique ya ba rapports X-Z oyo esalemi deja.",
+        "loading": "Kozwa ba rapports…",
+        "loadError": "Liste ya ba rapports elongwaki te.",
+        "retry": "Meka lisusu",
+        "empty": "Rapport moko te esalemi nanu.",
+        "totalCount": "{count} rapport(s)",
+        "generateButton": "Kosala rapport",
+        "columns": {
+          "generatedAt": "Esalemi le",
+          "dateFrom": "Date début",
+          "dateTo": "Date fin",
+          "isf": "ISF",
+          "pointOfSale": "Point de vente"
+        }
+      },
+      "generate": {
+        "intro": "Pona type ya rapport X-Z oyo okosala.",
+        "radioTitle": "Type ya rapport"
+      },
+      "reportKinds": {
+        "reportXDaily": "Rapport X ya mokolo",
+        "reportZ": "Rapport Z",
+        "reportXPeriodic": "Rapport X ya période"
       }
     },
     "specialA": {

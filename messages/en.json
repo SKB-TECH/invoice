@@ -1104,15 +1104,9 @@
     "pageTitle": "Reports",
     "pageIntro": "Generate reports on invoices, VAT, payments and platform usage.",
     "menu": {
-      "invoiceEdition": "Invoice editing",
-      "invoiceNormalization": "Invoice normalization",
-      "invoicePayments": "Invoice payments",
-      "vatCollection": "VAT collection",
-      "toolUsage": "Tool usage",
-      "reportXDaily": "Daily report",
-      "reportZ": "Closing report",
-      "reportXPeriodic": "Periodic report",
-      "reportA": "Articles report"
+      "invoiceEdition": "Ordinary reports",
+      "reportXDaily": "X-Z reports",
+      "reportA": "Type A report"
     },
     "filters": {
       "all": "All",
@@ -1256,6 +1250,7 @@
       }
     },
     "specialXz": {
+      "title": "X-Z reports",
       "reportXDaily": {
         "title": "Daily report",
         "description": "Summary since the last Z report. Accumulated values are not reset.",
@@ -1285,6 +1280,33 @@
           "Invoice count by type, payment methods, discounts",
           "Incomplete sales over the period"
         ]
+      }
+    },
+    "xzFlow": {
+      "list": {
+        "intro": "History of generated X-Z reports.",
+        "loading": "Loading reports…",
+        "loadError": "Could not load the report list.",
+        "retry": "Retry",
+        "empty": "No report generated yet.",
+        "totalCount": "{count} report(s)",
+        "generateButton": "Generate a report",
+        "columns": {
+          "generatedAt": "Generated on",
+          "dateFrom": "Start date",
+          "dateTo": "End date",
+          "isf": "ISF",
+          "pointOfSale": "Point of sale"
+        }
+      },
+      "generate": {
+        "intro": "Choose the X-Z report type to generate.",
+        "radioTitle": "Report type"
+      },
+      "reportKinds": {
+        "reportXDaily": "Daily X report",
+        "reportZ": "Z report",
+        "reportXPeriodic": "Periodic X report"
       }
     },
     "specialA": {
