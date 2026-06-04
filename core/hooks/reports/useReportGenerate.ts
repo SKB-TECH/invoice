@@ -1,7 +1,8 @@
 "use client";
 
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
+import { reportAListKeys } from "@/core/hooks/reports/useReportAList";
 import { reportsService } from "@/core/services/reports.service";
 import type {
     InvoiceEditionReportFilters,
@@ -53,6 +54,8 @@ export function useOrdinaryReportPreview() {
 }
 
 export function useSpecialPdfReportPreview() {
+    const qc = useQueryClient();
+
     return useMutation({
         mutationFn: (payload: SpecialPdfPayload) =>
             reportsService.fetchSpecialPdfReport(
@@ -61,5 +64,10 @@ export function useSpecialPdfReportPreview() {
                 payload.filename,
                 { reportTitle: payload.reportTitle },
             ),
+        onSuccess: async (_data, variables) => {
+            if (variables.kind === "a") {
+                await qc.invalidateQueries({ queryKey: reportAListKeys.all });
+            }
+        },
     });
 }

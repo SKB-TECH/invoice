@@ -1216,6 +1216,22 @@
     },
     "specialA": {
       "title": "Rapport sur les articles",
+      "list": {
+        "intro": "Historique des rapports sur les articles déjà générés.",
+        "loading": "Chargement des rapports…",
+        "loadError": "Impossible de charger la liste des rapports.",
+        "retry": "Réessayer",
+        "empty": "Aucun rapport généré pour le moment.",
+        "totalCount": "{count} rapport(s)",
+        "generateButton": "Générer un rapport",
+        "columns": {
+          "generatedAt": "Généré le",
+          "dateFrom": "Date début",
+          "dateTo": "Date fin",
+          "isf": "ISF",
+          "pointOfSale": "Point de vente"
+        }
+      },
       "description": "Récapitulatif relatif aux articles depuis le dernier rapport A. Réinitialise les valeurs accumulées.",
       "includes": [
         "Dénomination commerciale, NIF, date et heure, période",

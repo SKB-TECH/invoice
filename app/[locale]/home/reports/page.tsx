@@ -69,6 +69,7 @@ function ReportsPageInner() {
         const q = new URLSearchParams(searchParams.toString());
         if (id === "invoiceEdition") q.delete("menu");
         else q.set("menu", id);
+        q.delete("generate");
         const suffix = q.toString();
         router.replace(suffix ? `${pathname}?${suffix}` : pathname);
     };

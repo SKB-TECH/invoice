@@ -46,6 +46,20 @@ export type ReportAFilters = ReportPeriodFilter & {
     isf?: string;
 };
 
+export type ReportAHistoryItem = {
+    id: number;
+    generatedAt: string;
+    dateFrom: string;
+    dateTo: string;
+    isf: string;
+    pointOfSale: string;
+};
+
+export type ReportAHistoryListResult = {
+    items: ReportAHistoryItem[];
+    meta: { total: number };
+};
+
 export type OrdinaryReportKind =
     | "invoice-edition"
     | "invoice-normalization"

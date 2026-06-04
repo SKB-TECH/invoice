@@ -1216,6 +1216,22 @@
     },
     "specialA": {
       "title": "Articles report",
+      "list": {
+        "intro": "History of generated article reports.",
+        "loading": "Loading reports…",
+        "loadError": "Could not load the report list.",
+        "retry": "Retry",
+        "empty": "No reports generated yet.",
+        "totalCount": "{count} report(s)",
+        "generateButton": "Generate a report",
+        "columns": {
+          "generatedAt": "Generated on",
+          "dateFrom": "Start date",
+          "dateTo": "End date",
+          "isf": "ISF",
+          "pointOfSale": "Point of sale"
+        }
+      },
       "description": "Item summary since the last A report. Resets accumulated values.",
       "includes": [
         "Trade name, tax ID, date and time, period",
