@@ -786,6 +786,7 @@
       "itemTypeLoading": "Tozali koluka ba codes…",
       "itemTypeLoadError": "Impossible de koluka ba types ya article.",
       "retryItemTypesFetch": "Meka lisusu",
+      "creating": "Kozala na kokela service…",
       "toastCreated": "Service ebakisami.",
       "toastCreateErrorFallback": "Kokela service elongwaki te.",
       "invalidForm": "Tála ba champs mpe nimero malamu.",

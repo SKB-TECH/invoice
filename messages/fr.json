@@ -785,6 +785,7 @@
       "itemTypeLoading": "Chargement des codes…",
       "itemTypeLoadError": "Impossible de charger les types d'article.",
       "retryItemTypesFetch": "Réessayer",
+      "creating": "Création du service…",
       "toastCreated": "Service créé.",
       "toastCreateErrorFallback": "Création du service impossible.",
       "invalidForm": "Complétez tous les champs obligatoires (nombres entiers positifs où requis pour groupe fiscal et référentiel).",
