@@ -1215,9 +1215,9 @@
       }
     },
     "specialA": {
-      "title": "Articles report",
+      "title": "Type A report",
       "list": {
-        "intro": "History of generated article reports.",
+        "intro": "History of generated type A reports.",
         "loading": "Loading reports…",
         "loadError": "Could not load the report list.",
         "retry": "Retry",
