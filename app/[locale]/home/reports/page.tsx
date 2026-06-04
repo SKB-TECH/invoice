@@ -12,15 +12,11 @@ import { InvoiceEditionReportPanel } from "@/components/reports/invoice-edition-
 type ReportsMenuId =
     | "invoiceEdition"
     | "reportXDaily"
-    | "reportZ"
-    | "reportXPeriodic"
     | "reportA";
 
 const MENU_IDS: ReportsMenuId[] = [
     "invoiceEdition",
     "reportXDaily",
-    "reportZ",
-    "reportXPeriodic",
     "reportA",
 ];
 
@@ -104,11 +100,7 @@ function ReportsPageInner() {
                         {activeMenu === "invoiceEdition" && (
                             <InvoiceEditionReportPanel />
                         )}
-                        {(activeMenu === "reportXDaily" ||
-                            activeMenu === "reportZ" ||
-                            activeMenu === "reportXPeriodic") && (
-                            <SpecialXzReportPanel panelId={activeMenu} />
-                        )}
+                        {activeMenu === "reportXDaily" && <SpecialXzReportPanel />}
                         {activeMenu === "reportA" && <SpecialAReportPanel />}
                     </section>
                 </div>
