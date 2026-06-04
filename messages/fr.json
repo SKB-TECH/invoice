@@ -180,7 +180,7 @@
     "createTitle": "Nouveau paiement",
     "backToList": "Retour à la liste",
     "backToInvoices": "Retour aux factures",
-    "recordPayment": "Enregistrer un paiement",
+    "recordPayment": "Effectuer un paiement",
     "loading": "Chargement des paiements…",
     "loadError": "Impossible de charger les paiements.",
     "empty": "Aucun paiement pour le moment.",
