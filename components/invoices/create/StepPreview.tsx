@@ -53,6 +53,7 @@ export function StepPreview({
 
     const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
 
+
     const createInvoice = useCreateInvoice({
         onSuccess: (_data, variables) => {
             const workflowStatus = variables.payload.workflow_status;
