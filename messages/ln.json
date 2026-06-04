@@ -1216,7 +1216,7 @@
     "specialA": {
       "title": "Lapolo na ntina ya masolo",
       "list": {
-        "intro": "Liste ya ba rapports sur articles oyo esalemi déjà.",
+        "intro": "Liste ya ba rapports sur type A oyo esalemi déjà.",
         "loading": "Kozwa ba rapports…",
         "loadError": "Kozwa liste ya ba rapports elongwaki te.",
         "retry": "Meka lisusu",
@@ -1231,7 +1231,7 @@
           "pointOfSale": "Point de vente"
         }
       },
-      "description": "Récapitulatif ya ba articles banda rapport A ya nsuka. Ebandi ba valeurs.",
+      "description": "Récapitulatif ya ba type A banda rapport A ya nsuka. Ebandi ba valeurs.",
       "includes": [
         "Nom commercial, NIF, date, période",
         "Code mpe nom article, prix, taux impôt",
