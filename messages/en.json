@@ -676,8 +676,10 @@
       },
       "actions": {
         "backToList": "Back to list",
+        "cancel": "Cancel",
         "delete": "Delete",
-        "deleteConfirm": "Permanently delete this article?",
+        "deleting": "Deleting...",
+        "deleteConfirm": "Do you want to permanently delete this article?",
         "deleteSuccess": "Article deleted.",
         "deleteError": "Could not delete article.",
         "edit": "Edit"
@@ -811,8 +813,10 @@
         },
         "actions": {
           "backToList": "Back to list",
+          "cancel": "Cancel",
           "delete": "Delete",
-          "deleteConfirm": "Permanently delete this service?",
+          "deleting": "Deleting...",
+          "deleteConfirm": "Do you want to permanently delete this service?",
           "deleteSuccess": "Service deleted.",
           "deleteError": "Could not delete service.",
           "edit": "Edit"

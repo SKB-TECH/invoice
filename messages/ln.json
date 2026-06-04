@@ -677,7 +677,9 @@
       },
       "actions": {
         "backToList": "Kozonga na liste",
+        "cancel": "Kotika",
         "delete": "Kolongola",
+        "deleting": "Kolongolami ezali kosala...",
         "deleteConfirm": "Kolongola eloko oyo mpo na libela ?",
         "deleteSuccess": "Eloko elongolami.",
         "deleteError": "Kolongola eloko elongwaki te.",
@@ -812,7 +814,9 @@
         },
         "actions": {
           "backToList": "Kozonga na liste",
+          "cancel": "Kotika",
           "delete": "Kolongola",
+          "deleting": "Kolongolami ezali kosala...",
           "deleteConfirm": "Kolongola service oyo mpo na libela ?",
           "deleteSuccess": "Service elongolami.",
           "deleteError": "Kolongola service elongwaki te.",

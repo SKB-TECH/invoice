@@ -676,8 +676,10 @@
       },
       "actions": {
         "backToList": "Retour à la liste",
+        "cancel": "Annuler",
         "delete": "Supprimer",
-        "deleteConfirm": "Supprimer définitivement cet article ?",
+        "deleting": "Suppression en cours...",
+        "deleteConfirm": "Voulez-vous supprimer définitivement cet article ?",
         "deleteSuccess": "Article supprimé.",
         "deleteError": "Impossible de supprimer l'article.",
         "edit": "Modifier"
@@ -811,8 +813,10 @@
         },
         "actions": {
           "backToList": "Retour à la liste",
+          "cancel": "Annuler",
           "delete": "Supprimer",
-          "deleteConfirm": "Supprimer définitivement ce service ?",
+          "deleting": "Suppression en cours...",
+          "deleteConfirm": "Voulez-vous supprimer définitivement ce service ?",
           "deleteSuccess": "Service supprimé.",
           "deleteError": "Impossible de supprimer le service.",
           "edit": "Modifier"
