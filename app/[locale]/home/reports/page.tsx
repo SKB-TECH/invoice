@@ -5,16 +5,12 @@ import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 
 import { useRouter, usePathname } from "@/i18n/routing";
-import { OrdinaryReportPanel } from "@/components/reports/ordinary-report-panel";
 import { SpecialAReportPanel } from "@/components/reports/special-a-report-panel";
 import { SpecialXzReportPanel } from "@/components/reports/special-xz-report-panel";
+import { InvoiceEditionReportPanel } from "@/components/reports/invoice-edition-report-panel";
 
 type ReportsMenuId =
     | "invoiceEdition"
-    | "invoiceNormalization"
-    | "invoicePayments"
-    | "vatCollection"
-    | "toolUsage"
     | "reportXDaily"
     | "reportZ"
     | "reportXPeriodic"
@@ -22,10 +18,6 @@ type ReportsMenuId =
 
 const MENU_IDS: ReportsMenuId[] = [
     "invoiceEdition",
-    "invoiceNormalization",
-    "invoicePayments",
-    "vatCollection",
-    "toolUsage",
     "reportXDaily",
     "reportZ",
     "reportXPeriodic",
@@ -109,12 +101,8 @@ function ReportsPageInner() {
                     </aside>
 
                     <section className="min-h-0 w-full flex-1 space-y-5 overflow-y-auto lg:max-h-[calc(100dvh-8.5rem)] lg:overflow-y-auto lg:pb-10 lg:pr-2">
-                        {(activeMenu === "invoiceEdition" ||
-                            activeMenu === "invoiceNormalization" ||
-                            activeMenu === "invoicePayments" ||
-                            activeMenu === "vatCollection" ||
-                            activeMenu === "toolUsage") && (
-                            <OrdinaryReportPanel panelId={activeMenu} />
+                        {activeMenu === "invoiceEdition" && (
+                            <InvoiceEditionReportPanel />
                         )}
                         {(activeMenu === "reportXDaily" ||
                             activeMenu === "reportZ" ||
