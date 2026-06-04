@@ -1122,7 +1122,17 @@
       "dateTo": "Date ya nsuka",
       "reportDate": "Date ya rapport",
       "client": "Client",
+      "clientPlaceholder": "Luka client…",
+      "clientLoading": "Ezali ko charger ba clients…",
+      "clientEmpty": "Client moko ezwami te",
+      "clientLoadError": "Ekoki te ko charger ba clients.",
       "contract": "Contrat",
+      "contractPlaceholder": "Luka contrat…",
+      "contractSelectClientFirst": "Pona client liboso",
+      "contractLoading": "Ezali ko charger ba contrats…",
+      "contractEmpty": "Contrat moko ezali te",
+      "contractSearchEmpty": "Contrat moko ezwami te",
+      "contractLoadError": "Ekoki te ko charger ba contrats.",
       "pointOfSale": "Point ya vente",
       "pointOfSalePlaceholder": "Soki PDV-01",
       "isf": "ISF",
@@ -1130,6 +1140,25 @@
       "invoiceType": "Type ya facture",
       "invoiceStatus": "Statut ya facture",
       "paymentStatus": "Statut ya paiement",
+      "period": "Période",
+      "user": "Utilisateur",
+      "userPlaceholder": "Ex. benjamin",
+      "actionType": "Type d’action",
+      "periodOptions": {
+        "day": "Na mokolo",
+        "month": "Na sanza",
+        "quarter": "Na trimestre"
+      },
+      "vatPeriodOptions": {
+        "monthly": "Mensuelle",
+        "quarterly": "Trimestrielle"
+      },
+      "actionTypes": {
+        "create": "Création",
+        "update": "Modification",
+        "delete": "Suppression",
+        "validate": "Validation"
+      },
       "statuses": {
         "brouillon": "Brouillon",
         "enregistrer": "Enregistrée",
@@ -1155,7 +1184,22 @@
     "preview": {
       "title": "Aperçu ya rapport",
       "subtitle": "Talá ba critères mpe contenu ya rapport liboso ya ko-télécharger.",
-      "simulatedNotice": "Aperçu simulé"
+      "simulatedNotice": "Aperçu simulé",
+      "ordinary": {
+        "reportCode": "RAPPORT",
+        "metaSection": "MÉTADONNÉES",
+        "generatedAt": "Généré le",
+        "reportType": "Type",
+        "objectSection": "OBJET",
+        "reportTitle": "Titre",
+        "tableTitle": "CRITÈRES APPLIQUÉS",
+        "columns": {
+          "criteria": "Critère",
+          "value": "Valeur"
+        },
+        "empty": "Filtre ezali te. Données nyonso ezali incluses.",
+        "page": "Page {current} sur {total}"
+      }
     },
     "toast": {
       "previewReady": "Aperçu ya rapport ezali prêt.",
@@ -1182,6 +1226,35 @@
       "toolUsage": {
         "title": "Rapport ya utilisation",
         "description": "Activité ya ba utilisateurs na période oyo oponi."
+      }
+    },
+    "invoiceEditionFlow": {
+      "list": {
+        "intro": "Historique ya ba rapports ordinaires oyo esalemi deja. Finá na bouton mpo na kobimisa rapport ya sika.",
+        "loading": "Kozwa ba rapports…",
+        "loadError": "Liste ya ba rapports elongwaki te.",
+        "retry": "Meka lisusu",
+        "empty": "Rapport moko te esalemi nanu.",
+        "totalCount": "{count} rapport(s)",
+        "generateButton": "Kosala rapport",
+        "columns": {
+          "generatedAt": "Esalemi le",
+          "dateFrom": "Date début",
+          "dateTo": "Date fin",
+          "isf": "ISF",
+          "pointOfSale": "Point de vente"
+        }
+      },
+      "generate": {
+        "intro": "Pona type ya rapport mpe kotia ba filtres avant kobimisa aperçu.",
+        "radioTitle": "Type ya rapport ordinaire"
+      },
+      "reportKinds": {
+        "invoiceEdition": "Édition ya ba factures",
+        "invoiceNormalization": "Normalisation ya ba factures",
+        "vatCollection": "Collecte ya TVA",
+        "invoicePayments": "Ba paiements ya factures",
+        "toolUsage": "Utilisation ya outil"
       }
     },
     "specialXz": {

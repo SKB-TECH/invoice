@@ -13,20 +13,27 @@ export type InvoiceEditionReportFilters = ReportPeriodFilter & {
 export type InvoiceNormalizationReportFilters = ReportPeriodFilter & {
     point_of_sale?: string;
     invoice_type_code?: string;
+    period_type?: string;
 };
 
 export type InvoicePaymentsReportFilters = ReportPeriodFilter & {
     client_id?: number;
     payment_status?: string;
+    period_type?: string;
 };
 
 export type VatCollectionReportFilters = ReportPeriodFilter & {
     payment_status?: string;
     invoice_type_code?: string;
     client_id?: number;
+    period_type?: string;
 };
 
-export type ToolUsageReportFilters = ReportPeriodFilter;
+export type ToolUsageReportFilters = ReportPeriodFilter & {
+    user_name?: string;
+    action_type?: string;
+    period_type?: string;
+};
 
 export type ReportXDailyFilters = {
     report_date?: string;

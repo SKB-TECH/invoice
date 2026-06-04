@@ -1,7 +1,10 @@
 import { api } from "@/core/services/api";
 import { fetchMockReportPdf } from "@/core/services/reports-mock";
 import { ENV } from "@/core/constants/env";
-import { buildReportAPreviewDisplay } from "@/lib/reports/build-report-a-display";
+import {
+    buildReportAPreviewDisplay,
+    toReportAFilters,
+} from "@/lib/reports/build-report-a-display";
 import { buildReportPreviewDisplay } from "@/lib/reports/build-report-display";
 import { filenameFromContentDisposition } from "@/core/utils/downloadBlob";
 import { MOCK_REPORT_A_HISTORY } from "@/lib/reports/report-a-mock-history";
@@ -167,11 +170,7 @@ export const reportsService = {
         return {
             blob,
             filename,
-            display: buildReportPreviewDisplay(
-                options.reportTitle,
-                kind,
-                params,
-            ),
+            display: buildReportAPreviewDisplay(toReportAFilters(params)),
         };
     },
 
