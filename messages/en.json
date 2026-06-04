@@ -587,6 +587,10 @@
       "loadErrorDetail": "Could not load this article.",
       "retry": "Retry",
       "empty": "No articles match your search.",
+      "totalCount": "{count} article(s)",
+      "pageOfTotal": "Page {page} of {totalPages}",
+      "paginationPrev": "Previous page",
+      "paginationNext": "Next page",
       "columns": {
         "code": "Code",
         "title": "Title",
@@ -644,6 +648,7 @@
         "save": "Save"
       },
       "creating": "Creating article…",
+      "toastCreated": "Article created.",
       "invalidForm": "Please check required fields and amounts.",
       "referentialPlaceholder": "Select a referential",
       "referentialLoading": "Loading referentials…",
@@ -671,8 +676,10 @@
       },
       "actions": {
         "backToList": "Back to list",
+        "cancel": "Cancel",
         "delete": "Delete",
-        "deleteConfirm": "Permanently delete this article?",
+        "deleting": "Deleting...",
+        "deleteConfirm": "Do you want to permanently delete this article?",
         "deleteSuccess": "Article deleted.",
         "deleteError": "Could not delete article.",
         "edit": "Edit"
@@ -722,7 +729,7 @@
       "filterReset": "Show all",
       "refresh": "Refresh",
       "refreshAria": "Refresh service list",
-      "totalCount": "{count} row(s)",
+      "totalCount": "{count} service(s)",
       "columns": {
         "id": "ID",
         "code": "Code",
@@ -778,6 +785,7 @@
       "itemTypeLoading": "Loading codes…",
       "itemTypeLoadError": "Unable to load item types.",
       "retryItemTypesFetch": "Retry",
+      "creating": "Creating service…",
       "toastCreated": "Service created.",
       "toastCreateErrorFallback": "Could not create service.",
       "invalidForm": "Fill required fields; use valid numbers for IDs and monetary fields.",
@@ -806,8 +814,10 @@
         },
         "actions": {
           "backToList": "Back to list",
+          "cancel": "Cancel",
           "delete": "Delete",
-          "deleteConfirm": "Permanently delete this service?",
+          "deleting": "Deleting...",
+          "deleteConfirm": "Do you want to permanently delete this service?",
           "deleteSuccess": "Service deleted.",
           "deleteError": "Could not delete service.",
           "edit": "Edit"

@@ -84,6 +84,11 @@ export function ModifierBillableServiceForm({ service }: Props) {
         serviceToFormState(service),
     );
 
+    const initialCode = useMemo(
+        () => service.code.trim(),
+        [service.code],
+    );
+
     const {
         data: taxGroups = [],
         isPending: taxGroupsPending,
@@ -176,13 +181,16 @@ export function ModifierBillableServiceForm({ service }: Props) {
         const payload: UpdateBillableServicePayload = {
             service_name,
             description: form.description.trim() || service_name,
-            code,
             business_sector,
             unit_price,
             tax_rate: selectedTaxGroup.rate,
             currency: form.currency.trim().toUpperCase() || "USD",
             tax_group: selectedTaxGroup.id,
         };
+
+        if (code !== initialCode) {
+            payload.code = code;
+        }
 
         updateMutation.mutate(payload);
     };

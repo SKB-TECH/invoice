@@ -587,6 +587,10 @@
       "loadErrorDetail": "Impossible de charger cet article.",
       "retry": "Réessayer",
       "empty": "Aucun article ne correspond à votre recherche.",
+      "totalCount": "{count} article(s)",
+      "pageOfTotal": "Page {page} sur {totalPages}",
+      "paginationPrev": "Page précédente",
+      "paginationNext": "Page suivante",
       "columns": {
         "code": "Code",
         "title": "Titre",
@@ -644,6 +648,7 @@
         "save": "Enregistrer"
       },
       "creating": "Création de l’article…",
+      "toastCreated": "Article créé.",
       "invalidForm": "Vérifiez les champs obligatoires et les montants.",
       "referentialPlaceholder": "Sélectionner un référentiel",
       "referentialLoading": "Chargement des référentiels…",
@@ -671,8 +676,10 @@
       },
       "actions": {
         "backToList": "Retour à la liste",
+        "cancel": "Annuler",
         "delete": "Supprimer",
-        "deleteConfirm": "Supprimer définitivement cet article ?",
+        "deleting": "Suppression en cours...",
+        "deleteConfirm": "Voulez-vous supprimer définitivement cet article ?",
         "deleteSuccess": "Article supprimé.",
         "deleteError": "Impossible de supprimer l'article.",
         "edit": "Modifier"
@@ -722,7 +729,7 @@
       "filterReset": "Tout afficher",
       "refresh": "Actualiser",
       "refreshAria": "Actualiser la liste des services",
-      "totalCount": "{count} entrée(s)",
+      "totalCount": "{count} service(s)",
       "columns": {
         "id": "ID",
         "code": "Code",
@@ -778,6 +785,7 @@
       "itemTypeLoading": "Chargement des codes…",
       "itemTypeLoadError": "Impossible de charger les types d'article.",
       "retryItemTypesFetch": "Réessayer",
+      "creating": "Création du service…",
       "toastCreated": "Service créé.",
       "toastCreateErrorFallback": "Création du service impossible.",
       "invalidForm": "Complétez tous les champs obligatoires (nombres entiers positifs où requis pour groupe fiscal et référentiel).",
@@ -806,8 +814,10 @@
         },
         "actions": {
           "backToList": "Retour à la liste",
+          "cancel": "Annuler",
           "delete": "Supprimer",
-          "deleteConfirm": "Supprimer définitivement ce service ?",
+          "deleting": "Suppression en cours...",
+          "deleteConfirm": "Voulez-vous supprimer définitivement ce service ?",
           "deleteSuccess": "Service supprimé.",
           "deleteError": "Impossible de supprimer le service.",
           "edit": "Modifier"

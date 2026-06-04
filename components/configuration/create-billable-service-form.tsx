@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 
+import Loader from "@/components/loader/Loader";
 import {
     CreateFormFooter,
     FieldLabel,
@@ -231,6 +232,9 @@ export function CreateBillableServiceForm({
 
     return (
         <>
+            {createMutation.isPending ? (
+                <Loader variant="overlay" text={t("creating")} />
+            ) : null}
             <div className="bg-white p-8">
                 <div className="grid grid-cols-1 gap-x-14 gap-y-4 lg:grid-cols-2">
                     <div>

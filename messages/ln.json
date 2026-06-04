@@ -588,6 +588,10 @@
       "loadErrorDetail": "Telemisi ya article oyo ewuti te.",
       "retry": "Meka lisusu",
       "empty": "Eloko moko te ezali na recherche na yo.",
+      "totalCount": "{count} article(s)",
+      "pageOfTotal": "Page {page} / {totalPages}",
+      "paginationPrev": "Page ya liboso",
+      "paginationNext": "Page ya nsima",
       "columns": {
         "code": "Code",
         "title": "Motó ya likambo",
@@ -645,6 +649,7 @@
         "save": "Bomba"
       },
       "creating": "Kozala na kobakala article…",
+      "toastCreated": "Article ebakisami.",
       "invalidForm": "Talá ba champs oyo esengeli mpe ntalo.",
       "referentialPlaceholder": "Pona référentiel",
       "referentialLoading": "Kotia ba référentiels…",
@@ -672,7 +677,9 @@
       },
       "actions": {
         "backToList": "Kozonga na liste",
+        "cancel": "Kotika",
         "delete": "Kolongola",
+        "deleting": "Kolongolami ezali kosala...",
         "deleteConfirm": "Kolongola eloko oyo mpo na libela ?",
         "deleteSuccess": "Eloko elongolami.",
         "deleteError": "Kolongola eloko elongwaki te.",
@@ -723,7 +730,7 @@
       "filterReset": "Komona nyonso",
       "refresh": "Bongisa",
       "refreshAria": "Bongisa liste ya services",
-      "totalCount": "{count} entrée(s)",
+      "totalCount": "{count} service(s)",
       "columns": {
         "id": "ID",
         "code": "Code",
@@ -779,6 +786,7 @@
       "itemTypeLoading": "Tozali koluka ba codes…",
       "itemTypeLoadError": "Impossible de koluka ba types ya article.",
       "retryItemTypesFetch": "Meka lisusu",
+      "creating": "Kozala na kokela service…",
       "toastCreated": "Service ebakisami.",
       "toastCreateErrorFallback": "Kokela service elongwaki te.",
       "invalidForm": "Tála ba champs mpe nimero malamu.",
@@ -807,7 +815,9 @@
         },
         "actions": {
           "backToList": "Kozonga na liste",
+          "cancel": "Kotika",
           "delete": "Kolongola",
+          "deleting": "Kolongolami ezali kosala...",
           "deleteConfirm": "Kolongola service oyo mpo na libela ?",
           "deleteSuccess": "Service elongolami.",
           "deleteError": "Kolongola service elongwaki te.",
