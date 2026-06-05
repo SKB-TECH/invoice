@@ -1179,7 +1179,8 @@
       "generate": "Bimisa rapport",
       "generating": "Ezali kobimisa…",
       "download": "Télécharger rapport",
-      "back": "Zonga"
+      "back": "Zonga",
+      "resetFilters": "Zongisa ba filtres"
     },
     "preview": {
       "title": "Aperçu ya rapport",

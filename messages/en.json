@@ -1171,7 +1171,8 @@
       "generate": "Generate report",
       "generating": "Generating…",
       "download": "Download report",
-      "back": "Back"
+      "back": "Back",
+      "resetFilters": "Reset filters"
     },
     "preview": {
       "title": "Report preview",
