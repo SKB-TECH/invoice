@@ -83,6 +83,7 @@ export type SpecialPdfReportKind =
 
 export type ReportFilterRow = {
     label: string;
+    labelKey?: string;
     value: string;
 };
 

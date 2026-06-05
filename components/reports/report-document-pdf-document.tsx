@@ -122,6 +122,19 @@ const styles = StyleSheet.create({
 
 type FilterRow = { label: string; value: string };
 
+export type ReportDocumentPdfLabels = {
+    reportCode: string;
+    generatedAt: string;
+    reportType: string;
+    objectSection: string;
+    columns: {
+        criteria: string;
+        value: string;
+    };
+    empty: string;
+    footer: string;
+};
+
 type Props = {
     reportTitle: string;
     reportKind: string;
@@ -129,6 +142,7 @@ type Props = {
     emitterName?: string;
     logoUrl?: string;
     filterRows: FilterRow[];
+    labels: ReportDocumentPdfLabels;
 };
 
 export function ReportDocumentPdfDocument({
@@ -137,6 +151,7 @@ export function ReportDocumentPdfDocument({
     generatedAt,
     logoUrl,
     filterRows,
+    labels,
 }: Props) {
     return (
         <Document>
@@ -150,22 +165,28 @@ export function ReportDocumentPdfDocument({
                             />
                         ) : null}
                     </View>
-                    <Text style={styles.reportTitle}>Rapport</Text>
+                    <Text style={styles.reportTitle}>{labels.reportCode}</Text>
                 </View>
 
                 <View style={styles.metaRule}>
                     <Text style={styles.metaLine}>
-                        Généré le : {generatedAt}
+                        {labels.generatedAt} : {generatedAt}
                     </Text>
-                    <Text style={styles.metaLine}>Type : {reportKind}</Text>
+                    <Text style={styles.metaLine}>
+                        {labels.reportType} : {reportKind}
+                    </Text>
                 </View>
 
-                <Text style={styles.objectLabel}>Objet du rapport :</Text>
+                <Text style={styles.objectLabel}>{labels.objectSection} :</Text>
                 <Text style={styles.objectValue}>{reportTitle}</Text>
 
                 <View style={styles.tableHeader}>
-                    <Text style={styles.tableHeaderCell}>Critère</Text>
-                    <Text style={styles.tableHeaderCellRight}>Valeur</Text>
+                    <Text style={styles.tableHeaderCell}>
+                        {labels.columns.criteria}
+                    </Text>
+                    <Text style={styles.tableHeaderCellRight}>
+                        {labels.columns.value}
+                    </Text>
                 </View>
 
                 {filterRows.length > 0 ? (
@@ -179,15 +200,12 @@ export function ReportDocumentPdfDocument({
                     ))
                 ) : (
                     <Text style={styles.emptyMessage}>
-                        Aucun filtre. Toutes les données de la période sont
-                        incluses.
+                        {labels.empty}
                     </Text>
                 )}
 
                 <View style={styles.footer}>
-                    <Text style={styles.footerText}>
-                        Document généré selon les critères ci-dessus.
-                    </Text>
+                    <Text style={styles.footerText}>{labels.footer}</Text>
                 </View>
             </Page>
         </Document>

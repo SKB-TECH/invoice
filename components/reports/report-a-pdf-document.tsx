@@ -132,7 +132,7 @@ const styles = StyleSheet.create({
     },
 });
 
-type Labels = {
+export type ReportAPdfLabels = {
     reportCode: string;
     emitter: string;
     periodSection: string;
@@ -158,10 +158,10 @@ type Labels = {
 
 type Props = {
     content: ReportAPreviewContent;
-    labels: Labels;
+    labels: ReportAPdfLabels;
 };
 
-function TableHeader({ labels }: { labels: Labels }) {
+function TableHeader({ labels }: { labels: ReportAPdfLabels }) {
     return (
         <View style={styles.tableHeader}>
             <TableCell

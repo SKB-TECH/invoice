@@ -1,17 +1,17 @@
 import type { ReportFilterRow, ReportPreviewDisplay } from "@/core/types/reports";
 import { extractReportEmitter } from "@/lib/reports/extract-report-emitter";
 
-const FILTER_LABELS: Record<string, string> = {
-    date_from: "Date de début",
-    date_to: "Date de fin",
-    report_date: "Date du rapport",
-    client_id: "Client (ID)",
-    contract_id: "Contrat (ID)",
-    point_of_sale: "Point de vente",
-    workflow_status: "Statut de la facture",
-    invoice_type_code: "Type de facture",
-    payment_status: "Statut du paiement",
-    isf: "ISF",
+const FILTER_LABELS: Record<string, { fallback: string; key: string }> = {
+    date_from: { fallback: "Date de début", key: "dateFrom" },
+    date_to: { fallback: "Date de fin", key: "dateTo" },
+    report_date: { fallback: "Date du rapport", key: "reportDate" },
+    client_id: { fallback: "Client (ID)", key: "clientId" },
+    contract_id: { fallback: "Contrat (ID)", key: "contractId" },
+    point_of_sale: { fallback: "Point de vente", key: "pointOfSale" },
+    workflow_status: { fallback: "Statut de la facture", key: "invoiceStatus" },
+    invoice_type_code: { fallback: "Type de facture", key: "invoiceType" },
+    payment_status: { fallback: "Statut du paiement", key: "paymentStatus" },
+    isf: { fallback: "ISF", key: "isf" },
 };
 
 export function buildFilterRows(
@@ -22,10 +22,15 @@ export function buildFilterRows(
             ([, value]) =>
                 value !== undefined && value !== null && value !== "",
         )
-        .map(([key, value]) => ({
-            label: FILTER_LABELS[key] ?? key,
-            value: String(value),
-        }));
+        .map(([key, value]) => {
+            const label = FILTER_LABELS[key];
+
+            return {
+                label: label?.fallback ?? key,
+                labelKey: label?.key,
+                value: String(value),
+            };
+        });
 }
 
 export function formatReportGeneratedAt(date = new Date()): string {

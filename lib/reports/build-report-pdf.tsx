@@ -1,13 +1,28 @@
 import { pdf } from "@react-pdf/renderer";
 
-import { ReportAPdfDocument } from "@/components/reports/report-a-pdf-document";
-import { ReportDocumentPdfDocument } from "@/components/reports/report-document-pdf-document";
-import { ReportPaymentsPdfDocument } from "@/components/reports/report-payments-pdf-document";
+import {
+    ReportAPdfDocument,
+    type ReportAPdfLabels,
+} from "@/components/reports/report-a-pdf-document";
+import {
+    ReportDocumentPdfDocument,
+    type ReportDocumentPdfLabels,
+} from "@/components/reports/report-document-pdf-document";
+import {
+    ReportPaymentsPdfDocument,
+    type ReportPaymentsPdfLabels,
+} from "@/components/reports/report-payments-pdf-document";
 import type { ReportPreviewDisplay } from "@/core/types/reports";
-import { REPORT_A_PDF_LABELS } from "@/lib/reports/report-a-pdf-labels";
+
+export type ReportPdfLabels = {
+    generic: ReportDocumentPdfLabels;
+    payments: ReportPaymentsPdfLabels;
+    reportA: ReportAPdfLabels;
+};
 
 export async function buildReportPdfBlob(
     display: ReportPreviewDisplay,
+    labels: ReportPdfLabels,
 ): Promise<Blob> {
     if (display.variant === "generic") {
         const document = (
@@ -18,6 +33,7 @@ export async function buildReportPdfBlob(
                 emitterName={display.emitterName}
                 logoUrl={display.logoUrl}
                 filterRows={display.filterRows}
+                labels={labels.generic}
             />
         );
         return pdf(document).toBlob();
@@ -25,7 +41,10 @@ export async function buildReportPdfBlob(
 
     if (display.variant === "payments") {
         const document = (
-            <ReportPaymentsPdfDocument content={display.content} />
+            <ReportPaymentsPdfDocument
+                content={display.content}
+                labels={labels.payments}
+            />
         );
         return pdf(document).toBlob();
     }
@@ -33,7 +52,7 @@ export async function buildReportPdfBlob(
     const document = (
         <ReportAPdfDocument
             content={display.content}
-            labels={REPORT_A_PDF_LABELS}
+            labels={labels.reportA}
         />
     );
     return pdf(document).toBlob();

@@ -7,11 +7,9 @@ import {
 } from "@react-pdf/renderer";
 
 import type { InvoicePaymentsPreviewContent } from "@/core/types/reports";
-import { REPORT_PAYMENTS_PDF_LABELS } from "@/lib/reports/report-payments-pdf-labels";
 import { REPORT_PAYMENTS_TABLE_PT } from "@/lib/reports/report-payments-table-layout";
 
 const COL = REPORT_PAYMENTS_TABLE_PT;
-const labels = REPORT_PAYMENTS_PDF_LABELS;
 
 const HEADER_FONT_SIZE = 7;
 const BODY_FONT_SIZE = 9;
@@ -134,9 +132,31 @@ const styles = StyleSheet.create({
 
 type Props = {
     content: InvoicePaymentsPreviewContent;
+    labels: ReportPaymentsPdfLabels;
 };
 
-function TableHeader() {
+export type ReportPaymentsPdfLabels = {
+    reportCode: string;
+    emitter: string;
+    periodSection: string;
+    company: string;
+    nif: string;
+    isf: string;
+    generatedAt: string;
+    dateFrom: string;
+    dateTo: string;
+    tableTitle: string;
+    columns: {
+        reference: string;
+        clientName: string;
+        amount: string;
+        date: string;
+    };
+    empty: string;
+    page: string;
+};
+
+function TableHeader({ labels }: { labels: ReportPaymentsPdfLabels }) {
     return (
         <View style={styles.tableHeader}>
             <TableCell width={COL.reference} bold fontSize={HEADER_FONT_SIZE}>
@@ -165,7 +185,7 @@ function TableHeader() {
     );
 }
 
-export function ReportPaymentsPdfDocument({ content }: Props) {
+export function ReportPaymentsPdfDocument({ content, labels }: Props) {
     const p = content;
 
     return (
@@ -222,7 +242,7 @@ export function ReportPaymentsPdfDocument({ content }: Props) {
 
                 <Text style={styles.tableTitle}>{labels.tableTitle}</Text>
 
-                <TableHeader />
+                <TableHeader labels={labels} />
 
                 {p.lineItems.length > 0 ? (
                     p.lineItems.map((row) => (
