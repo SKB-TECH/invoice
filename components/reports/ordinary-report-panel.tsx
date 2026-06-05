@@ -14,10 +14,10 @@ import {
     ReportInvoiceTypeSelect,
     ReportPaymentStatusSelect,
     ReportPeriodFields,
-    ReportPointOfSaleField,
 } from "@/components/reports/report-filter-fields";
 import {
     useInvoiceEditionReportPreview,
+    useInvoiceNormalizationReportPreview,
     useOrdinaryReportPreview,
 } from "@/core/hooks/reports/useReportGenerate";
 import { useReportPreview } from "@/core/hooks/reports/useReportPreview";
@@ -60,6 +60,8 @@ export function OrdinaryReportPanel({ panelId }: Props) {
     const kind = PANEL_TO_KIND[panelId];
     const previewMutation = useOrdinaryReportPreview();
     const invoiceEditionPreviewMutation = useInvoiceEditionReportPreview();
+    const invoiceNormalizationPreviewMutation =
+        useInvoiceNormalizationReportPreview();
     const {
         previewDisplay,
         isShowingPreview,
@@ -72,7 +74,6 @@ export function OrdinaryReportPanel({ panelId }: Props) {
     const [dateTo, setDateTo] = useState("");
     const [clientId, setClientId] = useState("");
     const [contractId, setContractId] = useState("");
-    const [pointOfSale, setPointOfSale] = useState("");
     const [invoiceTypeCode, setInvoiceTypeCode] = useState("");
     const [paymentStatus, setPaymentStatus] = useState("");
 
@@ -98,9 +99,9 @@ export function OrdinaryReportPanel({ panelId }: Props) {
                 };
             case "invoiceNormalization":
                 return {
-                    ...period,
-                    point_of_sale: pointOfSale.trim() || undefined,
-                    invoice_type_code: invoiceTypeCode.trim() || undefined,
+                    period_start: dateFrom.trim() || undefined,
+                    period_end: dateTo.trim() || undefined,
+                    client_id: parseOptionalId(clientId),
                 };
             case "invoicePayments":
                 return {
@@ -125,6 +126,25 @@ export function OrdinaryReportPanel({ panelId }: Props) {
             invoiceEditionPreviewMutation.mutate(
                 {
                     filters: buildFilters() as InvoiceEditionReportFilters,
+                },
+                {
+                    onSuccess: (result) => {
+                        applyPreview(result);
+                        toast.success(t("toast.previewReady"));
+                    },
+                    onError: (err) =>
+                        toast.error(
+                            getAxiosErrorMessage(err, t("toast.generateError")),
+                        ),
+                },
+            );
+            return;
+        }
+
+        if (panelId === "invoiceNormalization") {
+            invoiceNormalizationPreviewMutation.mutate(
+                {
+                    filters: buildFilters() as InvoiceNormalizationReportFilters,
                 },
                 {
                     onSuccess: (result) => {
@@ -166,7 +186,9 @@ export function OrdinaryReportPanel({ panelId }: Props) {
     };
 
     const isGenerating =
-        previewMutation.isPending || invoiceEditionPreviewMutation.isPending;
+        previewMutation.isPending ||
+        invoiceEditionPreviewMutation.isPending ||
+        invoiceNormalizationPreviewMutation.isPending;
 
     return (
         <SectionCard title={t(`ordinary.${panelId}.title`)}>
@@ -212,13 +234,9 @@ export function OrdinaryReportPanel({ panelId }: Props) {
 
                 {panelId === "invoiceNormalization" ? (
                     <>
-                        <ReportPointOfSaleField
-                            value={pointOfSale}
-                            onChange={setPointOfSale}
-                        />
-                        <ReportInvoiceTypeSelect
-                            value={invoiceTypeCode}
-                            onChange={setInvoiceTypeCode}
+                        <ReportClientSelect
+                            value={clientId}
+                            onChange={setClientId}
                         />
                     </>
                 ) : null}

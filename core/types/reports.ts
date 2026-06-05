@@ -11,10 +11,10 @@ export type InvoiceEditionReportFilters = {
     invoice_type?: number;
 };
 
-export type InvoiceNormalizationReportFilters = ReportPeriodFilter & {
-    point_of_sale?: string;
-    invoice_type_code?: string;
-    period_type?: string;
+export type InvoiceNormalizationReportFilters = {
+    period_start?: string;
+    period_end?: string;
+    client_id?: number;
 };
 
 export type InvoicePaymentsReportFilters = {
@@ -134,6 +134,7 @@ export type InvoicePaymentReportApiRow = {
 };
 
 export type InvoiceEditionReportApiRow = Record<string, unknown>;
+export type InvoiceNormalizationReportApiRow = Record<string, unknown>;
 
 export type InvoiceEditionReportLineItem = {
     clientName: string;
@@ -155,6 +156,28 @@ export type InvoiceEditionPreviewContent = {
     nif: string;
     isf: string;
     lineItems: InvoiceEditionReportLineItem[];
+};
+
+export type InvoiceNormalizationReportLineItem = {
+    clientName: string;
+    invoiceType: string;
+    invoiceAmount: string;
+    taxAmount: string;
+    paidAmount: string;
+    totalAmount: string;
+    currency: string;
+    dueDate: string;
+};
+
+export type InvoiceNormalizationPreviewContent = {
+    generatedAt: string;
+    dateFrom: string;
+    dateTo: string;
+    companyName: string;
+    logoUrl?: string;
+    nif: string;
+    isf: string;
+    lineItems: InvoiceNormalizationReportLineItem[];
 };
 
 export type InvoicePaymentsReportLineItem = {
@@ -196,6 +219,10 @@ export type ReportPreviewDisplay =
     | {
           variant: "invoice-edition";
           content: InvoiceEditionPreviewContent;
+      }
+    | {
+          variant: "invoice-normalization";
+          content: InvoiceNormalizationPreviewContent;
       };
 
 export type ReportBlobResult = {

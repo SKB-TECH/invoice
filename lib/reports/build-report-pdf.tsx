@@ -9,6 +9,7 @@ import {
     type ReportDocumentPdfLabels,
 } from "@/components/reports/report-document-pdf-document";
 import { ReportInvoiceEditionPdfDocument } from "@/components/reports/report-invoice-edition-pdf-document";
+import { ReportInvoiceNormalizationPdfDocument } from "@/components/reports/report-invoice-normalization-pdf-document";
 import {
     ReportPaymentsPdfDocument,
     type ReportPaymentsPdfLabels,
@@ -53,6 +54,13 @@ export async function buildReportPdfBlob(
     if (display.variant === "invoice-edition") {
         const document = (
             <ReportInvoiceEditionPdfDocument content={display.content} />
+        );
+        return pdf(document).toBlob();
+    }
+
+    if (display.variant === "invoice-normalization") {
+        const document = (
+            <ReportInvoiceNormalizationPdfDocument content={display.content} />
         );
         return pdf(document).toBlob();
     }

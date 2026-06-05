@@ -4,6 +4,7 @@ import { api } from "@/core/services/api";
 import type {
     InvoiceEditionReportFilters,
     InvoiceEditionReportApiRow,
+    InvoiceNormalizationReportApiRow,
     InvoiceNormalizationReportFilters,
     InvoicePaymentReportApiRow,
     InvoicePaymentsReportFilters,
@@ -20,6 +21,7 @@ import type {
 } from "@/core/types/reports";
 import { filenameFromContentDisposition } from "@/core/utils/downloadBlob";
 import { buildInvoiceEditionPreviewDisplay } from "@/lib/reports/build-invoice-edition-display";
+import { buildInvoiceNormalizationPreviewDisplay } from "@/lib/reports/build-invoice-normalization-display";
 import { buildInvoicePaymentsPreviewDisplay } from "@/lib/reports/build-invoice-payments-display";
 import { buildReportAPreviewDisplay } from "@/lib/reports/build-report-a-display";
 import { buildReportPreviewDisplay } from "@/lib/reports/build-report-display";
@@ -170,6 +172,61 @@ function parseInvoiceEditionRows(data: unknown): InvoiceEditionReportApiRow[] {
     return [];
 }
 
+function parseInvoiceNormalizationRows(
+    data: unknown,
+): InvoiceNormalizationReportApiRow[] {
+    if (Array.isArray(data)) {
+        return data as InvoiceNormalizationReportApiRow[];
+    }
+
+    if (data && typeof data === "object") {
+        const candidate = data as {
+            items?: unknown;
+            data?: unknown;
+            invoices?: unknown;
+            rows?: unknown;
+        };
+
+        if (Array.isArray(candidate.items)) {
+            return candidate.items as InvoiceNormalizationReportApiRow[];
+        }
+
+        if (Array.isArray(candidate.data)) {
+            return candidate.data as InvoiceNormalizationReportApiRow[];
+        }
+
+        if (candidate.data && typeof candidate.data === "object") {
+            const nested = candidate.data as {
+                items?: unknown;
+                invoices?: unknown;
+                rows?: unknown;
+            };
+
+            if (Array.isArray(nested.items)) {
+                return nested.items as InvoiceNormalizationReportApiRow[];
+            }
+
+            if (Array.isArray(nested.invoices)) {
+                return nested.invoices as InvoiceNormalizationReportApiRow[];
+            }
+
+            if (Array.isArray(nested.rows)) {
+                return nested.rows as InvoiceNormalizationReportApiRow[];
+            }
+        }
+
+        if (Array.isArray(candidate.invoices)) {
+            return candidate.invoices as InvoiceNormalizationReportApiRow[];
+        }
+
+        if (Array.isArray(candidate.rows)) {
+            return candidate.rows as InvoiceNormalizationReportApiRow[];
+        }
+    }
+
+    return [];
+}
+
 export const reportsService = {
     getInvoiceEditionReport(filters: InvoiceEditionReportFilters) {
         return api.get(REPORT_ENDPOINTS.invoiceEdition, {
@@ -185,11 +242,9 @@ export const reportsService = {
 
     getInvoiceNormalizationReport(filters: InvoiceNormalizationReportFilters) {
         return requestReportBlob(REPORT_ENDPOINTS.invoiceNormalization, {
-            date_from: filters.date_from,
-            date_to: filters.date_to,
-            point_of_sale: filters.point_of_sale,
-            invoice_type_code: filters.invoice_type_code,
-            period_type: filters.period_type,
+            period_start: filters.period_start,
+            period_end: filters.period_end,
+            client_id: filters.client_id,
         });
     },
 
@@ -248,18 +303,20 @@ export const reportsService = {
             );
         }
 
+        if (kind === "invoice-normalization") {
+            throw new Error(
+                "Use fetchInvoiceNormalizationReport for invoice normalization reports.",
+            );
+        }
+
         const response =
-            kind === "invoice-normalization"
-                ? await this.getInvoiceNormalizationReport(
-                      filters as InvoiceNormalizationReportFilters,
+            kind === "vat-collection"
+                ? await this.getVatCollectionReport(
+                      filters as VatCollectionReportFilters,
                   )
-                : kind === "vat-collection"
-                  ? await this.getVatCollectionReport(
-                        filters as VatCollectionReportFilters,
-                    )
-                  : await this.getToolUsageReport(
-                        filters as ToolUsageReportFilters,
-                    );
+                : await this.getToolUsageReport(
+                      filters as ToolUsageReportFilters,
+                  );
 
         const filename = filenameFromContentDisposition(
             getHeaderValue(
@@ -315,6 +372,26 @@ export const reportsService = {
                 profile: context.profile,
                 user: context.user,
                 clients: context.clients,
+            }),
+        };
+    },
+
+    async fetchInvoiceNormalizationReport(
+        filters: InvoiceNormalizationReportFilters,
+        context: InvoiceEditionContext = {},
+    ): Promise<ReportBlobResult> {
+        const response = await this.getInvoiceNormalizationReport(filters);
+        const rows = parseInvoiceNormalizationRows(response.data);
+
+        return {
+            filename: "invoice-normalization-report.pdf",
+            display: buildInvoiceNormalizationPreviewDisplay({
+                filters,
+                rows,
+                profile: context.profile,
+                user: context.user,
+                clients: context.clients ?? [],
+                invoiceTypes: context.invoiceTypes ?? [],
             }),
         };
     },

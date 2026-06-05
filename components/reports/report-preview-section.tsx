@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { ReportAPreview } from "@/components/reports/report-a-preview";
 import { ReportDocumentPreview } from "@/components/reports/report-document-preview";
 import { ReportInvoiceEditionPreview } from "@/components/reports/report-invoice-edition-preview";
+import { ReportInvoiceNormalizationPreview } from "@/components/reports/report-invoice-normalization-preview";
 import { ReportPaymentsPreview } from "@/components/reports/report-payments-preview";
 import type { ReportPreviewDisplay } from "@/core/types/reports";
 
@@ -38,6 +39,8 @@ export function ReportPreviewSection({
                 <ReportAPreview content={display.content} />
             ) : display.variant === "invoice-edition" ? (
                 <ReportInvoiceEditionPreview content={display.content} />
+            ) : display.variant === "invoice-normalization" ? (
+                <ReportInvoiceNormalizationPreview content={display.content} />
             ) : display.variant === "payments" ? (
                 <ReportPaymentsPreview content={display.content} />
             ) : (

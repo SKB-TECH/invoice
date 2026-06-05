@@ -4,6 +4,8 @@ import { extractReportEmitter } from "@/lib/reports/extract-report-emitter";
 const FILTER_LABELS: Record<string, { fallback: string; key: string }> = {
     date_from: { fallback: "Date de début", key: "dateFrom" },
     date_to: { fallback: "Date de fin", key: "dateTo" },
+    period_start: { fallback: "Date de début", key: "dateFrom" },
+    period_end: { fallback: "Date de fin", key: "dateTo" },
     report_date: { fallback: "Date du rapport", key: "reportDate" },
     client_id: { fallback: "Client (ID)", key: "clientId" },
     contract_id: { fallback: "Contrat (ID)", key: "contractId" },

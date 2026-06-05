@@ -15,13 +15,13 @@ import {
     ReportPaymentStatusSelect,
     ReportPeriodFields,
     ReportPeriodTypeSelect,
-    ReportPointOfSaleField,
     ReportToolActionTypeSelect,
     ReportToolUserField,
     ReportVatPeriodSelect,
 } from "@/components/reports/report-filter-fields";
 import {
     useInvoiceEditionReportPreview,
+    useInvoiceNormalizationReportPreview,
     useInvoicePaymentsReportPreview,
     useOrdinaryReportPreview,
 } from "@/core/hooks/reports/useReportGenerate";
@@ -61,6 +61,8 @@ export function InvoiceEditionGeneratePanel() {
     const tFlow = useTranslations("reports.invoiceEditionFlow");
     const previewMutation = useOrdinaryReportPreview();
     const invoiceEditionPreviewMutation = useInvoiceEditionReportPreview();
+    const invoiceNormalizationPreviewMutation =
+        useInvoiceNormalizationReportPreview();
     const paymentsPreviewMutation = useInvoicePaymentsReportPreview();
     const {
         previewDisplay,
@@ -75,7 +77,6 @@ export function InvoiceEditionGeneratePanel() {
     const [dateTo, setDateTo] = useState("");
     const [clientId, setClientId] = useState("");
     const [contractId, setContractId] = useState("");
-    const [pointOfSale, setPointOfSale] = useState("");
     const [invoiceTypeCode, setInvoiceTypeCode] = useState("");
     const [paymentStatus, setPaymentStatus] = useState("");
     const [periodType, setPeriodType] = useState("");
@@ -87,7 +88,6 @@ export function InvoiceEditionGeneratePanel() {
         setDateTo("");
         setClientId("");
         setContractId("");
-        setPointOfSale("");
         setInvoiceTypeCode("");
         setPaymentStatus("");
         setPeriodType("");
@@ -116,9 +116,9 @@ export function InvoiceEditionGeneratePanel() {
                 };
             case "invoiceNormalization":
                 return {
-                    point_of_sale: pointOfSale.trim() || undefined,
-                    invoice_type_code: invoiceTypeCode.trim() || undefined,
-                    period_type: periodType.trim() || undefined,
+                    period_start: dateFrom.trim() || undefined,
+                    period_end: dateTo.trim() || undefined,
+                    client_id: parseOptionalId(clientId),
                 };
             case "vatCollection":
                 return {
@@ -186,6 +186,25 @@ export function InvoiceEditionGeneratePanel() {
             return;
         }
 
+        if (kind === "invoiceNormalization") {
+            invoiceNormalizationPreviewMutation.mutate(
+                {
+                    filters: buildFilters() as InvoiceNormalizationReportFilters,
+                },
+                {
+                    onSuccess: (result) => {
+                        applyPreview(result);
+                        toast.success(t("toast.previewReady"));
+                    },
+                    onError: (err) =>
+                        toast.error(
+                            getAxiosErrorMessage(err, t("toast.generateError")),
+                        ),
+                },
+            );
+            return;
+        }
+
         previewMutation.mutate(
             {
                 kind: KIND_TO_ORDINARY[kind],
@@ -214,6 +233,7 @@ export function InvoiceEditionGeneratePanel() {
     const isGenerating =
         previewMutation.isPending ||
         invoiceEditionPreviewMutation.isPending ||
+        invoiceNormalizationPreviewMutation.isPending ||
         paymentsPreviewMutation.isPending;
 
     if (isShowingPreview && previewDisplay) {
@@ -293,17 +313,15 @@ export function InvoiceEditionGeneratePanel() {
 
                 {kind === "invoiceNormalization" ? (
                     <div className="grid gap-5 md:grid-cols-3">
-                        <ReportPointOfSaleField
-                            value={pointOfSale}
-                            onChange={setPointOfSale}
+                        <ReportPeriodFields
+                            dateFrom={dateFrom}
+                            dateTo={dateTo}
+                            onDateFromChange={setDateFrom}
+                            onDateToChange={setDateTo}
                         />
-                        <ReportInvoiceTypeSelect
-                            value={invoiceTypeCode}
-                            onChange={setInvoiceTypeCode}
-                        />
-                        <ReportPeriodTypeSelect
-                            value={periodType}
-                            onChange={setPeriodType}
+                        <ReportClientAutocomplete
+                            value={clientId}
+                            onChange={handleClientChange}
                         />
                     </div>
                 ) : null}

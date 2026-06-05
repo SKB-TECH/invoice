@@ -90,6 +90,10 @@ type InvoiceEditionPayload = {
     filters: InvoiceEditionReportFilters;
 };
 
+type InvoiceNormalizationPayload = {
+    filters: InvoiceNormalizationReportFilters;
+};
+
 export function useInvoiceEditionReportPreview() {
     const { profile, user } = useAuth();
     const { data: meData } = useGetMe();
@@ -108,6 +112,34 @@ export function useInvoiceEditionReportPreview() {
     return useMutation({
         mutationFn: (payload: InvoiceEditionPayload) =>
             reportsService.fetchInvoiceEditionReport(payload.filters, {
+                profile,
+                user:
+                    meUser ??
+                    (user as Record<string, unknown> | null),
+                clients: clientsData?.items ?? [],
+                invoiceTypes: invoiceTypesData?.items ?? [],
+            }),
+    });
+}
+
+export function useInvoiceNormalizationReportPreview() {
+    const { profile, user } = useAuth();
+    const { data: meData } = useGetMe();
+    const { data: clientsData } = useClients({ per_page: 200 });
+    const { data: invoiceTypesData } = useInvoiceTypes();
+
+    const meUser =
+        meData &&
+        typeof meData === "object" &&
+        "user" in meData &&
+        meData.user &&
+        typeof meData.user === "object"
+            ? (meData.user as Record<string, unknown>)
+            : null;
+
+    return useMutation({
+        mutationFn: (payload: InvoiceNormalizationPayload) =>
+            reportsService.fetchInvoiceNormalizationReport(payload.filters, {
                 profile,
                 user:
                     meUser ??
