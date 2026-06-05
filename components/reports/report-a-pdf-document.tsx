@@ -1,5 +1,6 @@
 import {
     Document,
+    Image,
     Page,
     StyleSheet,
     Text,
@@ -66,6 +67,17 @@ const styles = StyleSheet.create({
         justifyContent: "space-between",
         alignItems: "flex-start",
         marginBottom: 16,
+    },
+    brandRow: {
+        flexDirection: "row",
+        alignItems: "center",
+        gap: 12,
+    },
+    logo: {
+        width: 56,
+        height: 56,
+        borderRadius: 4,
+        objectFit: "cover",
     },
     brand: { fontSize: 22, fontWeight: 700 },
     brandSub: {
@@ -235,9 +247,14 @@ export function ReportAPdfDocument({ content, labels }: Props) {
         <Document>
             <Page size="A4" style={styles.page}>
                 <View style={styles.headerRow}>
-                    <View>
-                        <Text style={styles.brand}>iKwook</Text>
-                        <Text style={styles.brandSub}>REPORTS</Text>
+                    <View style={styles.brandRow}>
+                        {p.logoUrl ? (
+                            <Image src={p.logoUrl} style={styles.logo} />
+                        ) : null}
+                        <View>
+                            <Text style={styles.brand}>{p.companyName}</Text>
+                            <Text style={styles.brandSub}>REPORTS</Text>
+                        </View>
                     </View>
                     <Text style={styles.reportTitle}>{labels.reportCode}</Text>
                 </View>

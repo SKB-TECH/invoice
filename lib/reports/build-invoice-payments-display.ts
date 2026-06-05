@@ -9,11 +9,11 @@ import { extractReportEmitter } from "@/lib/reports/extract-report-emitter";
 
 type ClientLike = {
     id: number | string;
-    client_id?: number | string;
+    client_id?: number | string | null;
     client_name?: string | null;
     company_name?: string | null;
-    legal_name?: string;
-    name?: string;
+    legal_name?: string | null;
+    name?: string | null;
 };
 
 type BuildOptions = {
@@ -96,6 +96,7 @@ export function buildInvoicePaymentsPreviewDisplay({
         dateFrom: formatReportDateLabel(filters.period_start),
         dateTo: formatReportDateLabel(filters.period_end),
         companyName: emitter.companyName,
+        logoUrl: emitter.logoUrl,
         nif: emitter.nif,
         isf: emitter.isf,
         lineItems: rows.map((row) => ({

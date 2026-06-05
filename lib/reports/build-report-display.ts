@@ -1,4 +1,5 @@
 import type { ReportFilterRow, ReportPreviewDisplay } from "@/core/types/reports";
+import { extractReportEmitter } from "@/lib/reports/extract-report-emitter";
 
 const FILTER_LABELS: Record<string, string> = {
     date_from: "Date de début",
@@ -38,12 +39,23 @@ export function buildReportPreviewDisplay(
     reportTitle: string,
     reportKind: string,
     filters: Record<string, unknown>,
+    emitter?: {
+        profile?: Record<string, unknown> | null;
+        user?: Record<string, unknown> | null;
+    },
 ): ReportPreviewDisplay {
+    const emitterIdentity = extractReportEmitter(
+        emitter?.profile,
+        emitter?.user,
+    );
+
     return {
         variant: "generic",
         reportTitle,
         reportKind,
         generatedAt: formatReportGeneratedAt(),
+        emitterName: emitterIdentity.companyName,
+        logoUrl: emitterIdentity.logoUrl,
         filterRows: buildFilterRows(filters),
     };
 }

@@ -5,18 +5,20 @@ type Props = {
 };
 
 export function ReportDocumentPreview({ display }: Props) {
-    const { reportTitle, reportKind, generatedAt, filterRows } = display;
+    const { reportTitle, reportKind, generatedAt, filterRows, emitterName, logoUrl } = display;
 
     return (
         <div className="w-full rounded border border-slate-300 bg-white p-10">
             <div className="mb-12 flex items-start justify-between gap-8">
-                <div>
-                    <p className="text-3xl font-black tracking-tight text-slate-900">
-                        iKwook
-                    </p>
-                    <p className="mt-1 text-xs font-bold uppercase tracking-[0.3em] text-slate-600">
-                        Reports
-                    </p>
+                <div className="flex items-center gap-3">
+                    {logoUrl ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img
+                            src={logoUrl}
+                            alt={emitterName || "Logo"}
+                            className="h-14 w-14 rounded object-cover"
+                        />
+                    ) : null}
                 </div>
 
                 <h2 className="text-right text-4xl font-black uppercase tracking-tight text-black md:text-5xl">

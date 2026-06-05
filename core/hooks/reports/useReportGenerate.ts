@@ -3,6 +3,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { useAuth } from "@/context/AuthContext";
+import { useGetMe } from "@/core/hooks/auth/useGetMe";
 import { useClients } from "@/core/hooks/client/useClient";
 import { reportAListKeys } from "@/core/hooks/reports/useReportAList";
 import { reportsService } from "@/core/services/reports.service";
@@ -44,6 +45,18 @@ type SpecialPdfPayload = {
 };
 
 export function useOrdinaryReportPreview() {
+    const { profile, user } = useAuth();
+    const { data: meData } = useGetMe();
+
+    const meUser =
+        meData &&
+        typeof meData === "object" &&
+        "user" in meData &&
+        meData.user &&
+        typeof meData.user === "object"
+            ? (meData.user as Record<string, unknown>)
+            : null;
+
     return useMutation({
         mutationFn: (payload: OrdinaryPayload) => {
             if (payload.kind === "invoice-payments") {
@@ -56,7 +69,13 @@ export function useOrdinaryReportPreview() {
                 payload.kind,
                 payload.filters,
                 payload.filename,
-                { reportTitle: payload.reportTitle },
+                {
+                    reportTitle: payload.reportTitle,
+                    profile,
+                    user:
+                        meUser ??
+                        (user as Record<string, unknown> | null),
+                },
             );
         },
     });
@@ -68,13 +87,25 @@ type InvoicePaymentsPayload = {
 
 export function useInvoicePaymentsReportPreview() {
     const { profile, user } = useAuth();
+    const { data: meData } = useGetMe();
     const { data: clientsData } = useClients({ per_page: 200 });
+
+    const meUser =
+        meData &&
+        typeof meData === "object" &&
+        "user" in meData &&
+        meData.user &&
+        typeof meData.user === "object"
+            ? (meData.user as Record<string, unknown>)
+            : null;
 
     return useMutation({
         mutationFn: (payload: InvoicePaymentsPayload) =>
             reportsService.fetchInvoicePaymentsReport(payload.filters, {
                 profile,
-                user: user as Record<string, unknown> | null,
+                user:
+                    meUser ??
+                    (user as Record<string, unknown> | null),
                 clients: clientsData?.items ?? [],
             }),
     });
@@ -82,6 +113,17 @@ export function useInvoicePaymentsReportPreview() {
 
 export function useSpecialPdfReportPreview() {
     const qc = useQueryClient();
+    const { profile, user } = useAuth();
+    const { data: meData } = useGetMe();
+
+    const meUser =
+        meData &&
+        typeof meData === "object" &&
+        "user" in meData &&
+        meData.user &&
+        typeof meData.user === "object"
+            ? (meData.user as Record<string, unknown>)
+            : null;
 
     return useMutation({
         mutationFn: (payload: SpecialPdfPayload) =>
@@ -89,7 +131,13 @@ export function useSpecialPdfReportPreview() {
                 payload.kind,
                 payload.filters,
                 payload.filename,
-                { reportTitle: payload.reportTitle },
+                {
+                    reportTitle: payload.reportTitle,
+                    profile,
+                    user:
+                        meUser ??
+                        (user as Record<string, unknown> | null),
+                },
             ),
         onSuccess: async (_data, variables) => {
             if (variables.kind === "a") {
