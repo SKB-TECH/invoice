@@ -1263,6 +1263,30 @@
         "empty": "No invoices found for the selected criteria.",
         "page": "Page {current} of {total}"
       },
+      "invoiceNormalization": {
+        "reportCode": "REPORT",
+        "emitter": "ISSUER",
+        "periodSection": "PERIOD & RESTITUTION",
+        "company": "Company",
+        "nif": "NIF",
+        "isf": "ISF",
+        "generatedAt": "Generated on",
+        "dateFrom": "Start date",
+        "dateTo": "End date",
+        "tableTitle": "INVOICE NORMALIZATION",
+        "columns": {
+          "clientName": "Client name",
+          "invoiceAmount": "Invoice amount",
+          "taxAmount": "Tax amount",
+          "paidAmount": "Paid amount",
+          "totalAmount": "Total amount",
+          "currency": "Currency",
+          "invoiceType": "Invoice type",
+          "dueDate": "Due date"
+        },
+        "empty": "No normalized invoices found for the selected criteria.",
+        "page": "Page {current} of {total}"
+      },
       "payments": {
         "reportCode": "REPORT",
         "emitter": "ISSUER",

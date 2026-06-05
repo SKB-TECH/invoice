@@ -1263,6 +1263,30 @@
         "empty": "Aucune facture trouvée pour les critères sélectionnés.",
         "page": "Page {current} sur {total}"
       },
+      "invoiceNormalization": {
+        "reportCode": "RAPPORT",
+        "emitter": "ÉMETTEUR",
+        "periodSection": "PÉRIODE & RESTITUTION",
+        "company": "Société",
+        "nif": "NIF",
+        "isf": "ISF",
+        "generatedAt": "Généré le",
+        "dateFrom": "Date Début",
+        "dateTo": "Date Fin",
+        "tableTitle": "NORMALISATION DES FACTURES",
+        "columns": {
+          "clientName": "Nom client",
+          "invoiceAmount": "Montant facture",
+          "taxAmount": "Montant taxe",
+          "paidAmount": "Montant payé",
+          "totalAmount": "Montant total",
+          "currency": "Devise",
+          "invoiceType": "Type de facture",
+          "dueDate": "Date d'échéance"
+        },
+        "empty": "Aucune facture normalisée trouvée pour les critères sélectionnés.",
+        "page": "Page {current} sur {total}"
+      },
       "payments": {
         "reportCode": "RAPPORT",
         "emitter": "ÉMETTEUR",
@@ -1294,6 +1318,22 @@
       "invoiceEdition": {
         "title": "Liste des rapports ordinaires",
         "description": "Liste des rapports ordinaires générés. Cliquez sur le bouton pour lancer une nouvelle génération."
+      },
+      "invoiceNormalization": {
+        "title": "Rapport de normalisation des factures",
+        "description": "Suivi des factures normalisées selon la période et le client."
+      },
+      "invoicePayments": {
+        "title": "Rapport des paiements de factures",
+        "description": "Synthèse des paiements enregistrés sur la période sélectionnée."
+      },
+      "vatCollection": {
+        "title": "Rapport de collecte de la TVA",
+        "description": "Montants de TVA collectée selon les filtres appliqués."
+      },
+      "toolUsage": {
+        "title": "Rapport d’utilisation de l’outil",
+        "description": "Activité des utilisateurs sur la période choisie."
       }
     },
     "invoiceEditionFlow": {
