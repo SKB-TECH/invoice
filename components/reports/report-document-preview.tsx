@@ -5,7 +5,7 @@ type Props = {
 };
 
 export function ReportDocumentPreview({ display }: Props) {
-    const { reportTitle, reportKind, generatedAt, filterRows, emitterName, logoUrl } = display;
+    const { reportTitle, reportKind, generatedAt, filterRows, logoUrl } = display;
 
     return (
         <div className="w-full rounded border border-slate-300 bg-white p-10">
@@ -15,8 +15,8 @@ export function ReportDocumentPreview({ display }: Props) {
                         // eslint-disable-next-line @next/next/no-img-element
                         <img
                             src={logoUrl}
-                            alt={emitterName || "Logo"}
-                            className="h-14 w-14 rounded object-cover"
+                            alt="Logo"
+                            className="max-h-14 max-w-[180px] object-contain"
                         />
                     ) : null}
                 </div>

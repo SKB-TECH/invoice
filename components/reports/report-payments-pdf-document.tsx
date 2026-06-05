@@ -1,6 +1,5 @@
 import {
     Document,
-    Image,
     Page,
     StyleSheet,
     Text,
@@ -62,20 +61,9 @@ const styles = StyleSheet.create({
     },
     headerRow: {
         flexDirection: "row",
-        justifyContent: "space-between",
+        justifyContent: "flex-end",
         alignItems: "flex-start",
         marginBottom: 32,
-    },
-    brandRow: {
-        flexDirection: "row",
-        alignItems: "center",
-        gap: 12,
-    },
-    logo: {
-        width: 56,
-        height: 56,
-        borderRadius: 4,
-        objectFit: "cover",
     },
     reportTitle: {
         fontSize: 32,
@@ -90,10 +78,11 @@ const styles = StyleSheet.create({
     },
     metaRow: {
         flexDirection: "row",
-        justifyContent: "space-between",
+        justifyContent: "flex-start",
         marginBottom: 40,
     },
-    metaCol: { width: "48%" },
+    metaCol: { width: "36%" },
+    metaColSpaced: { width: "42%", marginLeft: 90 },
     sectionLabel: {
         fontSize: 9,
         fontWeight: 700,
@@ -183,11 +172,6 @@ export function ReportPaymentsPdfDocument({ content }: Props) {
         <Document>
             <Page size="A4" style={styles.page}>
                 <View style={styles.headerRow}>
-                    <View style={styles.brandRow}>
-                        {p.logoUrl ? (
-                            <Image src={p.logoUrl} style={styles.logo} />
-                        ) : null}
-                    </View>
                     <Text style={styles.reportTitle}>{labels.reportCode}</Text>
                 </View>
 
@@ -211,7 +195,7 @@ export function ReportPaymentsPdfDocument({ content }: Props) {
                             {p.isf}
                         </Text>
                     </View>
-                    <View style={styles.metaCol}>
+                    <View style={styles.metaColSpaced}>
                         <Text style={styles.sectionLabel}>
                             {labels.periodSection}
                         </Text>

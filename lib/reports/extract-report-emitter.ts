@@ -1,3 +1,5 @@
+import { resolvePublicFileUrl } from "@/core/utils/resolvePublicFileUrl";
+
 type ProfileLike = Record<string, unknown> | null | undefined;
 
 function pickString(source: ProfileLike, keys: string[]): string {
@@ -43,6 +45,12 @@ export function extractReportEmitter(
 
     const logoFromProfile = pickString(profile, ["avatar", "logo", "photo"]);
     const logoFromUser = pickString(user, ["avatar", "photo"]);
+    const rawLogoUrl =
+        logoFromProfile !== "—"
+            ? logoFromProfile
+            : logoFromUser !== "—"
+              ? logoFromUser
+              : undefined;
 
     return {
         companyName:
@@ -60,11 +68,8 @@ export function extractReportEmitter(
             "—"
                 ? pickString(profile, ["isf", "fiscal_id", "fiscal_system_id"])
                 : pickString(user, ["isf", "fiscal_id", "fiscal_system_id"]),
-        logoUrl:
-            logoFromProfile !== "—"
-                ? logoFromProfile
-                : logoFromUser !== "—"
-                  ? logoFromUser
-                  : undefined,
+        logoUrl: rawLogoUrl
+            ? resolvePublicFileUrl(rawLogoUrl)
+            : undefined,
     };
 }

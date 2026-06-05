@@ -26,10 +26,9 @@ const styles = StyleSheet.create({
         gap: 12,
     },
     logo: {
-        width: 56,
-        height: 56,
-        borderRadius: 4,
-        objectFit: "cover",
+        maxHeight: 56,
+        maxWidth: 180,
+        objectFit: "contain",
     },
     reportTitle: {
         fontSize: 36,

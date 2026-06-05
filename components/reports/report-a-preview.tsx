@@ -25,8 +25,8 @@ export function ReportAPreview({ content }: Props) {
                         // eslint-disable-next-line @next/next/no-img-element
                         <img
                             src={p.logoUrl}
-                            alt={p.companyName}
-                            className="h-14 w-14 rounded object-cover"
+                            alt="Logo"
+                            className="max-h-14 max-w-[180px] object-contain"
                         />
                     ) : null}
                 </div>
