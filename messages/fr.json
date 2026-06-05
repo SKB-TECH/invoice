@@ -1193,6 +1193,30 @@
         "empty": "Aucun filtre. Toutes les données disponibles sont incluses.",
         "page": "Page {current} sur {total}"
       },
+      "invoiceEdition": {
+        "reportCode": "RAPPORT",
+        "emitter": "ÉMETTEUR",
+        "periodSection": "PÉRIODE & RESTITUTION",
+        "company": "Société",
+        "nif": "NIF",
+        "isf": "ISF",
+        "generatedAt": "Généré le",
+        "dateFrom": "Date Début",
+        "dateTo": "Date Fin",
+        "tableTitle": "ÉDITION DES FACTURES",
+        "columns": {
+          "clientName": "Nom client",
+          "invoiceAmount": "Montant facture",
+          "taxAmount": "Montant taxe",
+          "paidAmount": "Montant payé",
+          "totalAmount": "Montant total",
+          "currency": "Devise",
+          "invoiceType": "Type de facture",
+          "dueDate": "Date d'échéance"
+        },
+        "empty": "Aucune facture trouvée pour les critères sélectionnés.",
+        "page": "Page {current} sur {total}"
+      },
       "payments": {
         "reportCode": "RAPPORT",
         "emitter": "ÉMETTEUR",

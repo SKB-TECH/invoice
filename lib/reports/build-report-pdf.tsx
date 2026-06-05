@@ -2,6 +2,7 @@ import { pdf } from "@react-pdf/renderer";
 
 import { ReportAPdfDocument } from "@/components/reports/report-a-pdf-document";
 import { ReportDocumentPdfDocument } from "@/components/reports/report-document-pdf-document";
+import { ReportInvoiceEditionPdfDocument } from "@/components/reports/report-invoice-edition-pdf-document";
 import { ReportPaymentsPdfDocument } from "@/components/reports/report-payments-pdf-document";
 import type { ReportPreviewDisplay } from "@/core/types/reports";
 import { REPORT_A_PDF_LABELS } from "@/lib/reports/report-a-pdf-labels";
@@ -26,6 +27,13 @@ export async function buildReportPdfBlob(
     if (display.variant === "payments") {
         const document = (
             <ReportPaymentsPdfDocument content={display.content} />
+        );
+        return pdf(document).toBlob();
+    }
+
+    if (display.variant === "invoice-edition") {
+        const document = (
+            <ReportInvoiceEditionPdfDocument content={display.content} />
         );
         return pdf(document).toBlob();
     }

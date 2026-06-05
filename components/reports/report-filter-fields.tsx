@@ -333,9 +333,11 @@ export function ReportContractAutocomplete({
 export function ReportInvoiceTypeSelect({
     value,
     onChange,
+    valueField = "code",
 }: {
     value: string;
     onChange: (v: string) => void;
+    valueField?: "code" | "id";
 }) {
     const t = useTranslations("reports");
     const { data } = useInvoiceTypes();
@@ -345,11 +347,11 @@ export function ReportInvoiceTypeSelect({
         return [
             { value: "", label: t("filters.all") },
             ...items.map((type) => ({
-                value: type.code,
+                value: valueField === "id" ? String(type.id) : type.code,
                 label: `${type.code} — ${type.title}`,
             })),
         ];
-    }, [data?.items, t]);
+    }, [data?.items, t, valueField]);
 
     return (
         <SelectBox

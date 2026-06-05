@@ -19,9 +19,12 @@ import {
     ReportToolActionTypeSelect,
     ReportToolUserField,
     ReportVatPeriodSelect,
-    ReportWorkflowStatusSelect,
 } from "@/components/reports/report-filter-fields";
-import { useOrdinaryReportPreview, useInvoicePaymentsReportPreview } from "@/core/hooks/reports/useReportGenerate";
+import {
+    useInvoiceEditionReportPreview,
+    useInvoicePaymentsReportPreview,
+    useOrdinaryReportPreview,
+} from "@/core/hooks/reports/useReportGenerate";
 import { useReportPreview } from "@/core/hooks/reports/useReportPreview";
 import type {
     InvoiceEditionReportFilters,
@@ -57,6 +60,7 @@ export function InvoiceEditionGeneratePanel() {
     const t = useTranslations("reports");
     const tFlow = useTranslations("reports.invoiceEditionFlow");
     const previewMutation = useOrdinaryReportPreview();
+    const invoiceEditionPreviewMutation = useInvoiceEditionReportPreview();
     const paymentsPreviewMutation = useInvoicePaymentsReportPreview();
     const {
         previewDisplay,
@@ -72,7 +76,6 @@ export function InvoiceEditionGeneratePanel() {
     const [clientId, setClientId] = useState("");
     const [contractId, setContractId] = useState("");
     const [pointOfSale, setPointOfSale] = useState("");
-    const [workflowStatus, setWorkflowStatus] = useState("");
     const [invoiceTypeCode, setInvoiceTypeCode] = useState("");
     const [paymentStatus, setPaymentStatus] = useState("");
     const [periodType, setPeriodType] = useState("");
@@ -85,7 +88,6 @@ export function InvoiceEditionGeneratePanel() {
         setClientId("");
         setContractId("");
         setPointOfSale("");
-        setWorkflowStatus("");
         setInvoiceTypeCode("");
         setPaymentStatus("");
         setPeriodType("");
@@ -106,11 +108,11 @@ export function InvoiceEditionGeneratePanel() {
         switch (kind) {
             case "invoiceEdition":
                 return {
-                    date_from: dateFrom.trim() || undefined,
-                    date_to: dateTo.trim() || undefined,
+                    periode_date: dateFrom.trim() || undefined,
+                    period_end: dateTo.trim() || undefined,
                     client_id: parseOptionalId(clientId),
-                    contract_id: parseOptionalId(contractId),
-                    workflow_status: workflowStatus.trim() || undefined,
+                    contrat_id: parseOptionalId(contractId),
+                    invoice_type: parseOptionalId(invoiceTypeCode),
                 };
             case "invoiceNormalization":
                 return {
@@ -146,6 +148,25 @@ export function InvoiceEditionGeneratePanel() {
     };
 
     const handleGeneratePreview = () => {
+        if (kind === "invoiceEdition") {
+            invoiceEditionPreviewMutation.mutate(
+                {
+                    filters: buildFilters() as InvoiceEditionReportFilters,
+                },
+                {
+                    onSuccess: (result) => {
+                        applyPreview(result);
+                        toast.success(t("toast.previewReady"));
+                    },
+                    onError: (err) =>
+                        toast.error(
+                            getAxiosErrorMessage(err, t("toast.generateError")),
+                        ),
+                },
+            );
+            return;
+        }
+
         if (kind === "invoicePayments") {
             paymentsPreviewMutation.mutate(
                 {
@@ -191,7 +212,9 @@ export function InvoiceEditionGeneratePanel() {
     };
 
     const isGenerating =
-        previewMutation.isPending || paymentsPreviewMutation.isPending;
+        previewMutation.isPending ||
+        invoiceEditionPreviewMutation.isPending ||
+        paymentsPreviewMutation.isPending;
 
     if (isShowingPreview && previewDisplay) {
         return (
@@ -259,9 +282,10 @@ export function InvoiceEditionGeneratePanel() {
                                 onDateFromChange={setDateFrom}
                                 onDateToChange={setDateTo}
                             />
-                            <ReportWorkflowStatusSelect
-                                value={workflowStatus}
-                                onChange={setWorkflowStatus}
+                            <ReportInvoiceTypeSelect
+                                value={invoiceTypeCode}
+                                onChange={setInvoiceTypeCode}
+                                valueField="id"
                             />
                         </div>
                     </div>
