@@ -29,14 +29,6 @@ export function ReportAPreview({ content }: Props) {
                             className="h-14 w-14 rounded object-cover"
                         />
                     ) : null}
-                    <div>
-                        <p className="text-3xl font-black tracking-tight text-slate-900">
-                            {p.companyName}
-                        </p>
-                        <p className="mt-1 text-xs font-bold uppercase tracking-[0.3em] text-slate-600">
-                            Reports
-                        </p>
-                    </div>
                 </div>
                 <h2 className="text-4xl font-black uppercase tracking-tight text-[#1e4d7b] md:text-5xl">
                     {t("reportCode")}

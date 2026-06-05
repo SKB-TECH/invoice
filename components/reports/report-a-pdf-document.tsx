@@ -79,13 +79,6 @@ const styles = StyleSheet.create({
         borderRadius: 4,
         objectFit: "cover",
     },
-    brand: { fontSize: 22, fontWeight: 700 },
-    brandSub: {
-        fontSize: 7,
-        letterSpacing: 2,
-        marginTop: 4,
-        color: "#64748b",
-    },
     reportTitle: {
         fontSize: 28,
         fontWeight: 700,
@@ -251,10 +244,6 @@ export function ReportAPdfDocument({ content, labels }: Props) {
                         {p.logoUrl ? (
                             <Image src={p.logoUrl} style={styles.logo} />
                         ) : null}
-                        <View>
-                            <Text style={styles.brand}>{p.companyName}</Text>
-                            <Text style={styles.brandSub}>REPORTS</Text>
-                        </View>
                     </View>
                     <Text style={styles.reportTitle}>{labels.reportCode}</Text>
                 </View>

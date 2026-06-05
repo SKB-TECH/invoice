@@ -31,18 +31,6 @@ const styles = StyleSheet.create({
         borderRadius: 4,
         objectFit: "cover",
     },
-    brand: {
-        fontSize: 24,
-        fontWeight: 700,
-        color: "#0f172a",
-    },
-    brandSub: {
-        fontSize: 7,
-        fontWeight: 700,
-        letterSpacing: 3,
-        marginTop: 4,
-        color: "#475569",
-    },
     reportTitle: {
         fontSize: 36,
         fontWeight: 700,
@@ -148,24 +136,20 @@ export function ReportDocumentPdfDocument({
     reportTitle,
     reportKind,
     generatedAt,
-    emitterName,
     logoUrl,
     filterRows,
 }: Props) {
-    const brandName = emitterName?.trim() || "iKwook";
-
     return (
         <Document>
             <Page size="A4" style={styles.page}>
                 <View style={styles.headerRow}>
                     <View style={styles.brandRow}>
                         {logoUrl ? (
-                            <Image src={logoUrl} style={styles.logo} />
+                            <Image
+                                src={logoUrl}
+                                style={styles.logo}
+                            />
                         ) : null}
-                        <View>
-                            <Text style={styles.brand}>{brandName}</Text>
-                            <Text style={styles.brandSub}>REPORTS</Text>
-                        </View>
                     </View>
                     <Text style={styles.reportTitle}>Rapport</Text>
                 </View>
