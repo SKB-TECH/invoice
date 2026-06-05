@@ -3,6 +3,7 @@ import type { AxiosResponse } from "axios";
 import { api } from "@/core/services/api";
 import type {
     InvoiceEditionReportFilters,
+    InvoiceEditionReportApiRow,
     InvoiceNormalizationReportFilters,
     InvoicePaymentReportApiRow,
     InvoicePaymentsReportFilters,
@@ -18,6 +19,7 @@ import type {
     VatCollectionReportFilters,
 } from "@/core/types/reports";
 import { filenameFromContentDisposition } from "@/core/utils/downloadBlob";
+import { buildInvoiceEditionPreviewDisplay } from "@/lib/reports/build-invoice-edition-display";
 import { buildInvoicePaymentsPreviewDisplay } from "@/lib/reports/build-invoice-payments-display";
 import { buildReportAPreviewDisplay } from "@/lib/reports/build-report-a-display";
 import { buildReportPreviewDisplay } from "@/lib/reports/build-report-display";
@@ -39,6 +41,19 @@ type InvoicePaymentsContext = {
         company_name?: string | null;
         legal_name?: string | null;
         name?: string | null;
+    }>;
+};
+
+type InvoiceEditionContext = {
+    profile?: Record<string, unknown> | null;
+    user?: Record<string, unknown> | null;
+    clients?: InvoicePaymentsContext["clients"];
+    invoiceTypes?: Array<{
+        id: number | string;
+        code?: string | null;
+        title?: string | null;
+        name?: string | null;
+        value?: string | null;
     }>;
 };
 
@@ -102,15 +117,69 @@ function parsePaymentsRows(data: unknown): InvoicePaymentReportApiRow[] {
     return [];
 }
 
+function parseInvoiceEditionRows(data: unknown): InvoiceEditionReportApiRow[] {
+    if (Array.isArray(data)) {
+        return data as InvoiceEditionReportApiRow[];
+    }
+
+    if (data && typeof data === "object") {
+        const candidate = data as {
+            items?: unknown;
+            data?: unknown;
+            invoices?: unknown;
+            rows?: unknown;
+        };
+
+        if (Array.isArray(candidate.items)) {
+            return candidate.items as InvoiceEditionReportApiRow[];
+        }
+
+        if (Array.isArray(candidate.data)) {
+            return candidate.data as InvoiceEditionReportApiRow[];
+        }
+
+        if (candidate.data && typeof candidate.data === "object") {
+            const nested = candidate.data as {
+                items?: unknown;
+                invoices?: unknown;
+                rows?: unknown;
+            };
+
+            if (Array.isArray(nested.items)) {
+                return nested.items as InvoiceEditionReportApiRow[];
+            }
+
+            if (Array.isArray(nested.invoices)) {
+                return nested.invoices as InvoiceEditionReportApiRow[];
+            }
+
+            if (Array.isArray(nested.rows)) {
+                return nested.rows as InvoiceEditionReportApiRow[];
+            }
+        }
+
+        if (Array.isArray(candidate.invoices)) {
+            return candidate.invoices as InvoiceEditionReportApiRow[];
+        }
+
+        if (Array.isArray(candidate.rows)) {
+            return candidate.rows as InvoiceEditionReportApiRow[];
+        }
+    }
+
+    return [];
+}
+
 export const reportsService = {
     getInvoiceEditionReport(filters: InvoiceEditionReportFilters) {
-        return requestReportBlob(REPORT_ENDPOINTS.invoiceEdition, {
-            date_from: filters.date_from,
-            date_to: filters.date_to,
-            client_id: filters.client_id,
-            contract_id: filters.contract_id,
-            point_of_sale: filters.point_of_sale,
-            workflow_status: filters.workflow_status,
+        return api.get(REPORT_ENDPOINTS.invoiceEdition, {
+            params: cleanQueryParams({
+                periode_date: filters.periode_date,
+                period_end: filters.period_end,
+                client_id: filters.client_id,
+                contrat_id: filters.contrat_id,
+                invoice_type: filters.invoice_type,
+            }),
         });
     },
 
@@ -173,22 +242,24 @@ export const reportsService = {
             );
         }
 
+        if (kind === "invoice-edition") {
+            throw new Error(
+                "Use fetchInvoiceEditionReport for invoice edition reports.",
+            );
+        }
+
         const response =
-            kind === "invoice-edition"
-                ? await this.getInvoiceEditionReport(
-                      filters as InvoiceEditionReportFilters,
+            kind === "invoice-normalization"
+                ? await this.getInvoiceNormalizationReport(
+                      filters as InvoiceNormalizationReportFilters,
                   )
-                : kind === "invoice-normalization"
-                  ? await this.getInvoiceNormalizationReport(
-                        filters as InvoiceNormalizationReportFilters,
+                : kind === "vat-collection"
+                  ? await this.getVatCollectionReport(
+                        filters as VatCollectionReportFilters,
                     )
-                  : kind === "vat-collection"
-                    ? await this.getVatCollectionReport(
-                          filters as VatCollectionReportFilters,
-                      )
-                    : await this.getToolUsageReport(
-                          filters as ToolUsageReportFilters,
-                      );
+                  : await this.getToolUsageReport(
+                        filters as ToolUsageReportFilters,
+                    );
 
         const filename = filenameFromContentDisposition(
             getHeaderValue(
@@ -206,6 +277,26 @@ export const reportsService = {
                 filters as Record<string, unknown>,
                 { profile: options.profile, user: options.user },
             ),
+        };
+    },
+
+    async fetchInvoiceEditionReport(
+        filters: InvoiceEditionReportFilters,
+        context: InvoiceEditionContext = {},
+    ): Promise<ReportBlobResult> {
+        const response = await this.getInvoiceEditionReport(filters);
+        const rows = parseInvoiceEditionRows(response.data);
+
+        return {
+            filename: "invoice-edition-report.pdf",
+            display: buildInvoiceEditionPreviewDisplay({
+                filters,
+                rows,
+                profile: context.profile,
+                user: context.user,
+                clients: context.clients ?? [],
+                invoiceTypes: context.invoiceTypes ?? [],
+            }),
         };
     },
 

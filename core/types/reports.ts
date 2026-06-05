@@ -3,11 +3,12 @@ export type ReportPeriodFilter = {
     date_to?: string;
 };
 
-export type InvoiceEditionReportFilters = ReportPeriodFilter & {
+export type InvoiceEditionReportFilters = {
+    periode_date?: string;
+    period_end?: string;
     client_id?: number;
-    contract_id?: number;
-    point_of_sale?: string;
-    workflow_status?: string;
+    contrat_id?: number;
+    invoice_type?: number;
 };
 
 export type InvoiceNormalizationReportFilters = ReportPeriodFilter & {
@@ -132,6 +133,30 @@ export type InvoicePaymentReportApiRow = {
     confirmed: boolean;
 };
 
+export type InvoiceEditionReportApiRow = Record<string, unknown>;
+
+export type InvoiceEditionReportLineItem = {
+    clientName: string;
+    invoiceType: string;
+    invoiceAmount: string;
+    taxAmount: string;
+    paidAmount: string;
+    totalAmount: string;
+    currency: string;
+    dueDate: string;
+};
+
+export type InvoiceEditionPreviewContent = {
+    generatedAt: string;
+    dateFrom: string;
+    dateTo: string;
+    companyName: string;
+    logoUrl?: string;
+    nif: string;
+    isf: string;
+    lineItems: InvoiceEditionReportLineItem[];
+};
+
 export type InvoicePaymentsReportLineItem = {
     reference: string;
     clientName: string;
@@ -167,6 +192,10 @@ export type ReportPreviewDisplay =
     | {
           variant: "payments";
           content: InvoicePaymentsPreviewContent;
+      }
+    | {
+          variant: "invoice-edition";
+          content: InvoiceEditionPreviewContent;
       };
 
 export type ReportBlobResult = {

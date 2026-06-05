@@ -8,6 +8,7 @@ import {
     ReportDocumentPdfDocument,
     type ReportDocumentPdfLabels,
 } from "@/components/reports/report-document-pdf-document";
+import { ReportInvoiceEditionPdfDocument } from "@/components/reports/report-invoice-edition-pdf-document";
 import {
     ReportPaymentsPdfDocument,
     type ReportPaymentsPdfLabels,
@@ -45,6 +46,13 @@ export async function buildReportPdfBlob(
                 content={display.content}
                 labels={labels.payments}
             />
+        );
+        return pdf(document).toBlob();
+    }
+
+    if (display.variant === "invoice-edition") {
+        const document = (
+            <ReportInvoiceEditionPdfDocument content={display.content} />
         );
         return pdf(document).toBlob();
     }
