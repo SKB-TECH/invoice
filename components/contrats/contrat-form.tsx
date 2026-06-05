@@ -13,7 +13,6 @@ import type { ContratDetailRecord } from "@/lib/contrats/contrats-data";
 import {
     BILLING_CYCLE_FORM_OPTIONS,
     billingCycleFromApi,
-    billingCycleLabelFr,
     createContractSchema,
     updateContractSchema,
     type CreateContractInput,
@@ -269,7 +268,9 @@ export function ContratForm(props: ContratFormProps) {
             form.clearErrors("items_template");
             return true;
         } catch {
-            form.setError("items_template", { message: "JSON invalide" });
+            form.setError("items_template", {
+                message: t("form.errors.invalidJson"),
+            });
             return false;
         }
     }
@@ -277,7 +278,7 @@ export function ContratForm(props: ContratFormProps) {
     const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         if (props.variant === "edit" && !syncItemsFromTextarea()) {
-            toast.error("Le gabarit JSON est invalide.");
+            toast.error(t("toast.invalidJsonTemplate"));
             return;
         }
 
@@ -289,7 +290,7 @@ export function ContratForm(props: ContratFormProps) {
                     { data: values, file: selectedFile },
                     {
                         onSuccess: (row) => {
-                            toast.success("Contrat créé.");
+                            toast.success(t("toast.created"));
                             router.push(
                                 `/home/contrats/${encodeURIComponent(row.id)}`
                             );
@@ -306,7 +307,7 @@ export function ContratForm(props: ContratFormProps) {
                 { id: props.initial.id, data: values, file: selectedFile },
                 {
                     onSuccess: () => {
-                        toast.success("Contrat mis à jour.");
+                        toast.success(t("toast.updated"));
                         router.push(
                             `/home/contrats/${encodeURIComponent(props.initial.id)}`
                         );
@@ -473,7 +474,7 @@ export function ContratForm(props: ContratFormProps) {
 
                 <div className="flex flex-col gap-2">
                     <Label htmlFor="currency" className="font-medium text-slate-700">
-                        Devise <span className="text-red-500">*</span>
+                        {t("form.currency")} <span className="text-red-500">*</span>
                     </Label>
                     <select
                         id="currency"
@@ -501,7 +502,7 @@ export function ContratForm(props: ContratFormProps) {
                                 htmlFor="type-contrat"
                                 className="font-medium text-slate-700"
                             >
-                                Type de contrat <span className="text-red-500">*</span>
+                                {t("form.contractType")} <span className="text-red-500">*</span>
                             </Label>
                             <select
                                 id="type-contrat"
@@ -513,8 +514,8 @@ export function ContratForm(props: ContratFormProps) {
                             >
                                 <option value={0}>
                                     {referentielsLoading
-                                        ? "Chargement des référentiels…"
-                                        : "Sélectionner un type de contrat"}
+                                        ? t("form.loadingReferentials")
+                                        : t("form.contractTypePlaceholder")}
                                 </option>
                                 {referentielOptions.map((r) => (
                                     <option key={r.id} value={r.id}>
@@ -534,7 +535,7 @@ export function ContratForm(props: ContratFormProps) {
                                 htmlFor="billing-cycle-create"
                                 className="font-medium text-slate-700"
                             >
-                                Cycle de facturation{" "}
+                                {t("form.billingCycle")}{" "}
                                 <span className="text-red-500">*</span>
                             </Label>
                             <select
@@ -545,7 +546,7 @@ export function ContratForm(props: ContratFormProps) {
                             >
                                 {BILLING_CYCLE_FORM_OPTIONS.map((opt) => (
                                     <option key={opt.value} value={opt.value}>
-                                        {opt.label}
+                                        {t(`form.billingCycles.${opt.value}`)}
                                     </option>
                                 ))}
                             </select>
@@ -562,10 +563,11 @@ export function ContratForm(props: ContratFormProps) {
                                     htmlFor="monthly-create"
                                     className="font-medium text-slate-700"
                                 >
-                                    Montant&nbsp;
-                                    {billingCycleLabelFr(
-                                        billingCycleWatched
-                                    )}{" "}
+                                    {t("form.amountByCycle", {
+                                        cycle: t(
+                                            `form.billingCycles.${billingCycleWatched}`,
+                                        ),
+                                    })}{" "}
                                     <span className="text-red-500">*</span>
                                 </Label>
                                 <Input
@@ -591,7 +593,7 @@ export function ContratForm(props: ContratFormProps) {
                                 htmlFor="contrat-file-create"
                                 className="font-medium text-slate-700"
                             >
-                                Fichier du contrat
+                                {t("form.contractFile")}
                             </Label>
                             <Input
                                 id="contrat-file-create"
@@ -621,7 +623,7 @@ export function ContratForm(props: ContratFormProps) {
 
                         <div className="flex flex-col gap-2">
                             <Label className="font-medium text-slate-700">
-                                Mensuel <span className="text-red-500">*</span>
+                                {t("form.monthly")} <span className="text-red-500">*</span>
                             </Label>
                             <Input
                                 inputMode="decimal"
@@ -638,7 +640,7 @@ export function ContratForm(props: ContratFormProps) {
 
                         <div className="flex flex-col gap-2">
                             <Label className="font-medium text-slate-700">
-                                Payé <span className="text-red-500">*</span>
+                                {t("form.paid")} <span className="text-red-500">*</span>
                             </Label>
                             <Input
                                 inputMode="decimal"
@@ -655,7 +657,7 @@ export function ContratForm(props: ContratFormProps) {
 
                         <div className="flex flex-col gap-2 sm:col-span-2">
                             <Label htmlFor="billing-cycle" className="font-medium text-slate-700">
-                                Cycle de facturation <span className="text-red-500">*</span>
+                                {t("form.billingCycle")} <span className="text-red-500">*</span>
                             </Label>
                             <select
                                 id="billing-cycle"
@@ -665,7 +667,7 @@ export function ContratForm(props: ContratFormProps) {
                             >
                                 {BILLING_CYCLE_FORM_OPTIONS.map((opt) => (
                                     <option key={opt.value} value={opt.value}>
-                                        {opt.label}
+                                        {t(`form.billingCycles.${opt.value}`)}
                                     </option>
                                 ))}
                             </select>
@@ -678,7 +680,7 @@ export function ContratForm(props: ContratFormProps) {
 
                         <div className="flex flex-col gap-2 sm:col-span-2">
                             <Label htmlFor="items-template" className="font-medium text-slate-700">
-                                Gabarit des lignes (JSON)
+                                {t("form.itemsTemplate")}
                             </Label>
                             <textarea
                                 ref={itemsTextareaRef}
@@ -707,7 +709,7 @@ export function ContratForm(props: ContratFormProps) {
                                         form.clearErrors("items_template");
                                     } catch {
                                         form.setError("items_template", {
-                                            message: "JSON invalide",
+                                            message: t("form.errors.invalidJson"),
                                         });
                                     }
                                 }}
@@ -723,7 +725,7 @@ export function ContratForm(props: ContratFormProps) {
 
                         <div className="flex flex-col gap-2 sm:col-span-2">
                             <Label htmlFor="contrat-file" className="font-medium text-slate-700">
-                                Fichier contractuel (optionnel)
+                                {t("form.contractFileOptional")}
                             </Label>
                             <Input
                                 id="contrat-file"

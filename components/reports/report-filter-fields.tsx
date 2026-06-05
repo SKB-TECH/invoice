@@ -158,7 +158,13 @@ export function ReportClientAutocomplete({
     const clients: Client[] = useMemo(() => {
         return (data?.items ?? []).map((client) => ({
             id: Number(client.id),
-            name: String(client.legal_name || client.name || ""),
+            name: String(
+                client.client_name ||
+                    client.company_name ||
+                    client.legal_name ||
+                    client.name ||
+                    "",
+            ),
             nif: String(client.nif || client.vat_num || ""),
             rccm: String(client.rccm || client.registration_id || ""),
             idNat: String(client.idnat || ""),
@@ -327,9 +333,11 @@ export function ReportContractAutocomplete({
 export function ReportInvoiceTypeSelect({
     value,
     onChange,
+    valueField = "code",
 }: {
     value: string;
     onChange: (v: string) => void;
+    valueField?: "code" | "id";
 }) {
     const t = useTranslations("reports");
     const { data } = useInvoiceTypes();
@@ -339,11 +347,11 @@ export function ReportInvoiceTypeSelect({
         return [
             { value: "", label: t("filters.all") },
             ...items.map((type) => ({
-                value: type.code,
+                value: valueField === "id" ? String(type.id) : type.code,
                 label: `${type.code} — ${type.title}`,
             })),
         ];
-    }, [data?.items, t]);
+    }, [data?.items, t, valueField]);
 
     return (
         <SelectBox

@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -21,14 +22,15 @@ export function VisualiserContratActions({
     modifierPath,
 }: VisualiserContratActionsProps) {
     const router = useRouter();
+    const t = useTranslations("contrats.actions");
     const del = useDeleteContract();
 
     const handleDelete = () => {
-        if (!window.confirm("Supprimer définitivement ce contrat ?")) return;
+        if (!window.confirm(t("deleteConfirm"))) return;
 
         del.mutate(contractId, {
             onSuccess: () => {
-                toast.success("Contrat supprimé.");
+                toast.success(t("deleteSuccess"));
                 router.push(listPath);
             },
             onError: (err) => {
@@ -45,7 +47,7 @@ export function VisualiserContratActions({
                 onClick={() => router.push(listPath)}
                 className="h-12 w-52 cursor-pointer rounded bg-[#949B9F] px-5 text-white hover:bg-[#949B9F]/80"
             >
-                Retour à la liste
+                {t("backToList")}
             </Button>
             <Button
                 type="button"
@@ -54,14 +56,14 @@ export function VisualiserContratActions({
                 onClick={handleDelete}
                 className="h-12 w-52 cursor-pointer rounded px-5"
             >
-                Supprimer
+                {t("delete")}
             </Button>
             <Button
                 type="button"
                 onClick={() => router.push(modifierPath)}
                 className="h-12 w-52 cursor-pointer rounded bg-[#0073C5] px-5 text-white shadow-none hover:bg-[#066aa8]"
             >
-                Modifier
+                {t("edit")}
             </Button>
         </div>
     );

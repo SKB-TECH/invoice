@@ -2,19 +2,18 @@
 
 import { useTranslations } from "next-intl";
 
-import { formatReportAUnitPrice } from "@/lib/reports/format-report-a-unit-price";
-import { REPORT_A_TABLE_GRID_CLASS } from "@/lib/reports/report-a-table-layout";
-import type { ReportAPreviewContent } from "@/core/types/reports";
+import { REPORT_PAYMENTS_TABLE_GRID_CLASS } from "@/lib/reports/report-payments-table-layout";
+import type { InvoicePaymentsPreviewContent } from "@/core/types/reports";
 
 type Props = {
-    content: ReportAPreviewContent;
+    content: InvoicePaymentsPreviewContent;
 };
 
-const TABLE_GRID = REPORT_A_TABLE_GRID_CLASS;
+const TABLE_GRID = REPORT_PAYMENTS_TABLE_GRID_CLASS;
 const HEADER_CELL = "whitespace-nowrap leading-none";
 
-export function ReportAPreview({ content }: Props) {
-    const t = useTranslations("reports.specialA.preview");
+export function ReportPaymentsPreview({ content }: Props) {
+    const t = useTranslations("reports.preview.payments");
     const p = content;
 
     return (
@@ -99,53 +98,33 @@ export function ReportAPreview({ content }: Props) {
                 <div
                     className={`${TABLE_GRID} items-center bg-slate-100 px-2 py-3 text-xs font-black uppercase text-black`}
                 >
-                    <div className={HEADER_CELL}>{t("columns.code")}</div>
-                    <div className={HEADER_CELL}>{t("columns.designation")}</div>
+                    <div className={HEADER_CELL}>{t("columns.reference")}</div>
+                    <div className={HEADER_CELL}>{t("columns.clientName")}</div>
                     <div className={`${HEADER_CELL} text-right`}>
-                        {t("columns.unitPrice")}
+                        {t("columns.amount")}
                     </div>
                     <div className={`${HEADER_CELL} text-right`}>
-                        {t("columns.tax")}
-                    </div>
-                    <div className={`${HEADER_CELL} text-right`}>
-                        {t("columns.qtySold")}
-                    </div>
-                    <div className={`${HEADER_CELL} text-right`}>
-                        {t("columns.qtyReturned")}
-                    </div>
-                    <div className={`${HEADER_CELL} text-right`}>
-                        {t("columns.fiscalStock")}
+                        {t("columns.date")}
                     </div>
                 </div>
 
-                {p.lineItems.map((row) => (
-                    <div
-                        key={row.code}
-                        className={`${TABLE_GRID} border-b border-slate-300 px-2 py-3 text-sm font-semibold text-slate-700`}
-                    >
-                        <div>{row.code}</div>
-                        <div>{row.designation}</div>
-                        <div className="text-right">
-                            {formatReportAUnitPrice(
-                                row.unitPrice,
-                                row.currency,
-                            )}
+                {p.lineItems.length > 0 ? (
+                    p.lineItems.map((row) => (
+                        <div
+                            key={row.reference + row.date}
+                            className={`${TABLE_GRID} border-b border-slate-300 px-2 py-3 text-sm font-semibold text-slate-700`}
+                        >
+                            <div>{row.reference}</div>
+                            <div>{row.clientName}</div>
+                            <div className="text-right">{row.amount}</div>
+                            <div className="text-right">{row.date}</div>
                         </div>
-                        <div className="text-right">{row.tax}</div>
-                        <div className="text-right">{row.qtySold}</div>
-                        <div className="text-right">{row.qtyReturned}</div>
-                        <div className="text-right">{row.fiscalStock}</div>
-                    </div>
-                ))}
-
-                <div
-                    className={`${TABLE_GRID} bg-[#eff6ff] px-2 py-3 text-sm font-black text-[#1e4d7b]`}
-                >
-                    <div className="col-span-4 uppercase">{t("total")}</div>
-                    <div className="text-right">{p.totals.qtySold}</div>
-                    <div className="text-right">{p.totals.qtyReturned}</div>
-                    <div className="text-right">{p.totals.fiscalStock}</div>
-                </div>
+                    ))
+                ) : (
+                    <p className="py-6 text-sm font-semibold text-slate-500">
+                        {t("empty")}
+                    </p>
+                )}
             </div>
 
             <p className="mt-10 text-right text-xs text-slate-500">

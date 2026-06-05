@@ -15,13 +15,16 @@ import {
     ReportPaymentStatusSelect,
     ReportPeriodFields,
     ReportPeriodTypeSelect,
-    ReportPointOfSaleField,
     ReportToolActionTypeSelect,
     ReportToolUserField,
     ReportVatPeriodSelect,
-    ReportWorkflowStatusSelect,
 } from "@/components/reports/report-filter-fields";
-import { useOrdinaryReportPreview } from "@/core/hooks/reports/useReportGenerate";
+import {
+    useInvoiceEditionReportPreview,
+    useInvoiceNormalizationReportPreview,
+    useInvoicePaymentsReportPreview,
+    useOrdinaryReportPreview,
+} from "@/core/hooks/reports/useReportGenerate";
 import { useReportPreview } from "@/core/hooks/reports/useReportPreview";
 import type {
     InvoiceEditionReportFilters,
@@ -53,14 +56,14 @@ function parseOptionalId(raw: string): number | undefined {
     return Number.isFinite(n) && n > 0 ? n : undefined;
 }
 
-type Props = {
-    onBack: () => void;
-};
-
-export function InvoiceEditionGeneratePanel({ onBack }: Props) {
+export function InvoiceEditionGeneratePanel() {
     const t = useTranslations("reports");
     const tFlow = useTranslations("reports.invoiceEditionFlow");
     const previewMutation = useOrdinaryReportPreview();
+    const invoiceEditionPreviewMutation = useInvoiceEditionReportPreview();
+    const invoiceNormalizationPreviewMutation =
+        useInvoiceNormalizationReportPreview();
+    const paymentsPreviewMutation = useInvoicePaymentsReportPreview();
     const {
         previewDisplay,
         isShowingPreview,
@@ -74,13 +77,27 @@ export function InvoiceEditionGeneratePanel({ onBack }: Props) {
     const [dateTo, setDateTo] = useState("");
     const [clientId, setClientId] = useState("");
     const [contractId, setContractId] = useState("");
-    const [pointOfSale, setPointOfSale] = useState("");
-    const [workflowStatus, setWorkflowStatus] = useState("");
     const [invoiceTypeCode, setInvoiceTypeCode] = useState("");
     const [paymentStatus, setPaymentStatus] = useState("");
     const [periodType, setPeriodType] = useState("");
     const [toolUser, setToolUser] = useState("");
     const [toolActionType, setToolActionType] = useState("");
+
+    const resetFiltersByKind = (nextKind: InvoiceEditionFilterKind = kind) => {
+        setDateFrom("");
+        setDateTo("");
+        setClientId("");
+        setContractId("");
+        setInvoiceTypeCode("");
+        setPaymentStatus("");
+        setPeriodType("");
+        setToolUser("");
+        setToolActionType("");
+
+        if (nextKind !== kind) {
+            setKind(nextKind);
+        }
+    };
 
     const buildFilters = ():
         | InvoiceEditionReportFilters
@@ -91,17 +108,17 @@ export function InvoiceEditionGeneratePanel({ onBack }: Props) {
         switch (kind) {
             case "invoiceEdition":
                 return {
-                    date_from: dateFrom.trim() || undefined,
-                    date_to: dateTo.trim() || undefined,
+                    periode_date: dateFrom.trim() || undefined,
+                    period_end: dateTo.trim() || undefined,
                     client_id: parseOptionalId(clientId),
-                    contract_id: parseOptionalId(contractId),
-                    workflow_status: workflowStatus.trim() || undefined,
+                    contrat_id: parseOptionalId(contractId),
+                    invoice_type: parseOptionalId(invoiceTypeCode),
                 };
             case "invoiceNormalization":
                 return {
-                    point_of_sale: pointOfSale.trim() || undefined,
-                    invoice_type_code: invoiceTypeCode.trim() || undefined,
-                    period_type: periodType.trim() || undefined,
+                    period_start: dateFrom.trim() || undefined,
+                    period_end: dateTo.trim() || undefined,
+                    client_id: parseOptionalId(clientId),
                 };
             case "vatCollection":
                 return {
@@ -112,8 +129,9 @@ export function InvoiceEditionGeneratePanel({ onBack }: Props) {
                 };
             case "invoicePayments":
                 return {
-                    period_type: periodType.trim() || undefined,
-                    payment_status: paymentStatus.trim() || undefined,
+                    client_id: parseOptionalId(clientId),
+                    period_start: dateFrom.trim() || undefined,
+                    period_end: dateTo.trim() || undefined,
                 };
             case "toolUsage":
                 return {
@@ -130,6 +148,63 @@ export function InvoiceEditionGeneratePanel({ onBack }: Props) {
     };
 
     const handleGeneratePreview = () => {
+        if (kind === "invoiceEdition") {
+            invoiceEditionPreviewMutation.mutate(
+                {
+                    filters: buildFilters() as InvoiceEditionReportFilters,
+                },
+                {
+                    onSuccess: (result) => {
+                        applyPreview(result);
+                        toast.success(t("toast.previewReady"));
+                    },
+                    onError: (err) =>
+                        toast.error(
+                            getAxiosErrorMessage(err, t("toast.generateError")),
+                        ),
+                },
+            );
+            return;
+        }
+
+        if (kind === "invoicePayments") {
+            paymentsPreviewMutation.mutate(
+                {
+                    filters: buildFilters() as InvoicePaymentsReportFilters,
+                },
+                {
+                    onSuccess: (result) => {
+                        applyPreview(result);
+                        toast.success(t("toast.previewReady"));
+                    },
+                    onError: (err) =>
+                        toast.error(
+                            getAxiosErrorMessage(err, t("toast.generateError")),
+                        ),
+                },
+            );
+            return;
+        }
+
+        if (kind === "invoiceNormalization") {
+            invoiceNormalizationPreviewMutation.mutate(
+                {
+                    filters: buildFilters() as InvoiceNormalizationReportFilters,
+                },
+                {
+                    onSuccess: (result) => {
+                        applyPreview(result);
+                        toast.success(t("toast.previewReady"));
+                    },
+                    onError: (err) =>
+                        toast.error(
+                            getAxiosErrorMessage(err, t("toast.generateError")),
+                        ),
+                },
+            );
+            return;
+        }
+
         previewMutation.mutate(
             {
                 kind: KIND_TO_ORDINARY[kind],
@@ -155,13 +230,19 @@ export function InvoiceEditionGeneratePanel({ onBack }: Props) {
         toast.success(t("toast.downloaded"));
     };
 
+    const isGenerating =
+        previewMutation.isPending ||
+        invoiceEditionPreviewMutation.isPending ||
+        invoiceNormalizationPreviewMutation.isPending ||
+        paymentsPreviewMutation.isPending;
+
     if (isShowingPreview && previewDisplay) {
         return (
             <ReportPreviewSection
                 display={previewDisplay}
                 onBack={clearPreview}
                 onDownload={handleDownload}
-                disabled={previewMutation.isPending}
+                disabled={isGenerating}
             />
         );
     }
@@ -175,7 +256,7 @@ export function InvoiceEditionGeneratePanel({ onBack }: Props) {
             <ReportKindRadioGrid
                 title={tFlow("generate.radioTitle")}
                 value={kind}
-                onChange={(v) => setKind(v as InvoiceEditionFilterKind)}
+                onChange={(v) => resetFiltersByKind(v as InvoiceEditionFilterKind)}
                 options={[
                     {
                         value: "invoiceEdition",
@@ -221,9 +302,10 @@ export function InvoiceEditionGeneratePanel({ onBack }: Props) {
                                 onDateFromChange={setDateFrom}
                                 onDateToChange={setDateTo}
                             />
-                            <ReportWorkflowStatusSelect
-                                value={workflowStatus}
-                                onChange={setWorkflowStatus}
+                            <ReportInvoiceTypeSelect
+                                value={invoiceTypeCode}
+                                onChange={setInvoiceTypeCode}
+                                valueField="id"
                             />
                         </div>
                     </div>
@@ -231,17 +313,15 @@ export function InvoiceEditionGeneratePanel({ onBack }: Props) {
 
                 {kind === "invoiceNormalization" ? (
                     <div className="grid gap-5 md:grid-cols-3">
-                        <ReportPointOfSaleField
-                            value={pointOfSale}
-                            onChange={setPointOfSale}
+                        <ReportPeriodFields
+                            dateFrom={dateFrom}
+                            dateTo={dateTo}
+                            onDateFromChange={setDateFrom}
+                            onDateToChange={setDateTo}
                         />
-                        <ReportInvoiceTypeSelect
-                            value={invoiceTypeCode}
-                            onChange={setInvoiceTypeCode}
-                        />
-                        <ReportPeriodTypeSelect
-                            value={periodType}
-                            onChange={setPeriodType}
+                        <ReportClientAutocomplete
+                            value={clientId}
+                            onChange={handleClientChange}
                         />
                     </div>
                 ) : null}
@@ -268,16 +348,18 @@ export function InvoiceEditionGeneratePanel({ onBack }: Props) {
                 ) : null}
 
                 {kind === "invoicePayments" ? (
-                    <ReportFiltersGrid>
-                        <ReportPeriodTypeSelect
-                            value={periodType}
-                            onChange={setPeriodType}
+                    <div className="grid gap-5 md:grid-cols-3">
+                        <ReportClientAutocomplete
+                            value={clientId}
+                            onChange={handleClientChange}
                         />
-                        <ReportPaymentStatusSelect
-                            value={paymentStatus}
-                            onChange={setPaymentStatus}
+                        <ReportPeriodFields
+                            dateFrom={dateFrom}
+                            dateTo={dateTo}
+                            onDateFromChange={setDateFrom}
+                            onDateToChange={setDateTo}
                         />
-                    </ReportFiltersGrid>
+                    </div>
                 ) : null}
 
                 {kind === "toolUsage" ? (
@@ -301,19 +383,19 @@ export function InvoiceEditionGeneratePanel({ onBack }: Props) {
             <div className="mt-6 flex flex-wrap items-center justify-end gap-4 border-t border-slate-100 pt-5">
                 <button
                     type="button"
-                    disabled={previewMutation.isPending}
-                    onClick={onBack}
+                    disabled={isGenerating}
+                    onClick={() => resetFiltersByKind()}
                     className="h-12 w-52 rounded border border-slate-300 bg-white text-sm font-semibold text-slate-700 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60"
                 >
-                    {t("actions.back")}
+                    {t("actions.resetFilters")}
                 </button>
                 <button
                     type="button"
-                    disabled={previewMutation.isPending}
+                    disabled={isGenerating}
                     onClick={handleGeneratePreview}
                     className="h-12 w-52 rounded bg-[#0879bd] text-sm font-semibold text-white hover:bg-[#076ca8] disabled:cursor-not-allowed disabled:bg-slate-300"
                 >
-                    {previewMutation.isPending ? (
+                    {isGenerating ? (
                         <span className="inline-flex items-center justify-center gap-2">
                             <Loader2 className="size-4 animate-spin" aria-hidden />
                             {t("actions.generating")}

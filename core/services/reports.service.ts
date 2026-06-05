@@ -1,20 +1,15 @@
+import type { AxiosResponse } from "axios";
+
 import { api } from "@/core/services/api";
-import { fetchMockReportPdf } from "@/core/services/reports-mock";
-import { ENV } from "@/core/constants/env";
-import {
-    buildReportAPreviewDisplay,
-    toReportAFilters,
-} from "@/lib/reports/build-report-a-display";
-import { buildReportPreviewDisplay } from "@/lib/reports/build-report-display";
-import { filenameFromContentDisposition } from "@/core/utils/downloadBlob";
-import { MOCK_REPORT_A_HISTORY } from "@/lib/reports/report-a-mock-history";
 import type {
     InvoiceEditionReportFilters,
+    InvoiceEditionReportApiRow,
+    InvoiceNormalizationReportApiRow,
     InvoiceNormalizationReportFilters,
+    InvoicePaymentReportApiRow,
     InvoicePaymentsReportFilters,
     OrdinaryReportKind,
     ReportAFilters,
-    ReportAHistoryItem,
     ReportAHistoryListResult,
     ReportBlobResult,
     ReportXDailyFilters,
@@ -24,118 +19,265 @@ import type {
     ToolUsageReportFilters,
     VatCollectionReportFilters,
 } from "@/core/types/reports";
-import { unwrapApiData } from "@/core/utils/apiResponse";
+import { filenameFromContentDisposition } from "@/core/utils/downloadBlob";
+import { buildInvoiceEditionPreviewDisplay } from "@/lib/reports/build-invoice-edition-display";
+import { buildInvoiceNormalizationPreviewDisplay } from "@/lib/reports/build-invoice-normalization-display";
+import { buildInvoicePaymentsPreviewDisplay } from "@/lib/reports/build-invoice-payments-display";
+import { buildReportAPreviewDisplay } from "@/lib/reports/build-report-a-display";
+import { buildReportPreviewDisplay } from "@/lib/reports/build-report-display";
+import { MOCK_REPORT_A_HISTORY } from "@/lib/reports/report-a-mock-history";
 
-const REPORTS_BASE = "/invoices/reports";
-
-function stripUndefined<T extends Record<string, unknown>>(obj: T): Partial<T> {
-    const out: Partial<T> = {};
-    for (const [key, value] of Object.entries(obj)) {
-        if (value === undefined || value === null || value === "") continue;
-        out[key as keyof T] = value as T[keyof T];
-    }
-    return out;
-}
-
-function blobFromResponse(
-    response: { data: Blob; headers: Record<string, unknown> },
-    fallbackFilename: string,
-): Pick<ReportBlobResult, "blob" | "filename"> {
-    const disposition =
-        typeof response.headers["content-disposition"] === "string"
-            ? response.headers["content-disposition"]
-            : undefined;
-
-    const filename = filenameFromContentDisposition(
-        disposition,
-        fallbackFilename,
-    );
-
-    return { blob: response.data, filename };
-}
-
-const ORDINARY_PATHS: Record<OrdinaryReportKind, string> = {
-    "invoice-edition": `${REPORTS_BASE}/invoice-edition`,
-    "invoice-normalization": `${REPORTS_BASE}/invoice-normalization`,
-    "invoice-payments": `${REPORTS_BASE}/invoice-payments`,
-    "vat-collection": `${REPORTS_BASE}/vat-collection`,
-    "tool-usage": `${REPORTS_BASE}/tool-usage`,
-};
-
-const SPECIAL_PDF_PATHS: Record<SpecialPdfReportKind, string> = {
-    "x-daily": `${REPORTS_BASE}/x/daily`,
-    z: `${REPORTS_BASE}/z`,
-    "x-periodic": `${REPORTS_BASE}/x/periodic`,
-    a: `${REPORTS_BASE}/a`,
-};
-
-type FetchOptions = {
+type ReportTitleOptions = {
     reportTitle: string;
+    profile?: Record<string, unknown> | null;
+    user?: Record<string, unknown> | null;
 };
 
-function normalizeReportAHistoryItem(row: unknown): ReportAHistoryItem | null {
-    if (!row || typeof row !== "object") return null;
-    const o = row as Record<string, unknown>;
-    const idRaw = o.id;
-    const id =
-        typeof idRaw === "number"
-            ? idRaw
-            : Number.isFinite(Number(idRaw))
-              ? Number(idRaw)
-              : NaN;
-    if (!Number.isFinite(id)) return null;
+type InvoicePaymentsContext = {
+    profile?: Record<string, unknown> | null;
+    user?: Record<string, unknown> | null;
+    clients?: Array<{
+        id: number | string;
+        client_id?: number | string | null;
+        client_name?: string | null;
+        company_name?: string | null;
+        legal_name?: string | null;
+        name?: string | null;
+    }>;
+};
 
-    const generatedAt =
-        (typeof o.generated_at === "string" && o.generated_at) ||
-        (typeof o.generatedAt === "string" && o.generatedAt) ||
-        "—";
-    const dateFrom =
-        (typeof o.date_from === "string" && o.date_from) ||
-        (typeof o.dateFrom === "string" && o.dateFrom) ||
-        "—";
-    const dateTo =
-        (typeof o.date_to === "string" && o.date_to) ||
-        (typeof o.dateTo === "string" && o.dateTo) ||
-        "—";
-    const isf = typeof o.isf === "string" ? o.isf : String(o.isf ?? "—");
-    const pointOfSale =
-        (typeof o.point_of_sale === "string" && o.point_of_sale) ||
-        (typeof o.pointOfSale === "string" && o.pointOfSale) ||
-        "—";
+type InvoiceEditionContext = {
+    profile?: Record<string, unknown> | null;
+    user?: Record<string, unknown> | null;
+    clients?: InvoicePaymentsContext["clients"];
+    invoiceTypes?: Array<{
+        id: number | string;
+        code?: string | null;
+        title?: string | null;
+        name?: string | null;
+        value?: string | null;
+    }>;
+};
 
-    return { id, generatedAt, dateFrom, dateTo, isf, pointOfSale };
+type ScalarQueryValue = string | number | boolean | null | undefined;
+
+const REPORT_ENDPOINTS = {
+    invoiceEdition: "/invoices/reports/invoices",
+    invoiceNormalization: "/invoices/reports/normalization",
+    invoicePayments: "/invoices/reports/payments",
+    vatCollection: "/invoices/reports/tva",
+    toolUsage: "/invoices/reports/usage",
+} as const;
+
+function cleanQueryParams(
+    params: Record<string, ScalarQueryValue>,
+): Record<string, string | number | boolean> {
+    const entries = Object.entries(params).filter(
+        ([, value]) => value !== undefined && value !== null && value !== "",
+    );
+    return Object.fromEntries(entries) as Record<string, string | number | boolean>;
 }
 
-function parseReportAHistoryList(raw: unknown): ReportAHistoryListResult {
-    const body = unwrapApiData<unknown>(raw) ?? raw;
-    let rows: unknown[] = [];
+function getHeaderValue(
+    headers: Record<string, unknown> | undefined,
+    key: string,
+): string | undefined {
+    if (!headers) return undefined;
 
-    if (Array.isArray(body)) {
-        rows = body;
-    } else if (body && typeof body === "object") {
-        const o = body as Record<string, unknown>;
-        if (Array.isArray(o.items)) rows = o.items;
-        else if (Array.isArray(o.data)) rows = o.data;
+    const lower = key.toLowerCase();
+    const value = headers[key] ?? headers[lower];
+    return typeof value === "string" ? value : undefined;
+}
+
+async function requestReportBlob(
+    path: string,
+    params: Record<string, ScalarQueryValue>,
+): Promise<AxiosResponse<Blob>> {
+    return api.get(path, {
+        params: cleanQueryParams(params),
+        responseType: "blob",
+    });
+}
+
+function parsePaymentsRows(data: unknown): InvoicePaymentReportApiRow[] {
+    if (Array.isArray(data)) {
+        return data as InvoicePaymentReportApiRow[];
     }
 
-    const items = rows
-        .map(normalizeReportAHistoryItem)
-        .filter((item): item is ReportAHistoryItem => item !== null);
+    if (data && typeof data === "object") {
+        const candidate = data as { items?: unknown; data?: unknown };
 
-    return { items, meta: { total: items.length } };
+        if (Array.isArray(candidate.items)) {
+            return candidate.items as InvoicePaymentReportApiRow[];
+        }
+
+        if (Array.isArray(candidate.data)) {
+            return candidate.data as InvoicePaymentReportApiRow[];
+        }
+    }
+
+    return [];
+}
+
+function parseInvoiceEditionRows(data: unknown): InvoiceEditionReportApiRow[] {
+    if (Array.isArray(data)) {
+        return data as InvoiceEditionReportApiRow[];
+    }
+
+    if (data && typeof data === "object") {
+        const candidate = data as {
+            items?: unknown;
+            data?: unknown;
+            invoices?: unknown;
+            rows?: unknown;
+        };
+
+        if (Array.isArray(candidate.items)) {
+            return candidate.items as InvoiceEditionReportApiRow[];
+        }
+
+        if (Array.isArray(candidate.data)) {
+            return candidate.data as InvoiceEditionReportApiRow[];
+        }
+
+        if (candidate.data && typeof candidate.data === "object") {
+            const nested = candidate.data as {
+                items?: unknown;
+                invoices?: unknown;
+                rows?: unknown;
+            };
+
+            if (Array.isArray(nested.items)) {
+                return nested.items as InvoiceEditionReportApiRow[];
+            }
+
+            if (Array.isArray(nested.invoices)) {
+                return nested.invoices as InvoiceEditionReportApiRow[];
+            }
+
+            if (Array.isArray(nested.rows)) {
+                return nested.rows as InvoiceEditionReportApiRow[];
+            }
+        }
+
+        if (Array.isArray(candidate.invoices)) {
+            return candidate.invoices as InvoiceEditionReportApiRow[];
+        }
+
+        if (Array.isArray(candidate.rows)) {
+            return candidate.rows as InvoiceEditionReportApiRow[];
+        }
+    }
+
+    return [];
+}
+
+function parseInvoiceNormalizationRows(
+    data: unknown,
+): InvoiceNormalizationReportApiRow[] {
+    if (Array.isArray(data)) {
+        return data as InvoiceNormalizationReportApiRow[];
+    }
+
+    if (data && typeof data === "object") {
+        const candidate = data as {
+            items?: unknown;
+            data?: unknown;
+            invoices?: unknown;
+            rows?: unknown;
+        };
+
+        if (Array.isArray(candidate.items)) {
+            return candidate.items as InvoiceNormalizationReportApiRow[];
+        }
+
+        if (Array.isArray(candidate.data)) {
+            return candidate.data as InvoiceNormalizationReportApiRow[];
+        }
+
+        if (candidate.data && typeof candidate.data === "object") {
+            const nested = candidate.data as {
+                items?: unknown;
+                invoices?: unknown;
+                rows?: unknown;
+            };
+
+            if (Array.isArray(nested.items)) {
+                return nested.items as InvoiceNormalizationReportApiRow[];
+            }
+
+            if (Array.isArray(nested.invoices)) {
+                return nested.invoices as InvoiceNormalizationReportApiRow[];
+            }
+
+            if (Array.isArray(nested.rows)) {
+                return nested.rows as InvoiceNormalizationReportApiRow[];
+            }
+        }
+
+        if (Array.isArray(candidate.invoices)) {
+            return candidate.invoices as InvoiceNormalizationReportApiRow[];
+        }
+
+        if (Array.isArray(candidate.rows)) {
+            return candidate.rows as InvoiceNormalizationReportApiRow[];
+        }
+    }
+
+    return [];
 }
 
 export const reportsService = {
-    async listReportA(): Promise<ReportAHistoryListResult> {
-        if (ENV.REPORTS_USE_MOCK) {
-            return {
-                items: MOCK_REPORT_A_HISTORY,
-                meta: { total: MOCK_REPORT_A_HISTORY.length },
-            };
-        }
+    getInvoiceEditionReport(filters: InvoiceEditionReportFilters) {
+        return api.get(REPORT_ENDPOINTS.invoiceEdition, {
+            params: cleanQueryParams({
+                periode_date: filters.periode_date,
+                period_end: filters.period_end,
+                client_id: filters.client_id,
+                contrat_id: filters.contrat_id,
+                invoice_type: filters.invoice_type,
+            }),
+        });
+    },
 
-        const { data } = await api.get<unknown>(SPECIAL_PDF_PATHS.a);
-        return parseReportAHistoryList(data);
+    getInvoiceNormalizationReport(filters: InvoiceNormalizationReportFilters) {
+        return requestReportBlob(REPORT_ENDPOINTS.invoiceNormalization, {
+            period_start: filters.period_start,
+            period_end: filters.period_end,
+            client_id: filters.client_id,
+        });
+    },
+
+    getInvoicePaymentsReport(filters: InvoicePaymentsReportFilters) {
+        return api.get(REPORT_ENDPOINTS.invoicePayments, {
+            params: cleanQueryParams({
+                client_id: filters.client_id,
+                contract_id: filters.contract_id,
+                period_start: filters.period_start,
+                period_end: filters.period_end,
+            }),
+        });
+    },
+
+    getVatCollectionReport(filters: VatCollectionReportFilters) {
+        return requestReportBlob(REPORT_ENDPOINTS.vatCollection, {
+            date_from: filters.date_from,
+            date_to: filters.date_to,
+            payment_status: filters.payment_status,
+            invoice_type_code: filters.invoice_type_code,
+            client_id: filters.client_id,
+            period_type: filters.period_type,
+        });
+    },
+
+    getToolUsageReport(filters: ToolUsageReportFilters) {
+        return requestReportBlob(REPORT_ENDPOINTS.toolUsage, {
+            date_from: filters.date_from,
+            date_to: filters.date_to,
+            user_name: filters.user_name,
+            action_type: filters.action_type,
+            period_type: filters.period_type,
+        });
     },
 
     async fetchOrdinaryReport(
@@ -147,69 +289,148 @@ export const reportsService = {
             | VatCollectionReportFilters
             | ToolUsageReportFilters,
         fallbackFilename: string,
-        options: FetchOptions,
+        options: ReportTitleOptions,
     ): Promise<ReportBlobResult> {
-        const params = stripUndefined(filters as Record<string, unknown>);
-
-        if (ENV.REPORTS_USE_MOCK) {
-            return fetchMockReportPdf(
-                options.reportTitle,
-                kind,
-                params,
-                fallbackFilename,
+        if (kind === "invoice-payments") {
+            throw new Error(
+                "Use fetchInvoicePaymentsReport for invoice payments reports.",
             );
         }
 
-        const response = await api.get(ORDINARY_PATHS[kind], {
-            params,
-            responseType: "blob",
-        });
+        if (kind === "invoice-edition") {
+            throw new Error(
+                "Use fetchInvoiceEditionReport for invoice edition reports.",
+            );
+        }
 
-        const { blob, filename } = blobFromResponse(response, fallbackFilename);
+        if (kind === "invoice-normalization") {
+            throw new Error(
+                "Use fetchInvoiceNormalizationReport for invoice normalization reports.",
+            );
+        }
+
+        const response =
+            kind === "vat-collection"
+                ? await this.getVatCollectionReport(
+                      filters as VatCollectionReportFilters,
+                  )
+                : await this.getToolUsageReport(
+                      filters as ToolUsageReportFilters,
+                  );
+
+        const filename = filenameFromContentDisposition(
+            getHeaderValue(
+                response.headers as unknown as Record<string, unknown>,
+                "content-disposition",
+            ),
+            fallbackFilename,
+        );
 
         return {
-            blob,
             filename,
-            display: buildReportAPreviewDisplay(toReportAFilters(params)),
+            display: buildReportPreviewDisplay(
+                options.reportTitle,
+                kind,
+                filters as Record<string, unknown>,
+                { profile: options.profile, user: options.user },
+            ),
+        };
+    },
+
+    async fetchInvoiceEditionReport(
+        filters: InvoiceEditionReportFilters,
+        context: InvoiceEditionContext = {},
+    ): Promise<ReportBlobResult> {
+        const response = await this.getInvoiceEditionReport(filters);
+        const rows = parseInvoiceEditionRows(response.data);
+
+        return {
+            filename: "invoice-edition-report.pdf",
+            display: buildInvoiceEditionPreviewDisplay({
+                filters,
+                rows,
+                profile: context.profile,
+                user: context.user,
+                clients: context.clients ?? [],
+                invoiceTypes: context.invoiceTypes ?? [],
+            }),
+        };
+    },
+
+    async fetchInvoicePaymentsReport(
+        filters: InvoicePaymentsReportFilters,
+        context: InvoicePaymentsContext = {},
+    ): Promise<ReportBlobResult> {
+        const response = await this.getInvoicePaymentsReport(filters);
+        const rows = parsePaymentsRows(response.data);
+
+        return {
+            filename: "invoice-payments-report.pdf",
+            display: buildInvoicePaymentsPreviewDisplay({
+                filters,
+                rows,
+                profile: context.profile,
+                user: context.user,
+                clients: context.clients,
+            }),
+        };
+    },
+
+    async fetchInvoiceNormalizationReport(
+        filters: InvoiceNormalizationReportFilters,
+        context: InvoiceEditionContext = {},
+    ): Promise<ReportBlobResult> {
+        const response = await this.getInvoiceNormalizationReport(filters);
+        const rows = parseInvoiceNormalizationRows(response.data);
+
+        return {
+            filename: "invoice-normalization-report.pdf",
+            display: buildInvoiceNormalizationPreviewDisplay({
+                filters,
+                rows,
+                profile: context.profile,
+                user: context.user,
+                clients: context.clients ?? [],
+                invoiceTypes: context.invoiceTypes ?? [],
+            }),
         };
     },
 
     async fetchSpecialPdfReport(
         kind: SpecialPdfReportKind,
-        body:
+        filters:
             | ReportXDailyFilters
             | ReportZFilters
             | ReportXPeriodicFilters
             | ReportAFilters,
         fallbackFilename: string,
-        options: FetchOptions,
+        options: ReportTitleOptions,
     ): Promise<ReportBlobResult> {
-        const payload = stripUndefined(body as Record<string, unknown>);
-
-        if (ENV.REPORTS_USE_MOCK) {
-            return fetchMockReportPdf(
-                options.reportTitle,
-                kind,
-                payload,
-                fallbackFilename,
-            );
+        if (kind === "a") {
+            return {
+                filename: fallbackFilename,
+                display: buildReportAPreviewDisplay(filters as ReportAFilters, {
+                    profile: options.profile,
+                    user: options.user,
+                }),
+            };
         }
 
-        const response = await api.post(SPECIAL_PDF_PATHS[kind], payload, {
-            responseType: "blob",
-        });
+        return {
+            filename: fallbackFilename,
+            display: buildReportPreviewDisplay(
+                options.reportTitle,
+                kind,
+                filters as Record<string, unknown>,
+                { profile: options.profile, user: options.user },
+            ),
+        };
+    },
 
-        const { blob, filename } = blobFromResponse(response, fallbackFilename);
-
-        const display =
-            kind === "a"
-                ? buildReportAPreviewDisplay(body)
-                : buildReportPreviewDisplay(
-                      options.reportTitle,
-                      kind,
-                      payload,
-                  );
-
-        return { blob, filename, display };
+    async listReportA(): Promise<ReportAHistoryListResult> {
+        return {
+            items: MOCK_REPORT_A_HISTORY,
+            meta: { total: MOCK_REPORT_A_HISTORY.length },
+        };
     },
 };

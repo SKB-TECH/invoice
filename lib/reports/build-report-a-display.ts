@@ -5,6 +5,7 @@ import type {
     ReportPreviewDisplay,
 } from "@/core/types/reports";
 import { formatReportGeneratedAt } from "@/lib/reports/build-report-display";
+import { extractReportEmitter } from "@/lib/reports/extract-report-emitter";
 
 const MOCK_LINE_ITEMS: ReportALineItem[] = [
     {
@@ -56,16 +57,25 @@ export function toReportAFilters(
 
 export function buildReportAPreviewDisplay(
     filters: ReportAFilters,
+    emitter?: {
+        profile?: Record<string, unknown> | null;
+        user?: Record<string, unknown> | null;
+    },
 ): ReportPreviewDisplay {
     const lineItems = MOCK_LINE_ITEMS;
+    const emitterIdentity = extractReportEmitter(
+        emitter?.profile,
+        emitter?.user,
+    );
 
     const content: ReportAPreviewContent = {
         generatedAt: formatReportGeneratedAt(),
         dateFrom: formatReportDateLabel(filters.date_from),
         dateTo: formatReportDateLabel(filters.date_to),
         isf: filters.isf?.trim() || "IKW-SYS-998877",
-        companyName: "iKwook S.A.",
-        nif: "NIF-123456789-CD",
+        companyName: emitterIdentity.companyName,
+        logoUrl: emitterIdentity.logoUrl,
+        nif: emitterIdentity.nif,
         lineItems,
         totals: {
             qtySold: sumField(lineItems, "qtySold"),

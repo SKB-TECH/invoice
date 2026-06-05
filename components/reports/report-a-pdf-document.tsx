@@ -63,16 +63,9 @@ const styles = StyleSheet.create({
     },
     headerRow: {
         flexDirection: "row",
-        justifyContent: "space-between",
+        justifyContent: "flex-end",
         alignItems: "flex-start",
         marginBottom: 16,
-    },
-    brand: { fontSize: 22, fontWeight: 700 },
-    brandSub: {
-        fontSize: 7,
-        letterSpacing: 2,
-        marginTop: 4,
-        color: "#64748b",
     },
     reportTitle: {
         fontSize: 28,
@@ -86,10 +79,11 @@ const styles = StyleSheet.create({
     },
     metaRow: {
         flexDirection: "row",
-        justifyContent: "space-between",
+        justifyContent: "flex-start",
         marginBottom: 20,
     },
-    metaCol: { width: "48%" },
+    metaCol: { width: "36%" },
+    metaColSpaced: { width: "42%", marginLeft: 90 },
     sectionLabel: {
         fontSize: 9,
         fontWeight: 700,
@@ -138,7 +132,7 @@ const styles = StyleSheet.create({
     },
 });
 
-type Labels = {
+export type ReportAPdfLabels = {
     reportCode: string;
     emitter: string;
     periodSection: string;
@@ -164,10 +158,10 @@ type Labels = {
 
 type Props = {
     content: ReportAPreviewContent;
-    labels: Labels;
+    labels: ReportAPdfLabels;
 };
 
-function TableHeader({ labels }: { labels: Labels }) {
+function TableHeader({ labels }: { labels: ReportAPdfLabels }) {
     return (
         <View style={styles.tableHeader}>
             <TableCell
@@ -235,10 +229,6 @@ export function ReportAPdfDocument({ content, labels }: Props) {
         <Document>
             <Page size="A4" style={styles.page}>
                 <View style={styles.headerRow}>
-                    <View>
-                        <Text style={styles.brand}>iKwook</Text>
-                        <Text style={styles.brandSub}>REPORTS</Text>
-                    </View>
                     <Text style={styles.reportTitle}>{labels.reportCode}</Text>
                 </View>
 
@@ -257,7 +247,7 @@ export function ReportAPdfDocument({ content, labels }: Props) {
                             {labels.isf} : {p.isf}
                         </Text>
                     </View>
-                    <View style={styles.metaCol}>
+                    <View style={styles.metaColSpaced}>
                         <Text style={styles.sectionLabel}>
                             {labels.periodSection}
                         </Text>

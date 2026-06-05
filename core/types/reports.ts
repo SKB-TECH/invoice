@@ -3,23 +3,25 @@ export type ReportPeriodFilter = {
     date_to?: string;
 };
 
-export type InvoiceEditionReportFilters = ReportPeriodFilter & {
+export type InvoiceEditionReportFilters = {
+    periode_date?: string;
+    period_end?: string;
+    client_id?: number;
+    contrat_id?: number;
+    invoice_type?: number;
+};
+
+export type InvoiceNormalizationReportFilters = {
+    period_start?: string;
+    period_end?: string;
+    client_id?: number;
+};
+
+export type InvoicePaymentsReportFilters = {
     client_id?: number;
     contract_id?: number;
-    point_of_sale?: string;
-    workflow_status?: string;
-};
-
-export type InvoiceNormalizationReportFilters = ReportPeriodFilter & {
-    point_of_sale?: string;
-    invoice_type_code?: string;
-    period_type?: string;
-};
-
-export type InvoicePaymentsReportFilters = ReportPeriodFilter & {
-    client_id?: number;
-    payment_status?: string;
-    period_type?: string;
+    period_start?: string;
+    period_end?: string;
 };
 
 export type VatCollectionReportFilters = ReportPeriodFilter & {
@@ -82,6 +84,7 @@ export type SpecialPdfReportKind =
 
 export type ReportFilterRow = {
     label: string;
+    labelKey?: string;
     value: string;
 };
 
@@ -104,6 +107,7 @@ export type ReportAPreviewContent = {
     dateTo: string;
     isf: string;
     companyName: string;
+    logoUrl?: string;
     nif: string;
     lineItems: ReportALineItem[];
     totals: {
@@ -113,21 +117,115 @@ export type ReportAPreviewContent = {
     };
 };
 
+export type InvoicePaymentReportApiRow = {
+    id: number;
+    date: string;
+    status: string;
+    invoice_id: number;
+    client_id: number;
+    amount: number;
+    currency: string;
+    reference: string;
+    channel_id: number;
+    method_id: number;
+    exchange_rate: number;
+    base_currency: string;
+    confirmed: boolean;
+};
+
+export type InvoiceEditionReportApiRow = Record<string, unknown>;
+export type InvoiceNormalizationReportApiRow = Record<string, unknown>;
+
+export type InvoiceEditionReportLineItem = {
+    clientName: string;
+    invoiceType: string;
+    invoiceAmount: string;
+    taxAmount: string;
+    paidAmount: string;
+    totalAmount: string;
+    currency: string;
+    dueDate: string;
+};
+
+export type InvoiceEditionPreviewContent = {
+    generatedAt: string;
+    dateFrom: string;
+    dateTo: string;
+    companyName: string;
+    logoUrl?: string;
+    nif: string;
+    isf: string;
+    lineItems: InvoiceEditionReportLineItem[];
+};
+
+export type InvoiceNormalizationReportLineItem = {
+    clientName: string;
+    invoiceType: string;
+    invoiceAmount: string;
+    taxAmount: string;
+    paidAmount: string;
+    totalAmount: string;
+    currency: string;
+    dueDate: string;
+};
+
+export type InvoiceNormalizationPreviewContent = {
+    generatedAt: string;
+    dateFrom: string;
+    dateTo: string;
+    companyName: string;
+    logoUrl?: string;
+    nif: string;
+    isf: string;
+    lineItems: InvoiceNormalizationReportLineItem[];
+};
+
+export type InvoicePaymentsReportLineItem = {
+    reference: string;
+    clientName: string;
+    amount: string;
+    date: string;
+};
+
+export type InvoicePaymentsPreviewContent = {
+    generatedAt: string;
+    dateFrom: string;
+    dateTo: string;
+    companyName: string;
+    logoUrl?: string;
+    nif: string;
+    isf: string;
+    lineItems: InvoicePaymentsReportLineItem[];
+};
+
 export type ReportPreviewDisplay =
     | {
           variant: "generic";
           reportTitle: string;
           reportKind: string;
           generatedAt: string;
+      emitterName?: string;
+      logoUrl?: string;
           filterRows: ReportFilterRow[];
       }
     | {
           variant: "a";
           content: ReportAPreviewContent;
+      }
+    | {
+          variant: "payments";
+          content: InvoicePaymentsPreviewContent;
+      }
+    | {
+          variant: "invoice-edition";
+          content: InvoiceEditionPreviewContent;
+      }
+    | {
+          variant: "invoice-normalization";
+          content: InvoiceNormalizationPreviewContent;
       };
 
 export type ReportBlobResult = {
-    blob: Blob;
     filename: string;
     display: ReportPreviewDisplay;
 };
