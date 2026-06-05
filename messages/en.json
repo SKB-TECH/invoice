@@ -535,6 +535,27 @@
         "dateStart": "Start date",
         "dateEnd": "End date",
         "valeur": "Contract amount",
+        "currency": "Currency",
+        "contractType": "Contract type",
+        "contractTypePlaceholder": "Select a contract type",
+        "loadingReferentials": "Loading referentials…",
+        "billingCycle": "Billing cycle",
+        "amountByCycle": "Amount {cycle}",
+        "monthly": "Monthly",
+        "paid": "Paid",
+        "contractFile": "Contract file",
+        "contractFileOptional": "Contract file (optional)",
+        "itemsTemplate": "Line template (JSON)",
+        "billingCycles": {
+          "one_shot": "One-time",
+          "monthly": "Monthly",
+          "quarterly": "Quarterly",
+          "half_yearly": "Half-yearly",
+          "yearly": "Yearly"
+        },
+        "errors": {
+          "invalidJson": "Invalid JSON"
+        },
         "status": {
           "title": "Status",
           "options": {
@@ -544,6 +565,11 @@
           }
         },
         "description": "Description"
+      },
+      "toast": {
+        "invalidJsonTemplate": "The JSON template is invalid.",
+        "created": "Contract created.",
+        "updated": "Contract updated."
       },
       "cancel": "Cancel",
       "save": "Save"
@@ -574,6 +600,13 @@
         },
         "period": "Period"
       }
+    },
+    "actions": {
+      "backToList": "Back to list",
+      "delete": "Delete",
+      "edit": "Edit",
+      "deleteConfirm": "Permanently delete this contract?",
+      "deleteSuccess": "Contract deleted."
     }
   },
   "articles": {
@@ -1191,6 +1224,19 @@
           "value": "Value"
         },
         "empty": "No filters selected. All available data is included.",
+        "footer": "Document generated using the criteria above.",
+        "filterLabels": {
+          "dateFrom": "Start date",
+          "dateTo": "End date",
+          "reportDate": "Report date",
+          "clientId": "Client (ID)",
+          "contractId": "Contract (ID)",
+          "pointOfSale": "Point of sale",
+          "invoiceStatus": "Invoice status",
+          "invoiceType": "Invoice type",
+          "paymentStatus": "Payment status",
+          "isf": "ISF"
+        },
         "page": "Page {current} of {total}"
       },
       "payments": {

@@ -535,6 +535,27 @@
         "dateStart": "Date de début",
         "dateEnd": "Date de fin",
         "valeur": "Valeur du contrat",
+        "currency": "Devise",
+        "contractType": "Type de contrat",
+        "contractTypePlaceholder": "Sélectionner un type de contrat",
+        "loadingReferentials": "Chargement des référentiels…",
+        "billingCycle": "Cycle de facturation",
+        "amountByCycle": "Montant {cycle}",
+        "monthly": "Mensuel",
+        "paid": "Payé",
+        "contractFile": "Fichier du contrat",
+        "contractFileOptional": "Fichier contractuel (optionnel)",
+        "itemsTemplate": "Gabarit des lignes (JSON)",
+        "billingCycles": {
+          "one_shot": "Unique",
+          "monthly": "Mensuel",
+          "quarterly": "Trimestriel",
+          "half_yearly": "Semestriel",
+          "yearly": "Annuel"
+        },
+        "errors": {
+          "invalidJson": "JSON invalide"
+        },
         "status": {
           "title": "Statut",
           "options": {
@@ -544,6 +565,11 @@
           }
         },
         "description": "Description"
+      },
+      "toast": {
+        "invalidJsonTemplate": "Le gabarit JSON est invalide.",
+        "created": "Contrat créé.",
+        "updated": "Contrat mis à jour."
       },
       "cancel": "Annuler",
       "save": "Enregistrer"
@@ -574,6 +600,13 @@
         },
         "period": "Période"
       }
+    },
+    "actions": {
+      "backToList": "Retour à la liste",
+      "delete": "Supprimer",
+      "edit": "Modifier",
+      "deleteConfirm": "Supprimer définitivement ce contrat ?",
+      "deleteSuccess": "Contrat supprimé."
     }
   },
   "articles": {
@@ -1191,6 +1224,19 @@
           "value": "Valeur"
         },
         "empty": "Aucun filtre. Toutes les données disponibles sont incluses.",
+        "footer": "Document généré selon les critères ci-dessus.",
+        "filterLabels": {
+          "dateFrom": "Date de début",
+          "dateTo": "Date de fin",
+          "reportDate": "Date du rapport",
+          "clientId": "Client (ID)",
+          "contractId": "Contrat (ID)",
+          "pointOfSale": "Point de vente",
+          "invoiceStatus": "Statut de la facture",
+          "invoiceType": "Type de facture",
+          "paymentStatus": "Statut du paiement",
+          "isf": "ISF"
+        },
         "page": "Page {current} sur {total}"
       },
       "payments": {

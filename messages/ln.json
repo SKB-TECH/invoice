@@ -535,6 +535,27 @@
         "dateStart": "Mokolo ya kobanda",
         "dateEnd": "Mokolo ya suka",
         "valeur": "Motuya ya kontra",
+        "currency": "Mbongo",
+        "contractType": "Lolenge ya kontra",
+        "contractTypePlaceholder": "Pona lolenge ya kontra",
+        "loadingReferentials": "Tozali kotanga ba référentiels…",
+        "billingCycle": "Cycle ya kofaktire",
+        "amountByCycle": "Motuya {cycle}",
+        "monthly": "Sanza na sanza",
+        "paid": "Efutami",
+        "contractFile": "Fichier ya kontra",
+        "contractFileOptional": "Fichier ya kontra (esengeli te)",
+        "itemsTemplate": "Modèle ya ba lignes (JSON)",
+        "billingCycles": {
+          "one_shot": "Mbala moko",
+          "monthly": "Sanza na sanza",
+          "quarterly": "Trimestre",
+          "half_yearly": "Sanza motoba",
+          "yearly": "Mbula na mbula"
+        },
+        "errors": {
+          "invalidJson": "JSON ezali malamu te"
+        },
         "status": {
           "title": "Etaleli",
           "options": {
@@ -544,6 +565,11 @@
           }
         },
         "description": "Ndimbola"
+      },
+      "toast": {
+        "invalidJsonTemplate": "Modèle JSON ezali malamu te.",
+        "created": "Kontra esalemi.",
+        "updated": "Kontra ebongisami."
       },
       "cancel": "Kanga",
       "save": "Bomba"
@@ -575,6 +601,13 @@
         },
         "period": "Eleko"
       }
+    },
+    "actions": {
+      "backToList": "Zonga na liste",
+      "delete": "Longola",
+      "edit": "Bongisa",
+      "deleteConfirm": "Olingi kolongola kontra oyo libela?",
+      "deleteSuccess": "Kontra elongolami."
     }
   },
   "articles": {
@@ -1199,6 +1232,19 @@
           "value": "Valeur"
         },
         "empty": "Filtre ezali te. Données nyonso ezali incluses.",
+        "footer": "Document esalemi kolanda ba critères oyo ezali likolo.",
+        "filterLabels": {
+          "dateFrom": "Date ya ebandeli",
+          "dateTo": "Date ya nsuka",
+          "reportDate": "Date ya rapport",
+          "clientId": "Client (ID)",
+          "contractId": "Contrat (ID)",
+          "pointOfSale": "Point ya vente",
+          "invoiceStatus": "Statut ya facture",
+          "invoiceType": "Type ya facture",
+          "paymentStatus": "Statut ya paiement",
+          "isf": "ISF"
+        },
         "page": "Page {current} sur {total}"
       },
       "payments": {
