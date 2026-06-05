@@ -1171,7 +1171,8 @@
       "generate": "Générer le rapport",
       "generating": "Génération…",
       "download": "Télécharger le rapport",
-      "back": "Retour"
+      "back": "Retour",
+      "resetFilters": "Réinitialiser"
     },
     "preview": {
       "title": "Aperçu du rapport",

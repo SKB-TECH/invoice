@@ -105,6 +105,7 @@ export type ReportAPreviewContent = {
     dateTo: string;
     isf: string;
     companyName: string;
+    logoUrl?: string;
     nif: string;
     lineItems: ReportALineItem[];
     totals: {
@@ -142,6 +143,7 @@ export type InvoicePaymentsPreviewContent = {
     dateFrom: string;
     dateTo: string;
     companyName: string;
+    logoUrl?: string;
     nif: string;
     isf: string;
     lineItems: InvoicePaymentsReportLineItem[];
@@ -153,6 +155,8 @@ export type ReportPreviewDisplay =
           reportTitle: string;
           reportKind: string;
           generatedAt: string;
+      emitterName?: string;
+      logoUrl?: string;
           filterRows: ReportFilterRow[];
       }
     | {
@@ -165,7 +169,6 @@ export type ReportPreviewDisplay =
       };
 
 export type ReportBlobResult = {
-    blob: Blob;
     filename: string;
     display: ReportPreviewDisplay;
 };

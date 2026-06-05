@@ -50,16 +50,14 @@ export function ReportPreviewSection({
                 >
                     {t("actions.back")}
                 </button>
-                {display.variant !== "payments" ? (
-                    <button
-                        type="button"
-                        disabled={disabled}
-                        onClick={onDownload}
-                        className="h-12 w-52 rounded bg-[#0879bd] text-sm font-semibold text-white hover:bg-[#076ca8] disabled:cursor-not-allowed disabled:bg-slate-300"
-                    >
-                        {t("actions.download")}
-                    </button>
-                ) : null}
+                <button
+                    type="button"
+                    disabled={disabled}
+                    onClick={onDownload}
+                    className="h-12 w-52 rounded bg-[#0879bd] text-sm font-semibold text-white hover:bg-[#076ca8] disabled:cursor-not-allowed disabled:bg-slate-300"
+                >
+                    {t("actions.download")}
+                </button>
             </div>
         </section>
     );

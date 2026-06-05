@@ -1,3 +1,5 @@
+import { resolvePublicFileUrl } from "@/core/utils/resolvePublicFileUrl";
+
 type ProfileLike = Record<string, unknown> | null | undefined;
 
 function pickString(source: ProfileLike, keys: string[]): string {
@@ -20,15 +22,43 @@ export function extractReportEmitter(
     companyName: string;
     nif: string;
     isf: string;
+    logoUrl?: string;
 } {
+    const companyFromProfile = pickString(profile, [
+        "company_name",
+        "legal_name",
+        "name",
+    ]);
+    const firstName = pickString(user, ["firstname", "first_name"]);
+    const lastName = pickString(user, ["lastname", "last_name"]);
+    const fullName =
+        firstName !== "—" || lastName !== "—"
+            ? [firstName !== "—" ? firstName : "", lastName !== "—" ? lastName : ""]
+                  .join(" ")
+                  .trim()
+            : "—";
+
+    const companyFromUser =
+        pickString(user, ["company_name", "legal_name", "name"]) !== "—"
+            ? pickString(user, ["company_name", "legal_name", "name"])
+            : fullName;
+
+    const logoFromProfile = pickString(profile, ["avatar", "logo", "photo"]);
+    const logoFromUser = pickString(user, ["avatar", "photo"]);
+    const rawLogoUrl =
+        logoFromProfile !== "—"
+            ? logoFromProfile
+            : logoFromUser !== "—"
+              ? logoFromUser
+              : undefined;
+
     return {
-        companyName: pickString(profile, [
-            "company_name",
-            "legal_name",
-            "name",
-        ]) !== "—"
-            ? pickString(profile, ["company_name", "legal_name", "name"])
-            : pickString(user, ["company_name", "legal_name", "name"]),
+        companyName:
+            companyFromProfile !== "—"
+                ? companyFromProfile
+                : companyFromUser !== "—"
+                  ? companyFromUser
+                  : "Utilisateur iKwook",
         nif:
             pickString(profile, ["nif", "vat_num"]) !== "—"
                 ? pickString(profile, ["nif", "vat_num"])
@@ -38,5 +68,8 @@ export function extractReportEmitter(
             "—"
                 ? pickString(profile, ["isf", "fiscal_id", "fiscal_system_id"])
                 : pickString(user, ["isf", "fiscal_id", "fiscal_system_id"]),
+        logoUrl: rawLogoUrl
+            ? resolvePublicFileUrl(rawLogoUrl)
+            : undefined,
     };
 }

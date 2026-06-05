@@ -53,11 +53,7 @@ function parseOptionalId(raw: string): number | undefined {
     return Number.isFinite(n) && n > 0 ? n : undefined;
 }
 
-type Props = {
-    onBack: () => void;
-};
-
-export function InvoiceEditionGeneratePanel({ onBack }: Props) {
+export function InvoiceEditionGeneratePanel() {
     const t = useTranslations("reports");
     const tFlow = useTranslations("reports.invoiceEditionFlow");
     const previewMutation = useOrdinaryReportPreview();
@@ -82,6 +78,24 @@ export function InvoiceEditionGeneratePanel({ onBack }: Props) {
     const [periodType, setPeriodType] = useState("");
     const [toolUser, setToolUser] = useState("");
     const [toolActionType, setToolActionType] = useState("");
+
+    const resetFiltersByKind = (nextKind: InvoiceEditionFilterKind = kind) => {
+        setDateFrom("");
+        setDateTo("");
+        setClientId("");
+        setContractId("");
+        setPointOfSale("");
+        setWorkflowStatus("");
+        setInvoiceTypeCode("");
+        setPaymentStatus("");
+        setPeriodType("");
+        setToolUser("");
+        setToolActionType("");
+
+        if (nextKind !== kind) {
+            setKind(nextKind);
+        }
+    };
 
     const buildFilters = ():
         | InvoiceEditionReportFilters
@@ -199,7 +213,7 @@ export function InvoiceEditionGeneratePanel({ onBack }: Props) {
             <ReportKindRadioGrid
                 title={tFlow("generate.radioTitle")}
                 value={kind}
-                onChange={(v) => setKind(v as InvoiceEditionFilterKind)}
+                onChange={(v) => resetFiltersByKind(v as InvoiceEditionFilterKind)}
                 options={[
                     {
                         value: "invoiceEdition",
@@ -328,10 +342,10 @@ export function InvoiceEditionGeneratePanel({ onBack }: Props) {
                 <button
                     type="button"
                     disabled={isGenerating}
-                    onClick={onBack}
+                    onClick={() => resetFiltersByKind()}
                     className="h-12 w-52 rounded border border-slate-300 bg-white text-sm font-semibold text-slate-700 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60"
                 >
-                    {t("actions.back")}
+                    {t("actions.resetFilters")}
                 </button>
                 <button
                     type="button"
