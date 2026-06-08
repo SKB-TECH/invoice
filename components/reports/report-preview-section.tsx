@@ -7,6 +7,8 @@ import { ReportDocumentPreview } from "@/components/reports/report-document-prev
 import { ReportInvoiceEditionPreview } from "@/components/reports/report-invoice-edition-preview";
 import { ReportInvoiceNormalizationPreview } from "@/components/reports/report-invoice-normalization-preview";
 import { ReportPaymentsPreview } from "@/components/reports/report-payments-preview";
+import { ReportToolUsagePreview } from "@/components/reports/report-tool-usage-preview";
+import { ReportVatCollectionPreview } from "@/components/reports/report-vat-collection-preview";
 import type { ReportPreviewDisplay } from "@/core/types/reports";
 
 type Props = {
@@ -43,6 +45,10 @@ export function ReportPreviewSection({
                 <ReportInvoiceNormalizationPreview content={display.content} />
             ) : display.variant === "payments" ? (
                 <ReportPaymentsPreview content={display.content} />
+            ) : display.variant === "vat-collection" ? (
+                <ReportVatCollectionPreview content={display.content} />
+            ) : display.variant === "tool-usage" ? (
+                <ReportToolUsagePreview content={display.content} />
             ) : (
                 <ReportDocumentPreview display={display} />
             )}

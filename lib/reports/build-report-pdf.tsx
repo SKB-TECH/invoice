@@ -14,6 +14,8 @@ import {
     ReportPaymentsPdfDocument,
     type ReportPaymentsPdfLabels,
 } from "@/components/reports/report-payments-pdf-document";
+import { ReportToolUsagePdfDocument } from "@/components/reports/report-tool-usage-pdf-document";
+import { ReportVatCollectionPdfDocument } from "@/components/reports/report-vat-collection-pdf-document";
 import type { ReportPreviewDisplay } from "@/core/types/reports";
 
 export type ReportPdfLabels = {
@@ -61,6 +63,20 @@ export async function buildReportPdfBlob(
     if (display.variant === "invoice-normalization") {
         const document = (
             <ReportInvoiceNormalizationPdfDocument content={display.content} />
+        );
+        return pdf(document).toBlob();
+    }
+
+    if (display.variant === "vat-collection") {
+        const document = (
+            <ReportVatCollectionPdfDocument content={display.content} />
+        );
+        return pdf(document).toBlob();
+    }
+
+    if (display.variant === "tool-usage") {
+        const document = (
+            <ReportToolUsagePdfDocument content={display.content} />
         );
         return pdf(document).toBlob();
     }

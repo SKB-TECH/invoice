@@ -24,17 +24,15 @@ export type InvoicePaymentsReportFilters = {
     period_end?: string;
 };
 
-export type VatCollectionReportFilters = ReportPeriodFilter & {
-    payment_status?: string;
-    invoice_type_code?: string;
+export type VatCollectionReportFilters = {
+    period_start?: string;
+    period_end?: string;
     client_id?: number;
-    period_type?: string;
 };
 
-export type ToolUsageReportFilters = ReportPeriodFilter & {
-    user_name?: string;
-    action_type?: string;
-    period_type?: string;
+export type ToolUsageReportFilters = {
+    period_start?: string;
+    period_end?: string;
 };
 
 export type ReportXDailyFilters = {
@@ -198,6 +196,48 @@ export type InvoicePaymentsPreviewContent = {
     lineItems: InvoicePaymentsReportLineItem[];
 };
 
+export type VatCollectionReportLineItem = {
+    clientName: string;
+    invoiceType: string;
+    invoiceAmount: string;
+    taxAmount: string;
+    paidAmount: string;
+    totalAmount: string;
+    currency: string;
+    dueDate: string;
+};
+
+export type VatCollectionPreviewContent = {
+    generatedAt: string;
+    dateFrom: string;
+    dateTo: string;
+    companyName: string;
+    logoUrl?: string;
+    nif: string;
+    isf: string;
+    lineItems: VatCollectionReportLineItem[];
+};
+
+export type ToolUsageReportLineItem = {
+    userName: string;
+    invoiceCount: string;
+    totalAmount: string;
+    totalTva: string;
+    firstInvoice: string;
+    lastInvoice: string;
+};
+
+export type ToolUsagePreviewContent = {
+    generatedAt: string;
+    dateFrom: string;
+    dateTo: string;
+    companyName: string;
+    logoUrl?: string;
+    nif: string;
+    isf: string;
+    lineItems: ToolUsageReportLineItem[];
+};
+
 export type ReportPreviewDisplay =
     | {
           variant: "generic";
@@ -223,6 +263,14 @@ export type ReportPreviewDisplay =
     | {
           variant: "invoice-normalization";
           content: InvoiceNormalizationPreviewContent;
+      }
+    | {
+          variant: "vat-collection";
+          content: VatCollectionPreviewContent;
+      }
+    | {
+          variant: "tool-usage";
+          content: ToolUsagePreviewContent;
       };
 
 export type ReportBlobResult = {

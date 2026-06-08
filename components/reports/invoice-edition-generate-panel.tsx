@@ -6,18 +6,12 @@ import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 
 import { ReportKindRadioGrid } from "@/components/reports/report-kind-radio-grid";
-import { ReportFiltersGrid } from "@/components/reports/report-filters-grid";
 import { ReportPreviewSection } from "@/components/reports/report-preview-section";
 import {
     ReportClientAutocomplete,
     ReportContractAutocomplete,
     ReportInvoiceTypeSelect,
-    ReportPaymentStatusSelect,
     ReportPeriodFields,
-    ReportPeriodTypeSelect,
-    ReportToolActionTypeSelect,
-    ReportToolUserField,
-    ReportVatPeriodSelect,
 } from "@/components/reports/report-filter-fields";
 import {
     useInvoiceEditionReportPreview,
@@ -78,10 +72,6 @@ export function InvoiceEditionGeneratePanel() {
     const [clientId, setClientId] = useState("");
     const [contractId, setContractId] = useState("");
     const [invoiceTypeCode, setInvoiceTypeCode] = useState("");
-    const [paymentStatus, setPaymentStatus] = useState("");
-    const [periodType, setPeriodType] = useState("");
-    const [toolUser, setToolUser] = useState("");
-    const [toolActionType, setToolActionType] = useState("");
 
     const resetFiltersByKind = (nextKind: InvoiceEditionFilterKind = kind) => {
         setDateFrom("");
@@ -89,10 +79,6 @@ export function InvoiceEditionGeneratePanel() {
         setClientId("");
         setContractId("");
         setInvoiceTypeCode("");
-        setPaymentStatus("");
-        setPeriodType("");
-        setToolUser("");
-        setToolActionType("");
 
         if (nextKind !== kind) {
             setKind(nextKind);
@@ -122,9 +108,8 @@ export function InvoiceEditionGeneratePanel() {
                 };
             case "vatCollection":
                 return {
-                    period_type: periodType.trim() || undefined,
-                    payment_status: paymentStatus.trim() || undefined,
-                    invoice_type_code: invoiceTypeCode.trim() || undefined,
+                    period_start: dateFrom.trim() || undefined,
+                    period_end: dateTo.trim() || undefined,
                     client_id: parseOptionalId(clientId),
                 };
             case "invoicePayments":
@@ -135,9 +120,8 @@ export function InvoiceEditionGeneratePanel() {
                 };
             case "toolUsage":
                 return {
-                    user_name: toolUser.trim() || undefined,
-                    action_type: toolActionType.trim() || undefined,
-                    period_type: periodType.trim() || undefined,
+                    period_start: dateFrom.trim() || undefined,
+                    period_end: dateTo.trim() || undefined,
                 };
         }
     };
@@ -327,24 +311,18 @@ export function InvoiceEditionGeneratePanel() {
                 ) : null}
 
                 {kind === "vatCollection" ? (
-                    <ReportFiltersGrid>
-                        <ReportVatPeriodSelect
-                            value={periodType}
-                            onChange={setPeriodType}
-                        />
-                        <ReportPaymentStatusSelect
-                            value={paymentStatus}
-                            onChange={setPaymentStatus}
-                        />
-                        <ReportInvoiceTypeSelect
-                            value={invoiceTypeCode}
-                            onChange={setInvoiceTypeCode}
+                    <div className="grid gap-5 md:grid-cols-3">
+                        <ReportPeriodFields
+                            dateFrom={dateFrom}
+                            dateTo={dateTo}
+                            onDateFromChange={setDateFrom}
+                            onDateToChange={setDateTo}
                         />
                         <ReportClientAutocomplete
                             value={clientId}
                             onChange={handleClientChange}
                         />
-                    </ReportFiltersGrid>
+                    </div>
                 ) : null}
 
                 {kind === "invoicePayments" ? (
@@ -363,18 +341,12 @@ export function InvoiceEditionGeneratePanel() {
                 ) : null}
 
                 {kind === "toolUsage" ? (
-                    <div className="grid gap-5 md:grid-cols-3">
-                        <ReportToolUserField
-                            value={toolUser}
-                            onChange={setToolUser}
-                        />
-                        <ReportToolActionTypeSelect
-                            value={toolActionType}
-                            onChange={setToolActionType}
-                        />
-                        <ReportPeriodTypeSelect
-                            value={periodType}
-                            onChange={setPeriodType}
+                    <div className="grid gap-5 md:grid-cols-2">
+                        <ReportPeriodFields
+                            dateFrom={dateFrom}
+                            dateTo={dateTo}
+                            onDateFromChange={setDateFrom}
+                            onDateToChange={setDateTo}
                         />
                     </div>
                 ) : null}
