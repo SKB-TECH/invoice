@@ -1302,19 +1302,26 @@
         "company": "Société",
         "nif": "NIF",
         "isf": "ISF",
-        "generatedAt": "Généré le",
-        "dateFrom": "Date Début",
-        "dateTo": "Date Fin",
+        "generatedAt": "Esalemi le",
+        "dateFrom": "Date ebandi",
+        "dateTo": "Date esuki",
         "tableTitle": "COLLECTE YA TVA",
+        "invoiceTypes": {
+          "sale": "Facture ya koteka",
+          "credit": "Facture ya avoir",
+          "unknown": "Type eyebani ({id})"
+        },
         "columns": {
-          "clientName": "Nkombo client",
-          "invoiceAmount": "Montant facture",
-          "taxAmount": "Montant taxe",
-          "paidAmount": "Montant payé",
-          "totalAmount": "Montant total",
+          "date": "Date",
+          "reference": "Reference",
+          "amount": "Montant",
+          "taxAmount": "Taxe",
           "currency": "Devise",
+          "totalAmount": "Montant total",
+          "clientName": "Nkombo client",
           "invoiceType": "Type facture",
-          "dueDate": "Date d'échéance"
+          "workflowStatus": "Statut",
+          "paidAmount": "Montant payé"
         },
         "empty": "Ligne moko te ezwami na ba critères oyo.",
         "page": "Page {current} sur {total}"
@@ -1326,9 +1333,9 @@
         "company": "Société",
         "nif": "NIF",
         "isf": "ISF",
-        "generatedAt": "Généré le",
-        "dateFrom": "Date Début",
-        "dateTo": "Date Fin",
+        "generatedAt": "Esalemi le",
+        "dateFrom": "Date ebandi",
+        "dateTo": "Date esuki",
         "tableTitle": "UTILISATION YA OUTIL",
         "columns": {
           "userName": "Nkombo mosaleli",
