@@ -1287,6 +1287,59 @@
         "empty": "Aucune facture normalisée trouvée pour les critères sélectionnés.",
         "page": "Page {current} sur {total}"
       },
+      "vatCollection": {
+        "reportCode": "RAPPORT",
+        "emitter": "ÉMETTEUR",
+        "periodSection": "PÉRIODE & RESTITUTION",
+        "company": "Société",
+        "nif": "NIF",
+        "isf": "ISF",
+        "generatedAt": "Généré le",
+        "dateFrom": "Date Début",
+        "dateTo": "Date Fin",
+        "tableTitle": "COLLECTE DE LA TVA",
+        "invoiceTypes": {
+          "sale": "Facture de vente",
+          "credit": "Facture d'avoir",
+          "unknown": "Type inconnu ({id})"
+        },
+        "columns": {
+          "date": "Date",
+          "reference": "Référence",
+          "amount": "Montant",
+          "taxAmount": "Taxe",
+          "currency": "Devise",
+          "totalAmount": "Montant total",
+          "clientName": "Nom client",
+          "invoiceType": "Type de facture",
+          "workflowStatus": "Statut",
+          "paidAmount": "Montant payé"
+        },
+        "empty": "Aucune ligne trouvée pour les critères sélectionnés.",
+        "page": "Page {current} sur {total}"
+      },
+      "toolUsage": {
+        "reportCode": "RAPPORT",
+        "emitter": "ÉMETTEUR",
+        "periodSection": "PÉRIODE & RESTITUTION",
+        "company": "Société",
+        "nif": "NIF",
+        "isf": "ISF",
+        "generatedAt": "Généré le",
+        "dateFrom": "Date Début",
+        "dateTo": "Date Fin",
+        "tableTitle": "UTILISATION DE L'OUTIL",
+        "columns": {
+          "userName": "Nom utilisateur",
+          "invoiceCount": "Nombre de factures",
+          "totalAmount": "Montant total",
+          "totalTva": "Total TVA",
+          "firstInvoice": "Date de la première facture",
+          "lastInvoice": "Date de la dernière facture"
+        },
+        "empty": "Aucune ligne trouvée pour les critères sélectionnés.",
+        "page": "Page {current} sur {total}"
+      },
       "payments": {
         "reportCode": "RAPPORT",
         "emitter": "ÉMETTEUR",
@@ -1329,11 +1382,11 @@
       },
       "vatCollection": {
         "title": "Rapport de collecte de la TVA",
-        "description": "Montants de TVA collectée selon les filtres appliqués."
+        "description": "Montants de TVA collectée selon la période et le client."
       },
       "toolUsage": {
         "title": "Rapport d’utilisation de l’outil",
-        "description": "Activité des utilisateurs sur la période choisie."
+        "description": "Utilisation de l’outil selon la période sélectionnée."
       }
     },
     "invoiceEditionFlow": {

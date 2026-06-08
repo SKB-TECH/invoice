@@ -1307,6 +1307,59 @@
         },
         "empty": "No payments found for the selected criteria.",
         "page": "Page {current} of {total}"
+      },
+      "vatCollection": {
+        "reportCode": "REPORT",
+        "emitter": "ISSUER",
+        "periodSection": "PERIOD & RESTITUTION",
+        "company": "Company",
+        "nif": "NIF",
+        "isf": "ISF",
+        "generatedAt": "Generated on",
+        "dateFrom": "Start date",
+        "dateTo": "End date",
+        "tableTitle": "VAT COLLECTION",
+        "invoiceTypes": {
+          "sale": "Sales invoice",
+          "credit": "Credit note",
+          "unknown": "Unknown type ({id})"
+        },
+        "columns": {
+          "date": "Date",
+          "reference": "Reference",
+          "amount": "Amount",
+          "taxAmount": "Tax",
+          "currency": "Currency",
+          "totalAmount": "Total amount",
+          "clientName": "Client name",
+          "invoiceType": "Invoice type",
+          "workflowStatus": "Status",
+          "paidAmount": "Paid amount"
+        },
+        "empty": "No rows found for the selected criteria.",
+        "page": "Page {current} of {total}"
+      },
+      "toolUsage": {
+        "reportCode": "REPORT",
+        "emitter": "ISSUER",
+        "periodSection": "PERIOD & RESTITUTION",
+        "company": "Company",
+        "nif": "NIF",
+        "isf": "ISF",
+        "generatedAt": "Generated on",
+        "dateFrom": "Start date",
+        "dateTo": "End date",
+        "tableTitle": "TOOL USAGE",
+        "columns": {
+          "userName": "User name",
+          "invoiceCount": "Invoice count",
+          "totalAmount": "Total amount",
+          "totalTva": "Total VAT",
+          "firstInvoice": "First invoice date",
+          "lastInvoice": "Last invoice date"
+        },
+        "empty": "No rows found for the selected criteria.",
+        "page": "Page {current} of {total}"
       }
     },
     "toast": {

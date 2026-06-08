@@ -14,6 +14,7 @@ const FILTER_LABELS: Record<string, { fallback: string; key: string }> = {
     invoice_type_code: { fallback: "Type de facture", key: "invoiceType" },
     payment_status: { fallback: "Statut du paiement", key: "paymentStatus" },
     isf: { fallback: "ISF", key: "isf" },
+    periode_date: { fallback: "Date de début", key: "dateFrom" },
 };
 
 export function buildFilterRows(

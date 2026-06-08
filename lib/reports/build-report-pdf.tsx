@@ -8,18 +8,19 @@ import {
     ReportDocumentPdfDocument,
     type ReportDocumentPdfLabels,
 } from "@/components/reports/report-document-pdf-document";
-import { ReportInvoiceEditionPdfDocument } from "@/components/reports/report-invoice-edition-pdf-document";
-import { ReportInvoiceNormalizationPdfDocument } from "@/components/reports/report-invoice-normalization-pdf-document";
-import {
-    ReportPaymentsPdfDocument,
-    type ReportPaymentsPdfLabels,
-} from "@/components/reports/report-payments-pdf-document";
+import { ReportOrdinaryTablePdfDocument } from "@/components/reports/report-ordinary-table-pdf-document";
 import type { ReportPreviewDisplay } from "@/core/types/reports";
+import type { OrdinaryReportTablePdfLabels } from "@/lib/reports/ordinary-report-configs";
+import {
+    getOrdinaryReportTableConfig,
+    isOrdinaryReportTableVariant,
+    type OrdinaryReportTableVariant,
+} from "@/lib/reports/ordinary-report-configs";
 
 export type ReportPdfLabels = {
     generic: ReportDocumentPdfLabels;
-    payments: ReportPaymentsPdfLabels;
     reportA: ReportAPdfLabels;
+    ordinary: Record<OrdinaryReportTableVariant, OrdinaryReportTablePdfLabels>;
 };
 
 export async function buildReportPdfBlob(
@@ -41,35 +42,27 @@ export async function buildReportPdfBlob(
         return pdf(document).toBlob();
     }
 
-    if (display.variant === "payments") {
+    if (display.variant === "a") {
         const document = (
-            <ReportPaymentsPdfDocument
+            <ReportAPdfDocument
                 content={display.content}
-                labels={labels.payments}
+                labels={labels.reportA}
             />
         );
         return pdf(document).toBlob();
     }
 
-    if (display.variant === "invoice-edition") {
+    if (isOrdinaryReportTableVariant(display.variant)) {
+        const config = getOrdinaryReportTableConfig(display.variant);
         const document = (
-            <ReportInvoiceEditionPdfDocument content={display.content} />
+            <ReportOrdinaryTablePdfDocument
+                content={display.content}
+                config={config}
+                labels={labels.ordinary[display.variant]}
+            />
         );
         return pdf(document).toBlob();
     }
 
-    if (display.variant === "invoice-normalization") {
-        const document = (
-            <ReportInvoiceNormalizationPdfDocument content={display.content} />
-        );
-        return pdf(document).toBlob();
-    }
-
-    const document = (
-        <ReportAPdfDocument
-            content={display.content}
-            labels={labels.reportA}
-        />
-    );
-    return pdf(document).toBlob();
+    throw new Error(`Unsupported report preview variant: ${display.variant}`);
 }

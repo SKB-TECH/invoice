@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Search } from "lucide-react";
 import { useTranslations } from "next-intl";
 
@@ -27,6 +27,7 @@ export function ClientSearchSelect({
     onSelect: (client: Client) => void;
 }) {
     const t = useTranslations("createInvoice");
+    const containerRef = useRef<HTMLDivElement>(null);
 
     const [open, setOpen] = useState(false);
     const [search, setSearch] = useState(value);
@@ -34,6 +35,23 @@ export function ClientSearchSelect({
     const resolvedPlaceholder =
         placeholder ?? t("client.searchPlaceholder");
     const resolvedEmpty = emptyLabel ?? t("client.empty");
+
+    useEffect(() => {
+        setSearch(value);
+    }, [value]);
+
+    useEffect(() => {
+        if (!open) return;
+
+        const handlePointerDown = (event: MouseEvent) => {
+            if (!containerRef.current?.contains(event.target as Node)) {
+                setOpen(false);
+            }
+        };
+
+        document.addEventListener("mousedown", handlePointerDown);
+        return () => document.removeEventListener("mousedown", handlePointerDown);
+    }, [open]);
 
     const filteredClients = useMemo(() => {
         const q = search.trim().toLowerCase();
@@ -58,7 +76,7 @@ export function ClientSearchSelect({
 
     return (
         <>
-            <div className="relative">
+            <div ref={containerRef} className="relative">
                 <div className="relative">
                     <input
                         id={inputId}
@@ -87,7 +105,7 @@ export function ClientSearchSelect({
                 </div>
 
                 {open && !disabled ? (
-                    <div className="absolute left-0 right-0 top-[56px] z-30 max-h-[260px] overflow-y-auto border border-slate-200 bg-white shadow-lg">
+                    <div className="absolute left-0 right-0 top-[56px] z-50 max-h-[260px] overflow-y-auto rounded border border-slate-200 bg-white shadow-lg">
                         {filteredClients.length === 0 ? (
                             <div className="px-5 py-4 text-sm font-medium text-slate-500">
                                 {resolvedEmpty}

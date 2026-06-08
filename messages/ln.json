@@ -1295,6 +1295,59 @@
         "empty": "Facture normalisée moko te ezwami na ba critères oyo.",
         "page": "Page {current} sur {total}"
       },
+      "vatCollection": {
+        "reportCode": "RAPPORT",
+        "emitter": "ÉMETTEUR",
+        "periodSection": "PÉRIODE & RESTITUTION",
+        "company": "Société",
+        "nif": "NIF",
+        "isf": "ISF",
+        "generatedAt": "Esalemi le",
+        "dateFrom": "Date ebandi",
+        "dateTo": "Date esuki",
+        "tableTitle": "COLLECTE YA TVA",
+        "invoiceTypes": {
+          "sale": "Facture ya koteka",
+          "credit": "Facture ya avoir",
+          "unknown": "Type eyebani ({id})"
+        },
+        "columns": {
+          "date": "Date",
+          "reference": "Reference",
+          "amount": "Montant",
+          "taxAmount": "Taxe",
+          "currency": "Devise",
+          "totalAmount": "Montant total",
+          "clientName": "Nkombo client",
+          "invoiceType": "Type facture",
+          "workflowStatus": "Statut",
+          "paidAmount": "Montant payé"
+        },
+        "empty": "Ligne moko te ezwami na ba critères oyo.",
+        "page": "Page {current} sur {total}"
+      },
+      "toolUsage": {
+        "reportCode": "RAPPORT",
+        "emitter": "ÉMETTEUR",
+        "periodSection": "PÉRIODE & RESTITUTION",
+        "company": "Société",
+        "nif": "NIF",
+        "isf": "ISF",
+        "generatedAt": "Esalemi le",
+        "dateFrom": "Date ebandi",
+        "dateTo": "Date esuki",
+        "tableTitle": "UTILISATION YA OUTIL",
+        "columns": {
+          "userName": "Nkombo mosaleli",
+          "invoiceCount": "Motango ya ba factures",
+          "totalAmount": "Montant total",
+          "totalTva": "Total TVA",
+          "firstInvoice": "Date ya facture ya liboso",
+          "lastInvoice": "Date ya facture ya suka"
+        },
+        "empty": "Ligne moko te ezwami na ba critères oyo.",
+        "page": "Page {current} sur {total}"
+      },
       "payments": {
         "reportCode": "RAPPORT",
         "emitter": "ÉMETTEUR",
@@ -1337,11 +1390,11 @@
       },
       "vatCollection": {
         "title": "Rapport ya collecte TVA",
-        "description": "Montants TVA. Filtre na période, statut paiement, type facture mpe client."
+        "description": "Montants TVA. Filtre na période mpe client."
       },
       "toolUsage": {
         "title": "Rapport ya utilisation",
-        "description": "Activité ya ba utilisateurs na période oyo oponi."
+        "description": "Utilisation ya outil na période oyo oponi."
       }
     },
     "invoiceEditionFlow": {

@@ -5,11 +5,18 @@ import { useTranslations } from "next-intl";
 
 import { downloadBlob } from "@/core/utils/downloadBlob";
 import type { ReportBlobResult, ReportPreviewDisplay } from "@/core/types/reports";
+import { buildOrdinaryReportTablePdfLabels } from "@/lib/reports/build-ordinary-report-pdf-labels";
 import { buildReportPdfBlob } from "@/lib/reports/build-report-pdf";
 
 export function useReportPreview() {
     const tOrdinary = useTranslations("reports.preview.ordinary");
+    const tInvoiceEdition = useTranslations("reports.preview.invoiceEdition");
+    const tInvoiceNormalization = useTranslations(
+        "reports.preview.invoiceNormalization",
+    );
     const tPayments = useTranslations("reports.preview.payments");
+    const tVatCollection = useTranslations("reports.preview.vatCollection");
+    const tToolUsage = useTranslations("reports.preview.toolUsage");
     const tReportA = useTranslations("reports.specialA.preview");
     const [preview, setPreview] = useState<ReportBlobResult | null>(null);
 
@@ -37,25 +44,27 @@ export function useReportPreview() {
                 empty: tOrdinary("empty"),
                 footer: tOrdinary("footer"),
             },
-            payments: {
-                reportCode: tPayments("reportCode"),
-                emitter: tPayments("emitter"),
-                periodSection: tPayments("periodSection"),
-                company: tPayments("company"),
-                nif: tPayments("nif"),
-                isf: tPayments("isf"),
-                generatedAt: tPayments("generatedAt"),
-                dateFrom: tPayments("dateFrom"),
-                dateTo: tPayments("dateTo"),
-                tableTitle: tPayments("tableTitle"),
-                columns: {
-                    reference: tPayments("columns.reference"),
-                    clientName: tPayments("columns.clientName"),
-                    amount: tPayments("columns.amount"),
-                    date: tPayments("columns.date"),
-                },
-                empty: tPayments("empty"),
-                page: tPayments("page", { current: 1, total: 1 }),
+            ordinary: {
+                "invoice-edition": buildOrdinaryReportTablePdfLabels(
+                    tInvoiceEdition,
+                    "invoice-edition",
+                ),
+                "invoice-normalization": buildOrdinaryReportTablePdfLabels(
+                    tInvoiceNormalization,
+                    "invoice-normalization",
+                ),
+                payments: buildOrdinaryReportTablePdfLabels(
+                    tPayments,
+                    "payments",
+                ),
+                "vat-collection": buildOrdinaryReportTablePdfLabels(
+                    tVatCollection,
+                    "vat-collection",
+                ),
+                "tool-usage": buildOrdinaryReportTablePdfLabels(
+                    tToolUsage,
+                    "tool-usage",
+                ),
             },
             reportA: {
                 reportCode: tReportA("reportCode"),
@@ -82,7 +91,16 @@ export function useReportPreview() {
             },
         });
         downloadBlob(pdfBlob, preview.filename);
-    }, [preview, tOrdinary, tPayments, tReportA]);
+    }, [
+        preview,
+        tInvoiceEdition,
+        tInvoiceNormalization,
+        tOrdinary,
+        tPayments,
+        tReportA,
+        tToolUsage,
+        tVatCollection,
+    ]);
 
     const previewDisplay: ReportPreviewDisplay | null =
         preview?.display ?? null;

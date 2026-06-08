@@ -1,19 +1,65 @@
 "use client";
 
+import type { CSSProperties } from "react";
 import { useTranslations } from "next-intl";
 
-import { REPORT_PAYMENTS_TABLE_GRID_CLASS } from "@/lib/reports/report-payments-table-layout";
-import type { InvoicePaymentsPreviewContent } from "@/core/types/reports";
+import type {
+    OrdinaryReportTableConfig,
+    OrdinaryReportTableContent,
+    OrdinaryReportTableRow,
+} from "@/lib/reports/ordinary-report-configs";
 
 type Props = {
-    content: InvoicePaymentsPreviewContent;
+    content: OrdinaryReportTableContent;
+    config: OrdinaryReportTableConfig;
 };
 
-const TABLE_GRID = REPORT_PAYMENTS_TABLE_GRID_CLASS;
 const HEADER_CELL = "whitespace-nowrap leading-none";
 
-export function ReportPaymentsPreview({ content }: Props) {
-    const t = useTranslations("reports.preview.payments");
+function formatPreviewCell(
+    row: OrdinaryReportTableRow,
+    key: string,
+    previewFormat?: (value: string, row: OrdinaryReportTableRow) => string,
+): string {
+    const value = row[key] ?? "";
+    return previewFormat ? previewFormat(value, row) : value;
+}
+
+function getPreviewCellStyle(column: {
+    previewPaddingLeft?: number;
+    previewPaddingRight?: number;
+}): CSSProperties | undefined {
+    if (!column.previewPaddingLeft && !column.previewPaddingRight) {
+        return undefined;
+    }
+
+    return {
+        paddingLeft: column.previewPaddingLeft,
+        paddingRight: column.previewPaddingRight,
+    };
+}
+
+function getPreviewCellClassName(
+    column: { align?: "left" | "right" },
+    isHeader = false,
+): string {
+    const classes = ["min-w-0 overflow-hidden"];
+
+    if (column.align === "right") {
+        classes.push("text-right");
+    }
+
+    if (!isHeader) {
+        classes.push("break-words");
+    } else {
+        classes.push(HEADER_CELL);
+    }
+
+    return classes.join(" ");
+}
+
+export function ReportOrdinaryTablePreview({ content, config }: Props) {
+    const t = useTranslations(config.translationNamespace);
     const p = content;
 
     return (
@@ -96,28 +142,38 @@ export function ReportPaymentsPreview({ content }: Props) {
 
             <div className="overflow-x-auto">
                 <div
-                    className={`${TABLE_GRID} items-center bg-slate-100 px-2 py-3 text-xs font-black uppercase text-black`}
+                    className={`${config.tableGridClass} items-center bg-slate-100 px-2 py-3 text-xs font-black uppercase text-black`}
                 >
-                    <div className={HEADER_CELL}>{t("columns.reference")}</div>
-                    <div className={HEADER_CELL}>{t("columns.clientName")}</div>
-                    <div className={`${HEADER_CELL} text-right`}>
-                        {t("columns.amount")}
-                    </div>
-                    <div className={`${HEADER_CELL} text-right`}>
-                        {t("columns.date")}
-                    </div>
+                    {config.columns.map((column) => (
+                        <div
+                            key={column.key}
+                            className={getPreviewCellClassName(column, true)}
+                            style={getPreviewCellStyle(column)}
+                        >
+                            {t(`columns.${column.key}`)}
+                        </div>
+                    ))}
                 </div>
 
                 {p.lineItems.length > 0 ? (
                     p.lineItems.map((row) => (
                         <div
-                            key={row.reference + row.date}
-                            className={`${TABLE_GRID} border-b border-slate-300 px-2 py-3 text-sm font-semibold text-slate-700`}
+                            key={config.rowKey(row)}
+                            className={`${config.tableGridClass} border-b border-slate-300 px-2 py-3 text-sm font-semibold text-slate-700`}
                         >
-                            <div>{row.reference}</div>
-                            <div>{row.clientName}</div>
-                            <div className="text-right">{row.amount}</div>
-                            <div className="text-right">{row.date}</div>
+                            {config.columns.map((column) => (
+                                <div
+                                    key={column.key}
+                                    className={getPreviewCellClassName(column)}
+                                    style={getPreviewCellStyle(column)}
+                                >
+                                    {formatPreviewCell(
+                                        row,
+                                        column.key,
+                                        column.previewFormat,
+                                    )}
+                                </div>
+                            ))}
                         </div>
                     ))
                 ) : (

@@ -25,12 +25,32 @@ import { buildInvoiceNormalizationPreviewDisplay } from "@/lib/reports/build-inv
 import { buildInvoicePaymentsPreviewDisplay } from "@/lib/reports/build-invoice-payments-display";
 import { buildReportAPreviewDisplay } from "@/lib/reports/build-report-a-display";
 import { buildReportPreviewDisplay } from "@/lib/reports/build-report-display";
+import { buildToolUsagePreviewDisplay } from "@/lib/reports/build-tool-usage-display";
+import { buildVatCollectionPreviewDisplay } from "@/lib/reports/build-vat-collection-display";
+import type { VatCollectionDisplayLabels } from "@/lib/reports/build-vat-collection-display";
 import { MOCK_REPORT_A_HISTORY } from "@/lib/reports/report-a-mock-history";
 
 type ReportTitleOptions = {
     reportTitle: string;
     profile?: Record<string, unknown> | null;
     user?: Record<string, unknown> | null;
+    locale?: string;
+    vatCollectionLabels?: VatCollectionDisplayLabels;
+    clients?: Array<{
+        id: number | string;
+        client_id?: number | string | null;
+        client_name?: string | null;
+        company_name?: string | null;
+        legal_name?: string | null;
+        name?: string | null;
+    }>;
+    invoiceTypes?: Array<{
+        id: number | string;
+        code?: string | null;
+        title?: string | null;
+        name?: string | null;
+        value?: string | null;
+    }>;
 };
 
 type InvoicePaymentsContext = {
@@ -227,6 +247,59 @@ function parseInvoiceNormalizationRows(
     return [];
 }
 
+function parseGenericRows(data: unknown): Record<string, unknown>[] {
+    if (Array.isArray(data)) {
+        return data as Record<string, unknown>[];
+    }
+
+    if (data && typeof data === "object") {
+        const candidate = data as {
+            items?: unknown;
+            data?: unknown;
+            rows?: unknown;
+            invoices?: unknown;
+        };
+
+        if (Array.isArray(candidate.items)) {
+            return candidate.items as Record<string, unknown>[];
+        }
+
+        if (Array.isArray(candidate.data)) {
+            return candidate.data as Record<string, unknown>[];
+        }
+
+        if (candidate.data && typeof candidate.data === "object") {
+            const nested = candidate.data as {
+                items?: unknown;
+                rows?: unknown;
+                invoices?: unknown;
+            };
+
+            if (Array.isArray(nested.items)) {
+                return nested.items as Record<string, unknown>[];
+            }
+
+            if (Array.isArray(nested.rows)) {
+                return nested.rows as Record<string, unknown>[];
+            }
+
+            if (Array.isArray(nested.invoices)) {
+                return nested.invoices as Record<string, unknown>[];
+            }
+        }
+
+        if (Array.isArray(candidate.rows)) {
+            return candidate.rows as Record<string, unknown>[];
+        }
+
+        if (Array.isArray(candidate.invoices)) {
+            return candidate.invoices as Record<string, unknown>[];
+        }
+    }
+
+    return [];
+}
+
 export const reportsService = {
     getInvoiceEditionReport(filters: InvoiceEditionReportFilters) {
         return api.get(REPORT_ENDPOINTS.invoiceEdition, {
@@ -260,23 +333,21 @@ export const reportsService = {
     },
 
     getVatCollectionReport(filters: VatCollectionReportFilters) {
-        return requestReportBlob(REPORT_ENDPOINTS.vatCollection, {
-            date_from: filters.date_from,
-            date_to: filters.date_to,
-            payment_status: filters.payment_status,
-            invoice_type_code: filters.invoice_type_code,
-            client_id: filters.client_id,
-            period_type: filters.period_type,
+        return api.get(REPORT_ENDPOINTS.vatCollection, {
+            params: cleanQueryParams({
+                period_start: filters.period_start,
+                period_end: filters.period_end,
+                client_id: filters.client_id,
+            }),
         });
     },
 
     getToolUsageReport(filters: ToolUsageReportFilters) {
-        return requestReportBlob(REPORT_ENDPOINTS.toolUsage, {
-            date_from: filters.date_from,
-            date_to: filters.date_to,
-            user_name: filters.user_name,
-            action_type: filters.action_type,
-            period_type: filters.period_type,
+        return api.get(REPORT_ENDPOINTS.toolUsage, {
+            params: cleanQueryParams({
+                period_start: filters.period_start,
+                period_end: filters.period_end,
+            }),
         });
     },
 
@@ -326,14 +397,28 @@ export const reportsService = {
             fallbackFilename,
         );
 
+        const rows = parseGenericRows(response.data);
+
         return {
             filename,
-            display: buildReportPreviewDisplay(
-                options.reportTitle,
-                kind,
-                filters as Record<string, unknown>,
-                { profile: options.profile, user: options.user },
-            ),
+            display:
+                kind === "vat-collection"
+                    ? buildVatCollectionPreviewDisplay({
+                          filters: filters as VatCollectionReportFilters,
+                          rows,
+                          profile: options.profile,
+                          user: options.user,
+                          clients: options.clients ?? [],
+                          invoiceTypes: options.invoiceTypes ?? [],
+                          labels: options.vatCollectionLabels,
+                      })
+                    : buildToolUsagePreviewDisplay({
+                          filters: filters as ToolUsageReportFilters,
+                          rows,
+                          profile: options.profile,
+                          user: options.user,
+                          locale: options.locale,
+                      }),
         };
     },
 
