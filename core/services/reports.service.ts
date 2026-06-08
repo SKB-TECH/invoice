@@ -30,10 +30,24 @@ import type { VatCollectionDisplayLabels } from "@/lib/reports/build-vat-collect
 import {
     MOCK_REPORT_A_API_RESPONSE,
     buildReportAPreviewDisplayFromApi,
-    filenameFromReportAPdfUrl,
     parseReportAApiResponse,
     parseReportAHistoryList,
 } from "@/lib/reports/report-a-api";
+import {
+    MOCK_REPORT_X_PERIODIC_API_RESPONSE,
+    buildReportXPeriodicPreviewDisplayFromApi,
+    parseReportXPeriodicApiResponse,
+} from "@/lib/reports/report-x-periodic-api";
+import {
+    MOCK_REPORT_X_DAILY_API_RESPONSE,
+    buildReportXDailyPreviewDisplayFromApi,
+    parseReportXDailyApiResponse,
+} from "@/lib/reports/report-x-daily-api";
+import {
+    MOCK_REPORT_Z_API_RESPONSE,
+    buildReportZPreviewDisplayFromApi,
+    parseReportZApiResponse,
+} from "@/lib/reports/report-z-api";
 import { MOCK_REPORT_A_HISTORY } from "@/lib/reports/report-a-mock-history";
 import { ENV } from "@/core/constants/env";
 import { unwrapApiData } from "@/core/utils/apiResponse";
@@ -96,6 +110,9 @@ const REPORT_ENDPOINTS = {
     vatCollection: "/invoices/reports/tva",
     toolUsage: "/invoices/reports/usage",
     reportA: "/invoices/reports/a",
+    reportXPeriodic: "/invoices/reports/xz/periodic",
+    reportZ: "/invoices/reports/xz/z",
+    reportXDaily: "/invoices/reports/xz/daily",
 } as const;
 
 function cleanQueryParams(
@@ -508,6 +525,30 @@ export const reportsService = {
             );
         }
 
+        if (kind === "x-periodic") {
+            return this.fetchReportXPeriodic(
+                filters as ReportXPeriodicFilters,
+                fallbackFilename,
+                options,
+            );
+        }
+
+        if (kind === "z") {
+            return this.fetchReportZ(
+                filters as ReportZFilters,
+                fallbackFilename,
+                options,
+            );
+        }
+
+        if (kind === "x-daily") {
+            return this.fetchReportXDaily(
+                filters as ReportXDailyFilters,
+                fallbackFilename,
+                options,
+            );
+        }
+
         return {
             filename: fallbackFilename,
             display: buildReportPreviewDisplay(
@@ -540,15 +581,11 @@ export const reportsService = {
             };
 
             return {
-                filename: filenameFromReportAPdfUrl(
-                    response.pdf_url,
-                    fallbackFilename,
-                ),
+                filename: fallbackFilename,
                 display: buildReportAPreviewDisplayFromApi(response, {
                     profile: options.profile,
                     user: options.user,
                 }),
-                pdfUrl: response.pdf_url,
             };
         }
 
@@ -563,15 +600,161 @@ export const reportsService = {
         }
 
         return {
-            filename: filenameFromReportAPdfUrl(
-                response.pdf_url,
-                fallbackFilename,
-            ),
+            filename: fallbackFilename,
             display: buildReportAPreviewDisplayFromApi(response, {
                 profile: options.profile,
                 user: options.user,
             }),
-            pdfUrl: response.pdf_url,
+        };
+    },
+
+    async fetchReportXPeriodic(
+        filters: ReportXPeriodicFilters,
+        fallbackFilename: string,
+        options: ReportTitleOptions,
+    ): Promise<ReportBlobResult> {
+        const payload = cleanQueryParams({
+            period_start: filters.period_start,
+            period_end: filters.period_end,
+        });
+
+        if (ENV.REPORTS_USE_MOCK) {
+            const response = {
+                ...MOCK_REPORT_X_PERIODIC_API_RESPONSE,
+                period_start:
+                    filters.period_start ??
+                    MOCK_REPORT_X_PERIODIC_API_RESPONSE.period_start,
+                period_end:
+                    filters.period_end ??
+                    MOCK_REPORT_X_PERIODIC_API_RESPONSE.period_end,
+            };
+
+            return {
+                filename: fallbackFilename,
+                display: buildReportXPeriodicPreviewDisplayFromApi(response, {
+                    profile: options.profile,
+                    user: options.user,
+                }),
+            };
+        }
+
+        const { data } = await api.post<unknown>(
+            REPORT_ENDPOINTS.reportXPeriodic,
+            payload,
+        );
+        const response = parseReportXPeriodicApiResponse(
+            unwrapApiData(data) ?? data,
+        );
+
+        if (!response) {
+            throw new Error("Invalid periodic X report response.");
+        }
+
+        return {
+            filename: fallbackFilename,
+            display: buildReportXPeriodicPreviewDisplayFromApi(response, {
+                profile: options.profile,
+                user: options.user,
+            }),
+        };
+    },
+
+    async fetchReportXDaily(
+        filters: ReportXDailyFilters,
+        fallbackFilename: string,
+        options: ReportTitleOptions,
+    ): Promise<ReportBlobResult> {
+        const payload = cleanQueryParams({
+            period_start: filters.period_start,
+            period_end: filters.period_end,
+        });
+
+        if (ENV.REPORTS_USE_MOCK) {
+            const response = {
+                ...MOCK_REPORT_X_DAILY_API_RESPONSE,
+                period_start:
+                    filters.period_start ??
+                    MOCK_REPORT_X_DAILY_API_RESPONSE.period_start,
+                period_end:
+                    filters.period_end ??
+                    MOCK_REPORT_X_DAILY_API_RESPONSE.period_end,
+            };
+
+            return {
+                filename: fallbackFilename,
+                display: buildReportXDailyPreviewDisplayFromApi(response, {
+                    profile: options.profile,
+                    user: options.user,
+                }),
+            };
+        }
+
+        const { data } = await api.post<unknown>(
+            REPORT_ENDPOINTS.reportXDaily,
+            payload,
+        );
+        const response = parseReportXDailyApiResponse(
+            unwrapApiData(data) ?? data,
+        );
+
+        if (!response) {
+            throw new Error("Invalid daily X report response.");
+        }
+
+        return {
+            filename: fallbackFilename,
+            display: buildReportXDailyPreviewDisplayFromApi(response, {
+                profile: options.profile,
+                user: options.user,
+            }),
+        };
+    },
+
+    async fetchReportZ(
+        filters: ReportZFilters,
+        fallbackFilename: string,
+        options: ReportTitleOptions,
+    ): Promise<ReportBlobResult> {
+        const payload = cleanQueryParams({
+            period_start: filters.period_start,
+            period_end: filters.period_end,
+        });
+
+        if (ENV.REPORTS_USE_MOCK) {
+            const response = {
+                ...MOCK_REPORT_Z_API_RESPONSE,
+                period_start:
+                    filters.period_start ??
+                    MOCK_REPORT_Z_API_RESPONSE.period_start,
+                period_end:
+                    filters.period_end ?? MOCK_REPORT_Z_API_RESPONSE.period_end,
+            };
+
+            return {
+                filename: fallbackFilename,
+                display: buildReportZPreviewDisplayFromApi(response, {
+                    profile: options.profile,
+                    user: options.user,
+                }),
+            };
+        }
+
+        const { data } = await api.post<unknown>(
+            REPORT_ENDPOINTS.reportZ,
+            payload,
+        );
+        const response = parseReportZApiResponse(unwrapApiData(data) ?? data);
+
+        if (!response) {
+            throw new Error("Invalid Z report response.");
+        }
+
+        return {
+            filename: fallbackFilename,
+            display: buildReportZPreviewDisplayFromApi(response, {
+                profile: options.profile,
+                user: options.user,
+            }),
         };
     },
 

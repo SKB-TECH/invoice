@@ -42,7 +42,7 @@ export function ReportAGeneratePanel({ onBack }: Props) {
             {
                 kind: "a",
                 filters,
-                filename: "rapport-a.pdf",
+                filename: "invoice_rapport_a.pdf",
                 reportTitle: tA("title"),
             },
             {

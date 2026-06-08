@@ -1435,7 +1435,27 @@
           "Nom commercial, NIF, date mpe ngonga",
           "Ba montants, taxes mpe modes ya paiement",
           "Ba ventes oyo ezuami te mpe ya mokolo"
-        ]
+        ],
+        "preview": {
+          "reportCode": "RAPPORT X",
+          "emitter": "ÉMETTEUR",
+          "periodSection": "PÉRIODE & RESTITUTION",
+          "company": "Société",
+          "nif": "NIF",
+          "generatedAt": "Généré le",
+          "dateFrom": "Date Début",
+          "dateTo": "Date Fin",
+          "tableTitle": "SYNTHÈSE QUOTIDIENNE",
+          "columns": {
+            "invoiceCount": "Nombre de factures",
+            "totalHt": "Total HT",
+            "totalTva": "Total TVA",
+            "totalTtc": "Total TTC",
+            "totalPaid": "Total payé",
+            "totalBalance": "Solde"
+          },
+          "page": "Page {current} sur {total}"
+        }
       },
       "reportZ": {
         "title": "Lapolo ya suka",
@@ -1444,7 +1464,27 @@
           "Nom commercial, NIF, date mpe ngonga",
           "Ba montants, taxes mpe modes ya paiement",
           "Ba ventes oyo ezuami te mpe ya mokolo"
-        ]
+        ],
+        "preview": {
+          "reportCode": "RAPPORT Z",
+          "emitter": "ÉMETTEUR",
+          "periodSection": "PÉRIODE & RESTITUTION",
+          "company": "Société",
+          "nif": "NIF",
+          "generatedAt": "Généré le",
+          "dateFrom": "Date Début",
+          "dateTo": "Date Fin",
+          "tableTitle": "SYNTHÈSE DE CLÔTURE",
+          "columns": {
+            "invoiceCount": "Nombre de factures",
+            "totalHt": "Total HT",
+            "totalTva": "Total TVA",
+            "totalTtc": "Total TTC",
+            "totalPaid": "Total payé",
+            "totalBalance": "Solde"
+          },
+          "page": "Page {current} sur {total}"
+        }
       },
       "reportXPeriodic": {
         "title": "Lapolo ya ntango na ntango",
@@ -1453,7 +1493,27 @@
           "Nom commercial, NIF, période",
           "Ba montants, taxes mpe modes ya paiement",
           "Ba ventes oyo ezuami te"
-        ]
+        ],
+        "preview": {
+          "reportCode": "RAPPORT X",
+          "emitter": "ÉMETTEUR",
+          "periodSection": "PÉRIODE & RESTITUTION",
+          "company": "Société",
+          "nif": "NIF",
+          "generatedAt": "Généré le",
+          "dateFrom": "Date Début",
+          "dateTo": "Date Fin",
+          "tableTitle": "SYNTHÈSE PÉRIODIQUE",
+          "columns": {
+            "invoiceCount": "Nombre de factures",
+            "totalHt": "Total HT",
+            "totalTva": "Total TVA",
+            "totalTtc": "Total TTC",
+            "totalPaid": "Total payé",
+            "totalBalance": "Solde"
+          },
+          "page": "Page {current} sur {total}"
+        }
       }
     },
     "xzFlow": {

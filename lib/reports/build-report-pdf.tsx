@@ -5,6 +5,10 @@ import {
     type ReportAPdfLabels,
 } from "@/components/reports/report-a-pdf-document";
 import {
+    ReportXPeriodicPdfDocument,
+    type ReportXPeriodicPdfLabels,
+} from "@/components/reports/report-x-periodic-pdf-document";
+import {
     ReportDocumentPdfDocument,
     type ReportDocumentPdfLabels,
 } from "@/components/reports/report-document-pdf-document";
@@ -20,6 +24,9 @@ import {
 export type ReportPdfLabels = {
     generic: ReportDocumentPdfLabels;
     reportA: ReportAPdfLabels;
+    reportXPeriodic: ReportXPeriodicPdfLabels;
+    reportZ: ReportXPeriodicPdfLabels;
+    reportXDaily: ReportXPeriodicPdfLabels;
     ordinary: Record<OrdinaryReportTableVariant, OrdinaryReportTablePdfLabels>;
 };
 
@@ -47,6 +54,36 @@ export async function buildReportPdfBlob(
             <ReportAPdfDocument
                 content={display.content}
                 labels={labels.reportA}
+            />
+        );
+        return pdf(document).toBlob();
+    }
+
+    if (display.variant === "x-daily") {
+        const document = (
+            <ReportXPeriodicPdfDocument
+                content={display.content}
+                labels={labels.reportXDaily}
+            />
+        );
+        return pdf(document).toBlob();
+    }
+
+    if (display.variant === "x-periodic") {
+        const document = (
+            <ReportXPeriodicPdfDocument
+                content={display.content}
+                labels={labels.reportXPeriodic}
+            />
+        );
+        return pdf(document).toBlob();
+    }
+
+    if (display.variant === "z") {
+        const document = (
+            <ReportXPeriodicPdfDocument
+                content={display.content}
+                labels={labels.reportZ}
             />
         );
         return pdf(document).toBlob();

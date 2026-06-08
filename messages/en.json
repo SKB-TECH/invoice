@@ -1428,7 +1428,27 @@
           "Total, taxable amounts and amounts per tax group",
           "Invoice count by type, payment methods, discounts",
           "Incomplete sales and daily sales"
-        ]
+        ],
+        "preview": {
+          "reportCode": "X REPORT",
+          "emitter": "ISSUER",
+          "periodSection": "PERIOD & RESTITUTION",
+          "company": "Company",
+          "nif": "Tax ID",
+          "generatedAt": "Generated on",
+          "dateFrom": "Start date",
+          "dateTo": "End date",
+          "tableTitle": "DAILY SUMMARY",
+          "columns": {
+            "invoiceCount": "Invoice count",
+            "totalHt": "Subtotal",
+            "totalTva": "VAT total",
+            "totalTtc": "Grand total",
+            "totalPaid": "Total paid",
+            "totalBalance": "Balance"
+          },
+          "page": "Page {current} of {total}"
+        }
       },
       "reportZ": {
         "title": "Closing report",
@@ -1438,7 +1458,27 @@
           "Total, taxable amounts and amounts per tax group",
           "Invoice count by type, payment methods, discounts",
           "Incomplete sales and daily sales"
-        ]
+        ],
+        "preview": {
+          "reportCode": "Z REPORT",
+          "emitter": "ISSUER",
+          "periodSection": "PERIOD & RESTITUTION",
+          "company": "Company",
+          "nif": "Tax ID",
+          "generatedAt": "Generated on",
+          "dateFrom": "Start date",
+          "dateTo": "End date",
+          "tableTitle": "CLOSING SUMMARY",
+          "columns": {
+            "invoiceCount": "Invoice count",
+            "totalHt": "Subtotal",
+            "totalTva": "VAT total",
+            "totalTtc": "Grand total",
+            "totalPaid": "Total paid",
+            "totalBalance": "Balance"
+          },
+          "page": "Page {current} of {total}"
+        }
       },
       "reportXPeriodic": {
         "title": "Periodic report",
@@ -1448,7 +1488,27 @@
           "Total, taxable amounts and amounts per tax group",
           "Invoice count by type, payment methods, discounts",
           "Incomplete sales over the period"
-        ]
+        ],
+        "preview": {
+          "reportCode": "X REPORT",
+          "emitter": "ISSUER",
+          "periodSection": "PERIOD & RESTITUTION",
+          "company": "Company",
+          "nif": "Tax ID",
+          "generatedAt": "Generated on",
+          "dateFrom": "Start date",
+          "dateTo": "End date",
+          "tableTitle": "PERIODIC SUMMARY",
+          "columns": {
+            "invoiceCount": "Invoice count",
+            "totalHt": "Subtotal",
+            "totalTva": "VAT total",
+            "totalTtc": "Grand total",
+            "totalPaid": "Total paid",
+            "totalBalance": "Balance"
+          },
+          "page": "Page {current} of {total}"
+        }
       }
     },
     "xzFlow": {

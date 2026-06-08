@@ -11,7 +11,9 @@ import { ReportPeriodFields } from "@/components/reports/report-filter-fields";
 import { useSpecialPdfReportPreview } from "@/core/hooks/reports/useReportGenerate";
 import { useReportPreview } from "@/core/hooks/reports/useReportPreview";
 import type {
+    ReportXDailyFilters,
     ReportXPeriodicFilters,
+    ReportZFilters,
     SpecialPdfReportKind,
 } from "@/core/types/reports";
 import { getAxiosErrorMessage } from "@/core/utils/axiosErrorMessage";
@@ -22,6 +24,12 @@ const KIND_TO_SPECIAL: Record<XzReportKind, SpecialPdfReportKind> = {
     reportXDaily: "x-daily",
     reportZ: "z",
     reportXPeriodic: "x-periodic",
+};
+
+const FILENAME_BY_KIND: Record<XzReportKind, string> = {
+    reportXDaily: "invoice_rapport_x_quotidien.pdf",
+    reportZ: "invoice_rapport_z.pdf",
+    reportXPeriodic: "invoice_rapport_x_periodique.pdf",
 };
 
 type Props = {
@@ -44,23 +52,20 @@ export function XzReportGeneratePanel({ onBack }: Props) {
     const [dateFrom, setDateFrom] = useState("");
     const [dateTo, setDateTo] = useState("");
 
-    const buildFilters = (): ReportXPeriodicFilters | Record<string, never> => {
-        if (kind !== "reportXPeriodic") {
-            return {};
-        }
-
-        return {
-            date_from: dateFrom.trim() || undefined,
-            date_to: dateTo.trim() || undefined,
-        };
-    };
+    const buildFilters = ():
+        | ReportXDailyFilters
+        | ReportZFilters
+        | ReportXPeriodicFilters => ({
+        period_start: dateFrom.trim() || undefined,
+        period_end: dateTo.trim() || undefined,
+    });
 
     const handleGeneratePreview = () => {
         previewMutation.mutate(
             {
                 kind: KIND_TO_SPECIAL[kind],
                 filters: buildFilters(),
-                filename: `${KIND_TO_SPECIAL[kind]}.pdf`,
+                filename: FILENAME_BY_KIND[kind],
                 reportTitle: t(`specialXz.${kind}.title`),
             },
             {
@@ -119,18 +124,16 @@ export function XzReportGeneratePanel({ onBack }: Props) {
                 ]}
             />
 
-            {kind === "reportXPeriodic" ? (
-                <div className="mt-6 border-t border-slate-100 pt-5">
-                    <div className="grid gap-5 md:grid-cols-2">
-                        <ReportPeriodFields
-                            dateFrom={dateFrom}
-                            dateTo={dateTo}
-                            onDateFromChange={setDateFrom}
-                            onDateToChange={setDateTo}
-                        />
-                    </div>
+            <div className="mt-6 border-t border-slate-100 pt-5">
+                <div className="grid gap-5 md:grid-cols-2">
+                    <ReportPeriodFields
+                        dateFrom={dateFrom}
+                        dateTo={dateTo}
+                        onDateFromChange={setDateFrom}
+                        onDateToChange={setDateTo}
+                    />
                 </div>
-            ) : null}
+            </div>
 
             <div className="mt-6 flex flex-wrap items-center justify-end gap-4 border-t border-slate-100 pt-5">
                 <button

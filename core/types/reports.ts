@@ -36,16 +36,51 @@ export type ToolUsageReportFilters = {
 };
 
 export type ReportXDailyFilters = {
-    report_date?: string;
-    point_of_sale?: string;
-    isf?: string;
+    period_start?: string;
+    period_end?: string;
 };
 
-export type ReportZFilters = ReportXDailyFilters;
+export type ReportZFilters = {
+    period_start?: string;
+    period_end?: string;
+};
 
-export type ReportXPeriodicFilters = ReportPeriodFilter & {
-    point_of_sale?: string;
-    isf?: string;
+export type ReportXPeriodicFilters = {
+    period_start?: string;
+    period_end?: string;
+};
+
+export type ReportXPeriodicApiSnapshot = {
+    invoice_count: number;
+    total_ht: number;
+    total_tva: number;
+    total_ttc: number;
+    total_paid: number;
+    total_balance: number;
+};
+
+export type ReportXPeriodicApiResponse = {
+    session_id: number;
+    type: string;
+    period_start: string;
+    period_end: string;
+    snapshot: ReportXPeriodicApiSnapshot;
+    pdf_url: string;
+};
+
+export type ReportXPeriodicPreviewContent = {
+    generatedAt: string;
+    dateFrom: string;
+    dateTo: string;
+    companyName: string;
+    logoUrl?: string;
+    nif: string;
+    invoiceCount: number;
+    totalHt: string;
+    totalTva: string;
+    totalTtc: string;
+    totalPaid: string;
+    totalBalance: string;
 };
 
 export type ReportAFilters = {
@@ -87,6 +122,20 @@ export type ReportAHistoryItem = {
 
 export type ReportAHistoryListResult = {
     items: ReportAHistoryItem[];
+    meta: { total: number };
+};
+
+export type ReportFlowHistoryItem = {
+    id: number;
+    generatedAt: string;
+    dateFrom: string;
+    dateTo: string;
+    isf: string;
+    pointOfSale: string;
+};
+
+export type ReportFlowHistoryListResult = {
+    items: ReportFlowHistoryItem[];
     meta: { total: number };
 };
 
@@ -277,6 +326,18 @@ export type ReportPreviewDisplay =
           content: ReportAPreviewContent;
       }
     | {
+          variant: "x-periodic";
+          content: ReportXPeriodicPreviewContent;
+      }
+    | {
+          variant: "z";
+          content: ReportXPeriodicPreviewContent;
+      }
+    | {
+          variant: "x-daily";
+          content: ReportXPeriodicPreviewContent;
+      }
+    | {
           variant: "payments";
           content: InvoicePaymentsPreviewContent;
       }
@@ -300,5 +361,4 @@ export type ReportPreviewDisplay =
 export type ReportBlobResult = {
     filename: string;
     display: ReportPreviewDisplay;
-    pdfUrl?: string;
 };

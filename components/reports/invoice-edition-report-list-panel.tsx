@@ -12,7 +12,7 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
-import { useReportFlowPlaceholderList } from "@/core/hooks/reports/useReportFlowPlaceholderList";
+import { useInvoiceEditionReportList } from "@/core/hooks/reports/useInvoiceEditionReportList";
 
 const TABLE_HEAD_CLASS =
     "h-11 bg-slate-100 px-4 text-left text-sm font-semibold text-slate-700";
@@ -24,7 +24,7 @@ type Props = {
 export function InvoiceEditionReportListPanel({ onGenerate }: Props) {
     const t = useTranslations("reports.invoiceEditionFlow.list");
     const { data, isPending, isError, error, refetch } =
-        useReportFlowPlaceholderList("invoice-edition");
+        useInvoiceEditionReportList();
     const items = data?.items ?? [];
     const columnCount = 5;
 
