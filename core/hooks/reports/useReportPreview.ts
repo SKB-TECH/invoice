@@ -31,6 +31,16 @@ export function useReportPreview() {
     const downloadPreview = useCallback(async () => {
         if (!preview) return;
 
+        if (preview.pdfUrl) {
+            const anchor = document.createElement("a");
+            anchor.href = preview.pdfUrl;
+            anchor.download = preview.filename;
+            anchor.target = "_blank";
+            anchor.rel = "noopener noreferrer";
+            anchor.click();
+            return;
+        }
+
         const pdfBlob = await buildReportPdfBlob(preview.display, {
             generic: {
                 reportCode: tOrdinary("reportCode"),
@@ -72,7 +82,6 @@ export function useReportPreview() {
                 periodSection: tReportA("periodSection"),
                 company: tReportA("company"),
                 nif: tReportA("nif"),
-                isf: tReportA("isf"),
                 generatedAt: tReportA("generatedAt"),
                 dateFrom: tReportA("dateFrom"),
                 dateTo: tReportA("dateTo"),

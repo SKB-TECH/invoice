@@ -1494,14 +1494,13 @@
         "totalCount": "{count} rapport(s)",
         "generateButton": "Kosala rapport",
         "columns": {
-          "generatedAt": "Esalemi le",
+          "session": "Session",
           "dateFrom": "Date début",
           "dateTo": "Date fin",
-          "isf": "ISF",
-          "pointOfSale": "Point de vente"
+          "itemCount": "Ba articles"
         }
       },
-      "description": "Récapitulatif ya ba type A banda rapport A ya nsuka. Ebandi ba valeurs.",
+      "description": "Récapitulatif ya ba type A banda rapport A ya nsuka.",
       "includes": [
         "Nom commercial, NIF, date, période",
         "Code mpe nom article, prix, taux impôt",
@@ -1513,7 +1512,6 @@
         "periodSection": "PÉRIODE & RESTITUTION",
         "company": "Société",
         "nif": "NIF",
-        "isf": "ISF",
         "generatedAt": "Généré le",
         "dateFrom": "Date Début",
         "dateTo": "Date Fin",

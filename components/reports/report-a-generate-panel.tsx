@@ -7,11 +7,7 @@ import { toast } from "sonner";
 
 import { ReportFiltersGrid } from "@/components/reports/report-filters-grid";
 import { ReportPreviewSection } from "@/components/reports/report-preview-section";
-import {
-    ReportIsfField,
-    ReportPeriodFields,
-    ReportPointOfSaleField,
-} from "@/components/reports/report-filter-fields";
+import { ReportPeriodFields } from "@/components/reports/report-filter-fields";
 import { useSpecialPdfReportPreview } from "@/core/hooks/reports/useReportGenerate";
 import { useReportPreview } from "@/core/hooks/reports/useReportPreview";
 import type { ReportAFilters } from "@/core/types/reports";
@@ -35,15 +31,11 @@ export function ReportAGeneratePanel({ onBack }: Props) {
 
     const [dateFrom, setDateFrom] = useState("");
     const [dateTo, setDateTo] = useState("");
-    const [pointOfSale, setPointOfSale] = useState("");
-    const [isf, setIsf] = useState("");
 
     const handleGeneratePreview = () => {
         const filters: ReportAFilters = {
-            date_from: dateFrom.trim() || undefined,
-            date_to: dateTo.trim() || undefined,
-            point_of_sale: pointOfSale.trim() || undefined,
-            isf: isf.trim() || undefined,
+            period_start: dateFrom.trim() || undefined,
+            period_end: dateTo.trim() || undefined,
         };
 
         previewMutation.mutate(
@@ -100,11 +92,6 @@ export function ReportAGeneratePanel({ onBack }: Props) {
                     onDateFromChange={setDateFrom}
                     onDateToChange={setDateTo}
                 />
-                <ReportPointOfSaleField
-                    value={pointOfSale}
-                    onChange={setPointOfSale}
-                />
-                <ReportIsfField value={isf} onChange={setIsf} />
             </ReportFiltersGrid>
 
             <div className="mt-6 flex flex-wrap items-center justify-end gap-4 border-t border-slate-100 pt-5">

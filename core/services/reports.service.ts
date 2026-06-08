@@ -23,12 +23,20 @@ import { filenameFromContentDisposition } from "@/core/utils/downloadBlob";
 import { buildInvoiceEditionPreviewDisplay } from "@/lib/reports/build-invoice-edition-display";
 import { buildInvoiceNormalizationPreviewDisplay } from "@/lib/reports/build-invoice-normalization-display";
 import { buildInvoicePaymentsPreviewDisplay } from "@/lib/reports/build-invoice-payments-display";
-import { buildReportAPreviewDisplay } from "@/lib/reports/build-report-a-display";
 import { buildReportPreviewDisplay } from "@/lib/reports/build-report-display";
 import { buildToolUsagePreviewDisplay } from "@/lib/reports/build-tool-usage-display";
 import { buildVatCollectionPreviewDisplay } from "@/lib/reports/build-vat-collection-display";
 import type { VatCollectionDisplayLabels } from "@/lib/reports/build-vat-collection-display";
+import {
+    MOCK_REPORT_A_API_RESPONSE,
+    buildReportAPreviewDisplayFromApi,
+    filenameFromReportAPdfUrl,
+    parseReportAApiResponse,
+    parseReportAHistoryList,
+} from "@/lib/reports/report-a-api";
 import { MOCK_REPORT_A_HISTORY } from "@/lib/reports/report-a-mock-history";
+import { ENV } from "@/core/constants/env";
+import { unwrapApiData } from "@/core/utils/apiResponse";
 
 type ReportTitleOptions = {
     reportTitle: string;
@@ -87,6 +95,7 @@ const REPORT_ENDPOINTS = {
     invoicePayments: "/invoices/reports/payments",
     vatCollection: "/invoices/reports/tva",
     toolUsage: "/invoices/reports/usage",
+    reportA: "/invoices/reports/a",
 } as const;
 
 function cleanQueryParams(
@@ -492,13 +501,11 @@ export const reportsService = {
         options: ReportTitleOptions,
     ): Promise<ReportBlobResult> {
         if (kind === "a") {
-            return {
-                filename: fallbackFilename,
-                display: buildReportAPreviewDisplay(filters as ReportAFilters, {
-                    profile: options.profile,
-                    user: options.user,
-                }),
-            };
+            return this.fetchReportA(
+                filters as ReportAFilters,
+                fallbackFilename,
+                options,
+            );
         }
 
         return {
@@ -512,10 +519,76 @@ export const reportsService = {
         };
     },
 
-    async listReportA(): Promise<ReportAHistoryListResult> {
+    async fetchReportA(
+        filters: ReportAFilters,
+        fallbackFilename: string,
+        options: ReportTitleOptions,
+    ): Promise<ReportBlobResult> {
+        const payload = cleanQueryParams({
+            period_start: filters.period_start,
+            period_end: filters.period_end,
+        });
+
+        if (ENV.REPORTS_USE_MOCK) {
+            const response = {
+                ...MOCK_REPORT_A_API_RESPONSE,
+                period_start:
+                    filters.period_start ??
+                    MOCK_REPORT_A_API_RESPONSE.period_start,
+                period_end:
+                    filters.period_end ?? MOCK_REPORT_A_API_RESPONSE.period_end,
+            };
+
+            return {
+                filename: filenameFromReportAPdfUrl(
+                    response.pdf_url,
+                    fallbackFilename,
+                ),
+                display: buildReportAPreviewDisplayFromApi(response, {
+                    profile: options.profile,
+                    user: options.user,
+                }),
+                pdfUrl: response.pdf_url,
+            };
+        }
+
+        const { data } = await api.post<unknown>(
+            REPORT_ENDPOINTS.reportA,
+            payload,
+        );
+        const response = parseReportAApiResponse(unwrapApiData(data) ?? data);
+
+        if (!response) {
+            throw new Error("Invalid report A response.");
+        }
+
         return {
-            items: MOCK_REPORT_A_HISTORY,
-            meta: { total: MOCK_REPORT_A_HISTORY.length },
+            filename: filenameFromReportAPdfUrl(
+                response.pdf_url,
+                fallbackFilename,
+            ),
+            display: buildReportAPreviewDisplayFromApi(response, {
+                profile: options.profile,
+                user: options.user,
+            }),
+            pdfUrl: response.pdf_url,
+        };
+    },
+
+    async listReportA(): Promise<ReportAHistoryListResult> {
+        if (ENV.REPORTS_USE_MOCK) {
+            return {
+                items: MOCK_REPORT_A_HISTORY,
+                meta: { total: MOCK_REPORT_A_HISTORY.length },
+            };
+        }
+
+        const { data } = await api.get<unknown>(REPORT_ENDPOINTS.reportA);
+        const items = parseReportAHistoryList(unwrapApiData(data) ?? data);
+
+        return {
+            items,
+            meta: { total: items.length },
         };
     },
 };

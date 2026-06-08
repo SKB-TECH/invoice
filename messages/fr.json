@@ -1489,14 +1489,13 @@
         "totalCount": "{count} rapport(s)",
         "generateButton": "Générer un rapport",
         "columns": {
-          "generatedAt": "Généré le",
+          "session": "Session",
           "dateFrom": "Date début",
           "dateTo": "Date fin",
-          "isf": "ISF",
-          "pointOfSale": "Point de vente"
+          "itemCount": "Articles"
         }
       },
-      "description": "Récapitulatif relatif aux articles depuis le dernier rapport A. Réinitialise les valeurs accumulées.",
+      "description": "Récapitulatif relatif aux articles depuis le dernier rapport A.",
       "includes": [
         "Dénomination commerciale, NIF, date et heure, période",
         "Code et nom de l’article, prix unitaire, taux d’impôt",
@@ -1508,7 +1507,6 @@
         "periodSection": "PÉRIODE & RESTITUTION",
         "company": "Société",
         "nif": "NIF",
-        "isf": "ISF",
         "generatedAt": "Généré le",
         "dateFrom": "Date Début",
         "dateTo": "Date Fin",

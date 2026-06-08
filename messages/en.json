@@ -1489,14 +1489,13 @@
         "totalCount": "{count} report(s)",
         "generateButton": "Generate a report",
         "columns": {
-          "generatedAt": "Generated on",
+          "session": "Session",
           "dateFrom": "Start date",
           "dateTo": "End date",
-          "isf": "ISF",
-          "pointOfSale": "Point of sale"
+          "itemCount": "Items"
         }
       },
-      "description": "Item summary since the last A report. Resets accumulated values.",
+      "description": "Item summary since the last A report.",
       "includes": [
         "Trade name, tax ID, date and time, period",
         "Item code and name, unit price, tax rate",
@@ -1508,7 +1507,6 @@
         "periodSection": "PERIOD & RESTITUTION",
         "company": "Company",
         "nif": "Tax ID",
-        "isf": "ISF",
         "generatedAt": "Generated on",
         "dateFrom": "Start date",
         "dateTo": "End date",

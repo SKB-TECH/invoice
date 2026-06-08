@@ -48,18 +48,41 @@ export type ReportXPeriodicFilters = ReportPeriodFilter & {
     isf?: string;
 };
 
-export type ReportAFilters = ReportPeriodFilter & {
-    point_of_sale?: string;
-    isf?: string;
+export type ReportAFilters = {
+    period_start?: string;
+    period_end?: string;
+};
+
+export type ReportAApiSnapshotItem = {
+    item_type: number;
+    item_id: number;
+    code: string;
+    name: string;
+    unit_price: number;
+    tax_rate: number;
+    quantity_sold: number;
+    quantity_returned: number;
+    stock_quantity: number;
+};
+
+export type ReportAApiResponse = {
+    session_id: number;
+    type: string;
+    period_start: string;
+    period_end: string;
+    snapshot: {
+        item_count: number;
+        items: ReportAApiSnapshotItem[];
+    };
+    pdf_url: string;
 };
 
 export type ReportAHistoryItem = {
     id: number;
-    generatedAt: string;
-    dateFrom: string;
-    dateTo: string;
-    isf: string;
-    pointOfSale: string;
+    periodStart: string;
+    periodEnd: string;
+    itemCount: number;
+    pdfUrl?: string;
 };
 
 export type ReportAHistoryListResult = {
@@ -103,7 +126,6 @@ export type ReportAPreviewContent = {
     generatedAt: string;
     dateFrom: string;
     dateTo: string;
-    isf: string;
     companyName: string;
     logoUrl?: string;
     nif: string;
@@ -278,4 +300,5 @@ export type ReportPreviewDisplay =
 export type ReportBlobResult = {
     filename: string;
     display: ReportPreviewDisplay;
+    pdfUrl?: string;
 };

@@ -138,7 +138,6 @@ export type ReportAPdfLabels = {
     periodSection: string;
     company: string;
     nif: string;
-    isf: string;
     generatedAt: string;
     dateFrom: string;
     dateTo: string;
@@ -242,9 +241,6 @@ export function ReportAPdfDocument({ content, labels }: Props) {
                         </Text>
                         <Text style={styles.metaLine}>
                             {labels.nif} : {p.nif}
-                        </Text>
-                        <Text style={styles.metaLine}>
-                            {labels.isf} : {p.isf}
                         </Text>
                     </View>
                     <View style={styles.metaColSpaced}>

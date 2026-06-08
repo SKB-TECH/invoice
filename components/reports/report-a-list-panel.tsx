@@ -26,7 +26,7 @@ export function ReportAListPanel({ onGenerate }: Props) {
     const { data, isPending, isError, error, refetch } = useReportAList();
 
     const items = data?.items ?? [];
-    const columnCount = 5;
+    const columnCount = 4;
 
     return (
         <>
@@ -95,7 +95,7 @@ export function ReportAListPanel({ onGenerate }: Props) {
                             <TableHeader className="bg-[#F4F4F4BB]">
                                 <TableRow className="border-slate-200 bg-[#F4F4F4BB] hover:bg-transparent">
                                     <TableHead className={TABLE_HEAD_CLASS}>
-                                        {t("columns.generatedAt")}
+                                        {t("columns.session")}
                                     </TableHead>
                                     <TableHead className={TABLE_HEAD_CLASS}>
                                         {t("columns.dateFrom")}
@@ -104,10 +104,7 @@ export function ReportAListPanel({ onGenerate }: Props) {
                                         {t("columns.dateTo")}
                                     </TableHead>
                                     <TableHead className={TABLE_HEAD_CLASS}>
-                                        {t("columns.isf")}
-                                    </TableHead>
-                                    <TableHead className={TABLE_HEAD_CLASS}>
-                                        {t("columns.pointOfSale")}
+                                        {t("columns.itemCount")}
                                     </TableHead>
                                 </TableRow>
                             </TableHeader>
@@ -117,20 +114,17 @@ export function ReportAListPanel({ onGenerate }: Props) {
                                         key={row.id}
                                         className="border-slate-200 hover:bg-slate-50/80"
                                     >
-                                        <TableCell className="px-4 py-3 text-sm text-slate-800">
-                                            {row.generatedAt}
-                                        </TableCell>
-                                        <TableCell className="px-4 py-3 text-sm text-slate-800">
-                                            {row.dateFrom}
-                                        </TableCell>
-                                        <TableCell className="px-4 py-3 text-sm text-slate-800">
-                                            {row.dateTo}
-                                        </TableCell>
                                         <TableCell className="px-4 py-3 text-sm font-semibold text-slate-800">
-                                            {row.isf}
+                                            #{row.id}
                                         </TableCell>
                                         <TableCell className="px-4 py-3 text-sm text-slate-800">
-                                            {row.pointOfSale}
+                                            {row.periodStart}
+                                        </TableCell>
+                                        <TableCell className="px-4 py-3 text-sm text-slate-800">
+                                            {row.periodEnd}
+                                        </TableCell>
+                                        <TableCell className="px-4 py-3 text-sm text-slate-800">
+                                            {row.itemCount}
                                         </TableCell>
                                     </TableRow>
                                 ))}

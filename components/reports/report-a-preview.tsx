@@ -55,12 +55,6 @@ export function ReportAPreview({ content }: Props) {
                             </span>{" "}
                             {p.nif}
                         </p>
-                        <p>
-                            <span className="font-black text-black">
-                                {t("isf")} :
-                            </span>{" "}
-                            {p.isf}
-                        </p>
                     </div>
                 </div>
 
