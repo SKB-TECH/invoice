@@ -1555,12 +1555,7 @@
           "itemCount": "Items"
         }
       },
-      "description": "Item summary since the last A report.",
-      "includes": [
-        "Trade name, tax ID, date and time, period",
-        "Item code and name, unit price, tax rate",
-        "Quantities sold, returned and in stock"
-      ],
+      "generateIntro": "Enter the period to generate the report.",
       "preview": {
         "reportCode": "REPORT",
         "emitter": "ISSUER",
