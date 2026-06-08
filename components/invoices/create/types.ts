@@ -19,19 +19,34 @@ export type Client = {
 export type CatalogItem = {
     id: number;
     name: string;
+    code?: string;
+    description?: string;
     type: ItemKind;
     tax: number;
+    taxGroupId?: number;
+    taxGroupCode?: string;
+    taxGroupTitle?: string;
+    taxGroupMention?: string;
     priceHT: number;
+    priceTTC?: number;
+    currency?: "CDF" | "USD";
 };
 
 export type InvoiceItem = {
     id: number;
     catalogId: number;
+    code?: string;
     name: string;
     type: ItemKind;
     quantity: number;
     tax: number;
+    taxGroupId?: number;
+    taxGroupCode?: string;
+    taxGroupTitle?: string;
+    taxGroupMention?: string;
     priceHT: number;
+    priceTTC?: number;
+    currency?: "CDF" | "USD";
     men?: number;
     days?: number;
     dailyPrice?: number;
@@ -52,7 +67,7 @@ export type InvoiceForm = {
     dueDate: string;
     contractId: number | null;
     contractReference: string;
-    templateId: number | null;
+    templateId: InvoiceTemplateId | null;
 
     comments: InvoiceDgiComments;
 };
@@ -66,6 +81,7 @@ export type InvoiceFormErrors = {
     dueDate?: string;
     items?: string;
     templateId?: string;
+    comments?: string;
     submit?: string;
 };
 

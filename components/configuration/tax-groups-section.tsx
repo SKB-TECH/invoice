@@ -47,7 +47,7 @@ export function TaxGroupsSection() {
   const t = useTranslations("configuration.taxGroups");
   const locale = useLocale();
   const sortLocale = locale === "en" ? "en" : "fr";
-  const [groups, setGroups] = useState<TaxGroup[]>([]);
+  const [groups, setGroups] = useState<TaxGroup[]>(() => readTaxGroups());
   const [newCode, setNewCode] = useState("");
   const [newName, setNewName] = useState("");
   const [newDescription, setNewDescription] = useState("");
@@ -65,7 +65,6 @@ export function TaxGroupsSection() {
   }, []);
 
   useEffect(() => {
-    refresh();
     const onRemote = () => refresh();
     window.addEventListener(TAX_GROUPS_CHANGED_EVENT, onRemote);
     window.addEventListener("storage", onRemote);

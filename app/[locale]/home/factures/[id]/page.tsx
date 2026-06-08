@@ -65,9 +65,22 @@ type InvoiceCommentViewModel = {
     replyToId?: number | null;
 };
 
+type InvoiceDgiComments = {
+    A: string;
+    B: string;
+    C: string;
+    D: string;
+    E: string;
+    F: string;
+    G: string;
+    H: string;
+};
+
 type InvoiceLine = {
     id: string;
     code: string;
+    groupType: string;
+    unit: string;
     designation: string;
     quantity: number;
     unitPrice: number;
@@ -94,6 +107,7 @@ type InvoiceViewModel = {
     isDuplicate: boolean;
     isf: string;
     defMcf: string;
+    dgiComments: InvoiceDgiComments;
 
     client: string;
     clientType: string;
@@ -141,24 +155,6 @@ function safeText(value: unknown, fallback = "—") {
     if (typeof value === "string" && value.trim()) return value;
     if (typeof value === "number") return String(value);
     return fallback;
-}
-
-function formatAmount(amount: number, currency: string) {
-    if (amount >= 1_000_000) {
-        const value = amount / 1_000_000;
-        const formatted = Number.isInteger(value)
-            ? value.toString()
-            : value.toFixed(1);
-
-        return `${currency} ${formatted}M`;
-    }
-
-    return `${currency} ${new Intl.NumberFormat("fr-FR", {
-        minimumFractionDigits: 0,
-        maximumFractionDigits: 2,
-    })
-        .format(amount)
-        .replace(/\s/g, ".")}`;
 }
 
 function formatSimpleAmount(amount: number) {
@@ -220,7 +216,6 @@ function formatCommentDate(value?: string | null) {
 
 function getCommentInitials(userId?: number | null) {
     if (!userId) return "US";
-
     return `U${String(userId).slice(-1)}`;
 }
 
@@ -230,28 +225,20 @@ function mapWorkflowStatusToUiStatus(
     switch (workflowStatus) {
         case "brouillon":
             return "Brouillon";
-
         case "enregistrer":
             return "Enregistrée";
-
         case "valider":
             return "Validée";
-
         case "normaliser":
             return "Normalisée";
-
         case "soumise":
             return "Soumise";
-
         case "receptionner":
             return "Réceptionnée";
-
         case "payer":
             return "Payée";
-
         case "classer":
             return "Classée";
-
         default:
             return "Brouillon";
     }
@@ -261,29 +248,69 @@ function getInvoiceTypeLabel(invoice: InvoiceViewModel) {
     return `${invoice.invoiceTypeCode} - ${invoice.invoiceTypeTitle}`;
 }
 
+function getTaxGroupMention(rate: number) {
+    if (rate === 0) return "[A]";
+    if (rate === 16) return "[B]";
+    return `[${rate}%]`;
+}
+
+function buildGroupType(code: string, taxRate: number) {
+    return `${getTaxGroupMention(taxRate)}[${code || "BIE"}]`;
+}
+
+function parseDgiComments(value: unknown): InvoiceDgiComments {
+    const empty: InvoiceDgiComments = {
+        A: "",
+        B: "",
+        C: "",
+        D: "",
+        E: "",
+        F: "",
+        G: "",
+        H: "",
+    };
+
+    if (!value) return empty;
+
+    if (typeof value === "object") {
+        return {
+            ...empty,
+            ...(value as Partial<InvoiceDgiComments>),
+        };
+    }
+
+    if (typeof value === "string") {
+        try {
+            const parsed = JSON.parse(value);
+
+            return {
+                ...empty,
+                ...(parsed as Partial<InvoiceDgiComments>),
+            };
+        } catch {
+            return empty;
+        }
+    }
+
+    return empty;
+}
+
 function StatutBadge({ statut }: { statut: InvoiceStatus }) {
     const styles: Record<InvoiceStatus, string> = {
         Brouillon:
             "border-transparent bg-[#FCF5E5] text-[#E8BC52] hover:bg-[#FCF5E5]",
-
         Enregistrée:
             "border-transparent bg-[#E8EFFB] text-[#6691E7] hover:bg-[#E8EFFB]",
-
         Validée:
             "border-transparent bg-[#E8F7EE] text-[#16A34A] hover:bg-[#E8F7EE]",
-
         Normalisée:
             "border-transparent bg-[#EDE9FE] text-[#7C3AED] hover:bg-[#EDE9FE]",
-
         Soumise:
             "border-transparent bg-[#E0F2FE] text-[#0284C7] hover:bg-[#E0F2FE]",
-
         Réceptionnée:
             "border-transparent bg-[#FFF7ED] text-[#EA580C] hover:bg-[#FFF7ED]",
-
         Payée:
             "border-transparent bg-[#DCF6E9] text-[#13C56B] hover:bg-[#DCF6E9]",
-
         Classée:
             "border-transparent bg-slate-100 text-slate-600 hover:bg-slate-100",
     };
@@ -391,16 +418,16 @@ function DgiSecurityBlock({ invoice }: { invoice: InvoiceViewModel }) {
     );
 }
 
-function InvoiceCommentsBlock() {
+function InvoiceCommentsBlock({ invoice }: { invoice: InvoiceViewModel }) {
     const rows = [
-        ["A", "Réf. Exo.", ""],
-        ["B", "Réf. Paiement", ""],
-        ["C", "Réf. Contrat", ""],
-        ["D", "Réf. Bon commande", ""],
-        ["E", "Réf. Livraison", ""],
-        ["F", "Note interne", ""],
-        ["G", "Observation", ""],
-        ["H", "Autre commentaire", ""],
+        ["A", "Réf. Exo.", invoice.dgiComments.A],
+        ["B", "Réf. Paiement", invoice.dgiComments.B],
+        ["C", "Réf. Contrat", invoice.dgiComments.C],
+        ["D", "Réf. Bon commande", invoice.dgiComments.D],
+        ["E", "Réf. Livraison", invoice.dgiComments.E],
+        ["F", "Note interne", invoice.dgiComments.F],
+        ["G", "Observation", invoice.dgiComments.G],
+        ["H", "Autre commentaire", invoice.dgiComments.H],
     ];
 
     return (
@@ -430,6 +457,51 @@ function InvoiceCommentsBlock() {
                     </div>
                 ))}
             </div>
+        </div>
+    );
+}
+
+function InvoiceLinesTable({ invoice }: { invoice: InvoiceViewModel }) {
+    return (
+        <div className="overflow-x-auto border-y border-slate-300">
+            <div className="grid min-w-[1260px] grid-cols-[50px_90px_1fr_120px_130px_80px_100px_140px_130px_140px] bg-[#0879bd] px-3 py-2 text-sm font-black text-white">
+                <div>#</div>
+                <div>Code</div>
+                <div>Désignation</div>
+                <div>Grp/Type</div>
+                <div className="text-right">P.U.</div>
+                <div className="text-right">Qté</div>
+                <div>Unité</div>
+                <div className="text-right">H.T.</div>
+                <div className="text-right">TVA</div>
+                <div className="text-right">TTC</div>
+            </div>
+
+            {invoice.lines.map((line, index) => (
+                <div
+                    key={line.id}
+                    className="grid min-w-[1260px] grid-cols-[50px_90px_1fr_120px_130px_80px_100px_140px_130px_140px] border-t border-slate-300 px-3 py-2 text-sm font-semibold text-slate-700"
+                >
+                    <div>{index + 1}</div>
+                    <div>{line.code}</div>
+                    <div>{line.designation}</div>
+                    <div>{line.groupType}</div>
+                    <div className="text-right">
+                        {formatSimpleAmount(line.unitPrice)}
+                    </div>
+                    <div className="text-right">{line.quantity}</div>
+                    <div>{line.unit}</div>
+                    <div className="text-right">
+                        {formatSimpleAmount(line.subtotal)}
+                    </div>
+                    <div className="text-right">
+                        {formatSimpleAmount(line.taxAmount)}
+                    </div>
+                    <div className="text-right">
+                        {formatSimpleAmount(line.lineTotal)}
+                    </div>
+                </div>
+            ))}
         </div>
     );
 }
@@ -538,36 +610,7 @@ function TemplateAPreview({
                 </div>
             </div>
 
-            <div>
-                <div className="grid min-w-[1000px] grid-cols-[60px_100px_1fr_140px_100px_120px_160px] border-b-2 border-black pb-3 text-sm font-black text-black">
-                    <div>#</div>
-                    <div>Code</div>
-                    <div>Désignation</div>
-                    <div className="text-right">Prix HT</div>
-                    <div className="text-right">Qté</div>
-                    <div className="text-right">TVA</div>
-                    <div className="text-right">Total TTC</div>
-                </div>
-
-                {invoice.lines.map((line, index) => (
-                    <div
-                        key={line.id}
-                        className="grid min-w-[1000px] grid-cols-[60px_100px_1fr_140px_100px_120px_160px] border-b border-slate-300 py-4 text-sm font-semibold text-slate-700"
-                    >
-                        <div>{index + 1}</div>
-                        <div>{line.code}</div>
-                        <div>{line.designation}</div>
-                        <div className="text-right">
-                            {formatSimpleAmount(line.unitPrice)}
-                        </div>
-                        <div className="text-right">{line.quantity}</div>
-                        <div className="text-right">{line.taxRate}%</div>
-                        <div className="text-right">
-                            {formatSimpleAmount(line.lineTotal)}
-                        </div>
-                    </div>
-                ))}
-            </div>
+            <InvoiceLinesTable invoice={invoice} />
 
             <div className="mt-10 grid grid-cols-1 gap-10 md:grid-cols-2">
                 <div className="pt-8">
@@ -620,7 +663,7 @@ function TemplateAPreview({
             </div>
 
             <DgiSecurityBlock invoice={invoice} />
-            <InvoiceCommentsBlock />
+            <InvoiceCommentsBlock invoice={invoice} />
         </div>
     );
 }
@@ -724,36 +767,7 @@ function TemplateBPreview({
 
             <p className="mb-3 text-sm">Merci pour la confiance !</p>
 
-            <div className="border-y border-slate-400">
-                <div className="grid  grid-cols-[60px_100px_1fr_170px_110px_150px_150px] bg-slate-200 px-3 py-2 text-sm font-black">
-                    <div>#</div>
-                    <div>Code</div>
-                    <div>Désignation</div>
-                    <div className="text-right">Prix unitaire HT</div>
-                    <div className="text-right">Quantité</div>
-                    <div className="text-right">TVA</div>
-                    <div className="text-right">Montant TTC</div>
-                </div>
-
-                {invoice.lines.map((line, index) => (
-                    <div
-                        key={line.id}
-                        className="grid  grid-cols-[60px_100px_1fr_170px_110px_150px_150px] border-t border-slate-300 px-3 py-2 text-sm"
-                    >
-                        <div>{index + 1}</div>
-                        <div>{line.code}</div>
-                        <div>{line.designation}</div>
-                        <div className="text-right">
-                            {formatSimpleAmount(line.unitPrice)}
-                        </div>
-                        <div className="text-right">{line.quantity}</div>
-                        <div className="text-right">{line.taxRate}%</div>
-                        <div className="text-right">
-                            {formatSimpleAmount(line.lineTotal)}
-                        </div>
-                    </div>
-                ))}
-            </div>
+            <InvoiceLinesTable invoice={invoice} />
 
             <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-[1fr_1.4fr_1fr]">
                 <div className="text-sm font-semibold">
@@ -768,7 +782,9 @@ function TemplateBPreview({
                         <div key={group.rate}>
                             <div className="flex justify-between">
                                 <span>H.T. Taxable {group.rate}%</span>
-                                <span>{formatSimpleAmount(group.subtotal)}</span>
+                                <span>
+                                    {formatSimpleAmount(group.subtotal)}
+                                </span>
                             </div>
 
                             <div className="flex justify-between">
@@ -822,7 +838,7 @@ function TemplateBPreview({
                 </p>
             </div>
 
-            <InvoiceCommentsBlock />
+            <InvoiceCommentsBlock invoice={invoice} />
         </div>
     );
 }
@@ -929,19 +945,34 @@ export default function InvoiceViewerPage() {
             (item, index) => {
                 const lineRecord = item as Record<string, unknown>;
 
+                const taxRate = Number(item.tax_rate ?? 0);
+                const code = safeText(
+                    lineRecord.code ??
+                    lineRecord.article_code ??
+                    lineRecord.item_code ??
+                    lineRecord.type_code,
+                    "BIE"
+                );
+
                 return {
                     id: `${invoiceData.id}-${index}`,
-                    code: safeText(
-                        lineRecord.code ??
-                        lineRecord.article_code ??
-                        lineRecord.item_code ??
-                        lineRecord.type_code,
-                        "BIE"
+                    code,
+                    groupType: safeText(
+                        lineRecord.group_type ??
+                        lineRecord.grp_type ??
+                        lineRecord.groupType,
+                        buildGroupType(code, taxRate)
+                    ),
+                    unit: safeText(
+                        lineRecord.unit ??
+                        lineRecord.unit_label ??
+                        lineRecord.unit_name,
+                        "Service"
                     ),
                     designation: safeText(item.description),
                     quantity: Number(item.quantity ?? 0),
                     unitPrice: Number(item.unit_price ?? 0),
-                    taxRate: Number(item.tax_rate ?? 0),
+                    taxRate,
                     subtotal: Number(item.subtotal ?? 0),
                     taxAmount: Number(item.tax_amount ?? 0),
                     lineTotal: Number(item.line_total ?? 0),
@@ -949,8 +980,19 @@ export default function InvoiceViewerPage() {
             }
         );
 
+        const statut = mapWorkflowStatusToUiStatus(
+            "workflow_status" in invoiceData
+                ? String(invoiceData.workflow_status ?? "")
+                : undefined
+        );
+
         const invoiceTypeCode = safeText(typeInfo.code, "FV");
         const invoiceTypeTitle = safeText(typeInfo.title, "Facture de vente");
+
+        const dgiComments = parseDgiComments(
+            (invoiceData as Record<string, unknown>).comment ||
+            (invoiceData as Record<string, unknown>).notes
+        );
 
         return {
             id: String(invoiceData.id),
@@ -966,15 +1008,9 @@ export default function InvoiceViewerPage() {
             invoiceTypeTitle,
             fiscalRegime: "TTC",
             isDuplicate: false,
-            isf:
-                mapWorkflowStatusToUiStatus(
-                    "workflow_status" in invoiceData
-                        ? String(invoiceData.workflow_status ?? "")
-                        : undefined
-                ) === "Normalisée"
-                    ? "DGI-RDC-01"
-                    : "En attente DGI",
+            isf: statut === "Normalisée" ? "DGI-RDC-01" : "En attente DGI",
             defMcf: "En attente de normalisation",
+            dgiComments,
 
             client:
                 safeText(receiverInfo.legal_name, "") ||
@@ -1018,20 +1054,14 @@ export default function InvoiceViewerPage() {
             paidAmount: Number(invoiceData.paid_amount ?? 0),
             balance: Number(invoiceData.balance ?? 0),
             currency: safeText(invoiceData.currency, "CDF"),
-            statut: mapWorkflowStatusToUiStatus(
-                "workflow_status" in invoiceData
-                    ? String(invoiceData.workflow_status ?? "")
-                    : undefined
-            ),
+            statut,
             createdAt: formatApiDateTime(invoiceData.created_at),
             dueDate: formatApiDate(invoiceData.due_date),
             templateId:
                 "template_id" in invoiceData
                     ? Number(invoiceData.template_id ?? 1)
                     : 1,
-            contractReference: contract
-                ? safeText(contract.reference, "—")
-                : "—",
+            contractReference: contract ? safeText(contract.reference, "—") : "—",
             paymentMethod: safeText(paymentInfo.method),
             paymentBankName: safeText(paymentInfo.bank_name),
             paymentAccountNumber: safeText(paymentInfo.account_number),
@@ -1066,11 +1096,24 @@ export default function InvoiceViewerPage() {
             currency: invoice.currency as "CDF" | "USD",
             createdAt: invoice.createdAt,
             dueDate: invoice.dueDate,
+            clientType: invoice.clientType,
+            clientNif: invoice.clientNif,
+            clientRccm: invoice.clientRccm,
+            clientIdnat: invoice.clientIdnat,
+            invoiceTypeCode: invoice.invoiceTypeCode,
+            invoiceTypeTitle: invoice.invoiceTypeTitle,
+            fiscalRegime: invoice.fiscalRegime,
+            isDuplicate: invoice.isDuplicate,
+            isf: invoice.isf,
+            defMcf: invoice.defMcf,
+            comments: invoice.dgiComments,
             lines: invoice.lines.map((line) => ({
                 id: line.id,
+                code: line.code,
                 designation: line.designation,
                 quantity: line.quantity,
                 unitPrice: line.unitPrice,
+                taxRate: line.taxRate,
             })),
         };
     }, [invoice]);

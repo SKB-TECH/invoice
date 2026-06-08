@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useEffect, useMemo, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Calendar } from "lucide-react";
-import { Controller, useForm, type Resolver } from "react-hook-form";
+import { Controller, useForm, useWatch, type Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -158,18 +158,21 @@ export function ContratForm(props: ContratFormProps) {
     });
     const clientsForSearch: Client[] = useMemo(() => {
         return (clientsResult?.items ?? []).map((client) => ({
-            id: client.id,
-            name: client.legal_name || client.name || "",
-            nif: client.nif || client.vat_num || "",
-            rccm: client.rccm || client.registration_id || "",
-            idNat: client.idnat || "",
-            address: client.address || "",
-            phone: client.phone || "",
-            email: client.email || "",
+            id: Number(client.id),
+            name: String(client.legal_name || client.name || ""),
+            nif: String(client.nif || client.vat_num || ""),
+            rccm: String(client.rccm || client.registration_id || ""),
+            idNat: String(client.idnat || ""),
+            address: String(client.address || ""),
+            phone: String(client.phone || ""),
+            email: String(client.email || ""),
         }));
     }, [clientsResult?.items]);
 
-    const currencyOptions = [{ code: "USD", label: "USD" }, { code: "CDF", label: "CDF" }];
+    const currencyOptions = useMemo(
+        () => [{ code: "USD", label: "USD" }, { code: "CDF", label: "CDF" }],
+        []
+    );
 
     const { data: referentielsPage, isLoading: referentielsLoading } =
         useQuery({
@@ -223,12 +226,15 @@ export function ContratForm(props: ContratFormProps) {
                 { shouldValidate: true }
             );
         }
-    }, [currencyCodesKey]);
+    }, [currencyCodesKey, currencyOptions, form]);
 
     const pending = createMut.isPending || updateMut.isPending;
     const isCreate = props.variant === "create";
 
-    const billingCycleWatched = form.watch("billing_cycle");
+    const billingCycleWatched = useWatch({
+        control: form.control,
+        name: "billing_cycle",
+    });
 
     useEffect(() => {
         if (!isCreate) return;
@@ -237,7 +243,10 @@ export function ContratForm(props: ContratFormProps) {
         }
     }, [billingCycleWatched, form, isCreate]);
 
-    const clientIdStr = form.watch("client_id");
+    const clientIdStr = useWatch({
+        control: form.control,
+        name: "client_id",
+    });
 
     const editClientNom =
         props.variant === "edit" ? props.initial.clientNom : "";

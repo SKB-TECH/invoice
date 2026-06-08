@@ -127,6 +127,12 @@ function mapWorkflowStatusToUiStatus(
     }
 }
 
+function safeText(value: unknown, fallback = "") {
+    if (typeof value === "string" && value.trim()) return value;
+    if (typeof value === "number") return String(value);
+    return fallback;
+}
+
 function StatutBadge({ statut }: { statut: InvoiceStatus }) {
     const styles: Record<InvoiceStatus, string> = {
         Brouillon:
@@ -218,19 +224,21 @@ export default function InvoicesPage() {
         return (data?.items ?? []).map((item) => {
             const override = invoiceOverrides[item.id.toString()];
 
-            const clientName =
+            const clientName = safeText(
                 item.receiver_info?.legal_name ||
                 item.receiver_info?.name ||
                 item.client_info?.legal_name ||
                 item.client_info?.name ||
-                item.client?.name ||
-                "—";
+                item.client?.name,
+                "—"
+            );
 
-            const phone =
+            const phone = safeText(
                 item.receiver_info?.phone ||
                 item.client_info?.phone ||
-                item.client?.phone ||
-                "—";
+                item.client?.phone,
+                "—"
+            );
 
             const articles =
                 item.items

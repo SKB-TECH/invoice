@@ -159,6 +159,7 @@ export function ReportDocumentPdfDocument({
                 <View style={styles.headerRow}>
                     <View style={styles.brandRow}>
                         {logoUrl ? (
+                            // eslint-disable-next-line jsx-a11y/alt-text
                             <Image
                                 src={logoUrl}
                                 style={styles.logo}

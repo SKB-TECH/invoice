@@ -40,6 +40,7 @@ export type RegisterPayload =
     | RegisterCorporatePayload;
 
 export type RegisterResponse = {
+    status?: string | number;
     message?: string;
     data?: unknown;
 };
@@ -69,6 +70,29 @@ export type LoginResponse = LoginSuccessResponse | LoginMfaResponse;
 export type LoginPayload = {
     identifier: string;
     password: string;
+};
+
+export type GenerateOtpPayload = {
+    email: string;
+};
+
+export type GenerateOtpResponse = {
+    status?: string | number;
+    message?: string;
+    data?: unknown;
+};
+
+export type VerifyOtpPayload = {
+    email: string;
+    code?: string;
+    otp?: string;
+};
+
+export type VerifyOtpResponse = {
+    status?: string | number;
+    message?: string;
+    token?: string;
+    data?: unknown;
 };
 
 export type ApiProfile = Record<string, unknown>;

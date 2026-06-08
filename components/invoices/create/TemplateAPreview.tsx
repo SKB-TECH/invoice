@@ -1,8 +1,6 @@
 import type { InvoiceForm, InvoiceItem } from "./types";
 import {
     formatMoney,
-    getLineSubtotal,
-    getLineTotal,
     getTaxGroups,
 } from "./utils";
 
@@ -15,8 +13,45 @@ function getInvoiceTypeLabel() {
 }
 
 function getItemTypeCode(item: InvoiceItem) {
-    if (item.type === "Service") return "SER";
+    if (item.type === "Service") return item.code || "SER";
     return item.code || "BIE";
+}
+
+function getItemQuantity(item: InvoiceItem) {
+    if (item.type === "Article") {
+        return item.quantity ?? 1;
+    }
+
+    return (item.men ?? 1) * (item.days ?? 1);
+}
+
+function getItemUnit(item: InvoiceItem) {
+    return item.type === "Service" ? "Service" : "Article";
+}
+
+function getItemUnitPrice(item: InvoiceItem) {
+    return item.type === "Service"
+        ? item.dailyPrice ?? item.priceHT
+        : item.priceHT;
+}
+
+function getItemHt(item: InvoiceItem) {
+    return getItemQuantity(item) * getItemUnitPrice(item);
+}
+
+function getItemTva(item: InvoiceItem) {
+    return getItemHt(item) * ((item.tax ?? 0) / 100);
+}
+
+function getItemTtc(item: InvoiceItem) {
+    return getItemHt(item) + getItemTva(item);
+}
+
+function getGroupType(item: InvoiceItem) {
+    const group = item.taxGroupMention || `[${item.taxGroupCode || "B"}]`;
+    const type = `[${getItemTypeCode(item)}]`;
+
+    return `${group}${type}`;
 }
 
 function DgiSecurityBlock() {
@@ -49,16 +84,16 @@ function DgiSecurityBlock() {
     );
 }
 
-function InvoiceCommentsBlock() {
+function InvoiceCommentsBlock({ form }: { form: InvoiceForm }) {
     const rows = [
-        ["A", "Réf. Exo.", ""],
-        ["B", "Réf. Paiement", ""],
-        ["C", "Réf. Contrat", ""],
-        ["D", "Réf. Bon commande", ""],
-        ["E", "Réf. Livraison", ""],
-        ["F", "Note interne", ""],
-        ["G", "Observation", ""],
-        ["H", "Autre commentaire", ""],
+        ["A", "Réf. Exo.", form.comments?.A],
+        ["B", "Réf. Paiement", form.comments?.B],
+        ["C", "Réf. Contrat", form.comments?.C],
+        ["D", "Réf. Bon commande", form.comments?.D],
+        ["E", "Réf. Livraison", form.comments?.E],
+        ["F", "Note interne", form.comments?.F],
+        ["G", "Observation", form.comments?.G],
+        ["H", "Autre commentaire", form.comments?.H],
     ];
 
     return (
@@ -185,48 +220,43 @@ export function TemplateAPreview({
             </div>
 
             <div className="overflow-x-auto">
-                <div className="grid min-w-[980px] grid-cols-[50px_90px_1fr_120px_120px_120px_140px_140px] border-b-2 border-black pb-3 text-sm font-black text-black">
+                <div className="grid min-w-[1250px] grid-cols-[45px_90px_1fr_120px_120px_80px_100px_130px_130px_130px] font-semibold bg-gray-200 px-3 py-2 text-sm font-black text-gray-900">
                     <div>#</div>
                     <div>Code</div>
                     <div>Désignation</div>
-                    <div className="text-right">Prix HT</div>
+                    <div>Grp/Type</div>
+                    <div className="text-right">P.U.</div>
                     <div className="text-right">Qté</div>
+                    <div>Unité</div>
+                    <div className="text-right">H.T.</div>
                     <div className="text-right">TVA</div>
-                    <div className="text-right">Montant HT</div>
-                    <div className="text-right">Total TTC</div>
+                    <div className="text-right">TTC</div>
                 </div>
 
                 {items.map((item, index) => (
                     <div
                         key={item.id}
-                        className="grid min-w-[980px] grid-cols-[50px_90px_1fr_120px_120px_120px_140px_140px] border-b border-slate-400 py-4 text-sm font-semibold text-slate-700"
+                        className="grid min-w-[1250px] grid-cols-[45px_90px_1fr_120px_120px_80px_100px_130px_130px_130px] border-b border-slate-300 px-3 py-3 text-sm font-semibold text-slate-700"
                     >
                         <div>{index + 1}</div>
                         <div>{getItemTypeCode(item)}</div>
                         <div>{item.name}</div>
-
+                        <div>{getGroupType(item)}</div>
                         <div className="text-right">
-                            {formatMoney(
-                                item.type === "Article"
-                                    ? item.priceHT
-                                    : item.dailyPrice ?? 0
-                            )}
+                            {formatMoney(getItemUnitPrice(item))}
                         </div>
-
                         <div className="text-right">
-                            {item.type === "Article"
-                                ? item.quantity
-                                : `${item.men ?? 1} × ${item.days ?? 1}`}
+                            {getItemQuantity(item)}
                         </div>
-
-                        <div className="text-right">{item.tax}%</div>
-
+                        <div>{getItemUnit(item)}</div>
                         <div className="text-right">
-                            {formatMoney(getLineSubtotal(item))}
+                            {formatMoney(getItemHt(item))}
                         </div>
-
                         <div className="text-right">
-                            {formatMoney(getLineTotal(item))}
+                            {formatMoney(getItemTva(item))}
+                        </div>
+                        <div className="text-right">
+                            {formatMoney(getItemTtc(item))}
                         </div>
                     </div>
                 ))}
@@ -282,7 +312,7 @@ export function TemplateAPreview({
             </div>
 
             <DgiSecurityBlock />
-            <InvoiceCommentsBlock />
+            <InvoiceCommentsBlock form={form} />
         </div>
     );
 }

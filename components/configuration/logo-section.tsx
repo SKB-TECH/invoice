@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useMemo, useRef, useState } from "react";
+import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 
@@ -75,9 +76,12 @@ function LogoPreview({
     }
 
     return (
-        <img
+        <Image
             src={src}
             alt={alt}
+            width={180}
+            height={140}
+            unoptimized
             className="max-h-[140px] max-w-[180px] object-contain"
             onError={() => setFailed(true)}
         />

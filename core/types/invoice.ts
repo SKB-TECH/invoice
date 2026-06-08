@@ -10,8 +10,10 @@ export interface InvoiceIssuer {
 export interface InvoiceClient {
     id: number;
     client_name: string;
+    name?: string;
     legal_name: string;
     nif: string;
+    phone?: string;
 }
 
 export interface InvoiceLineItem {
@@ -28,11 +30,15 @@ export interface InvoiceLineItem {
 export interface InvoiceItem {
     id: number;
     invoice_number: string;
+    number?: string;
     invoice_ref?: string;
     account_id: number;
     client_id: number;
     issuer: InvoiceIssuer;
     client: InvoiceClient;
+    client_info?: Record<string, unknown>;
+    receiver_info?: Record<string, unknown>;
+    items?: InvoiceDetailLineItem[];
     line_items: InvoiceLineItem[];
     subtotal: number;
     tax_total: number;
@@ -42,6 +48,7 @@ export interface InvoiceItem {
     balance?: number;
     currency: string;
     status: InvoiceStatus;
+    workflow_status?: string;
     invoice_date: string;
     due_date: string;
     created_at: string;
@@ -288,6 +295,8 @@ export type InvoiceDetailResponse = {
 
     client_id: number;
     client_info: Record<string, unknown>;
+    client?: Record<string, unknown> | null;
+    contract?: Record<string, unknown> | null;
     payment_info: Record<string, unknown>;
 
     items: InvoiceDetailLineItem[];
@@ -315,6 +324,7 @@ export type InvoiceDetailResponse = {
     contract_id?: number;
     template_id?: number;
     type?: number;
+    type_info?: Record<string, unknown> | null;
 };
 
 export type NormalizeInvoicePayload = {

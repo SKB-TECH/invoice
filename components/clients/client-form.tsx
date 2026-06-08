@@ -250,6 +250,15 @@ export function ClientForm(props: ClientFormProps) {
         name: "client_type_id",
         defaultValue: defaults.client_type_id,
     });
+    const statusValue = useWatch({
+        control: form.control,
+        name: "status",
+        defaultValue: defaults.status,
+    });
+    const formValues = useWatch({
+        control: form.control,
+        defaultValue: defaults,
+    });
 
     const selectedTypeOption = useMemo(
         () => resolveClientTypeOption(clientTypeId, clientTypes),
@@ -430,7 +439,7 @@ export function ClientForm(props: ClientFormProps) {
                     <FieldLabel>{t("status.title")}</FieldLabel>
                     <NativeSelectField
                         id="statut"
-                        value={form.watch("status")}
+                        value={statusValue ?? defaults.status}
                         disabled={pending}
                         onChange={(value) =>
                             form.setValue(
@@ -464,7 +473,7 @@ export function ClientForm(props: ClientFormProps) {
                     </FieldLabel>
                     <InputField
                         id="client-name"
-                        value={form.watch("client_name")}
+                        value={formValues.client_name ?? ""}
                         onChange={(value) =>
                             form.setValue("client_name", value, {
                                 shouldValidate: true,
@@ -489,7 +498,7 @@ export function ClientForm(props: ClientFormProps) {
                         <InputField
                             id="telephone"
                             type="tel"
-                            value={form.watch("phone")}
+                            value={formValues.phone ?? ""}
                             onChange={(value) =>
                                 form.setValue("phone", value, {
                                     shouldValidate: true,
@@ -513,7 +522,7 @@ export function ClientForm(props: ClientFormProps) {
                         </FieldLabel>
                         <InputField
                             id="nif"
-                            value={form.watch("nif")}
+                            value={formValues.nif ?? ""}
                             onChange={(value) =>
                                 form.setValue("nif", value, {
                                     shouldValidate: true,
@@ -537,7 +546,7 @@ export function ClientForm(props: ClientFormProps) {
                         </FieldLabel>
                         <InputField
                             id="rccm"
-                            value={form.watch("rccm")}
+                            value={formValues.rccm ?? ""}
                             onChange={(value) =>
                                 form.setValue("rccm", value, {
                                     shouldValidate: true,
@@ -561,7 +570,7 @@ export function ClientForm(props: ClientFormProps) {
                         </FieldLabel>
                         <InputField
                             id="reference"
-                            value={form.watch("idnat")}
+                            value={formValues.idnat ?? ""}
                             onChange={(value) =>
                                 form.setValue("idnat", value, {
                                     shouldValidate: true,
@@ -585,12 +594,12 @@ export function ClientForm(props: ClientFormProps) {
                         </FieldLabel>
                         <ClientReferenceDocumentField
                             file={referenceDocumentFile}
-                            existingLabel={form.watch("reference_document")}
+                            existingLabel={formValues.reference_document ?? ""}
                             disabled={pending}
                             onChange={setReferenceDocumentFile}
                             error={
                                 referenceDocumentFile ||
-                                form.watch("reference_document")
+                                formValues.reference_document
                                     ? undefined
                                     : errors.reference_document?.message
                             }
@@ -613,7 +622,7 @@ export function ClientForm(props: ClientFormProps) {
                         </FieldLabel>
                         <InputField
                             id="business-sector"
-                            value={form.watch("business_sector")}
+                            value={formValues.business_sector ?? ""}
                             onChange={(value) =>
                                 form.setValue("business_sector", value, {
                                     shouldValidate: true,
@@ -638,7 +647,7 @@ export function ClientForm(props: ClientFormProps) {
                         </FieldLabel>
                         <InputField
                             id="legal-representative"
-                            value={form.watch("legal_representative")}
+                            value={formValues.legal_representative ?? ""}
                             onChange={(value) =>
                                 form.setValue("legal_representative", value, {
                                     shouldValidate: true,
@@ -664,7 +673,7 @@ export function ClientForm(props: ClientFormProps) {
                         <InputField
                             id="telephone"
                             type="tel"
-                            value={form.watch("phone")}
+                            value={formValues.phone ?? ""}
                             onChange={(value) =>
                                 form.setValue("phone", value, {
                                     shouldValidate: true,
@@ -688,7 +697,7 @@ export function ClientForm(props: ClientFormProps) {
                     <InputField
                         id="email"
                         type="email"
-                        value={form.watch("email")}
+                        value={formValues.email ?? ""}
                         onChange={(value) =>
                             form.setValue("email", value, {
                                 shouldValidate: true,
@@ -711,7 +720,7 @@ export function ClientForm(props: ClientFormProps) {
                     </FieldLabel>
                     <CountryAutocomplete
                         id="pays"
-                        value={form.watch("country")}
+                        value={formValues.country ?? ""}
                         countries={countries}
                         loading={countriesPending}
                         loadError={countriesError}
@@ -746,7 +755,7 @@ export function ClientForm(props: ClientFormProps) {
                     </FieldLabel>
                     <InputField
                         id="adresse"
-                        value={form.watch("address")}
+                        value={formValues.address ?? ""}
                         onChange={(value) =>
                             form.setValue("address", value, {
                                 shouldValidate: true,

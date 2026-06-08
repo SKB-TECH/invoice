@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { Search } from "lucide-react";
 
 import { FieldError } from "./Fields";
@@ -36,13 +36,10 @@ export function InvoiceSearchSelect({
 }) {
     const [open, setOpen] = useState(false);
     const [search, setSearch] = useState(value);
-
-    useEffect(() => {
-        setSearch(value);
-    }, [value]);
+    const inputValue = open ? search : value;
 
     const filtered = useMemo(() => {
-        const q = search.trim().toLowerCase();
+        const q = inputValue.trim().toLowerCase();
 
         if (!q) return options;
         if (q.includes("=") || q.includes("&")) return options;
@@ -53,7 +50,7 @@ export function InvoiceSearchSelect({
                 opt.secondary.toLowerCase().includes(q)
             );
         });
-    }, [options, search]);
+    }, [options, inputValue]);
 
     const handlePick = (opt: InvoiceSearchOption) => {
         setSearch(opt.primary);
@@ -66,10 +63,13 @@ export function InvoiceSearchSelect({
             <div className="relative">
                 <div className="relative">
                     <input
-                        value={search}
+                        value={inputValue}
                         disabled={disabled}
                         onFocus={() => {
-                            if (!disabled) setOpen(true);
+                            if (!disabled) {
+                                setSearch(value);
+                                setOpen(true);
+                            }
                         }}
                         onChange={(event) => {
                             const next = event.target.value;

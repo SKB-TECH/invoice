@@ -9,7 +9,7 @@ import React, {
 } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 
-import type { AuthUser, Permission } from "@/core/types/rbac";
+import type { AuthUser, Permission, RolePermission } from "@/core/types/rbac";
 import { authEvents } from "@/core/utils/authEvents";
 import { authService } from "@/core/services/auth.service";
 import {
@@ -139,7 +139,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             permissions?: string[];
             role?: {
                 name?: string;
-                permissions?: ApiPermission[];
+                permissions?: (ApiPermission | RolePermission)[];
             };
         })
             | null;
@@ -231,8 +231,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             password,
         });
 
-        const response = "data" in (result as any)
-            ? (result as any).data
+        const response = result && typeof result === "object" && "data" in result
+            ? (result as { data: unknown }).data
             : result;
 
         if (!isLoginSuccessResponse(response)) {

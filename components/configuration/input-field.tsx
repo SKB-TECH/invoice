@@ -8,6 +8,7 @@ type Props = {
     onChange: (value: string) => void;
     placeholder?: string;
     type?: React.HTMLInputTypeAttribute;
+    autoComplete?: string;
     disabled?: boolean;
     readonlyMuted?: boolean;
 };
@@ -18,6 +19,7 @@ export function InputField({
                                onChange,
                                placeholder,
                                type = "text",
+                               autoComplete,
                                disabled = false,
                                readonlyMuted = false,
                            }: Props) {
@@ -37,6 +39,7 @@ export function InputField({
                 tabIndex={readonlyMuted ? -1 : undefined}
                 onChange={(e) => onChange(e.target.value)}
                 placeholder={placeholder}
+                autoComplete={autoComplete}
                 className={cn(
                     "w-full border border-slate-200 px-3 text-[13px] outline-none focus:border-[#1f6a9a]",
                     readonlyMuted

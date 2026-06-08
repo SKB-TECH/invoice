@@ -15,7 +15,6 @@ import { MembersSection } from "@/components/configuration/members-section";
 import { RolesSection } from "@/components/configuration/roles-section";
 import { PermissionsSection } from "@/components/configuration/permissions-section";
 import { LanguageSection } from "@/components/configuration/language-section";
-import { InvoiceModelsSection } from "@/components/configuration/invoice-models-section";
 
 type ConfigMenuId =
     | "basicInfo"

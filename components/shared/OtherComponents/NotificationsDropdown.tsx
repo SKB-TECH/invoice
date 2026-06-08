@@ -27,10 +27,9 @@ export function NotificationsDropdown({
     const inboxQuery = useNotificationsInbox({ page: 1, perPage: 6 });
     const readAll = useReadAllNotifications();
 
-    const notifications = inboxQuery.data?.items ?? [];
     const unreadNotifications = React.useMemo(
-        () => notifications.filter((n) => n.unread),
-        [notifications]
+        () => (inboxQuery.data?.items ?? []).filter((n) => n.unread),
+        [inboxQuery.data?.items]
     );
     const unreadCount =
         inboxQuery.data?.meta?.unread ??
@@ -112,4 +111,3 @@ export function NotificationsDropdown({
         </DropdownMenu>
     );
 }
-

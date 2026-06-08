@@ -40,6 +40,8 @@ export function CountryAutocomplete({
     loadingPlaceholder = "Chargement des pays…",
     loadErrorMessage = "Impossible de charger les pays.",
 }: Props) {
+    const inputId = id ?? "country";
+    const listboxId = `${inputId}-listbox`;
     const containerRef = useRef<HTMLDivElement>(null);
     const inputRef = useRef<HTMLInputElement>(null);
     const [open, setOpen] = useState(false);
@@ -118,10 +120,11 @@ export function CountryAutocomplete({
 
                 <input
                     ref={inputRef}
-                    id={id}
+                    id={inputId}
                     type="text"
                     role="combobox"
                     aria-expanded={open}
+                    aria-controls={listboxId}
                     aria-autocomplete="list"
                     disabled={isDisabled}
                     placeholder={resolvedPlaceholder}
@@ -149,6 +152,7 @@ export function CountryAutocomplete({
 
             {open && !isDisabled ? (
                 <ul
+                    id={listboxId}
                     role="listbox"
                     className="absolute z-50 mt-1 max-h-60 w-full overflow-y-auto rounded border border-slate-200 bg-white py-1 shadow-lg"
                 >

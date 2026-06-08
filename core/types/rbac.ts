@@ -7,6 +7,8 @@ export interface RolePermission {
     action: string;
     longCode: string;
     shortCode: string;
+    LongCode_10?: string;
+    ShortCode_11?: string;
     description?: string;
 }
 
