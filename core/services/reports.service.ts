@@ -27,12 +27,30 @@ import { buildReportAPreviewDisplay } from "@/lib/reports/build-report-a-display
 import { buildReportPreviewDisplay } from "@/lib/reports/build-report-display";
 import { buildToolUsagePreviewDisplay } from "@/lib/reports/build-tool-usage-display";
 import { buildVatCollectionPreviewDisplay } from "@/lib/reports/build-vat-collection-display";
+import type { VatCollectionDisplayLabels } from "@/lib/reports/build-vat-collection-display";
 import { MOCK_REPORT_A_HISTORY } from "@/lib/reports/report-a-mock-history";
 
 type ReportTitleOptions = {
     reportTitle: string;
     profile?: Record<string, unknown> | null;
     user?: Record<string, unknown> | null;
+    locale?: string;
+    vatCollectionLabels?: VatCollectionDisplayLabels;
+    clients?: Array<{
+        id: number | string;
+        client_id?: number | string | null;
+        client_name?: string | null;
+        company_name?: string | null;
+        legal_name?: string | null;
+        name?: string | null;
+    }>;
+    invoiceTypes?: Array<{
+        id: number | string;
+        code?: string | null;
+        title?: string | null;
+        name?: string | null;
+        value?: string | null;
+    }>;
 };
 
 type InvoicePaymentsContext = {
@@ -315,10 +333,12 @@ export const reportsService = {
     },
 
     getVatCollectionReport(filters: VatCollectionReportFilters) {
-        return requestReportBlob(REPORT_ENDPOINTS.vatCollection, {
-            period_start: filters.period_start,
-            period_end: filters.period_end,
-            client_id: filters.client_id,
+        return api.get(REPORT_ENDPOINTS.vatCollection, {
+            params: cleanQueryParams({
+                period_start: filters.period_start,
+                period_end: filters.period_end,
+                client_id: filters.client_id,
+            }),
         });
     },
 
@@ -388,12 +408,16 @@ export const reportsService = {
                           rows,
                           profile: options.profile,
                           user: options.user,
+                          clients: options.clients ?? [],
+                          invoiceTypes: options.invoiceTypes ?? [],
+                          labels: options.vatCollectionLabels,
                       })
                     : buildToolUsagePreviewDisplay({
                           filters: filters as ToolUsageReportFilters,
                           rows,
                           profile: options.profile,
                           user: options.user,
+                          locale: options.locale,
                       }),
         };
     },

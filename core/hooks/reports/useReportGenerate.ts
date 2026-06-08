@@ -1,6 +1,7 @@
 "use client";
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useLocale, useTranslations } from "next-intl";
 
 import { useAuth } from "@/context/AuthContext";
 import { useGetMe } from "@/core/hooks/auth/useGetMe";
@@ -46,8 +47,13 @@ type SpecialPdfPayload = {
 };
 
 export function useOrdinaryReportPreview() {
+    const locale = useLocale();
+    const tFilters = useTranslations("reports.filters");
+    const tVatPreview = useTranslations("reports.preview.vatCollection");
     const { profile, user } = useAuth();
     const { data: meData } = useGetMe();
+    const { data: clientsData } = useClients({ per_page: 200 });
+    const { data: invoiceTypesData } = useInvoiceTypes();
 
     const meUser =
         meData &&
@@ -57,6 +63,23 @@ export function useOrdinaryReportPreview() {
         typeof meData.user === "object"
             ? (meData.user as Record<string, unknown>)
             : null;
+
+    const vatCollectionLabels = {
+        locale,
+        workflowStatuses: {
+            brouillon: tFilters("statuses.brouillon"),
+            enregistrer: tFilters("statuses.enregistrer"),
+            valider: tFilters("statuses.valider"),
+            normaliser: tFilters("statuses.normaliser"),
+            soumise: tFilters("statuses.soumise"),
+            receptionner: tFilters("statuses.receptionner"),
+            payer: tFilters("statuses.payer"),
+            classer: tFilters("statuses.classer"),
+        },
+        invoiceTypeSale: tVatPreview("invoiceTypes.sale"),
+        invoiceTypeCredit: tVatPreview("invoiceTypes.credit"),
+        invoiceTypeUnknown: tVatPreview("invoiceTypes.unknown"),
+    };
 
     return useMutation({
         mutationFn: (payload: OrdinaryPayload) => {
@@ -76,6 +99,10 @@ export function useOrdinaryReportPreview() {
                     user:
                         meUser ??
                         (user as Record<string, unknown> | null),
+                    clients: clientsData?.items ?? [],
+                    invoiceTypes: invoiceTypesData?.items ?? [],
+                    locale,
+                    vatCollectionLabels,
                 },
             );
         },

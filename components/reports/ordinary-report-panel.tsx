@@ -9,7 +9,7 @@ import { ReportFiltersGrid } from "@/components/reports/report-filters-grid";
 import { ReportActionsBar } from "@/components/reports/report-generate-bar";
 import { ReportPreviewSection } from "@/components/reports/report-preview-section";
 import {
-    ReportClientSelect,
+    ReportClientAutocomplete,
     ReportContractSelect,
     ReportInvoiceTypeSelect,
     ReportPaymentStatusSelect,
@@ -215,7 +215,7 @@ export function OrdinaryReportPanel({ panelId }: Props) {
 
                 {panelId === "invoiceEdition" ? (
                     <>
-                        <ReportClientSelect
+                        <ReportClientAutocomplete
                             value={clientId}
                             onChange={setClientId}
                         />
@@ -234,7 +234,7 @@ export function OrdinaryReportPanel({ panelId }: Props) {
 
                 {panelId === "invoiceNormalization" ? (
                     <>
-                        <ReportClientSelect
+                        <ReportClientAutocomplete
                             value={clientId}
                             onChange={setClientId}
                         />
@@ -243,7 +243,7 @@ export function OrdinaryReportPanel({ panelId }: Props) {
 
                 {panelId === "invoicePayments" ? (
                     <>
-                        <ReportClientSelect
+                        <ReportClientAutocomplete
                             value={clientId}
                             onChange={setClientId}
                         />
@@ -256,7 +256,7 @@ export function OrdinaryReportPanel({ panelId }: Props) {
 
                 {panelId === "vatCollection" ? (
                     <>
-                        <ReportClientSelect
+                        <ReportClientAutocomplete
                             value={clientId}
                             onChange={setClientId}
                         />

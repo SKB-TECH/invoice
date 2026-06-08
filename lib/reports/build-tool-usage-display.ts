@@ -4,14 +4,20 @@ import type {
     ToolUsageReportFilters,
     ToolUsageReportLineItem,
 } from "@/core/types/reports";
-import { formatReportGeneratedAt } from "@/lib/reports/build-report-display";
 import { extractReportEmitter } from "@/lib/reports/extract-report-emitter";
+import {
+    formatReportAmount,
+    formatReportDateLabel,
+    formatReportDateTime,
+    formatReportGeneratedAt,
+} from "@/lib/reports/report-locale-format";
 
 type BuildOptions = {
     filters: ToolUsageReportFilters;
     rows: Record<string, unknown>[];
     profile?: Record<string, unknown> | null;
     user?: Record<string, unknown> | null;
+    locale?: string;
 };
 
 type ConnectedUserIdentity = {
@@ -47,40 +53,6 @@ function firstResolved(...values: string[]): string {
     return values.find((value) => value !== "—") ?? "—";
 }
 
-function formatReportDateLabel(value?: string): string {
-    if (!value?.trim()) return "—";
-    const parsed = new Date(`${value.trim()}T12:00:00`);
-    if (Number.isNaN(parsed.getTime())) return value;
-    return new Intl.DateTimeFormat("fr-FR", {
-        day: "2-digit",
-        month: "long",
-        year: "numeric",
-    }).format(parsed);
-}
-
-function formatInvoiceDate(value: string): string {
-    if (value === "—") return value;
-    const parsed = new Date(value.replace(" ", "T"));
-    if (Number.isNaN(parsed.getTime())) return value;
-    return new Intl.DateTimeFormat("fr-FR", {
-        day: "2-digit",
-        month: "2-digit",
-        year: "numeric",
-        hour: "2-digit",
-        minute: "2-digit",
-    }).format(parsed);
-}
-
-function formatAmount(amount: string): string {
-    if (amount === "—") return amount;
-    const numericAmount = Number(amount);
-    if (!Number.isFinite(numericAmount)) return amount;
-    return numericAmount.toLocaleString("fr-FR", {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2,
-    });
-}
-
 function extractConnectedUserIdentity(
     user?: Record<string, unknown> | null,
 ): ConnectedUserIdentity {
@@ -100,7 +72,8 @@ function extractConnectedUserIdentity(
 
 function buildLineItem(
     row: Record<string, unknown>,
-    connectedUser?: ConnectedUserIdentity,
+    connectedUser: ConnectedUserIdentity | undefined,
+    locale?: string,
 ): ToolUsageReportLineItem {
     const rowUserId = pickString(row, ["user_id"]);
     const userName = firstResolved(
@@ -122,10 +95,22 @@ function buildLineItem(
     return {
         userName: displayUserName,
         invoiceCount: pickString(row, ["invoice_count"]),
-        totalAmount: formatAmount(pickString(row, ["total_amount"])),
-        totalTva: formatAmount(pickString(row, ["total_tva", "total_tax"])),
-        firstInvoice: formatInvoiceDate(pickString(row, ["first_invoice"])),
-        lastInvoice: formatInvoiceDate(pickString(row, ["last_invoice"])),
+        totalAmount: formatReportAmount(
+            pickString(row, ["total_amount"]),
+            locale,
+        ),
+        totalTva: formatReportAmount(
+            pickString(row, ["total_tva", "total_tax"]),
+            locale,
+        ),
+        firstInvoice: formatReportDateTime(
+            pickString(row, ["first_invoice"]),
+            locale,
+        ),
+        lastInvoice: formatReportDateTime(
+            pickString(row, ["last_invoice"]),
+            locale,
+        ),
     };
 }
 
@@ -134,19 +119,20 @@ export function buildToolUsagePreviewDisplay({
     rows,
     profile,
     user,
+    locale,
 }: BuildOptions): ReportPreviewDisplay {
     const emitter = extractReportEmitter(profile, user);
     const connectedUser = extractConnectedUserIdentity(user);
 
     const content: ToolUsagePreviewContent = {
-        generatedAt: formatReportGeneratedAt(),
-        dateFrom: formatReportDateLabel(filters.period_start),
-        dateTo: formatReportDateLabel(filters.period_end),
+        generatedAt: formatReportGeneratedAt(new Date(), locale),
+        dateFrom: formatReportDateLabel(filters.period_start, locale),
+        dateTo: formatReportDateLabel(filters.period_end, locale),
         companyName: emitter.companyName,
         logoUrl: emitter.logoUrl,
         nif: emitter.nif,
         isf: emitter.isf,
-        lineItems: rows.map((row) => buildLineItem(row, connectedUser)),
+        lineItems: rows.map((row) => buildLineItem(row, connectedUser, locale)),
     };
 
     return { variant: "tool-usage", content };

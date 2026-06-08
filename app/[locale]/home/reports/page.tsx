@@ -96,7 +96,7 @@ function ReportsPageInner() {
                         </nav>
                     </aside>
 
-                    <section className="min-h-0 w-full flex-1 space-y-5 overflow-y-auto lg:max-h-[calc(100dvh-8.5rem)] lg:overflow-y-auto lg:pb-10 lg:pr-2">
+                    <section className="min-h-0 w-full flex-1 space-y-5 overflow-visible lg:pb-10 lg:pr-2">
                         {activeMenu === "invoiceEdition" && (
                             <InvoiceEditionReportPanel />
                         )}

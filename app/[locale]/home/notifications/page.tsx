@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { NotificationsList } from "@/components/shared/OtherComponents/NotificationsList";
 import {
     useNotificationsInbox,
@@ -67,9 +68,10 @@ export default function NotificationsPage() {
                                 type="button"
                                 onClick={() => setPage((p) => Math.max(1, p - 1))}
                                 disabled={page <= 1}
-                                className="text-[13px] bg-[#0073C5] text-white font-semibold disabled:opacity-50 cursor-pointer px-4 py-2 rounded"
+                                aria-label="Page précédente"
+                                className="inline-flex size-9 items-center justify-center rounded bg-[#0073C5] text-white disabled:cursor-not-allowed disabled:opacity-50"
                             >
-                                Précédent
+                                <ChevronLeft className="size-5" aria-hidden />
                             </button>
 
                             <div className="text-[12px] font-semibold text-slate-500">
@@ -82,9 +84,10 @@ export default function NotificationsPage() {
                                     setPage((p) => Math.min(totalPages, p + 1))
                                 }
                                 disabled={page >= totalPages}
-                                className="text-[13px] bg-[#0073C5] text-white font-semibold disabled:opacity-50 cursor-pointer px-4 py-2 rounded"
+                                aria-label="Page suivante"
+                                className="inline-flex size-9 items-center justify-center rounded bg-[#0073C5] text-white disabled:cursor-not-allowed disabled:opacity-50"
                             >
-                                Suivant
+                                <ChevronRight className="size-5" aria-hidden />
                             </button>
                         </div>
                     </div>

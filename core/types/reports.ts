@@ -197,14 +197,16 @@ export type InvoicePaymentsPreviewContent = {
 };
 
 export type VatCollectionReportLineItem = {
+    date: string;
+    reference: string;
+    amount: string;
+    taxAmount: string;
+    currency: string;
+    totalAmount: string;
     clientName: string;
     invoiceType: string;
-    invoiceAmount: string;
-    taxAmount: string;
+    workflowStatus: string;
     paidAmount: string;
-    totalAmount: string;
-    currency: string;
-    dueDate: string;
 };
 
 export type VatCollectionPreviewContent = {
