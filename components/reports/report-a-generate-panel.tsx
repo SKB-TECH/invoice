@@ -76,14 +76,9 @@ export function ReportAGeneratePanel({ onBack }: Props) {
 
     return (
         <>
-            <p className="mb-3 max-w-3xl text-[13px] leading-relaxed text-slate-500">
-                {tA("description")}
+            <p className="mb-5 max-w-3xl text-[13px] leading-relaxed text-slate-500">
+                {tA("generateIntro")}
             </p>
-            <ul className="mb-5 list-inside list-disc space-y-1 text-[13px] text-slate-600">
-                {(tA.raw("includes") as string[]).map((line) => (
-                    <li key={line}>{line}</li>
-                ))}
-            </ul>
 
             <ReportFiltersGrid>
                 <ReportPeriodFields

@@ -1555,12 +1555,7 @@
           "itemCount": "Articles"
         }
       },
-      "description": "Récapitulatif relatif aux articles depuis le dernier rapport A.",
-      "includes": [
-        "Dénomination commerciale, NIF, date et heure, période",
-        "Code et nom de l’article, prix unitaire, taux d’impôt",
-        "Quantités vendues, retournées et en stock"
-      ],
+      "generateIntro": "Indiquez la période pour la génération du rapport.",
       "preview": {
         "reportCode": "RAPPORT",
         "emitter": "ÉMETTEUR",

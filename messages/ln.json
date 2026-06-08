@@ -1560,12 +1560,7 @@
           "itemCount": "Ba articles"
         }
       },
-      "description": "Récapitulatif ya ba type A banda rapport A ya nsuka.",
-      "includes": [
-        "Nom commercial, NIF, date, période",
-        "Code mpe nom article, prix, taux impôt",
-        "Quantités vendues, retournées mpe stock"
-      ],
+      "generateIntro": "Pona période mpo na kosala rapport.",
       "preview": {
         "reportCode": "RAPPORT",
         "emitter": "ÉMETTEUR",
