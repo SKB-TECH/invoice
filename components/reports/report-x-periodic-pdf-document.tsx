@@ -6,14 +6,10 @@ import {
     View,
 } from "@react-pdf/renderer";
 
-import { formatReportAUnitPrice } from "@/lib/reports/format-report-a-unit-price";
-import {
-    REPORT_A_TABLE_PT,
-    REPORT_A_TABLE_TOTAL_LABEL_WIDTH_PT,
-} from "@/lib/reports/report-a-table-layout";
-import type { ReportAPreviewContent } from "@/core/types/reports";
+import { REPORT_X_PERIODIC_TABLE_PT } from "@/lib/reports/report-x-periodic-table-layout";
+import type { ReportXPeriodicPreviewContent } from "@/core/types/reports";
 
-const COL = REPORT_A_TABLE_PT;
+const COL = REPORT_X_PERIODIC_TABLE_PT;
 
 const HEADER_FONT_SIZE = 6.5;
 const BODY_FONT_SIZE = 8;
@@ -115,14 +111,6 @@ const styles = StyleSheet.create({
         paddingVertical: 6,
         paddingHorizontal: 4,
     },
-    tableTotal: {
-        flexDirection: "row",
-        alignItems: "center",
-        width: "100%",
-        backgroundColor: "#eff6ff",
-        paddingVertical: 6,
-        paddingHorizontal: 4,
-    },
     footer: {
         position: "absolute",
         bottom: 28,
@@ -132,7 +120,7 @@ const styles = StyleSheet.create({
     },
 });
 
-export type ReportAPdfLabels = {
+export type ReportXPeriodicPdfLabels = {
     reportCode: string;
     emitter: string;
     periodSection: string;
@@ -143,85 +131,76 @@ export type ReportAPdfLabels = {
     dateTo: string;
     tableTitle: string;
     columns: {
-        code: string;
-        designation: string;
-        unitPrice: string;
-        tax: string;
-        qtySold: string;
-        qtyReturned: string;
-        fiscalStock: string;
+        invoiceCount: string;
+        totalHt: string;
+        totalTva: string;
+        totalTtc: string;
+        totalPaid: string;
+        totalBalance: string;
     };
-    total: string;
     page: string;
 };
 
 type Props = {
-    content: ReportAPreviewContent;
-    labels: ReportAPdfLabels;
+    content: ReportXPeriodicPreviewContent;
+    labels: ReportXPeriodicPdfLabels;
 };
 
-function TableHeader({ labels }: { labels: ReportAPdfLabels }) {
+function TableHeader({ labels }: { labels: ReportXPeriodicPdfLabels }) {
     return (
         <View style={styles.tableHeader}>
             <TableCell
-                width={COL.code}
+                width={COL.invoiceCount}
                 bold
                 fontSize={HEADER_FONT_SIZE}
             >
-                {labels.columns.code}
+                {labels.columns.invoiceCount}
             </TableCell>
             <TableCell
-                width={COL.designation}
-                bold
-                fontSize={HEADER_FONT_SIZE}
-            >
-                {labels.columns.designation}
-            </TableCell>
-            <TableCell
-                width={COL.unitPrice}
+                width={COL.totalHt}
                 align="right"
                 bold
                 fontSize={HEADER_FONT_SIZE}
             >
-                {labels.columns.unitPrice}
+                {labels.columns.totalHt}
             </TableCell>
             <TableCell
-                width={COL.tax}
+                width={COL.totalTva}
                 align="right"
                 bold
                 fontSize={HEADER_FONT_SIZE}
             >
-                {labels.columns.tax}
+                {labels.columns.totalTva}
             </TableCell>
             <TableCell
-                width={COL.qtySold}
+                width={COL.totalTtc}
                 align="right"
                 bold
                 fontSize={HEADER_FONT_SIZE}
             >
-                {labels.columns.qtySold}
+                {labels.columns.totalTtc}
             </TableCell>
             <TableCell
-                width={COL.qtyReturned}
+                width={COL.totalPaid}
                 align="right"
                 bold
                 fontSize={HEADER_FONT_SIZE}
             >
-                {labels.columns.qtyReturned}
+                {labels.columns.totalPaid}
             </TableCell>
             <TableCell
-                width={COL.fiscalStock}
+                width={COL.totalBalance}
                 align="right"
                 bold
                 fontSize={HEADER_FONT_SIZE}
             >
-                {labels.columns.fiscalStock}
+                {labels.columns.totalBalance}
             </TableCell>
         </View>
     );
 }
 
-export function ReportAPdfDocument({ content, labels }: Props) {
+export function ReportXPeriodicPdfDocument({ content, labels }: Props) {
     const p = content;
 
     return (
@@ -263,64 +242,24 @@ export function ReportAPdfDocument({ content, labels }: Props) {
 
                 <TableHeader labels={labels} />
 
-                {p.lineItems.map((row) => (
-                    <View key={row.code} style={styles.tableBodyRow}>
-                        <TableCell width={COL.code}>{row.code}</TableCell>
-                        <TableCell width={COL.designation}>
-                            {row.designation}
-                        </TableCell>
-                        <TableCell width={COL.unitPrice} align="right">
-                            {formatReportAUnitPrice(
-                                row.unitPrice,
-                                row.currency,
-                            )}
-                        </TableCell>
-                        <TableCell width={COL.tax} align="right">
-                            {row.tax}
-                        </TableCell>
-                        <TableCell width={COL.qtySold} align="right">
-                            {String(row.qtySold)}
-                        </TableCell>
-                        <TableCell width={COL.qtyReturned} align="right">
-                            {String(row.qtyReturned)}
-                        </TableCell>
-                        <TableCell width={COL.fiscalStock} align="right">
-                            {String(row.fiscalStock)}
-                        </TableCell>
-                    </View>
-                ))}
-
-                <View style={styles.tableTotal}>
-                    <TableCell
-                        width={REPORT_A_TABLE_TOTAL_LABEL_WIDTH_PT}
-                        bold
-                        color="#1e4d7b"
-                    >
-                        {labels.total}
+                <View style={styles.tableBodyRow}>
+                    <TableCell width={COL.invoiceCount}>
+                        {String(p.invoiceCount)}
                     </TableCell>
-                    <TableCell
-                        width={COL.qtySold}
-                        align="right"
-                        bold
-                        color="#1e4d7b"
-                    >
-                        {String(p.totals.qtySold)}
+                    <TableCell width={COL.totalHt} align="right">
+                        {p.totalHt}
                     </TableCell>
-                    <TableCell
-                        width={COL.qtyReturned}
-                        align="right"
-                        bold
-                        color="#1e4d7b"
-                    >
-                        {String(p.totals.qtyReturned)}
+                    <TableCell width={COL.totalTva} align="right">
+                        {p.totalTva}
                     </TableCell>
-                    <TableCell
-                        width={COL.fiscalStock}
-                        align="right"
-                        bold
-                        color="#1e4d7b"
-                    >
-                        {String(p.totals.fiscalStock)}
+                    <TableCell width={COL.totalTtc} align="right">
+                        {p.totalTtc}
+                    </TableCell>
+                    <TableCell width={COL.totalPaid} align="right">
+                        {p.totalPaid}
+                    </TableCell>
+                    <TableCell width={COL.totalBalance} align="right">
+                        {p.totalBalance}
                     </TableCell>
                 </View>
 

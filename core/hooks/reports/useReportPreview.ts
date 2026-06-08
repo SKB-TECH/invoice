@@ -18,6 +18,13 @@ export function useReportPreview() {
     const tVatCollection = useTranslations("reports.preview.vatCollection");
     const tToolUsage = useTranslations("reports.preview.toolUsage");
     const tReportA = useTranslations("reports.specialA.preview");
+    const tReportXPeriodic = useTranslations(
+        "reports.specialXz.reportXPeriodic.preview",
+    );
+    const tReportZ = useTranslations("reports.specialXz.reportZ.preview");
+    const tReportXDaily = useTranslations(
+        "reports.specialXz.reportXDaily.preview",
+    );
     const [preview, setPreview] = useState<ReportBlobResult | null>(null);
 
     const applyPreview = useCallback((result: ReportBlobResult) => {
@@ -72,7 +79,6 @@ export function useReportPreview() {
                 periodSection: tReportA("periodSection"),
                 company: tReportA("company"),
                 nif: tReportA("nif"),
-                isf: tReportA("isf"),
                 generatedAt: tReportA("generatedAt"),
                 dateFrom: tReportA("dateFrom"),
                 dateTo: tReportA("dateTo"),
@@ -89,6 +95,66 @@ export function useReportPreview() {
                 total: tReportA("total"),
                 page: tReportA("page", { current: 1, total: 1 }),
             },
+            reportXPeriodic: {
+                reportCode: tReportXPeriodic("reportCode"),
+                emitter: tReportXPeriodic("emitter"),
+                periodSection: tReportXPeriodic("periodSection"),
+                company: tReportXPeriodic("company"),
+                nif: tReportXPeriodic("nif"),
+                generatedAt: tReportXPeriodic("generatedAt"),
+                dateFrom: tReportXPeriodic("dateFrom"),
+                dateTo: tReportXPeriodic("dateTo"),
+                tableTitle: tReportXPeriodic("tableTitle"),
+                columns: {
+                    invoiceCount: tReportXPeriodic("columns.invoiceCount"),
+                    totalHt: tReportXPeriodic("columns.totalHt"),
+                    totalTva: tReportXPeriodic("columns.totalTva"),
+                    totalTtc: tReportXPeriodic("columns.totalTtc"),
+                    totalPaid: tReportXPeriodic("columns.totalPaid"),
+                    totalBalance: tReportXPeriodic("columns.totalBalance"),
+                },
+                page: tReportXPeriodic("page", { current: 1, total: 1 }),
+            },
+            reportXDaily: {
+                reportCode: tReportXDaily("reportCode"),
+                emitter: tReportXDaily("emitter"),
+                periodSection: tReportXDaily("periodSection"),
+                company: tReportXDaily("company"),
+                nif: tReportXDaily("nif"),
+                generatedAt: tReportXDaily("generatedAt"),
+                dateFrom: tReportXDaily("dateFrom"),
+                dateTo: tReportXDaily("dateTo"),
+                tableTitle: tReportXDaily("tableTitle"),
+                columns: {
+                    invoiceCount: tReportXDaily("columns.invoiceCount"),
+                    totalHt: tReportXDaily("columns.totalHt"),
+                    totalTva: tReportXDaily("columns.totalTva"),
+                    totalTtc: tReportXDaily("columns.totalTtc"),
+                    totalPaid: tReportXDaily("columns.totalPaid"),
+                    totalBalance: tReportXDaily("columns.totalBalance"),
+                },
+                page: tReportXDaily("page", { current: 1, total: 1 }),
+            },
+            reportZ: {
+                reportCode: tReportZ("reportCode"),
+                emitter: tReportZ("emitter"),
+                periodSection: tReportZ("periodSection"),
+                company: tReportZ("company"),
+                nif: tReportZ("nif"),
+                generatedAt: tReportZ("generatedAt"),
+                dateFrom: tReportZ("dateFrom"),
+                dateTo: tReportZ("dateTo"),
+                tableTitle: tReportZ("tableTitle"),
+                columns: {
+                    invoiceCount: tReportZ("columns.invoiceCount"),
+                    totalHt: tReportZ("columns.totalHt"),
+                    totalTva: tReportZ("columns.totalTva"),
+                    totalTtc: tReportZ("columns.totalTtc"),
+                    totalPaid: tReportZ("columns.totalPaid"),
+                    totalBalance: tReportZ("columns.totalBalance"),
+                },
+                page: tReportZ("page", { current: 1, total: 1 }),
+            },
         });
         downloadBlob(pdfBlob, preview.filename);
     }, [
@@ -98,6 +164,9 @@ export function useReportPreview() {
         tOrdinary,
         tPayments,
         tReportA,
+        tReportXPeriodic,
+        tReportXDaily,
+        tReportZ,
         tToolUsage,
         tVatCollection,
     ]);

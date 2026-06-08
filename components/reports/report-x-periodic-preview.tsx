@@ -2,19 +2,19 @@
 
 import { useTranslations } from "next-intl";
 
-import { formatReportAUnitPrice } from "@/lib/reports/format-report-a-unit-price";
-import { REPORT_A_TABLE_GRID_CLASS } from "@/lib/reports/report-a-table-layout";
-import type { ReportAPreviewContent } from "@/core/types/reports";
+import { REPORT_X_PERIODIC_TABLE_GRID_CLASS } from "@/lib/reports/report-x-periodic-table-layout";
+import type { ReportXPeriodicPreviewContent } from "@/core/types/reports";
 
 type Props = {
-    content: ReportAPreviewContent;
+    content: ReportXPeriodicPreviewContent;
+    scope: "reportXDaily" | "reportZ" | "reportXPeriodic";
 };
 
-const TABLE_GRID = REPORT_A_TABLE_GRID_CLASS;
+const TABLE_GRID = REPORT_X_PERIODIC_TABLE_GRID_CLASS;
 const HEADER_CELL = "whitespace-nowrap leading-none";
 
-export function ReportAPreview({ content }: Props) {
-    const t = useTranslations("reports.specialA.preview");
+export function ReportXzSnapshotPreview({ content, scope }: Props) {
+    const t = useTranslations(`reports.specialXz.${scope}.preview`);
     const p = content;
 
     return (
@@ -93,52 +93,35 @@ export function ReportAPreview({ content }: Props) {
                 <div
                     className={`${TABLE_GRID} items-center bg-slate-100 px-2 py-3 text-xs font-black uppercase text-black`}
                 >
-                    <div className={HEADER_CELL}>{t("columns.code")}</div>
-                    <div className={HEADER_CELL}>{t("columns.designation")}</div>
-                    <div className={`${HEADER_CELL} text-right`}>
-                        {t("columns.unitPrice")}
+                    <div className={HEADER_CELL}>
+                        {t("columns.invoiceCount")}
                     </div>
                     <div className={`${HEADER_CELL} text-right`}>
-                        {t("columns.tax")}
+                        {t("columns.totalHt")}
                     </div>
                     <div className={`${HEADER_CELL} text-right`}>
-                        {t("columns.qtySold")}
+                        {t("columns.totalTva")}
                     </div>
                     <div className={`${HEADER_CELL} text-right`}>
-                        {t("columns.qtyReturned")}
+                        {t("columns.totalTtc")}
                     </div>
                     <div className={`${HEADER_CELL} text-right`}>
-                        {t("columns.fiscalStock")}
+                        {t("columns.totalPaid")}
+                    </div>
+                    <div className={`${HEADER_CELL} text-right`}>
+                        {t("columns.totalBalance")}
                     </div>
                 </div>
 
-                {p.lineItems.map((row) => (
-                    <div
-                        key={row.code}
-                        className={`${TABLE_GRID} border-b border-slate-300 px-2 py-3 text-sm font-semibold text-slate-700`}
-                    >
-                        <div>{row.code}</div>
-                        <div>{row.designation}</div>
-                        <div className="text-right">
-                            {formatReportAUnitPrice(
-                                row.unitPrice,
-                                row.currency,
-                            )}
-                        </div>
-                        <div className="text-right">{row.tax}</div>
-                        <div className="text-right">{row.qtySold}</div>
-                        <div className="text-right">{row.qtyReturned}</div>
-                        <div className="text-right">{row.fiscalStock}</div>
-                    </div>
-                ))}
-
                 <div
-                    className={`${TABLE_GRID} bg-[#eff6ff] px-2 py-3 text-sm font-black text-[#1e4d7b]`}
+                    className={`${TABLE_GRID} border-b border-slate-300 px-2 py-3 text-sm font-semibold text-slate-700`}
                 >
-                    <div className="col-span-4 uppercase">{t("total")}</div>
-                    <div className="text-right">{p.totals.qtySold}</div>
-                    <div className="text-right">{p.totals.qtyReturned}</div>
-                    <div className="text-right">{p.totals.fiscalStock}</div>
+                    <div>{p.invoiceCount}</div>
+                    <div className="text-right">{p.totalHt}</div>
+                    <div className="text-right">{p.totalTva}</div>
+                    <div className="text-right">{p.totalTtc}</div>
+                    <div className="text-right">{p.totalPaid}</div>
+                    <div className="text-right">{p.totalBalance}</div>
                 </div>
             </div>
 

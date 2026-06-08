@@ -12,7 +12,7 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
-import { useReportAList } from "@/core/hooks/reports/useReportAList";
+import { useReportXzList } from "@/core/hooks/reports/useReportXzList";
 
 const TABLE_HEAD_CLASS =
     "h-11 bg-slate-100 px-4 text-left text-sm font-semibold text-slate-700";
@@ -23,7 +23,7 @@ type Props = {
 
 export function XzReportListPanel({ onGenerate }: Props) {
     const t = useTranslations("reports.xzFlow.list");
-    const { data, isPending, isError, error, refetch } = useReportAList();
+    const { data, isPending, isError, error, refetch } = useReportXzList();
     const items = data?.items ?? [];
     const columnCount = 5;
 

@@ -3,6 +3,7 @@
 import { useTranslations } from "next-intl";
 
 import { ReportAPreview } from "@/components/reports/report-a-preview";
+import { ReportXzSnapshotPreview } from "@/components/reports/report-x-periodic-preview";
 import { ReportDocumentPreview } from "@/components/reports/report-document-preview";
 import { ReportOrdinaryTablePreview } from "@/components/reports/report-ordinary-table-preview";
 import type { ReportPreviewDisplay } from "@/core/types/reports";
@@ -39,6 +40,21 @@ export function ReportPreviewSection({
 
             {display.variant === "a" ? (
                 <ReportAPreview content={display.content} />
+            ) : display.variant === "x-daily" ? (
+                <ReportXzSnapshotPreview
+                    content={display.content}
+                    scope="reportXDaily"
+                />
+            ) : display.variant === "x-periodic" ? (
+                <ReportXzSnapshotPreview
+                    content={display.content}
+                    scope="reportXPeriodic"
+                />
+            ) : display.variant === "z" ? (
+                <ReportXzSnapshotPreview
+                    content={display.content}
+                    scope="reportZ"
+                />
             ) : isOrdinaryReportTableVariant(display.variant) ? (
                 <ReportOrdinaryTablePreview
                     content={display.content}

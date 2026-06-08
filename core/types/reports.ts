@@ -36,24 +36,96 @@ export type ToolUsageReportFilters = {
 };
 
 export type ReportXDailyFilters = {
-    report_date?: string;
-    point_of_sale?: string;
-    isf?: string;
+    period_start?: string;
+    period_end?: string;
 };
 
-export type ReportZFilters = ReportXDailyFilters;
-
-export type ReportXPeriodicFilters = ReportPeriodFilter & {
-    point_of_sale?: string;
-    isf?: string;
+export type ReportZFilters = {
+    period_start?: string;
+    period_end?: string;
 };
 
-export type ReportAFilters = ReportPeriodFilter & {
-    point_of_sale?: string;
-    isf?: string;
+export type ReportXPeriodicFilters = {
+    period_start?: string;
+    period_end?: string;
+};
+
+export type ReportXPeriodicApiSnapshot = {
+    invoice_count: number;
+    total_ht: number;
+    total_tva: number;
+    total_ttc: number;
+    total_paid: number;
+    total_balance: number;
+};
+
+export type ReportXPeriodicApiResponse = {
+    session_id: number;
+    type: string;
+    period_start: string;
+    period_end: string;
+    snapshot: ReportXPeriodicApiSnapshot;
+    pdf_url: string;
+};
+
+export type ReportXPeriodicPreviewContent = {
+    generatedAt: string;
+    dateFrom: string;
+    dateTo: string;
+    companyName: string;
+    logoUrl?: string;
+    nif: string;
+    invoiceCount: number;
+    totalHt: string;
+    totalTva: string;
+    totalTtc: string;
+    totalPaid: string;
+    totalBalance: string;
+};
+
+export type ReportAFilters = {
+    period_start?: string;
+    period_end?: string;
+};
+
+export type ReportAApiSnapshotItem = {
+    item_type: number;
+    item_id: number;
+    code: string;
+    name: string;
+    unit_price: number;
+    tax_rate: number;
+    quantity_sold: number;
+    quantity_returned: number;
+    stock_quantity: number;
+};
+
+export type ReportAApiResponse = {
+    session_id: number;
+    type: string;
+    period_start: string;
+    period_end: string;
+    snapshot: {
+        item_count: number;
+        items: ReportAApiSnapshotItem[];
+    };
+    pdf_url: string;
 };
 
 export type ReportAHistoryItem = {
+    id: number;
+    periodStart: string;
+    periodEnd: string;
+    itemCount: number;
+    pdfUrl?: string;
+};
+
+export type ReportAHistoryListResult = {
+    items: ReportAHistoryItem[];
+    meta: { total: number };
+};
+
+export type ReportFlowHistoryItem = {
     id: number;
     generatedAt: string;
     dateFrom: string;
@@ -62,8 +134,8 @@ export type ReportAHistoryItem = {
     pointOfSale: string;
 };
 
-export type ReportAHistoryListResult = {
-    items: ReportAHistoryItem[];
+export type ReportFlowHistoryListResult = {
+    items: ReportFlowHistoryItem[];
     meta: { total: number };
 };
 
@@ -103,7 +175,6 @@ export type ReportAPreviewContent = {
     generatedAt: string;
     dateFrom: string;
     dateTo: string;
-    isf: string;
     companyName: string;
     logoUrl?: string;
     nif: string;
@@ -253,6 +324,18 @@ export type ReportPreviewDisplay =
     | {
           variant: "a";
           content: ReportAPreviewContent;
+      }
+    | {
+          variant: "x-periodic";
+          content: ReportXPeriodicPreviewContent;
+      }
+    | {
+          variant: "z";
+          content: ReportXPeriodicPreviewContent;
+      }
+    | {
+          variant: "x-daily";
+          content: ReportXPeriodicPreviewContent;
       }
     | {
           variant: "payments";
