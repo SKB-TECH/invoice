@@ -69,14 +69,14 @@ export function StepClient({
 
     const clients: Client[] = useMemo(() => {
         return (clientsData?.items ?? []).map((client) => ({
-            id: client.id,
-            name: client.legal_name || client.name || "",
-            nif: client.nif || client.vat_num || "",
-            rccm: client.rccm || client.registration_id || "",
-            idNat: client.idnat || "",
-            address: client.address || "",
-            phone: client.phone || "",
-            email: client.email || "",
+            id: Number(client.id),
+            name: String(client.legal_name || client.name || ""),
+            nif: String(client.nif || client.vat_num || ""),
+            rccm: String(client.rccm || client.registration_id || ""),
+            idNat: String(client.idnat || ""),
+            address: String(client.address || ""),
+            phone: String(client.phone || ""),
+            email: String(client.email || ""),
         }));
     }, [clientsData?.items]);
 

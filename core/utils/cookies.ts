@@ -1,6 +1,6 @@
-function getCookieOptions(seconds: number) {
+function getCookieOptions(days: number) {
     const date = new Date();
-    date.setTime(date.getTime() + seconds * 1000);
+    date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
 
     const secure =
         typeof window !== "undefined" && window.location.protocol === "https:"
@@ -10,10 +10,10 @@ function getCookieOptions(seconds: number) {
     return `expires=${date.toUTCString()}; path=/; ${secure}SameSite=Lax`;
 }
 
-export function setCookie(name: string, value: string, seconds = 60 * 60): void {
+export function setCookie(name: string, value: string, days = 1): void {
     if (typeof document === "undefined") return;
 
-    const cookieValue = `${name}=${encodeURIComponent(value)}; ${getCookieOptions(seconds)}`;
+    const cookieValue = `${name}=${encodeURIComponent(value)}; ${getCookieOptions(days)}`;
     document.cookie = cookieValue;
 
     if (process.env.NODE_ENV === "development") {

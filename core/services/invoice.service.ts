@@ -6,7 +6,7 @@ import type {
     GetInvoiceContractsResponse, GetInvoiceFournituresParams, GetInvoiceFournituresResponse,
     GetInvoicesParams,
     GetInvoicesResponse, GetInvoiceTypesResponse, GetOutstandingInvoicesParams,
-    InvoiceCreateRequest, InvoiceDetailResponse, NormalizeInvoicePayload, NormalizeInvoiceResponse,
+    InvoiceDetailResponse, NormalizeInvoicePayload, NormalizeInvoiceResponse,
     UpdateInvoiceSubmission,
 } from "@/core/types/invoice";
 
@@ -215,4 +215,3 @@ export const invoiceService = {
         return response.data;
     },
 };
-

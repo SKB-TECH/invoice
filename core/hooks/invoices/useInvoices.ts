@@ -13,7 +13,7 @@ import type {
     GetInvoiceContractsParams,
     GetInvoiceFournituresParams,
     GetInvoicesParams, GetOutstandingInvoicesParams,
-    InvoiceCreateRequest, InvoiceDetailResponse, NormalizeInvoicePayload, NormalizeInvoiceResponse,
+    InvoiceDetailResponse, NormalizeInvoicePayload, NormalizeInvoiceResponse,
     UpdateInvoiceSubmission,
 } from "@/core/types/invoice";
 

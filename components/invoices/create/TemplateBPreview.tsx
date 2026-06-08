@@ -1,7 +1,6 @@
 import type { InvoiceForm, InvoiceItem } from "./types";
 import {
     formatMoney,
-    getLineSubtotal,
     getTaxGroups,
 } from "./utils";
 

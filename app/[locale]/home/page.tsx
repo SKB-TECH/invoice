@@ -1,8 +1,8 @@
 "use client";
 
-import React, {useEffect} from "react";
+import React from "react";
 import { useTranslations } from "next-intl";
-import { Bar, Doughnut } from "react-chartjs-2";
+import { Chart, Doughnut } from "react-chartjs-2";
 import {
     Chart as ChartJS,
     CategoryScale,
@@ -15,10 +15,10 @@ import {
     Legend,
     Filler,
 } from "chart.js";
+import type { ChartData, ChartOptions } from "chart.js";
 import {
     AlertTriangle,
     CircleDollarSign,
-    Eye,
     FileCheck2,
     HandCoins,
     TrendingUp,
@@ -27,8 +27,6 @@ import {
 import {useInvoiceDashboardOverview} from "@/core/hooks/useInvoiceDashboard";
 import {DashboardSkeleton} from "@/components/dashboard/DashboardResponse";
 import {useRouter} from "next/navigation";
-import Link from "next/link";
-import {useGetMe} from "@/core/hooks/auth/useGetMe";
 
 
 ChartJS.register(
@@ -66,9 +64,6 @@ export default function InvoiceDashboard() {
     const t = useTranslations("invoiceDashboard");
     const [view, setView] = React.useState(true);
     const router = useRouter();
-    const { data, isLoading:loading, isError:Error } = useGetMe();
-
-    console.log("user***:",data)
     const {
         data: dashboardResponse,
         isLoading,
@@ -114,7 +109,7 @@ export default function InvoiceDashboard() {
 
     const treasurySeries = dashboard.suivi_tresorerie?.series ?? [];
 
-    const treasuryData = {
+    const treasuryData: ChartData<"bar" | "line", number[], string> = {
         labels: treasurySeries.map((item) => item.month),
         datasets: [
             {
@@ -164,7 +159,7 @@ export default function InvoiceDashboard() {
         2500
     );
 
-    const treasuryOptions = {
+    const treasuryOptions: ChartOptions<"bar" | "line"> = {
         responsive: true,
         maintainAspectRatio: false,
         interaction: {
@@ -602,9 +597,10 @@ export default function InvoiceDashboard() {
                         </div>
 
                         <div className="h-[315px] px-4 pb-4 pt-6">
-                            <Bar
-                                data={treasuryData as any}
-                                options={treasuryOptions as any}
+                            <Chart
+                                type="bar"
+                                data={treasuryData}
+                                options={treasuryOptions}
                             />
                         </div>
                     </div>

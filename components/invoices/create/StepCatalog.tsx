@@ -18,6 +18,27 @@ import type {
     SetInvoiceItems,
 } from "./types";
 
+type CatalogApiItem = {
+    id?: string | number;
+    name?: unknown;
+    description?: unknown;
+    code?: unknown;
+    tax_group?: number;
+    tax_group_info?: {
+        rate?: unknown;
+        code?: unknown;
+        title?: unknown;
+        mention?: unknown;
+    };
+    price_before?: unknown;
+    price_after?: unknown;
+    currency?: unknown;
+};
+
+function text(value: unknown) {
+    return typeof value === "string" ? value : "";
+}
+
 export function StepCatalog({
                                 itemKind,
                                 items,
@@ -66,17 +87,17 @@ export function StepCatalog({
             ? fournituresData?.items ?? []
             : services?.items ?? [];
 
-        return sourceItems.map((item: any) => ({
-            id: item.id,
-            name: item.name,
-            description: item.description,
-            code: item.code,
+        return sourceItems.map((item: CatalogApiItem) => ({
+            id: Number(item.id),
+            name: text(item.name),
+            description: text(item.description),
+            code: text(item.code),
             type: itemKind,
             tax: Number(item.tax_group_info?.rate ?? 0),
             taxGroupId: item.tax_group,
-            taxGroupCode: item.tax_group_info?.code ?? "",
-            taxGroupTitle: item.tax_group_info?.title ?? "",
-            taxGroupMention: item.tax_group_info?.mention ?? "",
+            taxGroupCode: text(item.tax_group_info?.code),
+            taxGroupTitle: text(item.tax_group_info?.title),
+            taxGroupMention: text(item.tax_group_info?.mention),
             priceHT: Number(item.price_before ?? 0),
             priceTTC: Number(item.price_after ?? 0),
             currency: item.currency === "USD" ? "USD" : "CDF",
@@ -110,7 +131,7 @@ export function StepCatalog({
 
     const removeItem = (id: number) => {
         setItems((prev) =>
-            prev.filter((item) => item.type === itemKind && item.id !== id)
+            prev.filter((item) => item.type !== itemKind || item.id !== id)
         );
     };
 
@@ -126,7 +147,8 @@ export function StepCatalog({
             );
 
             if (existingItem) {
-                return sameKindItems.map((item) => {
+                return prev.map((item) => {
+                    if (item.type !== itemKind) return item;
                     if (item.id !== existingItem.id) return item;
 
                     if (item.type === "Article") {
@@ -171,7 +193,7 @@ export function StepCatalog({
                         : undefined,
             };
 
-            return [...sameKindItems, newItem];
+            return [...prev, newItem];
         });
 
         resetSelection();
@@ -179,10 +201,8 @@ export function StepCatalog({
 
     const updateArticleQuantity = (id: number, quantity: number) => {
         setItems((prev) =>
-            prev
-                .filter((item) => item.type === itemKind)
-                .map((item) =>
-                    item.id === id
+            prev.map((item) =>
+                    item.type === itemKind && item.id === id
                         ? {
                             ...item,
                             quantity:
@@ -206,10 +226,8 @@ export function StepCatalog({
         value: number
     ) => {
         setItems((prev) =>
-            prev
-                .filter((item) => item.type === itemKind)
-                .map((item) =>
-                    item.id === id
+            prev.map((item) =>
+                    item.type === itemKind && item.id === id
                         ? {
                             ...item,
                             [field]:
