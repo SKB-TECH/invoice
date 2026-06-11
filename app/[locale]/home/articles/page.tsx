@@ -32,7 +32,7 @@ function matchesArticleSearch(
     const q = query.trim().toLowerCase();
     if (!q) return true;
     const fields = [
-        row.navigationId,
+        String(row.id),
         row.code,
         row.title,
         row.referential,

@@ -1,4 +1,4 @@
-import type { OrdinaryReportKind } from "@/core/types/reports";
+import type { OrdinaryReportKind, ReportPreviewDisplay } from "@/core/types/reports";
 import { sanitizePdfText } from "@/lib/reports/report-locale-format";
 
 export type OrdinaryReportTableVariant =
@@ -7,6 +7,11 @@ export type OrdinaryReportTableVariant =
     | "payments"
     | "vat-collection"
     | "tool-usage";
+
+export type OrdinaryReportTableDisplay = Extract<
+    ReportPreviewDisplay,
+    { variant: OrdinaryReportTableVariant }
+>;
 
 export type OrdinaryReportTableRow = Record<string, string>;
 
@@ -257,6 +262,12 @@ export function isOrdinaryReportTableVariant(
     variant: string,
 ): variant is OrdinaryReportTableVariant {
     return variant in ORDINARY_REPORT_TABLE_CONFIGS;
+}
+
+export function isOrdinaryReportTableDisplay(
+    display: ReportPreviewDisplay,
+): display is OrdinaryReportTableDisplay {
+    return isOrdinaryReportTableVariant(display.variant);
 }
 
 export function getOrdinaryReportTableConfig(

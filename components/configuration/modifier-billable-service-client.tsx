@@ -44,7 +44,7 @@ export function ModifierBillableServiceClient({ serviceId }: Props) {
         );
     }
 
-    const visualiserPath = `/home/services/${encodeURIComponent(String(data.id))}/visualiser`;
+    const visualiserPath = `/home/services/${encodeURIComponent(data.code)}/visualiser`;
 
     return (
         <main className="relative w-full text-slate-700">

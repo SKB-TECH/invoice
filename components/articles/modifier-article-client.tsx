@@ -46,7 +46,7 @@ export function ModifierArticleClient({ articleId }: Props) {
     }
 
     const article = mapFournitureArticleToDetailRecord(data);
-    const visualiserPath = `/home/articles/${encodeURIComponent(article.idIkwook)}/visualiser`;
+    const visualiserPath = `/home/articles/${encodeURIComponent(article.code)}/visualiser`;
 
     return (
         <main className="relative w-full text-slate-700">

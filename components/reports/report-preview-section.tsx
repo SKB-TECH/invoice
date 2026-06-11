@@ -9,7 +9,7 @@ import { ReportOrdinaryTablePreview } from "@/components/reports/report-ordinary
 import type { ReportPreviewDisplay } from "@/core/types/reports";
 import {
     getOrdinaryReportTableConfig,
-    isOrdinaryReportTableVariant,
+    isOrdinaryReportTableDisplay,
 } from "@/lib/reports/ordinary-report-configs";
 
 type Props = {
@@ -17,6 +17,7 @@ type Props = {
     onBack: () => void;
     onDownload: () => void;
     disabled?: boolean;
+    documentLayout?: "default" | "ordinary";
 };
 
 export function ReportPreviewSection({
@@ -24,6 +25,7 @@ export function ReportPreviewSection({
     onBack,
     onDownload,
     disabled,
+    documentLayout = "default",
 }: Props) {
     const t = useTranslations("reports");
 
@@ -55,11 +57,19 @@ export function ReportPreviewSection({
                     content={display.content}
                     scope="reportZ"
                 />
-            ) : isOrdinaryReportTableVariant(display.variant) ? (
-                <ReportOrdinaryTablePreview
-                    content={display.content}
-                    config={getOrdinaryReportTableConfig(display.variant)}
-                />
+            ) : isOrdinaryReportTableDisplay(display) ? (
+                <div
+                    className={
+                        documentLayout === "ordinary"
+                            ? "w-full min-w-0 overflow-x-auto"
+                            : "w-full overflow-x-auto"
+                    }
+                >
+                    <ReportOrdinaryTablePreview
+                        content={display.content}
+                        config={getOrdinaryReportTableConfig(display.variant)}
+                    />
+                </div>
             ) : (
                 <ReportDocumentPreview display={display} />
             )}

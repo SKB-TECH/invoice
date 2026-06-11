@@ -174,7 +174,7 @@ export function ServiceVisualiserClient({ serviceId }: Props) {
 
                 <VisualiserServiceActions
                     serviceId={data.id}
-                    modifierPath={`/home/services/${encodeURIComponent(String(data.id))}/modifier`}
+                    modifierPath={`/home/services/${encodeURIComponent(data.code)}/modifier`}
                 />
             </div>
         </main>
