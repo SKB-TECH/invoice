@@ -17,6 +17,7 @@ type Props = {
     onBack: () => void;
     onDownload: () => void;
     disabled?: boolean;
+    documentLayout?: "default" | "ordinary";
 };
 
 export function ReportPreviewSection({
@@ -24,6 +25,7 @@ export function ReportPreviewSection({
     onBack,
     onDownload,
     disabled,
+    documentLayout = "default",
 }: Props) {
     const t = useTranslations("reports");
 
@@ -56,10 +58,18 @@ export function ReportPreviewSection({
                     scope="reportZ"
                 />
             ) : isOrdinaryReportTableDisplay(display) ? (
-                <ReportOrdinaryTablePreview
-                    content={display.content}
-                    config={getOrdinaryReportTableConfig(display.variant)}
-                />
+                <div
+                    className={
+                        documentLayout === "ordinary"
+                            ? "w-full min-w-0 overflow-x-auto"
+                            : "w-full overflow-x-auto"
+                    }
+                >
+                    <ReportOrdinaryTablePreview
+                        content={display.content}
+                        config={getOrdinaryReportTableConfig(display.variant)}
+                    />
+                </div>
             ) : (
                 <ReportDocumentPreview display={display} />
             )}

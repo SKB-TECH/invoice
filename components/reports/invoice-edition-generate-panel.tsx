@@ -227,12 +227,20 @@ export function InvoiceEditionGeneratePanel() {
                 onBack={clearPreview}
                 onDownload={handleDownload}
                 disabled={isGenerating}
+                documentLayout="ordinary"
             />
         );
     }
 
     return (
-        <>
+        <div className="rounded border border-slate-200 bg-white">
+            <div className="border-b border-slate-200 px-5 py-4">
+                <h2 className="text-[16px] font-semibold text-slate-900">
+                    {t("menu.invoiceEdition")}
+                </h2>
+            </div>
+
+            <div className="px-5 py-5">
             <p className="mb-5 max-w-3xl text-[13px] leading-relaxed text-slate-500">
                 {tFlow("generate.intro")}
             </p>
@@ -377,6 +385,7 @@ export function InvoiceEditionGeneratePanel() {
                     )}
                 </button>
             </div>
-        </>
+            </div>
+        </div>
     );
 }
