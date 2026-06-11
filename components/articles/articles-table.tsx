@@ -65,7 +65,7 @@ export function ArticlesTable({ rows, className }: ArticlesTableProps) {
                 <TableBody>
                     {rows.map((row) => (
                         <TableRow
-                            key={row.navigationId}
+                            key={row.id}
                             className="border-slate-200 hover:bg-slate-50/80"
                         >
                             {COLUMN_ORDER.map((key) => (

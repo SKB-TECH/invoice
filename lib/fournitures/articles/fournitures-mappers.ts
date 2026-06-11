@@ -188,6 +188,7 @@ export function mapFournitureToTableRow(
     );
 
     return {
+        id: item.id,
         navigationId: item.code,
         code: item.code,
         title: item.name,
