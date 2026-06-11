@@ -1,22 +1,16 @@
 "use client";
 
-import { Suspense, useEffect, useMemo } from "react";
+import { Suspense, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 
 import { useRouter } from "@/i18n/routing";
-import { SpecialAReportPanel } from "@/components/reports/special-a-report-panel";
-import { SpecialXzReportPanel } from "@/components/reports/special-xz-report-panel";
-import {
-    ReportsPageFallback,
-    ReportsPageShell,
-    type ReportsMenuId,
-} from "@/components/reports/reports-page-shell";
+import { ReportsPageFallback } from "@/components/reports/reports-page-shell";
 
-function isSpecialReportsMenuId(
-    v: string | null,
-): v is Exclude<ReportsMenuId, "invoiceEdition"> {
-    return v === "reportXDaily" || v === "reportA";
-}
+const MENU_REDIRECTS: Record<string, string> = {
+    invoiceEdition: "/home/reports/ordinary",
+    reportXDaily: "/home/reports/type-xz",
+    reportA: "/home/reports/type-a",
+};
 
 function ReportsPageInner() {
     const router = useRouter();
@@ -24,31 +18,17 @@ function ReportsPageInner() {
     const menuQuery = searchParams.get("menu");
 
     useEffect(() => {
-        if (menuQuery !== "invoiceEdition") return;
-
         const q = new URLSearchParams(searchParams.toString());
         q.delete("menu");
-        q.delete("generate");
+
+        const target =
+            (menuQuery && MENU_REDIRECTS[menuQuery]) ?? "/home/reports/type-xz";
         const suffix = q.toString();
-        router.replace(
-            suffix ? `/home/reports/ordinary?${suffix}` : "/home/reports/ordinary",
-        );
+
+        router.replace(suffix ? `${target}?${suffix}` : target);
     }, [menuQuery, router, searchParams]);
 
-    const activeMenu = useMemo((): Exclude<ReportsMenuId, "invoiceEdition"> => {
-        return isSpecialReportsMenuId(menuQuery) ? menuQuery : "reportXDaily";
-    }, [menuQuery]);
-
-    if (menuQuery === "invoiceEdition") {
-        return <ReportsPageFallback />;
-    }
-
-    return (
-        <ReportsPageShell>
-            {activeMenu === "reportXDaily" && <SpecialXzReportPanel />}
-            {activeMenu === "reportA" && <SpecialAReportPanel />}
-        </ReportsPageShell>
-    );
+    return <ReportsPageFallback />;
 }
 
 export default function ReportsPage() {

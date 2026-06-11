@@ -18,14 +18,14 @@ export function SpecialAReportPanel() {
 
     const goToGenerate = () => {
         const q = new URLSearchParams(searchParams.toString());
-        q.set("menu", "reportA");
+        q.delete("menu");
         q.set("generate", "1");
         router.push(`${pathname}?${q.toString()}`);
     };
 
     const goToList = () => {
         const q = new URLSearchParams(searchParams.toString());
-        q.set("menu", "reportA");
+        q.delete("menu");
         q.delete("generate");
         const suffix = q.toString();
         router.replace(suffix ? `${pathname}?${suffix}` : pathname);

@@ -1,7 +1,6 @@
 "use client";
 
 import type { ReactNode } from "react";
-import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 
 import { Link, usePathname } from "@/i18n/routing";
@@ -13,9 +12,16 @@ const MENU_ITEMS: Array<{
     href: string;
 }> = [
     { id: "invoiceEdition", href: "/home/reports/ordinary" },
-    { id: "reportXDaily", href: "/home/reports" },
-    { id: "reportA", href: "/home/reports?menu=reportA" },
+    { id: "reportXDaily", href: "/home/reports/type-xz" },
+    { id: "reportA", href: "/home/reports/type-a" },
 ];
+
+function getActiveMenu(pathname: string): ReportsMenuId {
+    if (pathname === "/home/reports/ordinary") return "invoiceEdition";
+    if (pathname === "/home/reports/type-a") return "reportA";
+    if (pathname === "/home/reports/type-xz") return "reportXDaily";
+    return "reportXDaily";
+}
 
 type Props = {
     children: ReactNode;
@@ -25,15 +31,7 @@ type Props = {
 export function ReportsPageShell({ children, contentClassName }: Props) {
     const t = useTranslations("reports");
     const pathname = usePathname();
-    const searchParams = useSearchParams();
-    const menuQuery = searchParams.get("menu");
-
-    const activeMenu: ReportsMenuId =
-        pathname === "/home/reports/ordinary"
-            ? "invoiceEdition"
-            : menuQuery === "reportA"
-              ? "reportA"
-              : "reportXDaily";
+    const activeMenu = getActiveMenu(pathname);
 
     return (
         <main className="min-h-0 bg-white px-6 py-8 text-slate-800">
