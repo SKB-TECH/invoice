@@ -671,6 +671,18 @@ export const authService = {
     },
 
     async logout() {
+        const refreshToken = getCookieOrLocalStorage(AUTH_REFRESH_TOKEN_KEY);
+
+        try {
+            if (refreshToken) {
+                await api.post("/auth/logout", {
+                    refresh_token: refreshToken,
+                });
+            }
+        } catch {
+            // La session locale est quand même effacée si l'API échoue.
+        }
+
         authService.clearSession();
     },
 };
