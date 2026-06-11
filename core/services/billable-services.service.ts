@@ -226,9 +226,9 @@ export const billableServicesService = {
         return normalizeBillableService(raw);
     },
 
-    async getById(id: number): Promise<BillableServiceItem> {
+    async fetchServiceByPathKey(key: string): Promise<BillableServiceItem> {
         const { data } = await api.get<unknown>(
-            `${SERVICES_PATH}/${encodeURIComponent(String(id))}`,
+            `${SERVICES_PATH}/${encodeURIComponent(key)}`,
         );
         const raw =
             data &&
@@ -238,6 +238,34 @@ export const billableServicesService = {
                 ? (data as { data: unknown }).data
                 : unwrapApiData<unknown>(data) ?? data;
         return normalizeBillableService(raw);
+    },
+
+    async getByKey(key: string): Promise<BillableServiceItem> {
+        const trimmed = key.trim();
+        if (!trimmed) {
+            throw new Error("Service key is required.");
+        }
+
+        try {
+            return await this.fetchServiceByPathKey(trimmed);
+        } catch (error) {
+            const numericId = Number(trimmed);
+            if (Number.isFinite(numericId) && numericId > 0) {
+                throw error;
+            }
+
+            const { items } = await this.list({ perPage: 500 });
+            const match = items.find((item) => item.code === trimmed);
+            if (!match?.id) {
+                throw error;
+            }
+
+            return this.fetchServiceByPathKey(String(match.id));
+        }
+    },
+
+    async getById(id: number): Promise<BillableServiceItem> {
+        return this.fetchServiceByPathKey(String(id));
     },
 
     async update(

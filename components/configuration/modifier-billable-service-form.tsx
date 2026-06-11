@@ -112,7 +112,7 @@ export function ModifierBillableServiceForm({ service }: Props) {
         onSuccess: () => {
             toast.success(tEdit("toastSaved"));
             router.push(
-                `/home/services/${encodeURIComponent(String(service.id))}/visualiser`,
+                `/home/services/${encodeURIComponent(service.code)}/visualiser`,
             );
         },
         onError: (err) =>
@@ -389,7 +389,7 @@ export function ModifierBillableServiceForm({ service }: Props) {
                     }
                     onCancel={() =>
                         router.push(
-                            `/home/services/${encodeURIComponent(String(service.id))}/visualiser`,
+                            `/home/services/${encodeURIComponent(service.code)}/visualiser`,
                         )
                     }
                     onSubmit={handleSubmit}

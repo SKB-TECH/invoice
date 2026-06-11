@@ -1,16 +1,15 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { fetchFournitureById } from "@/core/services/fournitures.service";
+import { fetchFournitureByKey } from "@/core/services/fournitures.service";
 
-export function useFournitureDetail(rawId: string) {
-    const id = decodeURIComponent(rawId);
-    const numericId = Number(id);
-    const enabled = Number.isFinite(numericId) && numericId > 0;
+export function useFournitureDetail(rawKey: string) {
+    const key = decodeURIComponent(rawKey).trim();
+    const enabled = key.length > 0;
 
     return useQuery({
-        queryKey: ["fournitures", "detail", id],
-        queryFn: () => fetchFournitureById(numericId),
+        queryKey: ["fournitures", "detail", key],
+        queryFn: () => fetchFournitureByKey(key),
         enabled,
     });
 }

@@ -61,7 +61,7 @@ export function ArticleVisualiserClient({ articleId }: Props) {
 
     const article = mapFournitureArticleToDetailRecord(data);
     const devise = formatDeviseLibelle(article.devise);
-    const basePath = `/home/articles/${encodeURIComponent(article.idIkwook)}`;
+    const basePath = `/home/articles/${encodeURIComponent(article.code)}`;
 
     return (
         <main className="relative w-full text-slate-700">
