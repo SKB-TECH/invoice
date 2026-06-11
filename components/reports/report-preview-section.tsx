@@ -9,7 +9,7 @@ import { ReportOrdinaryTablePreview } from "@/components/reports/report-ordinary
 import type { ReportPreviewDisplay } from "@/core/types/reports";
 import {
     getOrdinaryReportTableConfig,
-    isOrdinaryReportTableVariant,
+    isOrdinaryReportTableDisplay,
 } from "@/lib/reports/ordinary-report-configs";
 
 type Props = {
@@ -55,7 +55,7 @@ export function ReportPreviewSection({
                     content={display.content}
                     scope="reportZ"
                 />
-            ) : isOrdinaryReportTableVariant(display.variant) ? (
+            ) : isOrdinaryReportTableDisplay(display) ? (
                 <ReportOrdinaryTablePreview
                     content={display.content}
                     config={getOrdinaryReportTableConfig(display.variant)}

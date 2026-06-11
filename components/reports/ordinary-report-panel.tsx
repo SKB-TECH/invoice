@@ -83,11 +83,6 @@ export function OrdinaryReportPanel({ panelId }: Props) {
         | InvoicePaymentsReportFilters
         | VatCollectionReportFilters
         | ToolUsageReportFilters => {
-        const period = {
-            date_from: dateFrom.trim() || undefined,
-            date_to: dateTo.trim() || undefined,
-        };
-
         switch (panelId) {
             case "invoiceEdition":
                 return {
@@ -105,19 +100,21 @@ export function OrdinaryReportPanel({ panelId }: Props) {
                 };
             case "invoicePayments":
                 return {
-                    ...period,
                     client_id: parseOptionalId(clientId),
-                    payment_status: paymentStatus.trim() || undefined,
+                    period_start: dateFrom.trim() || undefined,
+                    period_end: dateTo.trim() || undefined,
                 };
             case "vatCollection":
                 return {
-                    ...period,
-                    payment_status: paymentStatus.trim() || undefined,
-                    invoice_type_code: invoiceTypeCode.trim() || undefined,
+                    period_start: dateFrom.trim() || undefined,
+                    period_end: dateTo.trim() || undefined,
                     client_id: parseOptionalId(clientId),
                 };
             case "toolUsage":
-                return period;
+                return {
+                    period_start: dateFrom.trim() || undefined,
+                    period_end: dateTo.trim() || undefined,
+                };
         }
     };
 

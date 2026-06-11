@@ -17,7 +17,6 @@ import type { ReportPreviewDisplay } from "@/core/types/reports";
 import type { OrdinaryReportTablePdfLabels } from "@/lib/reports/ordinary-report-configs";
 import {
     getOrdinaryReportTableConfig,
-    isOrdinaryReportTableVariant,
     type OrdinaryReportTableVariant,
 } from "@/lib/reports/ordinary-report-configs";
 
@@ -89,17 +88,13 @@ export async function buildReportPdfBlob(
         return pdf(document).toBlob();
     }
 
-    if (isOrdinaryReportTableVariant(display.variant)) {
-        const config = getOrdinaryReportTableConfig(display.variant);
-        const document = (
-            <ReportOrdinaryTablePdfDocument
-                content={display.content}
-                config={config}
-                labels={labels.ordinary[display.variant]}
-            />
-        );
-        return pdf(document).toBlob();
-    }
-
-    throw new Error(`Unsupported report preview variant: ${display.variant}`);
+    const config = getOrdinaryReportTableConfig(display.variant);
+    const document = (
+        <ReportOrdinaryTablePdfDocument
+            content={display.content}
+            config={config}
+            labels={labels.ordinary[display.variant]}
+        />
+    );
+    return pdf(document).toBlob();
 }
