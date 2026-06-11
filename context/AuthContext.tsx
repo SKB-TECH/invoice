@@ -266,12 +266,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const logout = async () => {
         await logoutMutation.mutateAsync();
 
-        authService.clearSession();
         queryClient.setQueryData(["auth", "session"], null);
 
         if (typeof window !== "undefined") {
-            localStorage.removeItem("auth_refresh_token");
-            window.location.replace("/sign-in");
+            window.location.replace("/");
         }
     };
 
