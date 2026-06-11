@@ -44,7 +44,7 @@ export function Navbar() {
                     href="/"
                     className="flex h-20 shrink-0 items-center gap-2 bg-[#0073C5] px-5 md:px-8"
                 >
-                    <Image alt="logo" src="/invoiceb.png" width={160} height={160} />
+                    <Image alt="logo" src="/invoiceb.png" width={160} height={160} priority={true} />
                 </Link>
 
                 <div className="relative flex min-w-0 flex-1 items-center bg-[#0073C5] text-white">
