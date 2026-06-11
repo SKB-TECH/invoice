@@ -17,15 +17,18 @@ import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import {
     ChevronRight,
+    LogOut,
     Menu,
 } from "lucide-react";
 import { menuItems } from "@/core/data";
 import LanguageSwitcher from "@/components/shared/OtherComponents/LanguageSwitcher";
+import { useAuth } from "@/context/AuthContext";
 import { AppLauncher } from "@/components/shared/OtherComponents/AppLauncher";
 import { NotificationsDropdown } from "@/components/shared/OtherComponents/NotificationsDropdown";
 
 export function Navbar() {
     const t = useTranslations("navbar");
+    const { logout } = useAuth();
 
     const [isOpen, setIsOpen] = React.useState(false);
     const [openMobileSubmenu, setOpenMobileSubmenu] =
@@ -114,7 +117,17 @@ export function Navbar() {
 
                         <NotificationsDropdown />
 
-                        <LanguageSwitcher />
+                        <div className="flex flex-col gap-4 md:flex-row">
+                            <LanguageSwitcher />
+                                <button
+                                type="button"
+                                onClick={() => void logout()}
+                                className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-white transition-colors cursor-pointer"
+                                aria-label="Déconnexion"
+                                >
+                                    <LogOut className="h-6 w-6 text-white" />
+                                </button>
+                        </div>
 
                         <Sheet open={isOpen} onOpenChange={setIsOpen}>
                             <SheetTrigger asChild className="lg:hidden">
