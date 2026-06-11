@@ -10,6 +10,9 @@ import { Providers } from "@/core/config/providers/providers";
 export const metadata: Metadata = {
     title: "invoice",
     description: "iKwook invoice",
+    icons: {
+        icon: "/invoiceb.png",
+    },
 };
 
 export default async function RootLayout({
