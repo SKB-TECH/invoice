@@ -1,0 +1,56 @@
+{
+  "common": {
+    "welcome": "Karibu",
+    "login": "Ingia",
+    "logout": "Toka",
+    "dashboard": "Dashibodi"
+  },
+  "register": {
+    "heroText": "Fungua akaunti yako na usimamie wateja, mikataba na ankara kwa kutumia iKwook Invoice.",
+    "title": "Fungua akaunti",
+    "subtitle": "Chagua wasifu wako na ujaze taarifa za kwanza.",
+    "continue": "Endelea",
+    "alreadyHaveAccount": "Una akaunti tayari?",
+    "login": "Ingia",
+    "profiles": {
+      "company": "Kampuni",
+      "sme": "SME",
+      "personal": "Binafsi"
+    },
+    "fields": {
+      "companyName": "Jina la kampuni",
+      "rccm": "RCCM",
+      "nif": "NIF",
+      "fullName": "Majina kamili",
+      "email": "Barua pepe",
+      "phone": "Simu",
+      "password": "Nenosiri",
+      "confirmPassword": "Thibitisha nenosiri"
+    },
+    "placeholders": {
+      "companyName": "Mf: iKwook SARL",
+      "rccm": "Mf: CD/KIN/RCCM/...",
+      "nif": "Mf: A1234567",
+      "fullName": "Mf: Benjamin Shako",
+      "email": "email@ikwook.cd",
+      "phone": "+243 000 000 000",
+      "password": "********"
+    }
+  },
+  "navbar": {
+    "openMenu": "Fungua menyu",
+    "Accueil": "Nyumbani",
+    "Facture": "Ankara",
+    "MesFactures": "Ankara zangu",
+    "NouvelleFacture": "Ankara mpya",
+    "Article": "Bidhaa",
+    "NouvelArticle": "Bidhaa mpya",
+    "Visualiser": "Tazama",
+    "Client": "Mteja",
+    "NouveauClient": "Mteja mpya",
+    "Contrat": "Mkataba",
+    "NouveauContrat": "Mkataba mpya",
+    "Configuration": "Mipangilio",
+    "Aide": "Msaada"
+  }
+}

@@ -80,7 +80,6 @@ type Props<T> = {
     error?: string;
     pagination?: ServerPagination;
     selection?: TableSelection<T>;
-    getRowId?: (r: any) => any;
 };
 
 function TableSkeleton({ cols, rows = 8 }: { cols: number; rows?: number }) {
@@ -120,7 +119,6 @@ export default function ResponsiveTable<T>({
                                                error,
                                                pagination,
                                                selection,
-                                               getRowId,
                                            }: Props<T>) {
     const selectionEnabled = !!selection?.enabled;
     const rowIdsOnPage = useMemo(() => {
@@ -289,9 +287,10 @@ export default function ResponsiveTable<T>({
                                             selectionEnabled && selection
                                                 ? selection.getRowId(row, index)
                                                 : index;
-                                        const isSelected = selectionEnabled
-                                            ? selection!.selectedIds.includes(id as any)
-                                            : false;
+                                        const isSelected =
+                                            selectionEnabled && selection
+                                                ? selection.selectedIds.includes(id)
+                                                : false;
 
                                         return (
                                             <TableRow
@@ -309,7 +308,7 @@ export default function ResponsiveTable<T>({
                                                             type="checkbox"
                                                             className="h-4 w-4 accent-primary"
                                                             checked={isSelected}
-                                                            onChange={() => toggleRow(id as any)}
+                                                            onChange={() => toggleRow(id)}
                                                         />
                                                     </TableCell>
                                                 ) : null}

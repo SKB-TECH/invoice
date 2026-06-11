@@ -1,0 +1,1586 @@
+{
+  "common": {
+    "welcome": "Bienvenue",
+    "login": "Connexion"
+  },
+  "register": {
+    "title": "Créer un compte",
+    "subtitle": "Choisissez votre profil et renseignez vos informations.",
+    "heroText": "Créez votre compte et accédez à une gestion simple, moderne et adaptée à vos besoins.",
+    "continue": "Continuer",
+    "alreadyHaveAccount": "Vous avez déjà un compte ?",
+    "login": "Se connecter",
+
+    "profiles": {
+      "company": "Entreprise",
+      "sme": "PME",
+      "personal": "Personnel"
+    },
+
+    "fields": {
+      "companyName": "Nom de l’entreprise",
+      "rccm": "RCCM",
+      "firstName": "Prénom",
+      "lastName": "Nom",
+      "nif": "NIF",
+      "companyRole": "Votre rôle",
+      "businessSector": "Secteur d’activité",
+      "companySize": "Taille de l’entreprise",
+      "fullName": "Nom complet",
+      "email": "Adresse email",
+      "phone": "Téléphone",
+      "password": "Mot de passe",
+      "confirmPassword": "Confirmer le mot de passe"
+    },
+
+    "placeholders": {
+      "companyName": "Saisissez le nom de l’entreprise",
+      "rccm": "Saisissez le RCCM",
+      "firstName": "Saisissez votre prénom",
+      "lastName": "Saisissez votre nom",
+      "nif": "Exemple : A1200001Z",
+      "companyRole": "Sélectionnez votre rôle",
+      "businessSector": "Sélectionnez un secteur",
+      "companySize": "Sélectionnez la taille de l’entreprise",
+      "fullName": "Saisissez votre nom complet",
+      "email": "Saisissez votre adresse email",
+      "phone": "Saisissez votre numéro de téléphone",
+      "password": "Saisissez votre mot de passe",
+      "confirmPassword": "Confirmez votre mot de passe"
+    },
+
+    "companyRoles": {
+      "it": "Informaticien",
+      "sales": "Commercial",
+      "owner": "Propriétaire",
+      "manager": "Gérant",
+      "other": "Autre"
+    },
+
+    "businessSectors": {
+      "bankingInsurance": "Banque & Assurance",
+      "restaurantsHotels": "Restaurants & Hôtels",
+      "tradeDistribution": "Commerce & Distribution",
+      "technologyIt": "Technologie & Informatique",
+      "health": "Santé",
+      "education": "Éducation",
+      "constructionRealEstate": "Construction & Immobilier",
+      "transportLogistics": "Transport & Logistique",
+      "industry": "Industrie",
+      "other": "Autre"
+    },
+
+    "companySizes": {
+      "oneToTen": "1 à 10 employés",
+      "elevenToFifty": "11 à 50 employés",
+      "fiftyOneToTwoHundred": "51 à 200 employés",
+      "twoHundredOneToFiveHundred": "201 à 500 employés",
+      "moreThanFiveHundred": "Plus de 500 employés"
+    },
+
+    "validation": {
+      "fullNameRequired": "Le nom complet est requis.",
+      "emailRequired": "L’adresse email est requise.",
+      "phoneRequired": "Le numéro de téléphone est requis.",
+      "phoneInvalid": "Le numéro de téléphone est invalide.",
+      "passwordRequired": "Le mot de passe est requis.",
+      "passwordMin": "Le mot de passe doit contenir au moins 8 caractères.",
+      "confirmPasswordRequired": "Veuillez confirmer le mot de passe.",
+      "passwordsMismatch": "Les mots de passe ne correspondent pas.",
+      "companyNameRequired": "Le nom de l’entreprise est requis.",
+      "rccmRequired": "Le RCCM est requis.",
+      "nifRequired": "Le NIF est requis.",
+      "companyRoleRequired": "Veuillez sélectionner votre rôle.",
+      "businessSectorRequired": "Veuillez sélectionner un secteur d’activité.",
+      "companySizeRequired": "Veuillez sélectionner la taille de l’entreprise.",
+      "firstNameRequired": "Le prénom est requis.",
+      "lastNameRequired": "Le nom est requis.",
+      "emailInvalid": "Veuillez saisir une adresse email valide.",
+      "nifInvalid": "Le NIF doit respecter le format A1202401Z."
+    },
+
+    "loading": "Création du compte en cours..."
+  },
+  "navbar": {
+    "openMenu": "Ouvrir le menu",
+    "Accueil": "Accueil",
+    "Facture": "Facture",
+    "MesFactures": "Mes factures",
+    "NouvelleFacture": "Nouvelle facture",
+    "Catalogue": "Catalogue",
+    "Article": "Articles",
+    "Service": "Services",
+    "NouvelArticle": "Nouvel article",
+    "Visualiser": "Visualiser",
+    "Client": "Client",
+    "NouveauClient": "Nouveau client",
+    "Contrat": "Contrat",
+    "NouveauContrat": "Nouveau contrat",
+    "NouveauReferentiel": "Nouvelle entrée référentielle",
+    "Configuration": "Configuration",
+    "Reports": "Rapports",
+    "Aide": "Aide"
+  },
+  "login": {
+    "illustrationAlt": "illustration",
+    "logoAlt": "logo",
+    "description": "Gérez vos clients, contrats et factures en toute simplicité avec iKwook Invoice.",
+    "title": "Connexion",
+    "identifier": "Identifiant",
+    "identifierPlaceholder": "email@ikwook.cd",
+    "password": "Mot de passe",
+    "passwordPlaceholder": "********",
+    "submit": "Se connecter",
+    "noAccount": "Vous n'avez pas encore de compte ?",
+    "createAccount": "Cliquez ici pour créer votre compte",
+    "loading": "Chargement en cours..."
+  },
+  "invoicesPage": {
+    "breadcrumb": {
+      "invoices": "Factures",
+      "view": "Visualiser"
+    },
+    "title": "Liste de factures",
+    "createInvoice": "Créer facture",
+    "payments": "Paiements",
+    "table": {
+      "invoice": "Invoice",
+      "client": "Client",
+      "article": "Article",
+      "amount": "Montant",
+      "status": "Statut",
+      "phone": "Téléphone",
+      "comments": "Commentaires",
+      "interactions": "Interactions",
+      "actions": "Actions",
+      "viewInvoice": "Détails de la facture",
+      "viewInteractions": "Voir les interactions"
+    },
+    "drawer": {
+      "reviewInvoice": "Review facture",
+      "amount": "Montant",
+      "status": "Statut",
+      "interactions": "Interactions",
+      "decision": "Décision",
+      "validate": "Valider",
+      "pause": "Pause",
+      "reject": "Rejeter",
+      "comments": "Commentaires",
+      "noComment": "Aucun commentaire pour cette facture.",
+      "addComment": "Ajouter un commentaire",
+      "commentPlaceholder": "Écrire un commentaire sur cette facture...",
+      "sendComment": "Envoyer le commentaire",
+      "you": "Vous",
+      "reviewer": "Reviewer",
+      "now": "Maintenant"
+    }
+  },
+  "paymentsPage": {
+    "title": "Paiements",
+    "createTitle": "Nouveau paiement",
+    "backToList": "Retour à la liste",
+    "backToInvoices": "Retour aux factures",
+    "recordPayment": "Effectuer un paiement",
+    "loading": "Chargement des paiements…",
+    "loadError": "Impossible de charger les paiements.",
+    "empty": "Aucun paiement pour le moment.",
+    "breadcrumb": {
+      "invoices": "Factures",
+      "payments": "Paiements"
+    },
+    "table": {
+      "paymentReference": "Référence du paiement",
+      "invoiceName": "Référence de la facture",
+      "amountWithCurrency": "Montant",
+      "date": "Date"
+    },
+    "pagination": {
+      "summary": "Page {page} / {totalPages} — {total} paiement(s)",
+      "prev": "Précédent",
+      "next": "Suivant"
+    },
+    "sheet": {
+      "title": "Nouveau paiement",
+      "description": "Renseignez les informations puis validez pour enregistrer le paiement côté serveur."
+    },
+    "stepper": {
+      "step1": "Facture et contrat",
+      "step2": "Détails du paiement"
+    },
+    "step1": {
+      "title": "Effectuer un paiement",
+      "subtitle": "Choisissez la facture concernée et vérifiez le contrat associé."
+    },
+    "step2": {
+      "title": "Montant et moyen de paiement",
+      "subtitle": "Indiquez le montant, la devise et les informations de règlement."
+    },
+    "form": {
+      "invoice": "Facture",
+      "invoicePlaceholder": "Sélectionnez une facture",
+      "invoiceSearchPlaceholder": "Rechercher une facture (référence, client…)",
+      "invoiceSearchEmpty": "Aucune facture ne correspond.",
+      "loadingInvoices": "Chargement des factures…",
+      "invoicesLoadError": "Impossible de charger les factures.",
+      "client": "Client",
+      "contract": "Contrat",
+      "contractPlaceholder": "Sélectionnez un contrat",
+      "amount": "Montant",
+      "amountPlaceholder": "Ex. 250",
+      "currency": "Devise",
+      "channel": "Canal",
+      "channelPlaceholder": "Canal de paiement",
+      "method": "Méthode",
+      "methodPlaceholder": "Méthode de paiement",
+      "exchangeRate": "Taux de change",
+      "cashInfo": "Informations caisse",
+      "collector": "Collecteur",
+      "drawer": "Tiroir-caisse",
+      "cancel": "Annuler",
+      "next": "Suivant",
+      "back": "Précédent",
+      "loadingChannels": "Chargement des canaux…",
+      "loadingMethods": "Chargement des méthodes…",
+      "noChannels": "Aucun canal disponible",
+      "noMethods": "Aucune méthode disponible",
+      "noContracts": "Aucun contrat disponible",
+      "contractNeedsInvoice": "Choisissez d’abord une facture",
+      "success": "Paiement enregistré avec succès.",
+      "submit": "Valider le paiement",
+      "submitting": "Envoi…",
+      "submitErrorFallback": "Échec de l’enregistrement du paiement.",
+      "invoiceTotalHint": "Balance restante de la facture : {amount}"
+    },
+    "validation": {
+      "invoiceRequired": "Veuillez sélectionner une facture.",
+      "contractRequired": "Veuillez sélectionner un contrat.",
+      "amountInvalid": "Montant invalide.",
+      "amountExceedsInvoice": "Le montant ne peut pas dépasser la balance restante ({max}).",
+      "amountWithinBalance": "Le montant est valide (balance restante : {max}).",
+      "amountChecking": "Vérification du montant…",
+      "currencyRequired": "La devise est requise.",
+      "channelRequired": "Veuillez sélectionner un canal.",
+      "methodRequired": "Veuillez sélectionner une méthode.",
+      "exchangeRateInvalid": "Taux de change invalide."
+    }
+  },
+  "invoiceViewer": {
+    "breadcrumbInvoices": "Factures",
+    "breadcrumbView": "Visualisation",
+    "print": "Imprimer",
+    "download": "Télécharger",
+    "share": "Partager",
+    "documentPreview": "Aperçu de la facture",
+    "documentHelp": "La facture reste visible pendant la review, comme un document partagé.",
+    "invoice": "Facture",
+    "billedTo": "Facturé à",
+    "createdAt": "Date création",
+    "dueDate": "Échéance",
+    "status": "Statut",
+    "amount": "Montant",
+    "designation": "Désignation",
+    "quantity": "Qté",
+    "unitPrice": "Prix unitaire",
+    "lineTotal": "Total",
+    "subtotal": "Sous-total",
+    "tax": "TVA",
+    "total": "Total",
+    "note": "Note",
+    "noteText": "Cette facture est soumise à validation interne avant transmission finale au client.",
+    "reviewAndComments": "Review et commentaires",
+    "reviewHelp": "Suivez les remarques des validateurs et ajoutez votre commentaire.",
+    "decision": "Décision",
+    "validate": "Valider",
+    "pause": "Pause",
+    "reject": "Rejeter",
+    "interactions": "Interactions",
+    "comments": "Commentaires",
+    "noComment": "Aucun commentaire pour cette facture.",
+    "resolve": "Marquer comme résolu",
+    "resolved": "Résolu",
+    "addComment": "Ajouter un commentaire",
+    "commentPlaceholder": "Écrire un commentaire sur cette facture...",
+    "sendComment": "Envoyer le commentaire",
+    "you": "Vous",
+    "reviewer": "Reviewer",
+    "now": "Maintenant"
+  },
+  "createInvoice": {
+    "title": "Créer la facture",
+    "breadcrumb": {
+      "home": "Accueil",
+      "createInvoice": "Créer la facture"
+    },
+    "common": {
+      "select": "Sélectionnez",
+      "add": "Ajouter",
+      "next": "Suivant",
+      "previous": "Précédent",
+      "cancel": "Annuler",
+      "save": "Enregistrer",
+      "submit": "Soumettre",
+      "normalize": "Normaliser"
+    },
+    "steps": {
+      "client": "Informations client",
+      "preview": "Prévisualisation",
+      "comment": "Commentaire"
+    },
+    "kind": {
+      "article": "Article",
+      "service": "Service"
+    },
+    "invoiceTypes": {
+      "sale": "Vente",
+      "creditNote": "Avoir",
+      "proforma": "Proforma"
+    },
+    "client": {
+      "client": "Client",
+      "searchPlaceholder": "Rechercher ou sélectionnez un client",
+      "empty": "Aucun client trouvé",
+      "clientName": "Nom client",
+      "nif": "Numéro Impôt / NIF",
+      "rccm": "RCCM",
+      "idNat": "ID NAT",
+      "address": "Adresse",
+      "phone": "Téléphone",
+      "email": "E-mail",
+      "invoiceType": "Type de facture",
+      "invoiceTypePlaceholder": "Vente ou Avoir",
+      "itemKind": "Article ou Service"
+    },
+    "catalog": {
+      "searchArticle": "Recherche article",
+      "searchService": "Recherche service",
+      "loading": "Recherche en cours...",
+      "empty": "Aucun résultat trouvé",
+      "dailyService": "Service journalier",
+      "noArticle": "Aucun article ajouté.",
+      "noService": "Aucun service ajouté."
+    },
+    "table": {
+      "number": "N°",
+      "quantity": "Qté",
+      "tax": "Taxe",
+      "priceHT": "Prix HT",
+      "men": "Hommes",
+      "days": "Jours",
+      "dailyPrice": "Prix journalier",
+      "dailyPriceShort": "Prix/jour",
+      "totalHT": "Total HT"
+    },
+    "preview": {
+      "settings": "Paramètre",
+      "editClient": "Modifier le client",
+      "editArticles": "Modifier les articles",
+      "editServices": "Modifier les services",
+      "invoiceNumber": "Invoice n°101",
+      "date": "Date 02/11/2026"
+    },
+    "summary": {
+      "subtotal": "Sous-total",
+      "tax": "TVA",
+      "total": "Total"
+    }
+  },
+  "clients": {
+    "createClient": {
+      "breadcrumb": {
+        "Step1": "Clients",
+        "Step2": "Nouveau"
+      },
+      "title": "Nouveau client",
+      "form": {
+        "reference": "IDNAT",
+        "clientName": "Nom du client",
+        "referenceDocument": "Document de référence",
+        "businessSector": "Secteur d'activité",
+        "legalRepresentative": "Représentant légal",
+        "countryHint": "Code numérique (ex. 243)",
+        "countryPlaceholder": "Rechercher un pays…",
+        "countryLoading": "Chargement des pays…",
+        "countryLoadError": "Impossible de charger les pays.",
+        "clientTypePlaceholder": "Choisir un type",
+        "clientTypeLoading": "Chargement des types…",
+        "clientTypeLoadError": "Impossible de charger les types de client.",
+        "clientTypeEmpty": "Aucun type disponible",
+        "nom": "Nom client",
+        "sousTitre": "Sous titre",
+        "nif": "Numéro impôt/NIF",
+        "rccm": "RCCM",
+        "tel": "Téléphone",
+        "email": "Email",
+        "adresse": "Adresse",
+        "pays": "Pays",
+        "status": {
+          "title": "Statut",
+          "options": {
+            "actif": "Actif",
+            "suspendu": "Suspendu",
+            "complet": "Complet"
+          }
+        },
+        "type": {
+          "title": "Type de client",
+          "options": {
+            "ponctuel": "Ponctuel",
+            "entreprise": "Entreprise"
+          }
+        },
+        "annule": "Annuler",
+        "save": "Enregistrer"
+      }
+    },
+    "editClient": {
+      "breadcrumbStep": "Modifier",
+      "title": "Modifier le client",
+      "idnatLabel": "IDNAT",
+      "loading": "Chargement…",
+      "loadError": "Impossible de charger ce client.",
+      "retry": "Réessayer",
+      "backToList": "Retour à la liste"
+    },
+    "listClients": {
+      "breadcrumb": {
+        "Step1": "Clients",
+        "Step2": "Visualiser"
+      },
+      "title": "Liste de clients",
+      "btn": {
+        "new": "Nouveau client"
+      },
+      "search": {
+        "placeholder": "Rechercher par nom du client"
+      },
+      "table": {
+        "reference": "N° Référence",
+        "code": "Code",
+        "titre": "Titre",
+        "nif": "Numéro impôt/NIF",
+        "tel": "Téléphone",
+        "status": {
+          "title": "Statut",
+          "options": {
+            "actif": "Actif",
+            "suspendu": "Suspendu",
+            "complet": "Complet"
+          }
+        },
+        "type": {
+          "title": "Type de client",
+          "options": {
+            "ponctuel": "Ponctuel",
+            "entreprise": "Entreprise"
+          }
+        }
+      }
+    },
+    "view": {
+      "referenceLabel": "Réf.",
+      "loading": "Chargement…",
+      "loadError": "Impossible de charger ce client.",
+      "retry": "Réessayer",
+      "backToList": "Retour à la liste",
+      "fields": {
+        "displayName": "Nom affiché",
+        "subtitle": "Sous-titre",
+        "status": "Statut",
+        "clientType": "Type de client",
+        "idnat": "IDNAT",
+        "referenceDocument": "Document de référence",
+        "firstName": "Prénom",
+        "lastName": "Nom",
+        "businessSector": "Secteur d'activité",
+        "legalRepresentative": "Représentant légal",
+        "nif": "NIF",
+        "rccm": "RCCM",
+        "phone": "Téléphone",
+        "email": "E-mail",
+        "country": "Pays",
+        "address": "Adresse"
+      },
+      "actions": {
+        "backToList": "Retour à la liste",
+        "edit": "Modifier",
+        "delete": "Supprimer",
+        "deleteConfirm": "Supprimer définitivement ce client ?",
+        "deleteSuccess": "Client supprimé."
+      }
+    }
+  },
+  "contrats": {
+    "createContrat": {
+      "breadcrumb": {
+        "Step1": "Contrats",
+        "Step2": "Nouveau"
+      },
+      "title": "Nouveau contrat",
+      "form": {
+        "client": "Client",
+        "clientSearchPlaceholder": "Rechercher un client (nom, NIF, téléphone…)",
+        "clientSearchEmpty": "Aucun client ne correspond.",
+        "loadingClients": "Chargement des clients…",
+        "clientsLoadError": "Impossible de charger les clients.",
+        "reference": "N° Référence",
+        "nom": "Nom contrat",
+        "auto-renew": {
+          "title": "Renouvellement automatique",
+          "options": {
+            "oui": "Oui",
+            "non": "Non"
+          }
+        },
+        "tel": "Téléphone",
+        "dateStart": "Date de début",
+        "dateEnd": "Date de fin",
+        "valeur": "Valeur du contrat",
+        "currency": "Devise",
+        "contractType": "Type de contrat",
+        "contractTypePlaceholder": "Sélectionner un type de contrat",
+        "loadingReferentials": "Chargement des référentiels…",
+        "billingCycle": "Cycle de facturation",
+        "amountByCycle": "Montant {cycle}",
+        "monthly": "Mensuel",
+        "paid": "Payé",
+        "contractFile": "Fichier du contrat",
+        "contractFileOptional": "Fichier contractuel (optionnel)",
+        "itemsTemplate": "Gabarit des lignes (JSON)",
+        "billingCycles": {
+          "one_shot": "Unique",
+          "monthly": "Mensuel",
+          "quarterly": "Trimestriel",
+          "half_yearly": "Semestriel",
+          "yearly": "Annuel"
+        },
+        "errors": {
+          "invalidJson": "JSON invalide"
+        },
+        "status": {
+          "title": "Statut",
+          "options": {
+            "actif": "Actif",
+            "suspendu": "Suspendu",
+            "complet": "Complet"
+          }
+        },
+        "description": "Description"
+      },
+      "toast": {
+        "invalidJsonTemplate": "Le gabarit JSON est invalide.",
+        "created": "Contrat créé.",
+        "updated": "Contrat mis à jour."
+      },
+      "cancel": "Annuler",
+      "save": "Enregistrer"
+    },
+    "listContrats": {
+      "breadcrumb": {
+        "Step1": "Contrats",
+        "Step2": "Visualiser"
+      },
+      "title": "Liste de contrats",
+      "btn": {
+        "new": "Nouveau contrat"
+      },
+      "search": {
+        "placeholder": "Rechercher un contrat"
+      },
+      "table": {
+        "titre": "Titre",
+        "client": "Client",
+        "Montant": "Montant",
+        "status": {
+          "title": "Statut",
+          "options": {
+            "actif": "Actif",
+            "suspendu": "Suspendu",
+            "complet": "Complet"
+          }
+        },
+        "period": "Période"
+      }
+    },
+    "actions": {
+      "backToList": "Retour à la liste",
+      "delete": "Supprimer",
+      "edit": "Modifier",
+      "deleteConfirm": "Supprimer définitivement ce contrat ?",
+      "deleteSuccess": "Contrat supprimé."
+    }
+  },
+  "articles": {
+    "list": {
+      "title": "Articles",
+      "searchPlaceholder": "Recherche par code, titre, référentiel, groupe de taxe, prix HT, prix TTC…",
+      "searchAriaLabel": "Rechercher un article",
+      "loading": "Chargement des articles…",
+      "refreshing": "Mise à jour…",
+      "loadError": "Impossible de charger la liste des articles.",
+      "loadErrorDetail": "Impossible de charger cet article.",
+      "retry": "Réessayer",
+      "empty": "Aucun article ne correspond à votre recherche.",
+      "totalCount": "{count} article(s)",
+      "pageOfTotal": "Page {page} sur {totalPages}",
+      "paginationPrev": "Page précédente",
+      "paginationNext": "Page suivante",
+      "columns": {
+        "code": "Code",
+        "title": "Titre",
+        "referential": "Référentiel",
+        "taxGroup": "Groupe de taxe",
+        "priceHt": "Prix HT",
+        "priceTtc": "Prix TTC",
+        "status": "Statut",
+        "period": "Période"
+      },
+      "action": "Action",
+      "viewArticleDetail": "Voir le détail de l'article {id}",
+      "status": {
+        "suspendu": "Suspendu",
+        "actif": "Actif",
+        "complet": "Complet"
+      }
+    },
+    "create": {
+      "breadcrumbNew": "Nouveau",
+      "fields": {
+        "name": "Nom",
+        "code": "Code",
+        "description": "Description",
+        "priceExclTax": "Prix HT",
+        "priceInclTax": "Prix TTC",
+        "currency": "Devise",
+        "taxGroup": "Groupe de tax",
+        "specialPrice": "Prix spécial / Promotion",
+        "pieceUnit": "Pièce / Unité",
+        "unit": "Unité",
+        "articleGroup": "Groupe",
+        "referential": "Référentiel"
+      },
+      "placeholders": {
+        "priceExclTaxExample": "Ex: 10 000",
+        "priceInclTaxExample": "Ex: 11 800",
+        "optional": "Facultatif"
+      },
+      "selectPlaceholder": "Sélectionner",
+      "taxGroupSelectAria": "Sélectionner un groupe",
+      "units": {
+        "piece": "Pièce",
+        "kg": "Kg",
+        "hour": "Heure",
+        "flatRate": "Forfait"
+      },
+      "articleGroups": {
+        "a": "Groupe A",
+        "b": "Groupe B",
+        "c": "Groupe C"
+      },
+      "actions": {
+        "cancel": "Annuler",
+        "save": "Enregistrer"
+      },
+      "creating": "Création de l’article…",
+      "toastCreated": "Article créé.",
+      "invalidForm": "Vérifiez les champs obligatoires et les montants.",
+      "referentialPlaceholder": "Sélectionner un référentiel",
+      "referentialLoading": "Chargement des référentiels…",
+      "retryReferentialsFetch": "Réessayer",
+      "referentialLoadError": "Impossible de charger les référentiels.",
+      "referentialNoneForAxis": "Aucun référentiel disponible dans le catalogue. Ajoutez-en dans la configuration.",
+      "invalidReferential": "Choisissez un référentiel valide.",
+      "itemTypeLoading": "Chargement des codes…",
+      "itemTypeLoadError": "Impossible de charger les types d'article.",
+      "retryItemTypesFetch": "Réessayer",
+      "taxGroupsPlaceholder": "Sélectionner un groupe de taxe",
+      "taxGroupsLoadError": "Impossible de charger les groupes de taxe.",
+      "retryTaxGroupsFetch": "Réessayer"
+    },
+    "view": {
+      "title": "Détail de l'article",
+      "referenceLabel": "Réf.",
+      "fields": {
+        "name": "Nom",
+        "code": "Code",
+        "description": "Description",
+        "priceExclTax": "Prix hors taxes",
+        "priceInclTax": "Prix TTC",
+        "taxGroup": "Groupe de tax"
+      },
+      "actions": {
+        "backToList": "Retour à la liste",
+        "cancel": "Annuler",
+        "delete": "Supprimer",
+        "deleting": "Suppression en cours...",
+        "deleteConfirm": "Voulez-vous supprimer définitivement cet article ?",
+        "deleteSuccess": "Article supprimé.",
+        "deleteError": "Impossible de supprimer l'article.",
+        "edit": "Modifier"
+      }
+    },
+    "edit": {
+      "title": "Modifier l'article",
+      "breadcrumbSegment": "Modifier",
+      "referencePrefix": "Réf. : ",
+      "unknownTaxGroupName": "Groupe (inconnu ou supprimé)",
+      "taxGroupHint": "Le prix TTC suit le HT (ou inversement) selon ce groupe fiscal.",
+      "referentialFallback": "Référentiel n° {id} — absent du catalogue",
+      "fields": {
+        "description": "Description",
+        "status": "Statut",
+        "period": "Période"
+      },
+      "saving": "Enregistrement…",
+      "toastSaved": "Article mis à jour."
+    }
+  },
+  "configuration": {
+    "pageTitle": "Configuration",
+    "menu": {
+      "basicInfo": "Informations de base",
+      "changePassword": "Changer mot de passe",
+      "referentials": "Référentielles",
+      "taxGroups": "Groupes de taxation",
+      "logo": "Changer le logo",
+      "bank": "Mode de paiement",
+      "members": "Membres",
+      "roles": "Roles",
+      "services": "Services",
+      "permissions": "Permissions",
+      "language": "Langue par defaut",
+      "modelFactures": "Models de factures"
+    },
+    "services": {
+      "createSectionTitle": "Créer un service facturable",
+      "createButton": "Créer un service",
+      "breadcrumbNew": "Nouveau service",
+      "listSectionTitle": "Liste des services facturables",
+      "searchPlaceholder": "Recherche par code, nom, secteur, devise, prix HT, prix TTC, groupe de taxation…",
+      "searchAriaLabel": "Rechercher un service",
+      "filterSectorPlaceholder": "Filtrer par secteur d’activité (ex. Technologie)",
+      "filterApply": "Filtrer",
+      "filterReset": "Tout afficher",
+      "refresh": "Actualiser",
+      "refreshAria": "Actualiser la liste des services",
+      "totalCount": "{count} service(s)",
+      "columns": {
+        "id": "ID",
+        "code": "Code",
+        "name": "Nom",
+        "sector": "Secteur d'activité",
+        "unitPrice": "Prix HT",
+        "priceInclTax": "Prix TTC",
+        "currency": "Devise",
+        "taxGroup": "Groupe de taxation",
+        "billingType": "Factur."
+      },
+      "fields": {
+        "serviceName": "Nom du service",
+        "code": "Code",
+        "description": "Description",
+        "businessSector": "Secteur d’activité",
+        "unitPrice": "Prix unitaire HT",
+        "priceInclTax": "Prix TTC",
+        "taxRate": "Taux TVA (%)",
+        "taxGroup": "Groupe de taxe",
+        "currency": "Devise",
+        "billingType": "Type de facturation",
+        "categoryId": "Référentiel",
+        "peopleApply": "Appliquer par nombre de personnes",
+        "quantityApply": "Appliquer par quantité",
+        "notes": "Notes"
+      },
+      "placeholders": {
+        "serviceName": "Ex. Consultation technique",
+        "code": "SERV-XXX-001",
+        "description": "Facultatif",
+        "businessSector": "Ex. Technologie",
+        "unitPrice": "150",
+        "taxRate": "16",
+        "billingType": "1",
+        "notes": "Facultatif"
+      },
+      "actions": {
+        "cancel": "Réinitialiser",
+        "cancelBack": "Retour à la liste",
+        "submit": "Créer le service",
+        "submitting": "Création…"
+      },
+      "referentialsPlaceholder": "Choisir un référentiel",
+      "taxGroupsPlaceholder": "Sélectionner un groupe de taxe",
+      "taxGroupsLoading": "Chargement des groupes de taxe…",
+      "taxGroupsLoadError": "Impossible de charger les groupes de taxe.",
+      "retryTaxGroups": "Réessayer",
+      "referentialsLoading": "Chargement du catalogue…",
+      "referentialsLoadError": "Impossible de charger les référentiels.",
+      "retryReferentials": "Réessayer",
+      "itemTypesPlaceholder": "Sélectionner un code",
+      "itemTypeLoading": "Chargement des codes…",
+      "itemTypeLoadError": "Impossible de charger les types d'article.",
+      "retryItemTypesFetch": "Réessayer",
+      "creating": "Création du service…",
+      "toastCreated": "Service créé.",
+      "toastCreateErrorFallback": "Création du service impossible.",
+      "invalidForm": "Complétez tous les champs obligatoires (nombres entiers positifs où requis pour groupe fiscal et référentiel).",
+      "loading": "Chargement des services…",
+      "loadError": "Impossible de charger les services.",
+      "empty": "Aucun service correspondant.",
+      "action": "Action",
+      "viewServiceDetail": "Voir le détail du service {code}",
+      "loadErrorDetail": "Impossible de charger ce service.",
+      "retryLoad": "Réessayer",
+      "pageOfTotal": "Page {page} sur {totalPages}",
+      "paginationPrev": "Précédent",
+      "paginationNext": "Suivant",
+      "view": {
+        "referenceLabel": "Réf.",
+        "fields": {
+          "serviceName": "Nom du service",
+          "code": "Code",
+          "description": "Description",
+          "businessSector": "Secteur d’activité",
+          "unitPrice": "Prix unitaire HT",
+          "priceInclTax": "Prix TTC",
+          "taxGroup": "Groupe de taxation",
+          "currency": "Devise",
+          "referential": "Référentiel"
+        },
+        "actions": {
+          "backToList": "Retour à la liste",
+          "cancel": "Annuler",
+          "delete": "Supprimer",
+          "deleting": "Suppression en cours...",
+          "deleteConfirm": "Voulez-vous supprimer définitivement ce service ?",
+          "deleteSuccess": "Service supprimé.",
+          "deleteError": "Impossible de supprimer le service.",
+          "edit": "Modifier"
+        }
+      },
+      "edit": {
+        "title": "Modifier le service",
+        "breadcrumbSegment": "Modifier",
+        "referencePrefix": "Réf. : ",
+        "saving": "Enregistrement…",
+        "saveChanges": "Enregistrer les modifications",
+        "toastSaved": "Service mis à jour.",
+        "toastSaveError": "Impossible d'enregistrer le service."
+      }
+    },
+    "basicInfo": {
+      "sectionTitle": "Informations de base",
+      "edit": "Changer",
+      "cancel": "Annuler",
+      "firstname": "Prénom",
+      "lastname": "Nom",
+      "email": "Email",
+      "phone": "Téléphone",
+      "userType": "Type de compte",
+      "userTypes": {
+        "personal": "Personnel",
+        "pme": "PME",
+        "corporate": "Entreprise"
+      },
+      "loading": "Chargement du profil…",
+      "loadError": "Impossible de charger le profil.",
+      "retry": "Réessayer",
+      "submitting": "Enregistrement…",
+      "saveSuccess": "Profil mis à jour.",
+      "saveError": "Impossible d'enregistrer le profil.",
+      "saveChanges": "Enregistrer les modifications",
+      "errors": {
+        "required": "Prénom, nom et téléphone sont obligatoires."
+      }
+    },
+    "logo": {
+      "sectionTitle": "Logo de l'entreprise",
+      "currentLogoTitle": "Logo actuel",
+      "currentLogoBody": "Ce logo est affiché dans les documents générés par l'application. Pour le modifier, choisissez une nouvelle image.",
+      "changeLogo": "Changer le logo",
+      "introTitle": "Importer un nouveau logo",
+      "introBody": "Le logo sera affiché dans les documents générés par l'application.",
+      "formatsHint": "JPEG, PNG ou WebP · 5 Mo maximum",
+      "chooseFile": "Choisir un fichier",
+      "cancel": "Annuler",
+      "selectedFile": "Fichier sélectionné :",
+      "save": "Enregistrer le logo",
+      "saving": "Enregistrement…",
+      "noLogo": "Aucun logo",
+      "previewAlt": "Aperçu du logo",
+      "toastSaved": "Logo mis à jour.",
+      "toastError": "Échec du téléversement du logo.",
+      "fileTooLarge": "Le fichier ne doit pas dépasser 5 Mo.",
+      "invalidFormat": "Utilisez une image JPEG, PNG ou WebP.",
+      "noFileSelected": "Sélectionnez une image avant d'enregistrer."
+    },
+    "password": {
+      "sectionTitle": "Changer mot de passe",
+      "oldPassword": "Ancien mot de passe",
+      "newPassword": "Nouveau mot de passe",
+      "confirmPassword": "Confirmer le mot de passe",
+      "placeholder": "Entrez votre mot de passe",
+      "submit": "Modifier le mot de passe",
+      "submitting": "Mise à jour…",
+      "toastSuccess": "Mot de passe mis à jour.",
+      "toastError": "Impossible de modifier le mot de passe.",
+      "errors": {
+        "minLength": "Le nouveau mot de passe doit contenir au moins 6 caractères.",
+        "mismatch": "Les mots de passe ne correspondent pas.",
+        "oldRequired": "Saisissez votre mot de passe actuel."
+      }
+    },
+    "referentialCatalog": {
+      "sectionHeadline": "Catalogue référentiel",
+      "axisColumn": "Axe",
+      "types": {
+        "clients": "Clients",
+        "fournitures": "Fournitures",
+        "contrats": "Contrats"
+      },
+      "code": "Code",
+      "entityTitle": "Libellé",
+      "description": "Description",
+      "parentId": "Parent",
+      "parentShort": "Parent",
+      "rootParent": "Racine (aucun)",
+      "rootParentColumn": "— Racine —",
+      "openCreateForm": "Nouvelle entrée",
+      "actions": "Actions",
+      "save": "Enregistrer",
+      "cancel": "Annuler",
+      "empty": "Aucune entrée.",
+      "placeholderCode": "Ex. CORP",
+      "placeholderTitle": "Ex. Clients entreprise",
+      "placeholderDesc": "Optionnel…",
+      "editAria": "Modifier l’entrée",
+      "deleteAria": "Supprimer l’entrée",
+      "toasts": {
+        "codeTitleRequired": "Code et libellé sont obligatoires.",
+        "duplicateCode": "Ce code existe déjà pour cet axe.",
+        "createFailed": "Création impossible.",
+        "saveFailed": "Mise à jour impossible.",
+        "apiError": "Le serveur a refusé l’action ou est injoignable.",
+        "created": "Entrée créée.",
+        "updated": "Entrée mise à jour.",
+        "deleted": "Entrée supprimée."
+      }
+    },
+    "referentialCreate": {
+      "breadcrumbNew": "Nouvelle entrée",
+      "creating": "Enregistrement en cours…",
+      "invalidForm": "Complétez les champs obligatoires.",
+      "rootParentOption": "Racine (aucun)",
+      "fields": {
+        "referential": "Axe référentiel",
+        "code": "Code",
+        "entityTitle": "Libellé",
+        "description": "Description",
+        "parent": "Élément parent"
+      },
+      "placeholders": {
+        "referential": "Ex. clients, fournitures, contrats",
+        "code": "Ex. CORP",
+        "entityTitle": "Ex. Clients entreprise",
+        "description": "Optionnel…"
+      },
+      "actions": {
+        "cancel": "Annuler",
+        "save": "Enregistrer"
+      }
+    },
+    "taxGroups": {
+      "title": "Groupes de taxation",
+      "intro": "Catalogue des groupes que vous pouvez affecter à vos articles. Vous pouvez en ajouter ou adapter libellés et taux. Seuls les groupes actifs sont proposés sur les fiches articles.",
+      "newGroup": "Nouveau groupe",
+      "code": "Code",
+      "groupName": "Nom du groupe",
+      "taxRate": "Taux de taxe (%)",
+      "status": "Statut",
+      "description": "Description",
+      "add": "Ajouter",
+      "placeholderCode": "X",
+      "placeholderName": "Ex. Groupe X",
+      "placeholderRate": "16",
+      "placeholderDescription": "Ex. Taxable au taux normal de 16 %",
+      "codeAria": "Code du groupe de taxation",
+      "statusAria": "Statut actif ou inactif",
+      "active": "Actif",
+      "inactive": "Inactif",
+      "table": {
+        "code": "Code",
+        "groupName": "Nom du groupe",
+        "description": "Description",
+        "rate": "Taux (%)",
+        "status": "Statut",
+        "actions": "Actions",
+        "emptyCell": "—"
+      },
+      "edit": "Modifier",
+      "deactivate": "Désactiver",
+      "activate": "Activer",
+      "delete": "Supprimer",
+      "editGroupTitle": "Modifier le groupe",
+      "codeFrozenHint": "Code figé pour le référentiel A–P",
+      "save": "Enregistrer",
+      "cancel": "Annuler",
+      "pagination": {
+        "range": "{from} — {to} sur {total} groupes",
+        "page": "Page {current} / {total}",
+        "prev": "Précédent",
+        "next": "Suivant"
+      },
+      "autoSaveHint": "Les modifications sont enregistrées automatiquement.",
+      "toasts": {
+        "builtinDelete": "Ce groupe du référentiel officiel ne peut pas être supprimé.",
+        "deleted": "Groupe supprimé.",
+        "nameRequired": "Indiquez un nom de groupe.",
+        "codeRequired": "Indiquez un code de groupe.",
+        "rateInvalid": "Indiquez un taux valide entre 0 et 100 %.",
+        "codeDuplicate": "Ce code est déjà utilisé.",
+        "updated": "Groupe mis à jour.",
+        "idDuplicate": "Identifiant déjà utilisé ; réessayez.",
+        "created": "Groupe de taxation créé."
+      }
+    }
+  },
+  "otp": {
+    "title": "Vérification OTP",
+    "heroText": "Vérifiez votre compte pour sécuriser votre accès à iKwook Invoice.",
+    "description": {
+      "register": "Entrez le code à 6 chiffres envoyé à votre adresse email pour valider votre compte.",
+      "login": "Entrez le code à 6 chiffres envoyé à votre adresse email pour finaliser votre connexion."
+    },
+    "actions": {
+      "verify": "Vérifier le compte",
+      "resend": "Renvoyer le code"
+    },
+    "wrongEmail": "Mauvais email ?",
+    "backToRegister": "Retour à l’inscription",
+    "errors": {
+      "missingEmail": "Adresse email introuvable. Retournez à l’étape précédente.",
+      "incompleteCode": "Veuillez saisir le code OTP complet à 6 chiffres."
+    },
+    "success": {
+      "verified": "Code vérifié avec succès.",
+      "resent": "Un nouveau code OTP a été envoyé."
+    },
+    "loading": {
+      "verify": "Vérification du code en cours...",
+      "resend": "Envoi d’un nouveau code..."
+    }
+  },
+  "invoiceDashboard": {
+    "alert": {
+      "message": "Rappelez-vous de faire le reversement de la TVA du mois passé. Total à reverser est à"
+    },
+    "cards": {
+      "previousYear": "Année passée",
+      "currentMonth": "Mois en cours",
+      "totalVatCollected": "Total TVA collectées",
+      "totalVatReversed": "Total TVA reversées",
+      "invoiceNormalization": "Normalisation facture",
+      "totalNormalizedInvoice": "Total facture normalisée",
+      "pendingNormalization": "En attente de normalisation",
+      "invoiceStatistics": "Statistique facture",
+      "paidInvoices": "Facture payée",
+      "unpaidInvoices": "Facture non payée"
+    },
+    "sections": {
+      "cashFlowTracking": "Suivi de trésorerie",
+      "currentMonth": "Mois en cours",
+      "invoiceTracking": "Suivi de facture",
+      "invoiceNormalization": "Normalisation de facture"
+    },
+    "charts": {
+      "issuedInvoices": "Total facture émise",
+      "totalRevenue": "Total revenu",
+      "totalDebt": "Total dette"
+    },
+    "monthlyStats": {
+      "issued": "Émises",
+      "paid": "Payées",
+      "pending": "En attentes",
+      "cancelled": "Annulées"
+    },
+    "table": {
+      "date": "Date",
+      "client": "Client",
+      "reference": "Ref",
+      "amount": "Montant",
+      "status": "Statut",
+      "creation": "Création",
+      "editInvoice": "Modifier la facture"
+    },
+    "status": {
+      "paid": "Payée",
+      "unpaid": "Non payée",
+      "paidMasculine": "Payé"
+    },
+    "actions": {
+      "viewMore": "Voir plus"
+    },
+    "months": {
+      "jan": "Ja",
+      "feb": "Fe",
+      "mar": "Ma",
+      "apr": "Av",
+      "may": "Ma",
+      "jun": "Jn",
+      "jul": "Ju",
+      "aug": "Ao",
+      "sep": "Sep",
+      "oct": "Oct",
+      "nov": "Nov",
+      "dec": "Dec"
+    }
+  },
+  "reports": {
+    "pageTitle": "Rapports",
+    "pageIntro": "Générez des rapports sur les factures, la TVA, les paiements et l’utilisation de la plateforme.",
+    "menu": {
+      "invoiceEdition": "Rapports Ordinaries",
+      "reportXDaily": "Rapports X-Z",
+      "reportA": "Rapport type A"
+    },
+    "filters": {
+      "all": "Tous",
+      "dateFrom": "Date de début",
+      "dateTo": "Date de fin",
+      "reportDate": "Date du rapport",
+      "client": "Client",
+      "clientPlaceholder": "Rechercher un client…",
+      "clientLoading": "Chargement des clients…",
+      "clientEmpty": "Aucun client trouvé",
+      "clientLoadError": "Impossible de charger les clients.",
+      "contract": "Contrat",
+      "contractPlaceholder": "Rechercher un contrat…",
+      "contractSelectClientFirst": "Choisissez d’abord un client",
+      "contractLoading": "Chargement des contrats…",
+      "contractEmpty": "Aucun contrat disponible",
+      "contractSearchEmpty": "Aucun contrat trouvé",
+      "contractLoadError": "Impossible de charger les contrats.",
+      "pointOfSale": "Point de vente",
+      "pointOfSalePlaceholder": "Ex. PDV-01",
+      "isf": "ISF",
+      "isfPlaceholder": "Identifiant système fiscal",
+      "invoiceType": "Type de facture",
+      "invoiceStatus": "Statut de la facture",
+      "paymentStatus": "Statut du paiement",
+      "period": "Période",
+      "user": "Utilisateur",
+      "userPlaceholder": "Ex. benjamin",
+      "actionType": "Type d’action",
+      "periodOptions": {
+        "day": "Par jour",
+        "month": "Par mois",
+        "quarter": "Par trimestre"
+      },
+      "vatPeriodOptions": {
+        "monthly": "Mensuelle",
+        "quarterly": "Trimestrielle"
+      },
+      "actionTypes": {
+        "create": "Création",
+        "update": "Modification",
+        "delete": "Suppression",
+        "validate": "Validation"
+      },
+      "statuses": {
+        "brouillon": "Brouillon",
+        "enregistrer": "Enregistrée",
+        "valider": "Validée",
+        "normaliser": "Normalisée",
+        "soumise": "Soumise",
+        "receptionner": "Réceptionnée",
+        "payer": "Payée",
+        "classer": "Classée"
+      },
+      "paymentStatuses": {
+        "paid": "Payé",
+        "partial": "Partiellement payé",
+        "unpaid": "Non payé"
+      }
+    },
+    "actions": {
+      "generate": "Générer le rapport",
+      "generating": "Génération…",
+      "download": "Télécharger le rapport",
+      "back": "Retour",
+      "resetFilters": "Réinitialiser"
+    },
+    "preview": {
+      "title": "Aperçu du rapport",
+      "subtitle": "Vérifiez les critères et le contenu du rapport avant téléchargement.",
+      "simulatedNotice": "Aperçu simulé",
+      "ordinary": {
+        "reportCode": "RAPPORT",
+        "metaSection": "MÉTADONNÉES",
+        "generatedAt": "Généré le",
+        "reportType": "Type",
+        "objectSection": "OBJET",
+        "reportTitle": "Titre",
+        "tableTitle": "CRITÈRES APPLIQUÉS",
+        "columns": {
+          "criteria": "Critère",
+          "value": "Valeur"
+        },
+        "empty": "Aucun filtre. Toutes les données disponibles sont incluses.",
+        "footer": "Document généré selon les critères ci-dessus.",
+        "filterLabels": {
+          "dateFrom": "Date de début",
+          "dateTo": "Date de fin",
+          "reportDate": "Date du rapport",
+          "clientId": "Client (ID)",
+          "contractId": "Contrat (ID)",
+          "pointOfSale": "Point de vente",
+          "invoiceStatus": "Statut de la facture",
+          "invoiceType": "Type de facture",
+          "paymentStatus": "Statut du paiement",
+          "isf": "ISF"
+        },
+        "page": "Page {current} sur {total}"
+      },
+      "invoiceEdition": {
+        "reportCode": "RAPPORT",
+        "emitter": "ÉMETTEUR",
+        "periodSection": "PÉRIODE & RESTITUTION",
+        "company": "Société",
+        "nif": "NIF",
+        "isf": "ISF",
+        "generatedAt": "Généré le",
+        "dateFrom": "Date Début",
+        "dateTo": "Date Fin",
+        "tableTitle": "ÉDITION DES FACTURES",
+        "columns": {
+          "clientName": "Nom client",
+          "invoiceAmount": "Montant facture",
+          "taxAmount": "Montant taxe",
+          "paidAmount": "Montant payé",
+          "totalAmount": "Montant total",
+          "currency": "Devise",
+          "invoiceType": "Type de facture",
+          "dueDate": "Date d'échéance"
+        },
+        "empty": "Aucune facture trouvée pour les critères sélectionnés.",
+        "page": "Page {current} sur {total}"
+      },
+      "invoiceNormalization": {
+        "reportCode": "RAPPORT",
+        "emitter": "ÉMETTEUR",
+        "periodSection": "PÉRIODE & RESTITUTION",
+        "company": "Société",
+        "nif": "NIF",
+        "isf": "ISF",
+        "generatedAt": "Généré le",
+        "dateFrom": "Date Début",
+        "dateTo": "Date Fin",
+        "tableTitle": "NORMALISATION DES FACTURES",
+        "columns": {
+          "clientName": "Nom client",
+          "invoiceAmount": "Montant facture",
+          "taxAmount": "Montant taxe",
+          "paidAmount": "Montant payé",
+          "totalAmount": "Montant total",
+          "currency": "Devise",
+          "invoiceType": "Type de facture",
+          "dueDate": "Date d'échéance"
+        },
+        "empty": "Aucune facture normalisée trouvée pour les critères sélectionnés.",
+        "page": "Page {current} sur {total}"
+      },
+      "vatCollection": {
+        "reportCode": "RAPPORT",
+        "emitter": "ÉMETTEUR",
+        "periodSection": "PÉRIODE & RESTITUTION",
+        "company": "Société",
+        "nif": "NIF",
+        "isf": "ISF",
+        "generatedAt": "Généré le",
+        "dateFrom": "Date Début",
+        "dateTo": "Date Fin",
+        "tableTitle": "COLLECTE DE LA TVA",
+        "invoiceTypes": {
+          "sale": "Facture de vente",
+          "credit": "Facture d'avoir",
+          "unknown": "Type inconnu ({id})"
+        },
+        "columns": {
+          "date": "Date",
+          "reference": "Référence",
+          "amount": "Montant",
+          "taxAmount": "Taxe",
+          "currency": "Devise",
+          "totalAmount": "Montant total",
+          "clientName": "Nom client",
+          "invoiceType": "Type de facture",
+          "workflowStatus": "Statut",
+          "paidAmount": "Montant payé"
+        },
+        "empty": "Aucune ligne trouvée pour les critères sélectionnés.",
+        "page": "Page {current} sur {total}"
+      },
+      "toolUsage": {
+        "reportCode": "RAPPORT",
+        "emitter": "ÉMETTEUR",
+        "periodSection": "PÉRIODE & RESTITUTION",
+        "company": "Société",
+        "nif": "NIF",
+        "isf": "ISF",
+        "generatedAt": "Généré le",
+        "dateFrom": "Date Début",
+        "dateTo": "Date Fin",
+        "tableTitle": "UTILISATION DE L'OUTIL",
+        "columns": {
+          "userName": "Nom utilisateur",
+          "invoiceCount": "Nombre de factures",
+          "totalAmount": "Montant total",
+          "totalTva": "Total TVA",
+          "firstInvoice": "Date de la première facture",
+          "lastInvoice": "Date de la dernière facture"
+        },
+        "empty": "Aucune ligne trouvée pour les critères sélectionnés.",
+        "page": "Page {current} sur {total}"
+      },
+      "payments": {
+        "reportCode": "RAPPORT",
+        "emitter": "ÉMETTEUR",
+        "periodSection": "PÉRIODE & RESTITUTION",
+        "company": "Société",
+        "nif": "NIF",
+        "isf": "ISF",
+        "generatedAt": "Généré le",
+        "dateFrom": "Date Début",
+        "dateTo": "Date Fin",
+        "tableTitle": "PAIEMENTS DE FACTURES",
+        "columns": {
+          "reference": "Référence",
+          "clientName": "Nom client",
+          "contractName": "Nom contrat",
+          "amount": "Montant",
+          "date": "Date"
+        },
+        "empty": "Aucun paiement trouvé pour les critères sélectionnés.",
+        "page": "Page {current} sur {total}"
+      }
+    },
+    "toast": {
+      "previewReady": "Aperçu du rapport prêt.",
+      "downloaded": "Rapport PDF téléchargé.",
+      "generateError": "Impossible de générer le rapport."
+    },
+    "ordinary": {
+      "invoiceEdition": {
+        "title": "Liste des rapports ordinaires",
+        "description": "Liste des rapports ordinaires générés. Cliquez sur le bouton pour lancer une nouvelle génération."
+      },
+      "invoiceNormalization": {
+        "title": "Rapport de normalisation des factures",
+        "description": "Suivi des factures normalisées selon la période et le client."
+      },
+      "invoicePayments": {
+        "title": "Rapport des paiements de factures",
+        "description": "Synthèse des paiements enregistrés sur la période sélectionnée."
+      },
+      "vatCollection": {
+        "title": "Rapport de collecte de la TVA",
+        "description": "Montants de TVA collectée selon la période et le client."
+      },
+      "toolUsage": {
+        "title": "Rapport d’utilisation de l’outil",
+        "description": "Utilisation de l’outil selon la période sélectionnée."
+      }
+    },
+    "invoiceEditionFlow": {
+      "list": {
+        "intro": "Historique des rapports ordinaires générés.",
+        "loading": "Chargement des rapports…",
+        "loadError": "Impossible de charger la liste des rapports.",
+        "retry": "Réessayer",
+        "empty": "Aucun rapport généré pour le moment.",
+        "totalCount": "{count} rapport(s)",
+        "generateButton": "Générer un rapport",
+        "columns": {
+          "generatedAt": "Généré le",
+          "dateFrom": "Date début",
+          "dateTo": "Date fin",
+          "isf": "ISF",
+          "pointOfSale": "Point de vente"
+        }
+      },
+      "generate": {
+        "intro": "",
+        "radioTitle": "Type de rapport à générer"
+      },
+      "reportKinds": {
+        "invoiceEdition": "Édition des factures",
+        "invoiceNormalization": "Normalisation des factures",
+        "vatCollection": "Collecte de la TVA",
+        "invoicePayments": "Paiements de factures",
+        "toolUsage": "Utilisation de l’outil"
+      }
+    },
+    "specialXz": {
+      "title": "Rapports X-Z",
+      "reportXDaily": {
+        "title": "Rapport quotidien",
+        "description": "Récapitulatif depuis le dernier rapport Z. Les valeurs accumulées ne sont pas réinitialisées.",
+        "includes": [
+          "Dénomination commerciale, NIF, date et heure",
+          "Montants totaux, taxables et par groupe de taxation",
+          "Nombre de factures par type, modes de paiement, réductions",
+          "Ventes incomplètes et ventes de la journée"
+        ],
+        "preview": {
+          "reportCode": "RAPPORT X",
+          "emitter": "ÉMETTEUR",
+          "periodSection": "PÉRIODE & RESTITUTION",
+          "company": "Société",
+          "nif": "NIF",
+          "generatedAt": "Généré le",
+          "dateFrom": "Date Début",
+          "dateTo": "Date Fin",
+          "tableTitle": "SYNTHÈSE QUOTIDIENNE",
+          "columns": {
+            "invoiceCount": "Nombre de factures",
+            "totalHt": "Total HT",
+            "totalTva": "Total TVA",
+            "totalTtc": "Total TTC",
+            "totalPaid": "Total payé",
+            "totalBalance": "Solde"
+          },
+          "page": "Page {current} sur {total}"
+        }
+      },
+      "reportZ": {
+        "title": "Rapport de clôture",
+        "description": "Récapitulatif de clôture depuis le dernier rapport Z. Réinitialise les valeurs accumulées.",
+        "includes": [
+          "Dénomination commerciale, NIF, date et heure",
+          "Montants totaux, taxables et par groupe de taxation",
+          "Nombre de factures par type, modes de paiement, réductions",
+          "Ventes incomplètes et ventes de la journée"
+        ],
+        "preview": {
+          "reportCode": "RAPPORT Z",
+          "emitter": "ÉMETTEUR",
+          "periodSection": "PÉRIODE & RESTITUTION",
+          "company": "Société",
+          "nif": "NIF",
+          "generatedAt": "Généré le",
+          "dateFrom": "Date Début",
+          "dateTo": "Date Fin",
+          "tableTitle": "SYNTHÈSE DE CLÔTURE",
+          "columns": {
+            "invoiceCount": "Nombre de factures",
+            "totalHt": "Total HT",
+            "totalTva": "Total TVA",
+            "totalTtc": "Total TTC",
+            "totalPaid": "Total payé",
+            "totalBalance": "Solde"
+          },
+          "page": "Page {current} sur {total}"
+        }
+      },
+      "reportXPeriodic": {
+        "title": "Rapport périodique",
+        "description": "Récapitulatif pour la période sélectionnée. Ne réinitialise pas les valeurs accumulées.",
+        "includes": [
+          "Dénomination commerciale, NIF, période sélectionnée",
+          "Montants totaux, taxables et par groupe de taxation",
+          "Nombre de factures par type, modes de paiement, réductions",
+          "Ventes incomplètes sur la période"
+        ],
+        "preview": {
+          "reportCode": "RAPPORT X",
+          "emitter": "ÉMETTEUR",
+          "periodSection": "PÉRIODE & RESTITUTION",
+          "company": "Société",
+          "nif": "NIF",
+          "generatedAt": "Généré le",
+          "dateFrom": "Date Début",
+          "dateTo": "Date Fin",
+          "tableTitle": "SYNTHÈSE PÉRIODIQUE",
+          "columns": {
+            "invoiceCount": "Nombre de factures",
+            "totalHt": "Total HT",
+            "totalTva": "Total TVA",
+            "totalTtc": "Total TTC",
+            "totalPaid": "Total payé",
+            "totalBalance": "Solde"
+          },
+          "page": "Page {current} sur {total}"
+        }
+      }
+    },
+    "xzFlow": {
+      "list": {
+        "intro": "Historique des rapports X-Z déjà générés.",
+        "loading": "Chargement des rapports…",
+        "loadError": "Impossible de charger la liste des rapports.",
+        "retry": "Réessayer",
+        "empty": "Aucun rapport généré pour le moment.",
+        "totalCount": "{count} rapport(s)",
+        "generateButton": "Générer un rapport",
+        "columns": {
+          "generatedAt": "Généré le",
+          "dateFrom": "Date début",
+          "dateTo": "Date fin",
+          "isf": "ISF",
+          "pointOfSale": "Point de vente"
+        }
+      },
+      "generate": {
+        "intro": "Choisissez le type de rapport X-Z à générer.",
+        "radioTitle": "Type de rapport à générer"
+      },
+      "reportKinds": {
+        "reportXDaily": "Rapport X quotidien",
+        "reportZ": "Rapport Z",
+        "reportXPeriodic": "Rapport X périodique"
+      }
+    },
+    "specialA": {
+      "title": "Rapport type A",
+      "list": {
+        "intro": "Historique des rapports de type A déjà générés.",
+        "loading": "Chargement des rapports…",
+        "loadError": "Impossible de charger la liste des rapports.",
+        "retry": "Réessayer",
+        "empty": "Aucun rapport généré pour le moment.",
+        "totalCount": "{count} rapport(s)",
+        "generateButton": "Générer un rapport",
+        "columns": {
+          "session": "Session",
+          "dateFrom": "Date début",
+          "dateTo": "Date fin",
+          "itemCount": "Articles"
+        }
+      },
+      "generateIntro": "Indiquez la période pour la génération du rapport.",
+      "preview": {
+        "reportCode": "RAPPORT",
+        "emitter": "ÉMETTEUR",
+        "periodSection": "PÉRIODE & RESTITUTION",
+        "company": "Société",
+        "nif": "NIF",
+        "generatedAt": "Généré le",
+        "dateFrom": "Date Début",
+        "dateTo": "Date Fin",
+        "tableTitle": "INVENTAIRE & FLUX DES ARTICLES (PÉRIODIQUE)",
+        "columns": {
+          "code": "CODE",
+          "designation": "DÉSIGNATION",
+          "unitPrice": "PRIX UNITAIRE",
+          "tax": "TVA",
+          "qtySold": "QUANTITÉ VENDUE",
+          "qtyReturned": "QUANTITÉ RETOURNÉE",
+          "fiscalStock": "QUANTITÉ EN STOCK"
+        },
+        "total": "TOTAL",
+        "page": "Page {current} sur {total}"
+      }
+    }
+  },
+  "errors": {
+    "loadingDashboard": "Impossible de charger les données du tableau de bord."
+  }
+}

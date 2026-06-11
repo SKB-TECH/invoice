@@ -1,0 +1,209 @@
+"use client";
+
+import Link from "next/link";
+import { useEffect, useMemo, useState } from "react";
+import { ChevronRight, Eye, House } from "lucide-react";
+
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from "@/components/ui/table";
+import { cn } from "@/lib/utils";
+import { clientResponseToListRow } from "@/lib/clients/client-api-mapper";
+import type { ClientStatutUi } from "@/lib/clients/clients-data";
+import { Input } from "@/components/ui/input";
+import { useTranslations } from "next-intl";
+import { useClients } from "@/core/hooks/client/useClient";
+
+function StatutBadge({ statut }: { statut: ClientStatutUi }) {
+    const styles: Record<ClientStatutUi, string> = {
+        Suspendu:
+            "border-transparent bg-[#FCF5E5] text-[#E8BC52] hover:bg-[#FCF5E5]",
+        Actif: "border-transparent bg-[#E8EFFB] text-[#6691E7] hover:bg-[#E8EFFB]",
+        Complet:
+            "border-transparent bg-[#DCF6E9] text-[#13C56B] hover:bg-[#DCF6E9]",
+    };
+
+    return (
+        <Badge
+            variant="outline"
+            className={cn("rounded px-2.5 font-medium", styles[statut])}
+        >
+            {statut}
+        </Badge>
+    );
+}
+
+export default function ClientsPage() {
+    const t = useTranslations("clients.listClients");
+    const [search, setSearch] = useState("");
+    const [debouncedSearch, setDebouncedSearch] = useState("");
+
+    useEffect(() => {
+        const timeout = window.setTimeout(() => {
+            setDebouncedSearch(search.trim());
+        }, 400);
+
+        return () => window.clearTimeout(timeout);
+    }, [search]);
+
+    const listParams = useMemo(
+        () => ({
+            name: debouncedSearch || undefined,
+            per_page: 50,
+        }),
+        [debouncedSearch]
+    );
+
+    const { data, isPending, isError } = useClients(listParams);
+
+    const rows = useMemo(() => {
+        const mapped = data?.items.map(clientResponseToListRow) ?? [];
+        const q = debouncedSearch.trim().toLowerCase();
+
+        if (!q) return mapped;
+
+        return mapped.filter((row) => row.titre.toLowerCase().includes(q));
+    }, [data?.items, debouncedSearch]);
+
+    return (
+        <main className="mx-auto w-full min-w-full py-4 text-foreground">
+            <span className="mb-6 flex flex-wrap items-center gap-1 text-sm text-slate-500">
+                <Link href="/home">
+                    <House className="size-4" />
+                </Link>
+                <ChevronRight className="size-4 shrink-0" />
+                <span>{t("breadcrumb.Step1")}</span>
+                <ChevronRight className="size-4 shrink-0" />
+                <span className="text-slate-800">{t("breadcrumb.Step2")}</span>
+            </span>
+            <div className="mb-6 flex items-center justify-between gap-4">
+                <h1 className="text-2xl font-bold tracking-tight text-slate-800 sm:text-3xl">
+                    {t("title")}
+                </h1>
+                <div className="flex gap-3 items-center">
+                    <div className="flex flex-col gap-2">
+                        <Input
+                            type="text"
+                            value={search}
+                            onChange={(e) => setSearch(e.target.value)}
+                            placeholder={t("search.placeholder")}
+                            className="h-12 w-full rounded border-1 border-slate-200 bg-white sm:w-100"
+                        />
+                    </div>
+                    <Button
+                        size="lg"
+                        className="h-12 w-52 cursor-pointer rounded bg-[#0073C5] px-5 text-white"
+                        asChild
+                    >
+                        <Link href="/home/clients/new">{t("btn.new")}</Link>
+                    </Button>
+                </div>
+            </div>
+
+            {isError ? (
+                <p className="mb-4 text-sm text-destructive">
+                    Impossible de charger les clients.
+                </p>
+            ) : null}
+
+            <div className="overflow-hidden border border-slate-200/80 bg-white">
+                <Table>
+                    <TableHeader className="bg-[#F4F4F4BB]">
+                        <TableRow className="border-slate-200 bg-[#F4F4F4BB] hover:bg-transparent">
+                            <TableHead className="h-11 bg-slate-100 px-4 text-left text-sm font-semibold text-slate-700">
+                                {t("table.code")}
+                            </TableHead>
+                            <TableHead className="h-11 bg-slate-100 px-4 text-left text-sm font-semibold text-slate-700">
+                                {t("table.titre")}
+                            </TableHead>
+                            <TableHead className="h-11 bg-slate-100 px-4 text-left text-sm font-semibold text-slate-700">
+                                {t("table.type.title")}
+                            </TableHead>
+                            <TableHead className="h-11 bg-slate-100 px-4 text-left text-sm font-semibold text-slate-700">
+                                {t("table.nif")}
+                            </TableHead>
+                            <TableHead className="h-11 bg-slate-100 px-4 text-left text-sm font-semibold text-slate-700">
+                                {t("table.status.title")}
+                            </TableHead>
+                            <TableHead className="h-11 bg-slate-100 px-4 text-left text-sm font-semibold text-slate-700">
+                                {t("table.tel")}
+                            </TableHead>
+                            <TableHead className="h-11 bg-slate-100 px-4 text-right text-sm font-semibold text-slate-700">
+                                <span className="sr-only"></span>
+                            </TableHead>
+                        </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                        {isPending ? (
+                            <TableRow>
+                                <TableCell
+                                    colSpan={7}
+                                    className="px-4 py-8 text-center text-slate-600"
+                                >
+                                    Chargement…
+                                </TableCell>
+                            </TableRow>
+                        ) : rows.length === 0 ? (
+                            <TableRow>
+                                <TableCell
+                                    colSpan={7}
+                                    className="px-4 py-8 text-center text-slate-600"
+                                >
+                                    Aucun client.
+                                </TableCell>
+                            </TableRow>
+                        ) : (
+                            rows.map((row) => (
+                                <TableRow
+                                    key={row.id}
+                                    className="border-slate-200 hover:bg-slate-50/80"
+                                >
+                                    <TableCell className="px-4 py-3 text-sm text-slate-800">
+                                        {row.code}
+                                    </TableCell>
+                                    <TableCell className="px-4 py-3 text-sm text-slate-800">
+                                        {row.titre}
+                                    </TableCell>
+                                    <TableCell className="px-4 py-3 text-sm text-slate-800">
+                                        {row.type}
+                                    </TableCell>
+                                    <TableCell className="px-4 py-3 text-sm text-slate-800">
+                                        {row.nif}
+                                    </TableCell>
+                                    <TableCell className="px-4 py-3 text-sm text-slate-800">
+                                        <StatutBadge statut={row.statut} />
+                                    </TableCell>
+                                    <TableCell className="px-4 py-3 text-sm text-slate-800">
+                                        {row.telephone}
+                                    </TableCell>
+                                    <TableCell className="px-4 py-3 text-right">
+                                        <Button
+                                            variant="ghost"
+                                            size="icon"
+                                            asChild
+                                            className="cursor-pointer text-slate-500 hover:bg-slate-100 hover:text-slate-700"
+                                        >
+                                            <Link
+                                                href={`/home/clients/${encodeURIComponent(row.id)}`}
+                                                aria-label="Détails du client"
+                                            >
+                                                <Eye className="size-4" />
+                                            </Link>
+                                        </Button>
+                                    </TableCell>
+                                </TableRow>
+                            ))
+                        )}
+                    </TableBody>
+                </Table>
+            </div>
+        </main>
+    );
+}

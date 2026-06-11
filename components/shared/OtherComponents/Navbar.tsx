@@ -2,6 +2,8 @@
 
 import * as React from "react";
 import Link from "next/link";
+import Image from "next/image";
+import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
 import {
     NavigationMenu,
@@ -13,235 +15,239 @@ import {
 } from "@/components/ui/navigation-menu";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import {Menu, X, ChevronDown, LogOut} from "lucide-react";
-
-// Types pour les menus
-interface SubMenuItem {
-    title: string;
-    href: string;
-    description?: string;
-}
-
-interface MenuItem {
-    title: string;
-    href?: string;
-    subItems?: SubMenuItem[];
-}
-
-const menuItems: MenuItem[] = [
-    {
-        title: "Factures",
-        subItems: [
-            {
-                title: "Mes factures",
-                href: "/home",
-
-            },
-            {
-                title: "Nouveau facture",
-                href: "/facture/nouveau",
-            },
-
-        ],
-    },
-    {
-        title: "Gestion clients",
-        subItems: [
-            {
-                title: "Nouveau client",
-                href: "/clients/nouveau",
-            },
-            {
-                title: "Visualiser",
-                href: "/clients",
-            }
-        ],
-    },
-    {
-        title: "Gestion contrats",
-        subItems: [
-            {
-                title:"Nouveau contrat",
-                href: "/contacts/nouveau",
-            },
-            {
-                title: "Visualiser",
-                href: "/contacts",
-            },
-        ],
-    },
-    {
-        title: "Fournitures",
-        subItems: [
-            {
-                title:"Gestion articles",
-                href: "/fournitures/article",
-            },
-            {
-                title:"Gestion services",
-                href: "/fournitures/services",
-            },
-            {
-                title: "Visualiser",
-                href: "/fournitures/visualiser",
-            },
-        ],
-    },
-
-];
+import {
+    ChevronRight,
+    Menu,
+} from "lucide-react";
+import { menuItems } from "@/core/data";
+import LanguageSwitcher from "@/components/shared/OtherComponents/LanguageSwitcher";
+import { AppLauncher } from "@/components/shared/OtherComponents/AppLauncher";
+import { NotificationsDropdown } from "@/components/shared/OtherComponents/NotificationsDropdown";
 
 export function Navbar() {
+    const t = useTranslations("navbar");
+
     const [isOpen, setIsOpen] = React.useState(false);
-    const [openMobileSubmenu, setOpenMobileSubmenu] = React.useState<string | null>(null);
+    const [openMobileSubmenu, setOpenMobileSubmenu] =
+        React.useState<string | null>(null);
+
+    const navTriggerClass =
+        "h-20 bg-transparent px-4 py-0 text-[14px] font-semibold text-white shadow-none hover:bg-white hover:text-[#0073C5] data-[state=open]:bg-white data-[state=open]:text-[#0073C5] data-[state=open]:font-semibold";
 
     return (
-        <nav className="top-0 z-50 w-full border-b bg-background/95 backdrop-blur bg-white shadow-sm">
-            <div className="flex h-20 items-center justify-between">
-                <Link href="/" className="flex items-center space-x-2  px-4 md:px-6">
-                  <span className="text-xl font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
-                    Logo
-                  </span>
+        <nav className="sticky top-0 z-50 w-full overflow-visible bg-[#0073C5]">
+            <div className="mx-auto flex h-20 w-full items-center px-4 md:px-14 lg:px-14">
+                <Link
+                    href="/"
+                    className="flex h-20 shrink-0 items-center gap-2 bg-[#0073C5] px-5 md:px-8"
+                >
+                    <Image alt="logo" src="/invoiceb.png" width={160} height={160} />
                 </Link>
 
-                <div className="hidden md:flex md:items-center md:space-x-6">
-                    <NavigationMenu>
-                        <NavigationMenuList>
-                            {menuItems.map((item, index) => (
-                                <NavigationMenuItem key={index}>
-                                    {item.subItems ? (
-                                        <>
-                                            <NavigationMenuTrigger className="bg-transparent">
-                                                {item.title}
-                                            </NavigationMenuTrigger>
-                                            <NavigationMenuContent>
-                                                <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
-                                                    {item.subItems.map((subItem, subIndex) => (
-                                                        <ListItem
-                                                            key={subIndex}
-                                                            title={subItem.title}
-                                                            href={subItem.href}
-                                                        >
-                                                            {subItem.description}
-                                                        </ListItem>
-                                                    ))}
-                                                </ul>
-                                            </NavigationMenuContent>
-                                        </>
-                                    ) : (
-                                        <Link href={item.href || "#"} legacyBehavior passHref>
-                                            <NavigationMenuLink className="group inline-flex h-10 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50">
-                                                {item.title}
+                <div className="relative flex min-w-0 flex-1 items-center bg-[#0073C5] text-white">
+                    <div className="hidden flex-1 justify-center lg:flex">
+                        <NavigationMenu
+                            viewport={false}
+                            className="relative flex max-w-none flex-1 items-stretch justify-center"
+                        >
+                            <NavigationMenuList className="flex-nowrap justify-center gap-0">
+                                {menuItems.map((item, index) => (
+                                    <NavigationMenuItem key={index} className="flex">
+                                        {item.subItems ? (
+                                            <>
+                                                <NavigationMenuTrigger
+                                                    className={cn(
+                                                        navTriggerClass,
+                                                        "flex items-center gap-1"
+                                                    )}
+                                                >
+                                                    {t(item.title)}
+                                                </NavigationMenuTrigger>
+
+                                                <NavigationMenuContent
+                                                    className={cn(
+                                                        "!z-[9999] !border !border-slate-200 !bg-white !p-0 !shadow-none",
+                                                        "left-0 mt-0 min-w-[15rem] overflow-hidden"
+                                                    )}
+                                                >
+                                                    <ul className="flex w-full min-w-0 flex-col divide-y divide-slate-200">
+                                                        {item.subItems.map((subItem, subIndex) => (
+                                                            <ListItem
+                                                                key={subIndex}
+                                                                title={t(subItem.title)}
+                                                                href={subItem.href}
+                                                            >
+                                                                {subItem.description
+                                                                    ? t(subItem.description)
+                                                                    : null}
+                                                            </ListItem>
+                                                        ))}
+                                                    </ul>
+                                                </NavigationMenuContent>
+                                            </>
+                                        ) : (
+                                            <NavigationMenuLink asChild>
+                                                <Link
+                                                    href={item.href || "#"}
+                                                    className={cn(
+                                                        navTriggerClass,
+                                                        "group inline-flex w-max items-center justify-center"
+                                                    )}
+                                                >
+                                                    {t(item.title)}
+                                                </Link>
                                             </NavigationMenuLink>
-                                        </Link>
-                                    )}
-                                </NavigationMenuItem>
-                            ))}
-                        </NavigationMenuList>
-                    </NavigationMenu>
-                </div>
+                                        )}
+                                    </NavigationMenuItem>
+                                ))}
+                            </NavigationMenuList>
+                        </NavigationMenu>
+                    </div>
 
-                {/* Mobile Navigation */}
-                <Sheet open={isOpen} onOpenChange={setIsOpen}>
-                    <SheetTrigger asChild className="md:hidden">
-                        <Button variant="ghost" size="icon">
-                            <Menu className="h-5 w-5" />
-                        </Button>
-                    </SheetTrigger>
-                    <SheetContent side="right" className="w-[300px] sm:w-[400px]">
-                        <div className="flex flex-col space-y-4 mt-8">
-                            {menuItems.map((item, index) => (
-                                <div key={index} className="flex flex-col">
-                                    {item.subItems ? (
-                                        <>
-                                            <button
-                                                onClick={() =>
-                                                    setOpenMobileSubmenu(
-                                                        openMobileSubmenu === item.title ? null : item.title
-                                                    )
-                                                }
-                                                className="flex items-center justify-between py-2 text-lg font-medium transition-colors hover:text-primary"
-                                            >
-                                                {item.title}
+                    <div className="ml-auto flex min-h-full items-center gap-4 pr-4 md:pr-8">
+                        <AppLauncher className="hidden md:inline-flex" />
 
-                                            </button>
-                                            {openMobileSubmenu === item.title && (
-                                                <div className="ml-4 mt-2 flex flex-col space-y-3">
-                                                    {item.subItems.map((subItem, subIndex) => (
-                                                        <Link
-                                                            key={subIndex}
-                                                            href={subItem.href}
-                                                            onClick={() => setIsOpen(false)}
-                                                            className="py-2 text-sm text-muted-foreground transition-colors hover:text-primary"
-                                                        >
-                                                            {subItem.title}
-                                                            {subItem.description && (
-                                                                <p className="text-xs text-muted-foreground mt-1">
-                                                                    {subItem.description}
-                                                                </p>
+                        {/* <button className="relative hidden text-white/90 transition hover:text-white md:inline-flex">
+                            <WalletCards className="h-5 w-5" />
+                            <span className="absolute -right-1.5 -top-1.5 h-2.5 w-2.5 rounded-full bg-red-500 ring-2 ring-[#0073C5]" />
+                        </button> */}
+
+                        <NotificationsDropdown />
+
+                        <LanguageSwitcher />
+
+                        <Sheet open={isOpen} onOpenChange={setIsOpen}>
+                            <SheetTrigger asChild className="lg:hidden">
+                                <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    className="text-white shadow-none hover:bg-white/10 hover:text-white"
+                                >
+                                    <Menu className="h-6 w-6" />
+                                    <span className="sr-only">{t("openMenu")}</span>
+                                </Button>
+                            </SheetTrigger>
+
+                            <SheetContent side="right" className="w-[310px] p-0 sm:w-[380px]">
+                                <div className="flex h-full flex-col bg-white">
+                                    <div className="flex h-16 items-center gap-2 bg-[#0073C5] px-5">
+                                        <Image
+                                            alt="logo"
+                                            src="/invoiceb.png"
+                                            width={200}
+                                            height={200}
+                                        />
+                                    </div>
+
+                                    <div className="flex-1 overflow-y-auto px-4 py-5">
+                                        <div className="flex flex-col gap-1">
+                                            {menuItems.map((item, index) => (
+                                                <div key={index} className="flex flex-col">
+                                                    {item.subItems ? (
+                                                        <>
+                                                            <button
+                                                                type="button"
+                                                                onClick={() =>
+                                                                    setOpenMobileSubmenu(
+                                                                        openMobileSubmenu === item.title
+                                                                            ? null
+                                                                            : item.title
+                                                                    )
+                                                                }
+                                                                className="flex items-center justify-between px-3 py-3 text-left text-[14px] font-semibold text-slate-700 transition hover:bg-slate-100 hover:text-[#0073C5]"
+                                                            >
+                                                                {t(item.title)}
+
+                                                                <ChevronRight
+                                                                    className={cn(
+                                                                        "h-4 w-4 transition-transform",
+                                                                        openMobileSubmenu === item.title &&
+                                                                        "rotate-90"
+                                                                    )}
+                                                                />
+                                                            </button>
+
+                                                            {openMobileSubmenu === item.title && (
+                                                                <div className="ml-3 mt-1 flex flex-col border-l border-slate-200 pl-3">
+                                                                    {item.subItems.map(
+                                                                        (subItem, subIndex) => (
+                                                                            <Link
+                                                                                key={subIndex}
+                                                                                href={subItem.href}
+                                                                                onClick={() => setIsOpen(false)}
+                                                                                className="px-3 py-2 text-sm text-slate-500 transition hover:bg-slate-100 hover:text-[#0073C5] md:text-[14px]"
+                                                                            >
+                                                                                {t(subItem.title)}
+                                                                            </Link>
+                                                                        )
+                                                                    )}
+                                                                </div>
                                                             )}
+                                                        </>
+                                                    ) : (
+                                                        <Link
+                                                            href={item.href || "#"}
+                                                            onClick={() => setIsOpen(false)}
+                                                            className="px-3 py-3 text-[14px] font-semibold text-slate-700 transition hover:bg-slate-100 hover:text-[#0073C5]"
+                                                        >
+                                                            {t(item.title)}
                                                         </Link>
-                                                    ))}
+                                                    )}
                                                 </div>
-                                            )}
-                                        </>
-                                    ) : (
-                                        <Link
-                                            href={item.href || "#"}
-                                            onClick={() => setIsOpen(false)}
-                                            className="py-2 text-lg font-medium transition-colors hover:text-primary"
-                                        >
-                                            {item.title}
-                                        </Link>
-                                    )}
+                                            ))}
+                                        </div>
+                                    </div>
                                 </div>
-                            ))}
-                            <div className="flex flex-col space-y-2 pt-4 border-t">
-                                <Button variant="ghost" className="justify-start">
-                                    Se connecter
-                                </Button>
-                                <Button>
-                                    Commencer
-                                </Button>
-                            </div>
-                        </div>
-                    </SheetContent>
-                </Sheet>
-                <div className="flex flex-col items-center  space-y-4  px-4 md:px-6">
-                    <button>
-                        <LogOut size={24}/>
-                    </button>
+                            </SheetContent>
+                        </Sheet>
+                    </div>
                 </div>
             </div>
         </nav>
     );
 }
 
+type ListItemProps = Omit<React.ComponentPropsWithoutRef<"a">, "title"> & {
+    title: string;
+    showChevron?: boolean;
+};
 
+const ListItem = React.forwardRef<React.ElementRef<"a">, ListItemProps>(
+    ({ className, title, children, showChevron = true, ...props }, ref) => {
+        return (
+            <li>
+                <NavigationMenuLink asChild>
+                    <a
+                        ref={ref}
+                        className={cn(
+                            "flex w-full select-none items-start gap-3 px-4 py-3 leading-none no-underline outline-none transition-colors hover:bg-slate-100 focus:bg-slate-100",
+                            className
+                        )}
+                        {...props}
+                    >
+                        <div className="min-w-0 flex-1 space-y-1">
+                            <div className="text-[14px] font-semibold leading-snug text-slate-800">
+                                {title}
+                            </div>
 
-const ListItem = React.forwardRef<
-    React.ElementRef<"a">,
-    React.ComponentPropsWithoutRef<"a">
->(({ className, title, children, ...props }, ref) => {
-    return (
-        <li>
-            <NavigationMenuLink asChild>
-                <a
-                    ref={ref}
-                    className={cn(
-                        "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
-                        className
-                    )}
-                    {...props}
-                >
-                    <div className="text-sm font-medium leading-none">{title}</div>
-                    {children && (
-                        <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                            {children}
-                        </p>
-                    )}
-                </a>
-            </NavigationMenuLink>
-        </li>
-    );
-});
+                            {children && (
+                                <p className="line-clamp-2 text-[14px] leading-snug text-slate-500">
+                                    {children}
+                                </p>
+                            )}
+                        </div>
+
+                        {showChevron && (
+                            <ChevronRight
+                                className="mt-0.5 size-4 shrink-0 text-slate-400"
+                                aria-hidden
+                            />
+                        )}
+                    </a>
+                </NavigationMenuLink>
+            </li>
+        );
+    }
+);
+
 ListItem.displayName = "ListItem";

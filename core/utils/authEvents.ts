@@ -1,4 +1,5 @@
 type Handler = () => void;
+
 class AuthEvents {
     private logoutHandlers = new Set<Handler>();
 

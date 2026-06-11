@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, useRef } from "react";
+import { useMemo, useState, useRef } from "react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import {
@@ -43,9 +43,8 @@ export function CustomSelect({
                                  customValuePlaceholder = "Saisir une valeur personnalisée",
                                  searchable = false,
                              }: Props) {
-    const [isCustomMode, setIsCustomMode] = useState(false);
+    const [customRequested, setCustomRequested] = useState(false);
     const [searchTerm, setSearchTerm] = useState("");
-    const [isOpen, setIsOpen] = useState(false);
     const inputRef = useRef<HTMLInputElement>(null);
     const optionsArray = useMemo(() => [...options], [options]);
 
@@ -54,19 +53,9 @@ export function CustomSelect({
         [optionsArray, value]
     );
 
-    useEffect(() => {
-        if (!allowCustomValue) {
-            setIsCustomMode(false);
-            return;
-        }
-
-        if (value && !existsInOptions && value !== "") {
-            setIsCustomMode(true);
-        } else if (value && existsInOptions) {
-            setIsCustomMode(false);
-            setSearchTerm("");
-        }
-    }, [allowCustomValue, value, existsInOptions]);
+    const isCustomMode =
+        allowCustomValue &&
+        (customRequested || (value !== "" && !existsInOptions));
 
     const filteredOptions = useMemo(() => {
         if (!searchable || !searchTerm) return optionsArray;
@@ -78,7 +67,7 @@ export function CustomSelect({
     }, [optionsArray, searchTerm, searchable]);
 
     const finalOptions = useMemo(() => {
-        let baseOptions = searchable ? filteredOptions : optionsArray;
+        const baseOptions = searchable ? filteredOptions : optionsArray;
 
         if (!allowCustomValue) return baseOptions;
 
@@ -97,7 +86,7 @@ export function CustomSelect({
 
     const handleSelectChange = (newValue: string) => {
         if (newValue === CUSTOM_VALUE) {
-            setIsCustomMode(true);
+            setCustomRequested(true);
             onChange("");
             setTimeout(() => {
                 inputRef.current?.focus();
@@ -105,7 +94,7 @@ export function CustomSelect({
             return;
         }
 
-        setIsCustomMode(false);
+        setCustomRequested(false);
         onChange(newValue);
         setSearchTerm("");
     };
@@ -118,7 +107,7 @@ export function CustomSelect({
     const handleBlur = () => {
         // Si l'utilisateur quitte le champ sans rien saisir, retourner à la sélection
         if (isCustomMode && value === "") {
-            setIsCustomMode(false);
+            setCustomRequested(false);
         }
     };
 
@@ -149,7 +138,6 @@ export function CustomSelect({
                         value={selectValue}
                         onValueChange={handleSelectChange}
                         onOpenChange={(open) => {
-                            setIsOpen(open);
                             if (!open) setSearchTerm("");
                         }}
                     >

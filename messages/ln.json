@@ -1,0 +1,1591 @@
+{
+  "common": {
+    "welcome": "Boyei malamu",
+    "login": "Kokota"
+  },
+  "register": {
+    "title": "Fungola compte",
+    "subtitle": "Pona profil na yo mpe koma ba informations na yo.",
+    "heroText": "Fungola compte na yo mpe salela gestion ya pete, ya sika, mpe oyo ebongi na posa na yo.",
+    "continue": "Koba",
+    "alreadyHaveAccount": "Ozali déjà na compte ?",
+    "login": "Kokota",
+
+    "profiles": {
+      "company": "Entreprise",
+      "sme": "PME",
+      "personal": "Ya moto moko"
+    },
+
+    "fields": {
+      "companyName": "Kombo ya entreprise",
+      "rccm": "RCCM",
+      "firstName": "Prénom",
+      "lastName": "Kombo",
+      "nif": "NIF",
+      "companyRole": "Mosala na yo",
+      "businessSector": "Secteur ya mosala",
+      "companySize": "Bonene ya entreprise",
+      "fullName": "Kombo mobimba",
+      "email": "Adresse email",
+      "phone": "Téléphone",
+      "password": "Mot de passe",
+      "confirmPassword": "Ndimisa mot de passe"
+    },
+
+    "placeholders": {
+      "companyName": "Koma kombo ya entreprise",
+      "rccm": "Koma RCCM",
+      "firstName": "Koma prénom na yo",
+      "lastName": "Koma kombo na yo",
+      "nif": "Ndakisa : A1202401Z",
+      "companyRole": "Pona mosala na yo",
+      "businessSector": "Pona secteur moko",
+      "companySize": "Pona bonene ya entreprise",
+      "fullName": "Koma kombo na yo mobimba",
+      "email": "Koma adresse email na yo",
+      "phone": "Koma numéro na yo ya téléphone",
+      "password": "Koma mot de passe na yo",
+      "confirmPassword": "Ndimisa mot de passe na yo"
+    },
+
+    "companyRoles": {
+      "it": "Informaticien",
+      "sales": "Commercial",
+      "owner": "Nkolo ya entreprise",
+      "manager": "Mokambi",
+      "other": "Mosusu"
+    },
+
+    "businessSectors": {
+      "bankingInsurance": "Banque & Assurance",
+      "restaurantsHotels": "Restaurants & Hôtels",
+      "tradeDistribution": "Commerce & Distribution",
+      "technologyIt": "Technologie & Informatique",
+      "health": "Santé",
+      "education": "Éducation",
+      "constructionRealEstate": "Construction & Immobilier",
+      "transportLogistics": "Transport & Logistique",
+      "industry": "Industrie",
+      "other": "Mosusu"
+    },
+
+    "companySizes": {
+      "oneToTen": "Basali 1 kino 10",
+      "elevenToFifty": "Basali 11 kino 50",
+      "fiftyOneToTwoHundred": "Basali 51 kino 200",
+      "twoHundredOneToFiveHundred": "Basali 201 kino 500",
+      "moreThanFiveHundred": "Basali koleka 500"
+    },
+
+    "validation": {
+      "fullNameRequired": "Kombo mobimba esengeli.",
+      "emailRequired": "Adresse email esengeli.",
+      "phoneRequired": "Numéro ya téléphone esengeli.",
+      "phoneInvalid": "Numéro ya téléphone ezali malamu te.",
+      "passwordRequired": "Mot de passe esengeli.",
+      "passwordMin": "Mot de passe esengeli kozala na ba caractères 8 to koleka.",
+      "confirmPasswordRequired": "Ndimisa mot de passe.",
+      "passwordsMismatch": "Ba mot de passe ekokani te.",
+      "companyNameRequired": "Kombo ya entreprise esengeli.",
+      "rccmRequired": "RCCM esengeli.",
+      "nifRequired": "NIF esengeli.",
+      "companyRoleRequired": "Pona mosala na yo.",
+      "businessSectorRequired": "Pona secteur ya mosala.",
+      "companySizeRequired": "Pona bonene ya entreprise.",
+      "firstNameRequired": "Prénom esengeli.",
+      "lastNameRequired": "Kombo esengeli.",
+      "emailInvalid": "Koma adresse email ya solo.",
+      "nifInvalid": "NIF esengeli kozala lokola A1202401Z."
+    },
+
+    "loading": "Tozali kokanga compte..."
+  },
+  "navbar": {
+    "openMenu": "Fungola menu",
+    "Accueil": "Accueil",
+    "Facture": "Faktire",
+    "MesFactures": "Bafaktire na ngai",
+    "NouvelleFacture": "Faktire ya sika",
+    "Catalogue": "Catalogue",
+    "Article": "Biloko",
+    "Service": "Services",
+    "NouvelArticle": "Eloko ya sika",
+    "Visualiser": "Komona",
+    "Client": "Kiliya",
+    "NouveauClient": "Kiliya ya sika",
+    "Contrat": "Kontra",
+    "NouveauContrat": "Kontra ya sika",
+    "NouveauReferentiel": "Entrée ya référentiel ya sika",
+    "Configuration": "Bobongisi",
+    "Reports": "Ba rapports",
+    "Aide": "Lisalisi"
+  },
+  "login": {
+    "illustrationAlt": "elilingi",
+    "logoAlt": "logo",
+    "description": "Bongisa bakiliya, mikanda ya boyokani mpe bafaktire na pete na iKwook Invoice.",
+    "title": "Kokota",
+    "identifier": "Nkombo ya mosaleli",
+    "identifierPlaceholder": "email@ikwook.cd",
+    "password": "Mot de passe",
+    "passwordPlaceholder": "********",
+    "submit": "Kokota",
+    "noAccount": "Ozali naino na compte te?",
+    "createAccount": "Finá awa mpo na kosala compte",
+    "loading": "Ezali ko charger..."
+  },
+  "invoicesPage": {
+    "breadcrumb": {
+      "invoices": "Bafaktire",
+      "view": "Komona"
+    },
+    "title": "Liste ya bafaktire",
+    "createInvoice": "Kosala faktire",
+    "payments": "Babotosi",
+    "table": {
+      "invoice": "Faktire",
+      "client": "Kiliya",
+      "article": "Eloko",
+      "amount": "Motuya",
+      "status": "Statut",
+      "phone": "Telefone",
+      "comments": "Ba commentaire",
+      "interactions": "Ba interactions",
+      "actions": "Misala",
+      "viewInvoice": "Komona détails ya faktire",
+      "viewInteractions": "Komona ba interactions"
+    },
+    "drawer": {
+      "reviewInvoice": "Kotala faktire",
+      "amount": "Motuya",
+      "status": "Statut",
+      "interactions": "Ba interactions",
+      "decision": "Mokano",
+      "validate": "Kondima",
+      "pause": "Kotia pause",
+      "reject": "Koboya",
+      "comments": "Ba commentaire",
+      "noComment": "Commentaire ezali te mpo na faktire oyo.",
+      "addComment": "Bakisa commentaire",
+      "commentPlaceholder": "Koma commentaire mpo na faktire oyo...",
+      "sendComment": "Tinda commentaire",
+      "you": "Yo",
+      "reviewer": "Moto azali kotala",
+      "now": "Sikoyo"
+    }
+  },
+  "paymentsPage": {
+    "title": "Babotosi",
+    "createTitle": "Botosi ya sika",
+    "backToList": "Zonga na liste",
+    "backToInvoices": "Zonga na bafaktire",
+    "recordPayment": "Kobakisa botosi",
+    "loading": "Kozwa babotosi…",
+    "loadError": "Ekoki te kozwa babotosi.",
+    "empty": "Botosi ezali te sikoyo.",
+    "breadcrumb": {
+      "invoices": "Bafaktire",
+      "payments": "Babotosi"
+    },
+    "table": {
+      "paymentReference": "Référence ya botosi",
+      "invoiceName": "Nkombo ya faktire",
+      "amountWithCurrency": "Motuya",
+      "date": "Date"
+    },
+    "pagination": {
+      "summary": "Page {page} / {totalPages} — {total} botosi",
+      "prev": "O liboso",
+      "next": "Nsima"
+    },
+    "sheet": {
+      "title": "Botosi ya sika",
+      "description": "Tia ba informations mpo na kobakisa botosi na serveur."
+    },
+    "stepper": {
+      "step1": "Faktire mpe kotrati",
+      "step2": "Makambo ya botosi"
+    },
+    "step1": {
+      "title": "Banga botosi na faktire",
+      "subtitle": "Pona faktire mpe kotrati oyo ezali na kiliya."
+    },
+    "step2": {
+      "title": "Motuya mpe méthode ya botosi",
+      "subtitle": "Tia motuya, moné mpe makambo ya kofuta."
+    },
+    "form": {
+      "invoice": "Faktire",
+      "invoicePlaceholder": "Pona faktire",
+      "invoiceSearchPlaceholder": "Luka faktire (référence, kiliya…)",
+      "invoiceSearchEmpty": "Ezali te na ba résultats.",
+      "loadingInvoices": "Kotanga ba faktire…",
+      "invoicesLoadError": "Ekoki te kotanga ba faktire.",
+      "client": "Kiliya",
+      "contract": "Kotrati",
+      "contractPlaceholder": "Pona kotrati",
+      "amount": "Motuya",
+      "amountPlaceholder": "Bandeko 250",
+      "currency": "Moné",
+      "channel": "Canal",
+      "channelPlaceholder": "Canal ya botosi",
+      "method": "Méthode",
+      "methodPlaceholder": "Méthode ya botosi",
+      "exchangeRate": "Taux ya échange",
+      "cashInfo": "Ba infos caisse",
+      "collector": "Collecteur",
+      "drawer": "Tiroir ya mbongo",
+      "cancel": "Longola",
+      "next": "Kende elongi",
+      "back": "Zonga",
+      "loadingChannels": "Canaux bazali koya…",
+      "loadingMethods": "Méthodes bazali koya…",
+      "noChannels": "Canal ezali te",
+      "noMethods": "Méthode ezali te",
+      "noContracts": "Kotrati ezali te",
+      "contractNeedsInvoice": "Pona liboso faktire",
+      "success": "Botosi ebakisami malamu.",
+      "submit": "Tinda botosi",
+      "submitting": "Ezali kotinda…",
+      "submitErrorFallback": "Ekoki te kobakisa botosi.",
+      "invoiceTotalHint": "Balance etikali na faktire : {amount}"
+    },
+    "validation": {
+      "invoiceRequired": "Pona faktire.",
+      "contractRequired": "Pona kotrati.",
+      "amountInvalid": "Motuya ezali malamu te.",
+      "amountExceedsInvoice": "Motuya ekoki koleka te balance etikali ({max}).",
+      "amountWithinBalance": "Motuya ezali malamu (balance etikali : {max}).",
+      "amountChecking": "Kotalela motuya…",
+      "currencyRequired": "Moné ezali na lisungi.",
+      "channelRequired": "Pona canal.",
+      "methodRequired": "Pona méthode.",
+      "exchangeRateInvalid": "Taux ya échange ezali malamu te."
+    }
+  },
+  "invoiceViewer": {
+    "breadcrumbInvoices": "Bafaktire",
+    "breadcrumbView": "Kotala",
+    "print": "Kobimisa",
+    "download": "Kozwa",
+    "share": "Kokabola",
+    "documentPreview": "Komona faktire",
+    "documentHelp": "Faktire ekotikala komonana tango bozali kosala review, lokola document ya kokabola.",
+    "invoice": "Faktire",
+    "billedTo": "Epesami na",
+    "createdAt": "Mokolo ya kosala",
+    "dueDate": "Mokolo ya suka",
+    "status": "Statut",
+    "amount": "Motuya",
+    "designation": "Ndimbola",
+    "quantity": "Motango",
+    "unitPrice": "Prix moko",
+    "lineTotal": "Total",
+    "subtotal": "Sous-total",
+    "tax": "TVA",
+    "total": "Total",
+    "note": "Liyebisi",
+    "noteText": "Faktire oyo esengeli kondimama na kati liboso ya kotindama na kiliya.",
+    "reviewAndComments": "Review mpe ba commentaire",
+    "reviewHelp": "Tala makanisi ya ba validateurs mpe bakisa commentaire na yo.",
+    "decision": "Mokano",
+    "validate": "Kondima",
+    "pause": "Kotia pause",
+    "reject": "Koboya",
+    "interactions": "Ba interactions",
+    "comments": "Ba commentaire",
+    "noComment": "Commentaire ezali te mpo na faktire oyo.",
+    "resolve": "Kotia lokola esili",
+    "resolved": "Esili",
+    "addComment": "Bakisa commentaire",
+    "commentPlaceholder": "Koma commentaire mpo na faktire oyo...",
+    "sendComment": "Tinda commentaire",
+    "you": "Yo",
+    "reviewer": "Moto azali kotala",
+    "now": "Sikoyo"
+  },
+  "createInvoice": {
+    "title": "Kosala faktire",
+    "breadcrumb": {
+      "home": "Accueil",
+      "createInvoice": "Kosala faktire"
+    },
+    "common": {
+      "select": "Pona",
+      "add": "Bakisa",
+      "next": "Kokende liboso",
+      "previous": "Kozonga",
+      "cancel": "Kolongola",
+      "save": "Kobomba",
+      "submit": "Kotinda",
+      "normalize": "Normaliser"
+    },
+    "steps": {
+      "client": "Ba informations ya kiliya",
+      "preview": "Komona liboso",
+      "comment": "Commentaire"
+    },
+    "kind": {
+      "article": "Eloko",
+      "service": "Service"
+    },
+    "invoiceTypes": {
+      "sale": "Vente",
+      "creditNote": "Avoir",
+      "proforma": "Proforma"
+    },
+    "client": {
+      "client": "Kiliya",
+      "searchPlaceholder": "Luka to pona kiliya",
+      "empty": "Kiliya amonani te",
+      "clientName": "Kombo ya kiliya",
+      "nif": "Nimero ya impôt / NIF",
+      "rccm": "RCCM",
+      "idNat": "ID NAT",
+      "address": "Adresse",
+      "phone": "Telefone",
+      "email": "E-mail",
+      "invoiceType": "Lolenge ya faktire",
+      "invoiceTypePlaceholder": "Vente to Avoir",
+      "itemKind": "Eloko to Service"
+    },
+    "catalog": {
+      "searchArticle": "Luka eloko",
+      "searchService": "Luka service",
+      "loading": "Boluki ezali kosalama...",
+      "empty": "Eloko emonani te",
+      "dailyService": "Service ya mokolo",
+      "noArticle": "Eloko ebakisami te.",
+      "noService": "Service ebakisami te."
+    },
+    "table": {
+      "number": "N°",
+      "quantity": "Motango",
+      "tax": "Taxe",
+      "priceHT": "Prix HT",
+      "men": "Bato",
+      "days": "Mikolo",
+      "dailyPrice": "Prix ya mokolo",
+      "dailyPriceShort": "Prix/mokolo",
+      "totalHT": "Total HT"
+    },
+    "preview": {
+      "settings": "Paramètre",
+      "editClient": "Kobongisa kiliya",
+      "editArticles": "Kobongisa biloko",
+      "editServices": "Kobongisa ba services",
+      "invoiceNumber": "Faktire n°101",
+      "date": "Mokolo 02/11/2026"
+    },
+    "summary": {
+      "subtotal": "Sous-total",
+      "tax": "TVA",
+      "total": "Total"
+    }
+  },
+  "clients": {
+    "createClient": {
+      "breadcrumb": {
+        "Step1": "Bakiliya",
+        "Step2": "Ya sika"
+      },
+      "title": "Kiliya ya sika",
+      "form": {
+        "reference": "IDNAT",
+        "clientName": "Kombo ya kiliya",
+        "referenceDocument": "Document ya reference",
+        "businessSector": "Secteur ya mosala",
+        "legalRepresentative": "Mokambi ya mibeko",
+        "countryHint": "Code ya motango (ex. 243)",
+        "countryPlaceholder": "Luka mboka…",
+        "countryLoading": "Kotanga ba mboka…",
+        "countryLoadError": "Ekoki te kotanga ba mboka.",
+        "clientTypePlaceholder": "Pona lolenge",
+        "clientTypeLoading": "Kotanga ba types…",
+        "clientTypeLoadError": "Ekoki te kotanga ba types ya kiliya.",
+        "clientTypeEmpty": "Type moko te",
+        "nom": "Kombo ya kiliya",
+        "sousTitre": "Motó ya nse",
+        "nif": "Numelo ya NIF",
+        "rccm": "Numelo ya RCCM",
+        "tel": "Telefɔ́ni",
+        "email": "Email ya kiliya",
+        "adresse": "Adresi ya kiliya",
+        "pays": "Mboka",
+        "status": {
+          "title": "Etaleli ya kiliya",
+          "options": {
+            "actif": "Eloko ya motuya",
+            "suspendu": "Bakangisi",
+            "complet": "Esika esili"
+          }
+        },
+        "type": {
+          "title": "Lolenge ya kiliya",
+          "options": {
+            "ponctuel": "Na ngonga",
+            "entreprise": "Kompanyi"
+          }
+        },
+        "annule": "Kanga",
+        "save": "Bomba"
+      }
+    },
+    "editClient": {
+      "breadcrumbStep": "Bobongisa",
+      "title": "Bobongisa kiliya",
+      "idnatLabel": "IDNAT",
+      "loading": "Kotanga…",
+      "loadError": "Ekoki te kotanga kiliya oyo.",
+      "retry": "Meka lisusu",
+      "backToList": "Zonga na liste"
+    },
+    "listClients": {
+      "breadcrumb": {
+        "Step1": "Bakiliya",
+        "Step2": "Komona"
+      },
+      "title": "Liste ya bakiliya",
+      "btn": {
+        "new": "Kiliya ya sika"
+      },
+      "search": {
+        "placeholder": "Luka na nkombo ya mokiliya"
+      },
+      "table": {
+        "reference": "Numelo ya Reference",
+        "code": "Code",
+        "titre": "Motó ya likambo",
+        "nif": "Numelo ya NIF",
+        "tel": "Telefɔ́ni",
+        "status": {
+          "title": "Etaleli ya kiliya",
+          "options": {
+            "actif": "Eloko ya motuya",
+            "suspendu": "Bakangisi",
+            "complet": "Esika esili"
+          }
+        },
+        "type": {
+          "title": "Lolenge ya kiliya",
+          "options": {
+            "ponctuel": "Na ngonga",
+            "entreprise": "Kompanyi"
+          }
+        }
+      }
+    },
+    "view": {
+      "referenceLabel": "Ref.",
+      "loading": "Kotanga…",
+      "loadError": "Ekoki te kotanga kiliya oyo.",
+      "retry": "Meka lisusu",
+      "backToList": "Zonga na liste",
+      "fields": {
+        "displayName": "Nkombo ya komona",
+        "subtitle": "Sous-titre",
+        "status": "Etaleli",
+        "clientType": "Lolenge ya kiliya",
+        "idnat": "IDNAT",
+        "referenceDocument": "Document ya reference",
+        "firstName": "Prénom",
+        "lastName": "Nom",
+        "businessSector": "Secteur ya mosala",
+        "legalRepresentative": "Représentant légal",
+        "nif": "NIF",
+        "rccm": "RCCM",
+        "phone": "Telefɔ́ni",
+        "email": "Email",
+        "country": "Mboka",
+        "address": "Adresse"
+      },
+      "actions": {
+        "backToList": "Zonga na liste",
+        "edit": "Bobongisa",
+        "delete": "Kolongola",
+        "deleteConfirm": "Longola kiliya oyo mpenza ?",
+        "deleteSuccess": "Kiliya elongolami."
+      }
+    }
+  },
+  "contrats": {
+    "createContrat": {
+      "breadcrumb": {
+        "Step1": "Kontras",
+        "Step2": "Ya sika"
+      },
+      "title": "Kontra ya sika",
+      "form": {
+        "client": "Kiliya",
+        "clientSearchPlaceholder": "Luka kiliya (nkombo, NIF, telefɔ́ni…)",
+        "clientSearchEmpty": "Ezali te na ba résultats.",
+        "loadingClients": "Kotanga ba kiliya…",
+        "clientsLoadError": "Ekoki te kotanga ba kiliya.",
+        "reference": "Numelo ya Reference",
+        "nom": "Kombo ya kontra",
+        "auto-renew": {
+          "title": "Kozongisa yango moko",
+          "options": {
+            "oui": "Iyo",
+            "non": "Te"
+          }
+        },
+        "tel": "Telefɔ́ni",
+        "dateStart": "Mokolo ya kobanda",
+        "dateEnd": "Mokolo ya suka",
+        "valeur": "Motuya ya kontra",
+        "currency": "Mbongo",
+        "contractType": "Lolenge ya kontra",
+        "contractTypePlaceholder": "Pona lolenge ya kontra",
+        "loadingReferentials": "Tozali kotanga ba référentiels…",
+        "billingCycle": "Cycle ya kofaktire",
+        "amountByCycle": "Motuya {cycle}",
+        "monthly": "Sanza na sanza",
+        "paid": "Efutami",
+        "contractFile": "Fichier ya kontra",
+        "contractFileOptional": "Fichier ya kontra (esengeli te)",
+        "itemsTemplate": "Modèle ya ba lignes (JSON)",
+        "billingCycles": {
+          "one_shot": "Mbala moko",
+          "monthly": "Sanza na sanza",
+          "quarterly": "Trimestre",
+          "half_yearly": "Sanza motoba",
+          "yearly": "Mbula na mbula"
+        },
+        "errors": {
+          "invalidJson": "JSON ezali malamu te"
+        },
+        "status": {
+          "title": "Etaleli",
+          "options": {
+            "actif": "Eloko ya motuya",
+            "suspendu": "Bakangisi",
+            "complet": "Esika esili"
+          }
+        },
+        "description": "Ndimbola"
+      },
+      "toast": {
+        "invalidJsonTemplate": "Modèle JSON ezali malamu te.",
+        "created": "Kontra esalemi.",
+        "updated": "Kontra ebongisami."
+      },
+      "cancel": "Kanga",
+      "save": "Bomba"
+    },
+    "listContrats": {
+      "breadcrumb": {
+        "Step1": "Kontras",
+        "Step2": "Komona"
+      },
+      "title": "Liste ya kontras",
+      "btn": {
+        "new": "Kontra ya sika"
+      },
+      "search": {
+        "placeholder": "Luka na numelo ya reference, motó ya kontra, motuya ya kontra, statut, mokolo ya kobanda, mokolo ya suka..."
+      },
+      "table": {
+        "reference": "Numelo ya Reference",
+        "titre": "Motó ya kontra",
+        "client": "Kiliya",
+        "Montant": "Motuya",
+        "status": {
+          "title": "Etaleli",
+          "options": {
+            "actif": "Eloko ya motuya",
+            "suspendu": "Bakangisi",
+            "complet": "Esika esili"
+          }
+        },
+        "period": "Eleko"
+      }
+    },
+    "actions": {
+      "backToList": "Zonga na liste",
+      "delete": "Longola",
+      "edit": "Bongisa",
+      "deleteConfirm": "Olingi kolongola kontra oyo libela?",
+      "deleteSuccess": "Kontra elongolami."
+    }
+  },
+  "articles": {
+    "list": {
+      "title": "Biloko",
+      "searchPlaceholder": "Luka na code, titre, référentiel, groupe ya taxe, prix HT, prix TTC…",
+      "searchAriaLabel": "Luka eloko",
+      "loading": "Tozali kotia ba articles…",
+      "refreshing": "Kobongisa…",
+      "loadError": "Telemisi ya liste ya ba articles ewuti te.",
+      "loadErrorDetail": "Telemisi ya article oyo ewuti te.",
+      "retry": "Meka lisusu",
+      "empty": "Eloko moko te ezali na recherche na yo.",
+      "totalCount": "{count} article(s)",
+      "pageOfTotal": "Page {page} / {totalPages}",
+      "paginationPrev": "Page ya liboso",
+      "paginationNext": "Page ya nsima",
+      "columns": {
+        "code": "Code",
+        "title": "Motó ya likambo",
+        "referential": "Référentiel",
+        "taxGroup": "Etuluku ya taxe",
+        "priceHt": "Prix HT",
+        "priceTtc": "Ntalo na TVA",
+        "status": "Etaleli",
+        "period": "Eleko"
+      },
+      "action": "Etamboli",
+      "viewArticleDetail": "Komona eloko {id}",
+      "status": {
+        "suspendu": "Epekisami",
+        "actif": "Ezali kotiya",
+        "complet": "Esilisi"
+      }
+    },
+    "create": {
+      "breadcrumbNew": "Ya sika",
+      "fields": {
+        "name": "Kombo",
+        "code": "Code",
+        "description": "Mokambi",
+        "priceExclTax": "Ntalo kozanga TVA",
+        "priceInclTax": "Ntalo na TVA",
+        "currency": "Mbongo",
+        "taxGroup": "Etuluku ya TVA",
+        "specialPrice": "Loposo ya ntina / Promotion",
+        "pieceUnit": "Mokapo / Moto",
+        "unit": "Moto",
+        "articleGroup": "Etuluku",
+        "referential": "Référentiel"
+      },
+      "placeholders": {
+        "priceExclTaxExample": "Ex: 10 000",
+        "priceInclTaxExample": "Ex: 11 800",
+        "optional": "Esengeli te"
+      },
+      "selectPlaceholder": "Pona",
+      "taxGroupSelectAria": "Pona etuluku",
+      "units": {
+        "piece": "Eloko",
+        "kg": "Kg",
+        "hour": "Eleko",
+        "flatRate": "Forfait"
+      },
+      "articleGroups": {
+        "a": "Etuluku A",
+        "b": "Etuluku B",
+        "c": "Etuluku C"
+      },
+      "actions": {
+        "cancel": "Kanga",
+        "save": "Bomba"
+      },
+      "creating": "Kozala na kobakala article…",
+      "toastCreated": "Article ebakisami.",
+      "invalidForm": "Talá ba champs oyo esengeli mpe ntalo.",
+      "referentialPlaceholder": "Pona référentiel",
+      "referentialLoading": "Kotia ba référentiels…",
+      "retryReferentialsFetch": "Komeka lisusu",
+      "referentialLoadError": "Référentiels ekokaki te kótia.",
+      "referentialNoneForAxis": "Référentiel moko te. Bakisa na bobongisi.",
+      "invalidReferential": "Pona référentiel ya malamu.",
+      "itemTypeLoading": "Tozali koluka ba codes…",
+      "itemTypeLoadError": "Impossible de koluka ba types ya article.",
+      "retryItemTypesFetch": "Meka lisusu",
+      "taxGroupsPlaceholder": "Pona etuluku ya taxe",
+      "taxGroupsLoadError": "Impossible ya kozwa bituluku ya taxe.",
+      "retryTaxGroupsFetch": "Meka lisusu"
+    },
+    "view": {
+      "title": "Makambo matali eloko",
+      "referenceLabel": "Ref.",
+      "fields": {
+        "name": "Kombo",
+        "code": "Code",
+        "description": "Ndimbola",
+        "priceExclTax": "Ntalo kozanga TVA",
+        "priceInclTax": "Ntalo na TVA",
+        "taxGroup": "Etuluku ya TVA"
+      },
+      "actions": {
+        "backToList": "Kozonga na liste",
+        "cancel": "Kotika",
+        "delete": "Kolongola",
+        "deleting": "Kolongolami ezali kosala...",
+        "deleteConfirm": "Kolongola eloko oyo mpo na libela ?",
+        "deleteSuccess": "Eloko elongolami.",
+        "deleteError": "Kolongola eloko elongwaki te.",
+        "edit": "Kobongisa"
+      }
+    },
+    "edit": {
+      "title": "Kobongisa eloko",
+      "breadcrumbSegment": "Kobongisa",
+      "referencePrefix": "Ref. : ",
+      "unknownTaxGroupName": "Etuluku (ebumi to epesami)",
+      "taxGroupHint": "Ntalo na TVA elandi ntalo avant TVA (pe liboso) selon groupe fiscal oyo.",
+      "referentialFallback": "Référentiel n° {id} ezali té na liste",
+      "fields": {
+        "description": "Ndimbola",
+        "status": "Etaleli",
+        "period": "Eleko"
+      },
+      "saving": "Kobomba…",
+      "toastSaved": "Eloko ebakisami."
+    }
+  },
+  "configuration": {
+    "pageTitle": "Bobongisi",
+    "menu": {
+      "basicInfo": "Mayebisi ya ntina",
+      "changePassword": "Kobongola mot de passe",
+      "referentials": "Ba référentiels",
+      "taxGroups": "Bituluku ya mpako",
+      "logo": "Kobongola logo",
+      "bank": "Ndenge ya lifuta",
+      "members": "Bandeko ya ekipi",
+      "roles": "Mikumba",
+      "services": "Ba services",
+      "permissions": "Ndinga ya bokoki",
+      "language": "Lokota ya liboso",
+      "modelFactures": "Ba modèles ya factures"
+    },
+    "services": {
+      "createSectionTitle": "Kokela service ekofakisa",
+      "createButton": "Kokela service",
+      "breadcrumbNew": "Service ya sika",
+      "listSectionTitle": "Liste ya ba services",
+      "searchPlaceholder": "Luka na code, kombo, secteur, devise, prix HT, prix TTC, groupe ya taxation…",
+      "searchAriaLabel": "Luka service",
+      "filterSectorPlaceholder": "Filtre na secteur (exemple Technologie)",
+      "filterApply": "Filtre",
+      "filterReset": "Komona nyonso",
+      "refresh": "Bongisa",
+      "refreshAria": "Bongisa liste ya services",
+      "totalCount": "{count} service(s)",
+      "columns": {
+        "id": "ID",
+        "code": "Code",
+        "name": "Kombo",
+        "sector": "Secteur ya mosala",
+        "unitPrice": "Prix HT",
+        "priceInclTax": "Prix TTC",
+        "currency": "Mbongo",
+        "taxGroup": "Etuluku ya kotá taxe",
+        "billingType": "Factur."
+      },
+      "fields": {
+        "serviceName": "Kombo ya service",
+        "code": "Code",
+        "description": "Ndimbola",
+        "businessSector": "Secteur ya mosala",
+        "unitPrice": "Ntalo unite kozanga TVA",
+        "priceInclTax": "Ntalo na TVA",
+        "taxRate": "Taux ya TVA (%)",
+        "taxGroup": "Etuluku ya taxe",
+        "currency": "Devise",
+        "billingType": "Mokapo ya facturation",
+        "categoryId": "Référentiel",
+        "peopleApply": "Ezali kopona na batu",
+        "quantityApply": "Ezali kopona na quantité",
+        "notes": "Remarques"
+      },
+      "placeholders": {
+        "serviceName": "Ex Consultation technique",
+        "code": "SERV-001",
+        "description": "Optional",
+        "businessSector": "Ex Technologie",
+        "unitPrice": "150",
+        "taxRate": "16",
+        "billingType": "1",
+        "notes": "Optional"
+      },
+      "actions": {
+        "cancel": "Kozongisa formulair",
+        "cancelBack": "Zonga na liste",
+        "submit": "Kokela service",
+        "submitting": "Tozali kobakala…"
+      },
+      "referentialsPlaceholder": "Pona entrée catalogue",
+      "taxGroupsPlaceholder": "Pona etuluku ya taxe",
+      "taxGroupsLoading": "Kozwa bituluku ya taxe…",
+      "taxGroupsLoadError": "Impossible ya kozwa bituluku ya taxe.",
+      "retryTaxGroups": "Meka lisusu",
+      "referentialsLoading": "Kozwa catalogue…",
+      "referentialsLoadError": "Catalogue elongwaki te.",
+      "retryReferentials": "Meke lisusu",
+      "itemTypesPlaceholder": "Pona code",
+      "itemTypeLoading": "Tozali koluka ba codes…",
+      "itemTypeLoadError": "Impossible de koluka ba types ya article.",
+      "retryItemTypesFetch": "Meka lisusu",
+      "creating": "Kozala na kokela service…",
+      "toastCreated": "Service ebakisami.",
+      "toastCreateErrorFallback": "Kokela service elongwaki te.",
+      "invalidForm": "Tála ba champs mpe nimero malamu.",
+      "loading": "Kozwa ba services…",
+      "loadError": "Liste elongwaki te.",
+      "empty": "Ezali lisusu té.",
+      "action": "Etamboli",
+      "viewServiceDetail": "Komona service {code}",
+      "loadErrorDetail": "Kozwa service elongwami te.",
+      "retryLoad": "Meka lisusu",
+      "pageOfTotal": "Page {page} / {totalPages}",
+      "paginationPrev": "Liboso",
+      "paginationNext": "Landí",
+      "view": {
+        "referenceLabel": "Réf.",
+        "fields": {
+          "serviceName": "Kombo ya service",
+          "code": "Code",
+          "description": "Ndimbola",
+          "businessSector": "Secteur ya mosala",
+          "unitPrice": "Ntalo unite kozanga TVA",
+          "priceInclTax": "Ntalo na TVA",
+          "taxGroup": "Etuluku ya kotá taxe",
+          "currency": "Devise",
+          "referential": "Référentiel"
+        },
+        "actions": {
+          "backToList": "Kozonga na liste",
+          "cancel": "Kotika",
+          "delete": "Kolongola",
+          "deleting": "Kolongolami ezali kosala...",
+          "deleteConfirm": "Kolongola service oyo mpo na libela ?",
+          "deleteSuccess": "Service elongolami.",
+          "deleteError": "Kolongola service elongwaki te.",
+          "edit": "Kobongola"
+        }
+      },
+      "edit": {
+        "title": "Kobongola service",
+        "breadcrumbSegment": "Kobongola",
+        "referencePrefix": "Réf. : ",
+        "saving": "Kobomba…",
+        "saveChanges": "Kobomba ba changements",
+        "toastSaved": "Service ebongisami.",
+        "toastSaveError": "Kobomba service elongwaki te."
+      }
+    },
+    "basicInfo": {
+      "sectionTitle": "Bansango ya moboko",
+      "edit": "Kobongola",
+      "cancel": "Kozonga",
+      "firstname": "Kombo ya liboso",
+      "lastname": "Kombo ya nsuka",
+      "email": "Email",
+      "phone": "Telefone",
+      "userType": "Mokapo ya compte",
+      "userTypes": {
+        "personal": "Motuni",
+        "pme": "PME",
+        "corporate": "Entreprise"
+      },
+      "loading": "Kozwa profil…",
+      "loadError": "Profil elongwaki te.",
+      "retry": "Meke lisusu",
+      "submitting": "Tozali kobomba…",
+      "saveSuccess": "Profil ebongisami.",
+      "saveError": "Kobomba profil elongwaki.",
+      "saveChanges": "Bomba mbongwana",
+      "errors": {
+        "required": "Kombo ya liboso, ya nsuka mpe telefone bazali obligatoire."
+      }
+    },
+    "logo": {
+      "sectionTitle": "Logo ya entreprise",
+      "currentLogoTitle": "Logo ya lelo",
+      "currentLogoBody": "Logo oyo ezali kopona na ba documents ya application. Mpo na kobongola, pona elilingi ya sika.",
+      "changeLogo": "Kobongola logo",
+      "introTitle": "Komisa logo ya sika",
+      "introBody": "Logo ezali kopona na ba documents ya application.",
+      "formatsHint": "JPEG, PNG to WebP · 5 Mo kaka",
+      "chooseFile": "Pona fichier",
+      "cancel": "Kozonga",
+      "selectedFile": "Fichier oyo oponi :",
+      "save": "Batela logo",
+      "saving": "Tozali kobatela…",
+      "noLogo": "Ezali logo té",
+      "previewAlt": "Mona logo",
+      "toastSaved": "Logo ebongisami.",
+      "toastError": "Komisa logo elongwaki.",
+      "fileTooLarge": "Fichier esengeli koleka 5 Mo té.",
+      "invalidFormat": "Salela JPEG, PNG to WebP.",
+      "noFileSelected": "Pona fichier liboso ya kobatela."
+    },
+    "password": {
+      "sectionTitle": "Kobongola mot de passe",
+      "oldPassword": "Mot de passe ya kala",
+      "newPassword": "Mot de passe ya sika",
+      "confirmPassword": "Kondimisa mot de passe ",
+      "placeholder": "Tyá mot de passe na yo",
+      "submit": "Kobongola mot de passe",
+      "submitting": "Tozali kobongola…",
+      "toastSuccess": "Mot de passe ebongisami.",
+      "toastError": "Kobongola mot de passe elongwaki.",
+      "errors": {
+        "minLength": "Mot de passe ya sika esengeli kozala na mbula 6 minimum.",
+        "mismatch": "Ba mots de passe bazali te lokola moko.",
+        "oldRequired": "Tyá mot de passe ya kala."
+      }
+    },
+    "referentialCatalog": {
+      "sectionHeadline": "Catalogue ya référentiel",
+      "axisColumn": "Axe",
+      "types": {
+        "clients": "Ba clients",
+        "fournitures": "Ba fournitures",
+        "contrats": "Ba contrats"
+      },
+      "code": "Code",
+      "entityTitle": "Libellé",
+      "description": "Ndimbola",
+      "parentId": "Parent",
+      "parentShort": "Parent",
+      "rootParent": "Mitano (azo te)",
+      "rootParentColumn": "— Mitano —",
+      "openCreateForm": "Entrée ya sika",
+      "actions": "Actions",
+      "save": "Kobomba",
+      "cancel": "Kanga",
+      "empty": "Ba entrées te.",
+      "placeholderCode": "Ex. CORP",
+      "placeholderTitle": "Ex. Ba clients ya entreprise",
+      "placeholderDesc": "Ezali lisusu…",
+      "editAria": "Kobongisa entrée",
+      "deleteAria": "Kolongola entrée",
+      "toasts": {
+        "codeTitleRequired": "Code pe libellé esengeli kozala.",
+        "duplicateCode": "Code oyo ezali déjà po na axe oyo.",
+        "createFailed": "Kokonga entrée elongwami.",
+        "saveFailed": "Kobongisa elongwami.",
+        "apiError": "Serveur elongoli te lisusu elongola action.",
+        "created": "Entrée ebakisami.",
+        "updated": "Entrée ebongisami.",
+        "deleted": "Entrée elongolami."
+      }
+    },
+    "referentialCreate": {
+      "breadcrumbNew": "Entrée ya sika",
+      "creating": "Tozali kobomba…",
+      "invalidForm": "Kotá makambo esengeli.",
+      "rootParentOption": "Mitano (azo te)",
+      "fields": {
+        "referential": "Axe ya référentiel",
+        "code": "Code",
+        "entityTitle": "Libellé",
+        "description": "Ndimbola",
+        "parent": "Élément parent"
+      },
+      "placeholders": {
+        "referential": "Ex. clients, fournitures, contrats",
+        "code": "Ex. CORP",
+        "entityTitle": "Ex. Ba clients ya entreprise",
+        "description": "Ezali lisusu…"
+      },
+      "actions": {
+        "cancel": "Kanga",
+        "save": "Kobomba"
+      }
+    },
+    "taxGroups": {
+      "title": "Ba groupes ya taxation",
+      "intro": "Catalogue ya ba groupes okoki kopesa na ba articles. Okoki kongerisa to kobongisa. Kaka ba groupes actifs ezali na ba fiches articles.",
+      "newGroup": "Groupe ya sika",
+      "code": "Code",
+      "groupName": "Kombo ya groupe",
+      "taxRate": "Taux ya taxe (%)",
+      "status": "Statut",
+      "description": "Ndimbola",
+      "add": "Kongerisa",
+      "placeholderCode": "X",
+      "placeholderName": "Ex. Groupe X",
+      "placeholderRate": "16",
+      "placeholderDescription": "Ex. Taxable na 16 %",
+      "codeAria": "Code ya groupe ya taxation",
+      "statusAria": "Statut actif to inactif",
+      "active": "Actif",
+      "inactive": "Inactif",
+      "table": {
+        "code": "Code",
+        "groupName": "Kombo ya groupe",
+        "description": "Ndimbola",
+        "rate": "Taux (%)",
+        "status": "Statut",
+        "actions": "Actions",
+        "emptyCell": "—"
+      },
+      "edit": "Kobongisa",
+      "deactivate": "Kopekisa",
+      "activate": "Kokoma actif",
+      "delete": "Kolongola",
+      "editGroupTitle": "Kobongisa groupe",
+      "codeFrozenHint": "Code epesi te mpo na référentiel A–P",
+      "save": "Kobomba",
+      "cancel": "Kanga",
+      "pagination": {
+        "range": "{from} — {to} na {total} groupes",
+        "page": "Page {current} / {total}",
+        "prev": "Ya liboso",
+        "next": "Landí"
+      },
+      "autoSaveHint": "Ba changements ebombami automatiquement.",
+      "toasts": {
+        "builtinDelete": "Groupe oyo ya référentiel officiel elongoli te.",
+        "deleted": "Groupe elongolami.",
+        "nameRequired": "Tondisa nkombo ya groupe.",
+        "codeRequired": "Tondisa code ya groupe.",
+        "rateInvalid": "Taux esengeli kozala entre 0 na 100 %.",
+        "codeDuplicate": "Code oyo ezali kaka déjà.",
+        "updated": "Groupe ebongisami.",
+        "idDuplicate": "Identifiant ezali déjà ; meka lisusu.",
+        "created": "Groupe ya taxation ebakisami."
+      }
+    }
+  },
+
+  "otp": {
+    "title": "Kotala OTP",
+    "heroText": "Talá compte na yo mpo na kobatela bokɔti na iKwook Invoice.",
+    "description": {
+      "register": "Kotá code ya motango 6 oyo etindami na email na yo mpo compte na yo endimama.",
+      "login": "Kotá code ya motango 6 oyo etindami na email na yo mpo okota malamu."
+    },
+    "actions": {
+      "verify": "Tala compte",
+      "resend": "Tinda lisusu code"
+    },
+    "wrongEmail": "Email ezali mabe?",
+    "backToRegister": "Zonga na inscription",
+    "errors": {
+      "missingEmail": "Email ezwami te. Zonga na etape ya liboso.",
+      "incompleteCode": "Kotá code OTP nyonso ya motango 6."
+    },
+    "success": {
+      "verified": "Code endimami malamu.",
+      "resent": "Code OTP ya sika etindami."
+    },
+    "loading": {
+      "verify": "Tozali kotala code...",
+      "resend": "Tozali kotinda code ya sika..."
+    }
+  },
+  "invoiceDashboard": {
+    "alert": {
+      "message": "Kobosana te kozongisa TVA ya sanza eleki. Motango mobimba oyo esengeli kozongisa ezali"
+    },
+    "cards": {
+      "previousYear": "Mbula eleki",
+      "currentMonth": "Sanza oyo",
+      "totalVatCollected": "TVA nyonso ezwamaki",
+      "totalVatReversed": "TVA nyonso ezongisamaki",
+      "invoiceNormalization": "Bobongisi facture",
+      "totalNormalizedInvoice": "Facture nyonso ebongisami",
+      "pendingNormalization": "Ezali kozela bobongisi",
+      "invoiceStatistics": "Statistique ya facture",
+      "paidInvoices": "Facture efutami",
+      "unpaidInvoices": "Facture efutami te"
+    },
+    "sections": {
+      "cashFlowTracking": "Bolandeli ya mosolo",
+      "currentMonth": "Sanza oyo",
+      "invoiceTracking": "Bolandeli ya facture",
+      "invoiceNormalization": "Bobongisi ya facture"
+    },
+    "charts": {
+      "issuedInvoices": "Facture nyonso ebimaki",
+      "totalRevenue": "Mosolo nyonso ezwami",
+      "totalDebt": "Nyongo nyonso"
+    },
+    "monthlyStats": {
+      "issued": "Ebimaki",
+      "paid": "Efutami",
+      "pending": "Ezali kozela",
+      "cancelled": "Ebolami"
+    },
+    "table": {
+      "date": "Mokolo",
+      "client": "Client",
+      "reference": "Ref",
+      "amount": "Motango",
+      "status": "Ezaleli",
+      "creation": "Esalemi na",
+      "editInvoice": "Bongisa facture"
+    },
+    "status": {
+      "paid": "Efutami",
+      "unpaid": "Efutami te",
+      "paidMasculine": "Efutami"
+    },
+    "actions": {
+      "viewMore": "Tala mingi"
+    },
+    "months": {
+      "jan": "Ya",
+      "feb": "Fe",
+      "mar": "Ma",
+      "apr": "Ap",
+      "may": "Me",
+      "jun": "Yu",
+      "jul": "Yu",
+      "aug": "Ao",
+      "sep": "Se",
+      "oct": "Ok",
+      "nov": "No",
+      "dec": "De"
+    }
+  },
+  "reports": {
+    "pageTitle": "Ba rapports",
+    "pageIntro": "Bimisa ba rapports na factures, TVA, ba paiements mpe utilisation ya plateforme.",
+    "menu": {
+      "invoiceEdition": "Édition ya ba factures",
+      "invoiceNormalization": "Normalisation ya ba factures",
+      "invoicePayments": "Ba paiements ya factures",
+      "vatCollection": "Collecte ya TVA",
+      "toolUsage": "Utilisation ya outil",
+      "reportXDaily": "Rapport quotidien",
+      "reportZ": "Rapport de clôture",
+      "reportXPeriodic": "Rapport périodique",
+      "reportA": "Rapport sur les articles"
+    },
+    "filters": {
+      "all": "Nionso",
+      "dateFrom": "Date ya ebandeli",
+      "dateTo": "Date ya nsuka",
+      "reportDate": "Date ya rapport",
+      "client": "Client",
+      "clientPlaceholder": "Luka client…",
+      "clientLoading": "Ezali ko charger ba clients…",
+      "clientEmpty": "Client moko ezwami te",
+      "clientLoadError": "Ekoki te ko charger ba clients.",
+      "contract": "Contrat",
+      "contractPlaceholder": "Luka contrat…",
+      "contractSelectClientFirst": "Pona client liboso",
+      "contractLoading": "Ezali ko charger ba contrats…",
+      "contractEmpty": "Contrat moko ezali te",
+      "contractSearchEmpty": "Contrat moko ezwami te",
+      "contractLoadError": "Ekoki te ko charger ba contrats.",
+      "pointOfSale": "Point ya vente",
+      "pointOfSalePlaceholder": "Soki PDV-01",
+      "isf": "ISF",
+      "isfPlaceholder": "Identifiant fiscal",
+      "invoiceType": "Type ya facture",
+      "invoiceStatus": "Statut ya facture",
+      "paymentStatus": "Statut ya paiement",
+      "period": "Période",
+      "user": "Utilisateur",
+      "userPlaceholder": "Ex. benjamin",
+      "actionType": "Type d’action",
+      "periodOptions": {
+        "day": "Na mokolo",
+        "month": "Na sanza",
+        "quarter": "Na trimestre"
+      },
+      "vatPeriodOptions": {
+        "monthly": "Mensuelle",
+        "quarterly": "Trimestrielle"
+      },
+      "actionTypes": {
+        "create": "Création",
+        "update": "Modification",
+        "delete": "Suppression",
+        "validate": "Validation"
+      },
+      "statuses": {
+        "brouillon": "Brouillon",
+        "enregistrer": "Enregistrée",
+        "valider": "Validée",
+        "normaliser": "Normalisée",
+        "soumise": "Soumise",
+        "receptionner": "Réceptionnée",
+        "payer": "Payée",
+        "classer": "Classée"
+      },
+      "paymentStatuses": {
+        "paid": "Payé",
+        "partial": "Moke payé",
+        "unpaid": "Payé te"
+      }
+    },
+    "actions": {
+      "generate": "Bimisa rapport",
+      "generating": "Ezali kobimisa…",
+      "download": "Télécharger rapport",
+      "back": "Zonga",
+      "resetFilters": "Zongisa ba filtres"
+    },
+    "preview": {
+      "title": "Aperçu ya rapport",
+      "subtitle": "Talá ba critères mpe contenu ya rapport liboso ya ko-télécharger.",
+      "simulatedNotice": "Aperçu simulé",
+      "ordinary": {
+        "reportCode": "RAPPORT",
+        "metaSection": "MÉTADONNÉES",
+        "generatedAt": "Généré le",
+        "reportType": "Type",
+        "objectSection": "OBJET",
+        "reportTitle": "Titre",
+        "tableTitle": "CRITÈRES APPLIQUÉS",
+        "columns": {
+          "criteria": "Critère",
+          "value": "Valeur"
+        },
+        "empty": "Filtre ezali te. Données nyonso ezali incluses.",
+        "footer": "Document esalemi kolanda ba critères oyo ezali likolo.",
+        "filterLabels": {
+          "dateFrom": "Date ya ebandeli",
+          "dateTo": "Date ya nsuka",
+          "reportDate": "Date ya rapport",
+          "clientId": "Client (ID)",
+          "contractId": "Contrat (ID)",
+          "pointOfSale": "Point ya vente",
+          "invoiceStatus": "Statut ya facture",
+          "invoiceType": "Type ya facture",
+          "paymentStatus": "Statut ya paiement",
+          "isf": "ISF"
+        },
+        "page": "Page {current} sur {total}"
+      },
+      "invoiceEdition": {
+        "reportCode": "RAPPORT",
+        "emitter": "ÉMETTEUR",
+        "periodSection": "PÉRIODE & RESTITUTION",
+        "company": "Société",
+        "nif": "NIF",
+        "isf": "ISF",
+        "generatedAt": "Généré le",
+        "dateFrom": "Date Début",
+        "dateTo": "Date Fin",
+        "tableTitle": "ÉDITION YA BA FACTURES",
+        "columns": {
+          "clientName": "Nkombo client",
+          "invoiceAmount": "Montant facture",
+          "taxAmount": "Montant taxe",
+          "paidAmount": "Montant payé",
+          "totalAmount": "Montant total",
+          "currency": "Devise",
+          "invoiceType": "Type facture",
+          "dueDate": "Date d'échéance"
+        },
+        "empty": "Facture moko te ezwami na ba critères oyo.",
+        "page": "Page {current} sur {total}"
+      },
+      "invoiceNormalization": {
+        "reportCode": "RAPPORT",
+        "emitter": "ÉMETTEUR",
+        "periodSection": "PÉRIODE & RESTITUTION",
+        "company": "Société",
+        "nif": "NIF",
+        "isf": "ISF",
+        "generatedAt": "Généré le",
+        "dateFrom": "Date Début",
+        "dateTo": "Date Fin",
+        "tableTitle": "NORMALISATION YA BA FACTURES",
+        "columns": {
+          "clientName": "Nkombo client",
+          "invoiceAmount": "Montant facture",
+          "taxAmount": "Montant taxe",
+          "paidAmount": "Montant payé",
+          "totalAmount": "Montant total",
+          "currency": "Devise",
+          "invoiceType": "Type facture",
+          "dueDate": "Date d'échéance"
+        },
+        "empty": "Facture normalisée moko te ezwami na ba critères oyo.",
+        "page": "Page {current} sur {total}"
+      },
+      "vatCollection": {
+        "reportCode": "RAPPORT",
+        "emitter": "ÉMETTEUR",
+        "periodSection": "PÉRIODE & RESTITUTION",
+        "company": "Société",
+        "nif": "NIF",
+        "isf": "ISF",
+        "generatedAt": "Esalemi le",
+        "dateFrom": "Date ebandi",
+        "dateTo": "Date esuki",
+        "tableTitle": "COLLECTE YA TVA",
+        "invoiceTypes": {
+          "sale": "Facture ya koteka",
+          "credit": "Facture ya avoir",
+          "unknown": "Type eyebani ({id})"
+        },
+        "columns": {
+          "date": "Date",
+          "reference": "Reference",
+          "amount": "Montant",
+          "taxAmount": "Taxe",
+          "currency": "Devise",
+          "totalAmount": "Montant total",
+          "clientName": "Nkombo client",
+          "invoiceType": "Type facture",
+          "workflowStatus": "Statut",
+          "paidAmount": "Montant payé"
+        },
+        "empty": "Ligne moko te ezwami na ba critères oyo.",
+        "page": "Page {current} sur {total}"
+      },
+      "toolUsage": {
+        "reportCode": "RAPPORT",
+        "emitter": "ÉMETTEUR",
+        "periodSection": "PÉRIODE & RESTITUTION",
+        "company": "Société",
+        "nif": "NIF",
+        "isf": "ISF",
+        "generatedAt": "Esalemi le",
+        "dateFrom": "Date ebandi",
+        "dateTo": "Date esuki",
+        "tableTitle": "UTILISATION YA OUTIL",
+        "columns": {
+          "userName": "Nkombo mosaleli",
+          "invoiceCount": "Motango ya ba factures",
+          "totalAmount": "Montant total",
+          "totalTva": "Total TVA",
+          "firstInvoice": "Date ya facture ya liboso",
+          "lastInvoice": "Date ya facture ya suka"
+        },
+        "empty": "Ligne moko te ezwami na ba critères oyo.",
+        "page": "Page {current} sur {total}"
+      },
+      "payments": {
+        "reportCode": "RAPPORT",
+        "emitter": "ÉMETTEUR",
+        "periodSection": "PÉRIODE & RESTITUTION",
+        "company": "Société",
+        "nif": "NIF",
+        "isf": "ISF",
+        "generatedAt": "Généré le",
+        "dateFrom": "Date Début",
+        "dateTo": "Date Fin",
+        "tableTitle": "BA PAIEMENTS YA BA FACTURES",
+        "columns": {
+          "reference": "Référence",
+          "clientName": "Nkombo client",
+          "contractName": "Nkombo contrat",
+          "amount": "Montant",
+          "date": "Date"
+        },
+        "empty": "Paiement moko te ezwami na ba critères oyo.",
+        "page": "Page {current} sur {total}"
+      }
+    },
+    "toast": {
+      "previewReady": "Aperçu ya rapport ezali prêt.",
+      "downloaded": "Rapport PDF etéléchargé.",
+      "generateError": "Rapport elongwaki te."
+    },
+    "ordinary": {
+      "invoiceEdition": {
+        "title": "Rapport ya édition ya ba factures",
+        "description": "Analyse ya ba factures. Filtre na client, contrat, période, point ya vente mpe statut."
+      },
+      "invoiceNormalization": {
+        "title": "Rapport ya normalisation",
+        "description": "Suivi ya ba factures normalisées. Filtre na point ya vente, type (FV, FA…) mpe période."
+      },
+      "invoicePayments": {
+        "title": "Rapport ya ba paiements",
+        "description": "Synthèse ya ba paiements na période mpe na client."
+      },
+      "vatCollection": {
+        "title": "Rapport ya collecte TVA",
+        "description": "Montants TVA. Filtre na période mpe client."
+      },
+      "toolUsage": {
+        "title": "Rapport ya utilisation",
+        "description": "Utilisation ya outil na période oyo oponi."
+      }
+    },
+    "invoiceEditionFlow": {
+      "list": {
+        "intro": "Historique ya ba rapports ordinaires oyo esalemi deja. Finá na bouton mpo na kobimisa rapport ya sika.",
+        "loading": "Kozwa ba rapports…",
+        "loadError": "Liste ya ba rapports elongwaki te.",
+        "retry": "Meka lisusu",
+        "empty": "Rapport moko te esalemi nanu.",
+        "totalCount": "{count} rapport(s)",
+        "generateButton": "Kosala rapport",
+        "columns": {
+          "generatedAt": "Esalemi le",
+          "dateFrom": "Date début",
+          "dateTo": "Date fin",
+          "isf": "ISF",
+          "pointOfSale": "Point de vente"
+        }
+      },
+      "generate": {
+        "intro": "Pona type ya rapport mpe kotia ba filtres avant kobimisa aperçu.",
+        "radioTitle": "Type ya rapport ordinaire"
+      },
+      "reportKinds": {
+        "invoiceEdition": "Édition ya ba factures",
+        "invoiceNormalization": "Normalisation ya ba factures",
+        "vatCollection": "Collecte ya TVA",
+        "invoicePayments": "Ba paiements ya factures",
+        "toolUsage": "Utilisation ya outil"
+      }
+    },
+    "specialXz": {
+      "title": "Ba rapports X-Z",
+      "reportXDaily": {
+        "title": "Lapolo ya mokolo na mokolo",
+        "description": "Récapitulatif banda rapport Z ya nsuka. Ba valeurs ebandi te.",
+        "includes": [
+          "Nom commercial, NIF, date mpe ngonga",
+          "Ba montants, taxes mpe modes ya paiement",
+          "Ba ventes oyo ezuami te mpe ya mokolo"
+        ],
+        "preview": {
+          "reportCode": "RAPPORT X",
+          "emitter": "ÉMETTEUR",
+          "periodSection": "PÉRIODE & RESTITUTION",
+          "company": "Société",
+          "nif": "NIF",
+          "generatedAt": "Généré le",
+          "dateFrom": "Date Début",
+          "dateTo": "Date Fin",
+          "tableTitle": "SYNTHÈSE QUOTIDIENNE",
+          "columns": {
+            "invoiceCount": "Nombre de factures",
+            "totalHt": "Total HT",
+            "totalTva": "Total TVA",
+            "totalTtc": "Total TTC",
+            "totalPaid": "Total payé",
+            "totalBalance": "Solde"
+          },
+          "page": "Page {current} sur {total}"
+        }
+      },
+      "reportZ": {
+        "title": "Lapolo ya suka",
+        "description": "Récapitulatif ya clôture. Ebandi ba valeurs.",
+        "includes": [
+          "Nom commercial, NIF, date mpe ngonga",
+          "Ba montants, taxes mpe modes ya paiement",
+          "Ba ventes oyo ezuami te mpe ya mokolo"
+        ],
+        "preview": {
+          "reportCode": "RAPPORT Z",
+          "emitter": "ÉMETTEUR",
+          "periodSection": "PÉRIODE & RESTITUTION",
+          "company": "Société",
+          "nif": "NIF",
+          "generatedAt": "Généré le",
+          "dateFrom": "Date Début",
+          "dateTo": "Date Fin",
+          "tableTitle": "SYNTHÈSE DE CLÔTURE",
+          "columns": {
+            "invoiceCount": "Nombre de factures",
+            "totalHt": "Total HT",
+            "totalTva": "Total TVA",
+            "totalTtc": "Total TTC",
+            "totalPaid": "Total payé",
+            "totalBalance": "Solde"
+          },
+          "page": "Page {current} sur {total}"
+        }
+      },
+      "reportXPeriodic": {
+        "title": "Lapolo ya ntango na ntango",
+        "description": "Récapitulatif na période oyo oponi. Ebandi te ba valeurs.",
+        "includes": [
+          "Nom commercial, NIF, période",
+          "Ba montants, taxes mpe modes ya paiement",
+          "Ba ventes oyo ezuami te"
+        ],
+        "preview": {
+          "reportCode": "RAPPORT X",
+          "emitter": "ÉMETTEUR",
+          "periodSection": "PÉRIODE & RESTITUTION",
+          "company": "Société",
+          "nif": "NIF",
+          "generatedAt": "Généré le",
+          "dateFrom": "Date Début",
+          "dateTo": "Date Fin",
+          "tableTitle": "SYNTHÈSE PÉRIODIQUE",
+          "columns": {
+            "invoiceCount": "Nombre de factures",
+            "totalHt": "Total HT",
+            "totalTva": "Total TVA",
+            "totalTtc": "Total TTC",
+            "totalPaid": "Total payé",
+            "totalBalance": "Solde"
+          },
+          "page": "Page {current} sur {total}"
+        }
+      }
+    },
+    "xzFlow": {
+      "list": {
+        "intro": "Historique ya ba rapports X-Z oyo esalemi deja.",
+        "loading": "Kozwa ba rapports…",
+        "loadError": "Liste ya ba rapports elongwaki te.",
+        "retry": "Meka lisusu",
+        "empty": "Rapport moko te esalemi nanu.",
+        "totalCount": "{count} rapport(s)",
+        "generateButton": "Kosala rapport",
+        "columns": {
+          "generatedAt": "Esalemi le",
+          "dateFrom": "Date début",
+          "dateTo": "Date fin",
+          "isf": "ISF",
+          "pointOfSale": "Point de vente"
+        }
+      },
+      "generate": {
+        "intro": "Pona type ya rapport X-Z oyo okosala.",
+        "radioTitle": "Type ya rapport"
+      },
+      "reportKinds": {
+        "reportXDaily": "Rapport X ya mokolo",
+        "reportZ": "Rapport Z",
+        "reportXPeriodic": "Rapport X ya période"
+      }
+    },
+    "specialA": {
+      "title": "Lapolo na ntina ya masolo",
+      "list": {
+        "intro": "Liste ya ba rapports sur type A oyo esalemi déjà.",
+        "loading": "Kozwa ba rapports…",
+        "loadError": "Kozwa liste ya ba rapports elongwaki te.",
+        "retry": "Meka lisusu",
+        "empty": "Rapport moko te esalemi nanu.",
+        "totalCount": "{count} rapport(s)",
+        "generateButton": "Kosala rapport",
+        "columns": {
+          "session": "Session",
+          "dateFrom": "Date début",
+          "dateTo": "Date fin",
+          "itemCount": "Ba articles"
+        }
+      },
+      "generateIntro": "Pona période mpo na kosala rapport.",
+      "preview": {
+        "reportCode": "RAPPORT",
+        "emitter": "ÉMETTEUR",
+        "periodSection": "PÉRIODE & RESTITUTION",
+        "company": "Société",
+        "nif": "NIF",
+        "generatedAt": "Généré le",
+        "dateFrom": "Date Début",
+        "dateTo": "Date Fin",
+        "tableTitle": "INVENTAIRE & FLUX DES ARTICLES (PÉRIODIQUE)",
+        "columns": {
+          "code": "CODE",
+          "designation": "DÉSIGNATION",
+          "unitPrice": "PRIX UNITAIRE",
+          "tax": "TVA",
+          "qtySold": "QUANTITÉ VENDUE",
+          "qtyReturned": "QUANTITÉ RETOURNÉE",
+          "fiscalStock": "QUANTITÉ EN STOCK"
+        },
+        "total": "TOTAL",
+        "page": "Page {current} sur {total}"
+      }
+    }
+  },
+  "errors": {
+    "loadingDashboard": "Impossible de charger les données du tableau de bord."
+  }
+}

@@ -18,12 +18,16 @@ import type {
     BackendProfile,
 } from '@/core/types/user.types';
 
-const COOKIE_USER = 'dgi_user';
+const COOKIE_USER = 'bank_user';
+const LEGACY_COOKIE_USER = 'dgi_user';
+const AUTH_COOKIE_USER = 'auth_user';
 const COOKIE_PROFILE = 'dgi_profile';
 const AUTH_EXPIRES_KEY = 'accessToken_expires_at';
 
 const AUTH_STORAGE_KEYS = [
     COOKIE_USER,
+    LEGACY_COOKIE_USER,
+    AUTH_COOKIE_USER,
     COOKIE_PROFILE,
     AUTH_EXPIRES_KEY,
 ];
@@ -71,6 +75,15 @@ function safeParse<T>(key: string): T | null {
     }
 }
 
+function safeParseFirst<T>(keys: string[]): T | null {
+    for (const key of keys) {
+        const value = safeParse<T>(key);
+        if (value) return value;
+    }
+
+    return null;
+}
+
 function setStoredValue(name: string, value: string, days: number) {
     setCookie(name, value, days);
 
@@ -99,17 +112,50 @@ function getTokenExpiration(expiresInSeconds: number) {
     };
 }
 
+type AppSessionState = {
+    token: string;
+    user: BackendUser;
+    profile: BackendProfile | null;
+};
+
+function readInitialSession(): AppSessionState | null {
+    const token = tokenStore.get();
+    const expiresAt = Number(getStoredValue(AUTH_EXPIRES_KEY));
+
+    const user = safeParseFirst<BackendUser>([
+        COOKIE_USER,
+        AUTH_COOKIE_USER,
+        LEGACY_COOKIE_USER,
+    ]);
+    const profile = safeParse<BackendProfile>(COOKIE_PROFILE);
+
+    const isValid =
+        Boolean(token && user && expiresAt && !Number.isNaN(expiresAt)) &&
+        expiresAt > Date.now();
+
+    if (!isValid || !token || !user) {
+        return null;
+    }
+
+    return {
+        token,
+        user,
+        profile,
+    };
+}
+
 export function AppProvider({ children }: { children: ReactNode }) {
-    const [token, setToken] = useState<string | null>(null);
-    const [user, setUser] = useState<BackendUser | null>(null);
-    const [profile, setProfileState] = useState<BackendProfile | null>(null);
+    const [session, setSession] = useState<AppSessionState | null>(() =>
+        readInitialSession()
+    );
+
+    const token = session?.token ?? null;
+    const user = session?.user ?? null;
+    const profile = session?.profile ?? null;
 
     const logout = useCallback(() => {
         clearAuthStorage();
-
-        setToken(null);
-        setUser(null);
-        setProfileState(null);
+        setSession(null);
     }, []);
 
     const login = useCallback(
@@ -133,9 +179,11 @@ export function AppProvider({ children }: { children: ReactNode }) {
                 removeStoredValue(COOKIE_PROFILE);
             }
 
-            setToken(token);
-            setUser(user);
-            setProfileState(profile);
+            setSession({
+                token,
+                user,
+                profile,
+            });
         },
         []
     );
@@ -147,29 +195,15 @@ export function AppProvider({ children }: { children: ReactNode }) {
             removeStoredValue(COOKIE_PROFILE);
         }
 
-        setProfileState(profile);
+        setSession((prev) =>
+            prev
+                ? {
+                    ...prev,
+                    profile,
+                }
+                : prev
+        );
     }, []);
-
-    useEffect(() => {
-        const token = tokenStore.get();
-        const expiresAt = Number(getStoredValue(AUTH_EXPIRES_KEY));
-
-        const user = safeParse<BackendUser>(COOKIE_USER);
-        const profile = safeParse<BackendProfile>(COOKIE_PROFILE);
-
-        const isValid =
-            Boolean(token && user && expiresAt && !Number.isNaN(expiresAt)) &&
-            expiresAt > Date.now();
-
-        if (!isValid) {
-            logout();
-            return;
-        }
-
-        setToken(token);
-        setUser(user);
-        setProfileState(profile);
-    }, [logout]);
 
     useEffect(() => {
         return authEvents.onLogout(() => {
