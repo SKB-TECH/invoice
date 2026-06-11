@@ -17,7 +17,7 @@ export const billableServicesKeys = {
     list: (params: ListBillableServicesParams) =>
         [...billableServicesKeys.lists(), params] as const,
     details: () => [...billableServicesKeys.all, "detail"] as const,
-    detail: (id: string) => [...billableServicesKeys.details(), id] as const,
+    detail: (key: string) => [...billableServicesKeys.details(), key] as const,
 };
 
 export function useBillableServicesList(params: ListBillableServicesParams) {
@@ -27,14 +27,13 @@ export function useBillableServicesList(params: ListBillableServicesParams) {
     });
 }
 
-export function useBillableServiceDetail(rawId: string) {
-    const id = decodeURIComponent(rawId);
-    const numericId = Number(id);
-    const enabled = Number.isFinite(numericId) && numericId > 0;
+export function useBillableServiceDetail(rawKey: string) {
+    const key = decodeURIComponent(rawKey).trim();
+    const enabled = key.length > 0;
 
     return useQuery({
-        queryKey: billableServicesKeys.detail(id),
-        queryFn: () => billableServicesService.getById(numericId),
+        queryKey: billableServicesKeys.detail(key),
+        queryFn: () => billableServicesService.getByKey(key),
         enabled,
     });
 }

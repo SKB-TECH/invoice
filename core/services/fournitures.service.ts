@@ -19,13 +19,45 @@ export async function fetchFournituresList(params?: {
     return data;
 }
 
-export async function fetchFournitureById(
-    id: number | string
+export async function fetchFournitureByPathKey(
+    key: string,
 ): Promise<FournitureArticle> {
     const { data } = await api.get<FournitureArticle>(
-        `${FOURNITURES_PATH}/${encodeURIComponent(String(id))}`
+        `${FOURNITURES_PATH}/${encodeURIComponent(key)}`,
     );
     return data;
+}
+
+export async function fetchFournitureByKey(
+    key: string,
+): Promise<FournitureArticle> {
+    const trimmed = key.trim();
+    if (!trimmed) {
+        throw new Error("Article key is required.");
+    }
+
+    try {
+        return await fetchFournitureByPathKey(trimmed);
+    } catch (error) {
+        const numericId = Number(trimmed);
+        if (Number.isFinite(numericId) && numericId > 0) {
+            throw error;
+        }
+
+        const list = await fetchFournituresList({ perPage: 500 });
+        const match = list.items.find((item) => item.code === trimmed);
+        if (!match?.id) {
+            throw error;
+        }
+
+        return fetchFournitureByPathKey(String(match.id));
+    }
+}
+
+export async function fetchFournitureById(
+    id: number | string,
+): Promise<FournitureArticle> {
+    return fetchFournitureByPathKey(String(id));
 }
 
 export async function createFourniture(

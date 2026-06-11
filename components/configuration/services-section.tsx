@@ -282,7 +282,7 @@ export function ServicesSection({
                                                     )}
                                                     onClick={() =>
                                                         router.push(
-                                                            `/home/services/${encodeURIComponent(String(row.id))}/visualiser`,
+                                                            `/home/services/${encodeURIComponent(row.code)}/visualiser`,
                                                         )
                                                     }
                                                 >

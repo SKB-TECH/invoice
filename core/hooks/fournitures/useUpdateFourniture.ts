@@ -22,7 +22,7 @@ export function useUpdateFourniture(options?: Options) {
                 queryKey: ["fournitures", "list"],
             });
             void queryClient.invalidateQueries({
-                queryKey: ["fournitures", "detail", String(variables.id)],
+                queryKey: ["fournitures", "detail"],
             });
             options?.onSuccess?.(data, variables);
         },

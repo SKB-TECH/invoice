@@ -94,10 +94,10 @@ export function ModifierArticleForm({
     );
 
     const updateMutation = useUpdateFourniture({
-        onSuccess: () => {
+        onSuccess: (updated) => {
             toast.success(tEdit("toastSaved"));
             router.push(
-                `/home/articles/${encodeURIComponent(initial.idIkwook)}/visualiser`,
+                `/home/articles/${encodeURIComponent(updated.code)}/visualiser`,
             );
         },
         onError: (error) => {
@@ -196,7 +196,7 @@ export function ModifierArticleForm({
                 e.preventDefault();
                 if (updateMutation.isPending || saveDisabledExternally) return;
 
-                const id = Number(initial.idIkwook);
+                const id = apiBaseline.id;
                 if (!Number.isFinite(id) || id <= 0) {
                     toast.error(tCreate("invalidForm"));
                     return;
