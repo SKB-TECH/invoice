@@ -133,6 +133,10 @@
     "submit": "Kokota",
     "noAccount": "Ozali naino na compte te?",
     "createAccount": "Finá awa mpo na kosala compte",
+    "validation": {
+      "identifierRequired": "Nkombo ya mosaleli esengeli.",
+      "passwordRequired": "Mot de passe esengeli."
+    },
     "loading": "Ezali ko charger..."
   },
   "invoicesPage": {
