@@ -133,6 +133,10 @@
     "submit": "Se connecter",
     "noAccount": "Vous n'avez pas encore de compte ?",
     "createAccount": "Cliquez ici pour créer votre compte",
+    "validation": {
+      "identifierRequired": "L’identifiant est requis.",
+      "passwordRequired": "Le mot de passe est requis."
+    },
     "loading": "Chargement en cours..."
   },
   "invoicesPage": {
