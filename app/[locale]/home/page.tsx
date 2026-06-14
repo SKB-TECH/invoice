@@ -2,19 +2,8 @@
 
 import React from "react";
 import { useTranslations } from "next-intl";
+import "chart.js/auto";
 import { Chart, Doughnut } from "react-chartjs-2";
-import {
-    Chart as ChartJS,
-    CategoryScale,
-    LinearScale,
-    BarElement,
-    LineElement,
-    PointElement,
-    ArcElement,
-    Tooltip,
-    Legend,
-    Filler,
-} from "chart.js";
 import type { ChartData, ChartOptions } from "chart.js";
 import {
     AlertTriangle,
@@ -27,19 +16,6 @@ import {
 import {useInvoiceDashboardOverview} from "@/core/hooks/useInvoiceDashboard";
 import {DashboardSkeleton} from "@/components/dashboard/DashboardResponse";
 import {useRouter} from "next/navigation";
-
-
-ChartJS.register(
-    CategoryScale,
-    LinearScale,
-    BarElement,
-    LineElement,
-    PointElement,
-    ArcElement,
-    Tooltip,
-    Legend,
-    Filler
-);
 
 const MONTH_COLORS = ["#0B83D8", "#18B85D", "#EAB53B", "#F04444"];
 
