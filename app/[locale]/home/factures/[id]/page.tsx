@@ -1090,34 +1090,64 @@ export default function InvoiceViewerPage() {
 
         return {
             invoice: invoice.invoice,
+            number: invoice.number,
+
+            senderName: invoice.senderName,
+            senderLegalName: invoice.senderLegalName,
+            senderAddress: invoice.senderAddress,
+            senderPhone: invoice.senderPhone,
+            senderEmail: invoice.senderEmail,
+            senderNif: invoice.senderNif,
+            senderRccm: invoice.senderRccm,
+            senderIdnat: invoice.senderIdnat,
+
             client: invoice.client,
             clientAddress: invoice.clientAddress,
             telephone: invoice.clientPhone,
-            currency: invoice.currency as "CDF" | "USD",
-            createdAt: invoice.createdAt,
-            dueDate: invoice.dueDate,
+            clientEmail: invoice.clientEmail,
             clientType: invoice.clientType,
             clientNif: invoice.clientNif,
             clientRccm: invoice.clientRccm,
             clientIdnat: invoice.clientIdnat,
+
+            currency: invoice.currency as "CDF" | "USD",
+            createdAt: invoice.createdAt,
+            dueDate: invoice.dueDate,
+
             invoiceTypeCode: invoice.invoiceTypeCode,
             invoiceTypeTitle: invoice.invoiceTypeTitle,
             fiscalRegime: invoice.fiscalRegime,
             isDuplicate: invoice.isDuplicate,
             isf: invoice.isf,
             defMcf: invoice.defMcf,
+
+            contractReference: invoice.contractReference,
+
+            paymentMethod: invoice.paymentMethod,
+            paymentBankName: invoice.paymentBankName,
+            paymentAccountNumber: invoice.paymentAccountNumber,
+
+            amountHT: invoice.amountHT,
+            taxAmount: invoice.taxAmount,
+            totalAmount: invoice.totalAmount,
+
             comments: invoice.dgiComments,
+
             lines: invoice.lines.map((line) => ({
                 id: line.id,
                 code: line.code,
+                groupType: line.groupType,
+                unit: line.unit,
                 designation: line.designation,
                 quantity: line.quantity,
                 unitPrice: line.unitPrice,
                 taxRate: line.taxRate,
+                subtotal: line.subtotal,
+                taxAmount: line.taxAmount,
+                lineTotal: line.lineTotal,
             })),
         };
     }, [invoice]);
-
     const canNormalize =
         invoice?.statut !== "Payée" && invoice?.statut !== "Classée";
 
@@ -1129,6 +1159,7 @@ export default function InvoiceViewerPage() {
         });
     };
 
+    console.log("invoice", invoice);
     const handleChangeStatus = (statut: InvoiceStatus) => {
         setOverrides((current) => ({
             ...current,
